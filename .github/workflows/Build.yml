@@ -28,7 +28,7 @@ jobs:
     - name: Build Library
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        cd SDK/Tools
+        cd SDK-cpp/tools
         ./PeEditor.exe -o ..\Lib D:\BDS 
       shell: cmd
 
