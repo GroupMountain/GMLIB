@@ -28,11 +28,6 @@ struct RecipeItem {
 
 class GMLib_Mod {
 public:
-    //直接加载资源包/行为包API
-    //加载转化为字节数组的行为包
-	GMLib_ModAPI static void addBehaviorPack(std::vector<unsigned char> code);
-    //加载转化为字节数组的资源包
-    GMLib_ModAPI static void addResourcePack(std::string name, std::vector<unsigned char> code, std::string version);
     //用资源包翻译一条信息
     GMLib_ModAPI static std::string i18nTranslate(std::string key1, std::vector<std::string> key2);
     //设置是否启用错误方块移除
