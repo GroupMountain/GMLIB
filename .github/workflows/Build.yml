@@ -53,7 +53,7 @@ jobs:
         cp build/MinSizeRel/*.dll D:/out/plugins
         cp assets/lib/plhook.dll D:/out/plugins/lib
         cp lib/GMLib.lib D:/out/sdk/lib
-        cp include/GMLib_ModAPI.h D:/out/sdk/header
+        cp lib/GMLib_ModAPI.h D:/out/sdk/header
       shell: bash
 
     - name: Upload plugins

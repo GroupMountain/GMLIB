@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
-//#include <mc/Recipes.hpp>
-//#include <mc/ItemStack.hpp>
+#include <mc/Recipes.hpp>
+#include <mc/ItemStack.hpp>
 
 #ifdef GMLib_EXPORTS
 #define GMLib_ModAPI __declspec(dllexport)
