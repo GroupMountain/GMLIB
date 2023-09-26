@@ -68,7 +68,7 @@ BDS**）的插件开发者提供更多的API，一定程度上弥补了 `LiteLoa
 - 感谢 `GroupMountain` 开发成员对项目的巨大贡献
 - 感谢整个BDS开源社区为相关技术发展添砖加瓦
 
-#### 重要贡献者
+## 💎 重要贡献者
 - [@Tsubasa6848](https://github.com/Tsubasa6848)
 - [@EpsilonZunsat](https://github.com/EpsilonZunsat)
 - [@killcerr](https://github.com/killcerr)
