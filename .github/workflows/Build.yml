@@ -1,3 +1,89 @@
+name: Build(CMake)
+
+on: [push]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    steps:
+    - uses: actions/checkout@v3.2.0
+      with:
+          fetch-depth: 0
+          submodules: 'true'
+     
+    - name: Download Server
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        mkdir D:/BDS
+        ServerLink=$(cat 'LINK.txt')
+        curl -L -o D:/BDS/server.zip "$ServerLink"
+        unzip D:/BDS/server.zip -d D:/BDS > /dev/null
+      shell: bash
+
+    - name: Build Library
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        cd SDK/Tools
+        PeEditor.exe -l --pdb D:\BDS\bedrock_server.pdb -o ..\lib
+      shell: cmd
+
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+    
+    - name: MkDirs
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        mkdir D:/out/sdk
+        mkdir D:/out/sdk/lib
+        mkdir D:/out/sdk/header
+        mkdir D:/out/plugins
+    
+    - name: Copy Out Files
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        cp build/Release/*.dll D:/out/plugins
+        cp build/Release/LLMoney.lib D:/out/sdk/lib
+        cp build/Release/*.pdb D:/out/plugins
+        cp src/LLMoney.h D:/out/sdk/header
+      shell: bash
+
+    - name: Upload plugins
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: LLMoney
+        path: D:/out/plugins
+
+    - name: Upload SDK
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: SDK
+        path: D:/out/sdk
+
+    - name: Compress to zip
+      if: startsWith(github.ref, 'refs/tags/')
+      run: |
+        7z a D:/out/LLMoney.zip D:/out/plugins
+        7z a D:/out/SDK.zip D:/out/sdk
+      shell: bash
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: |
+          D:/out/LLMoney.zip
+          D:/out/SDK.zip
+      env:
+          GITHUB_REPOSITORY: LiteLDev/LiteLoaderPlugins
+
 name: Build
 
 on: [push]
@@ -28,8 +114,8 @@ jobs:
     - name: Build Library
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        cd SDK-cpp/tools
-        PeEditor.exe -o ../Lib D:/BDS 
+        cd SDK-cpp/Tools
+        PeEditor.exe -l --pdb D:\BDS\bedrock_server.pdb -o ..\lib
       shell: cmd
 
     - name: Configure CMake
@@ -43,12 +129,17 @@ jobs:
       run: |
         mkdir D:/out/plugins
         mkdir D:/out/plugins/lib
+        mkdir D:/out/sdk
+        mkdir D:/out/sdk/lib
+        mkdir D:/out/sdk/header
     
     - name: Copy Out Files
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        cp D:/a/GMLIB/GMLIB/build/MinSizeRel/*.dll D:/out/plugins
-        cp D:/a/GMLIB/GMLIB/assets/lib/plhook.dll D:/out/plugins/lib
+        cp build/MinSizeRel/*.dll D:/out/plugins
+        cp assets/lib/plhook.dll D:/out/plugins/lib
+        cp lib/GMLib.lib D:/out/sdk/lib
+        cp include/GMLib_ModAPI.h D:/out/sdk/header
       shell: bash
 
     - name: Upload plugins
@@ -61,6 +152,7 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       run: |
         7z a D:/out/GMLIB.zip D:/out/plugins
+        7z a D:/out/SDK.zip D:/out/sdk
       shell: bash
 
     - name: Release
@@ -70,5 +162,4 @@ jobs:
         body_path: ${{ github.workspace }}\CHANGELOG.md
         files: |
           D:/out/GMLIB.zip
-          D:/a/GMLIB/GMLIB/lib/GMLib.lib
-          D:/a/GMLIB/GMLIB/include/GMLib/GMLib_ModAPI.h
+          D:/out/SDK.zip
