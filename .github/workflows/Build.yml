@@ -60,8 +60,9 @@ jobs:
       uses: actions/upload-artifact@v1.0.0
       with:
         name: GMLIB
-        path: D:/out/plugins
-        path: D:/out/sdk
+        path: |
+          D:/out/plugins
+          D:/out/sdk
 
     - name: Compress to zip
       if: startsWith(github.ref, 'refs/tags/')
