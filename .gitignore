@@ -12,4 +12,3 @@ _deps
 CMakeSettings.json
 .vscode/
 build/
-SDK-cpp/
