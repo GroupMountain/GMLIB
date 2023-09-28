@@ -4,7 +4,7 @@
 [![Latest Tag](https://img.shields.io/github/v/tag/GroupMountain/GMLIB?label=LATEST%20TAG&style=for-the-badge)
 ![GitHub Releases (by Asset)](https://img.shields.io/github/downloads/GroupMountain/GMLIB/latest/total?style=for-the-badge)
 ](https://github.com/GroupMountain/GMLIB/releases/latest)  
-QQ交流群: [114514（待更新，请勿点击）](https://jq.qq.com/?_wv=1027&k=zeUbrETH)
+QQ交流群: [931689535](https://jq.qq.com/?_wv=1027&k=zeUbrETH)
 
 `GMLIB` 是一个基于 `LiteLoaderBDS` 加载器的第三方插件前置库。为基岩版专用服务器 —— `Bedrock Dedicated Server`（以下简称**
 BDS**）的插件开发者提供更多的API，一定程度上弥补了 `LiteLoaderBDS` 的API缺口。
