@@ -1,6 +1,5 @@
 # GMLIB
 ## Group Mountain Library
-[![status](https://img.shields.io/github/actions/workflow/status/GroupMountain/GMLIB/build.yml?style=for-the-badge)](https://github.com/GroupMountain/GMLIB/actions)
 [![Latest Tag](https://img.shields.io/github/v/tag/GroupMountain/GMLIB?label=LATEST%20TAG&style=for-the-badge)
 ![GitHub Releases (by Asset)](https://img.shields.io/github/downloads/GroupMountain/GMLIB/latest/total?style=for-the-badge)
 ](https://github.com/GroupMountain/GMLIB/releases/latest)  
