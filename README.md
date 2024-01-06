@@ -8,7 +8,8 @@ QQ交流群: 931689535
 `GMLIB` 是一个基于 `LeviLamina` 加载器的第三方插件前置库。为基岩版专用服务器 —— `Bedrock Dedicated Server`（以下简称**
 BDS**）的插件开发者提供更多的API，一定程度上弥补了 `LeviLamina` 的API缺口。
 
-`GMLIB` 封装了大量 `LeviLamina` 未直接提供的API，为插件开发者提供了更多便利。插件开发者可以直接调用 `GMLIB` 中的现成API，而非重复造轮子。
+`GMLIB` 封装了大量 `LeviLamina` 未直接提供的API，为插件开发者提供了更多便利。
+插件开发者可以直接调用 `GMLIB` 中的现成API，而非重复造轮子。
 
 `GMLIB` 的API支持使用头文件和动态链接库导入（原生插件），也支持使用 `LeviLamina` 提供的RemoteCall API进行导入。
 对于调用 `GMLIB API` 的代码来说，如果GMLIB没有API改动，仅需本项目在底层适配更新即可，给插件开发与维护带来了很大的便利。
@@ -23,13 +24,13 @@ BDS**）的插件开发者提供更多的API，一定程度上弥补了 `LeviLam
 > 正在开发的测试版API随时可能进行调整，在正式发布之前不保证API向后兼容性，请谨慎使用
 
 #### 原生插件（`C++`）
-1. 正常创建 `LiteLoaderBDS` 插件项目。
+1. 正常创建 `LeviLamina` 插件项目。
 2. 添加头文件
 3. 添加动态库
 4. 编写你的代码...
 
 #### 其它插件（`C++`、`JavaScript(Node.js)`、`Lua` 、`Python`、`.NET`）
-1. 正常创建 `LiteLoaderBDS` 插件项目。
+1. 正常创建 `LeviLamina` 插件项目。
 2. 使用 `RemoteCall API` 导入你需要使用的API。
 3. 编写你的代码。
 
@@ -61,9 +62,8 @@ BDS**）的插件开发者提供更多的API，一定程度上弥补了 `LeviLam
 4. 如果你想要分发，转载本前置，你必须得到我们的授权！
 
 ## 🏆 致谢
-- 感谢 `LiteLoaderBDS` 的开源代码和底层API，极大的简化了前置插件开发难度。
+- 感谢 `LeviLamina` 的开源代码和底层API，极大的简化了前置插件开发难度。
 - 感谢 `GroupMountain` 开发成员对项目的巨大贡献
-- 感谢整个BDS开源社区为相关技术发展添砖加瓦
 
 ## 💎 重要贡献者
 - [@Tsubasa6848](https://github.com/Tsubasa6848)
