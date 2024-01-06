@@ -1,0 +1,55 @@
+name: 漏洞反馈
+description: 如果插件存在漏洞，请在此反馈。
+title: "标题：漏洞反馈"
+labels: ["type: bug"]
+body:
+  - type: textarea
+    attributes:
+      label: 简述漏洞
+      description: 发生了什么问题？
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 复现方案
+      description: 给出具体的复现步骤。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 预期结果
+      description: 简述预期结果是什么！
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 日志或截图
+      description: 如果有条件请给出日志或截图来帮助我们修复漏洞
+    
+  - type: input
+    attributes:
+      label: 操作系统
+      description: 你所使用的操作系统 (例如： Windows 10)
+
+  - type: input
+    attributes:
+      label: BDS 版本
+      description: 你所使用的 BDS 版本 (例如： 1.20.32.1)
+
+  - type: input
+    attributes:
+      label: LeviLamina 版本
+      description: 你所使用的 LeviLamina 版本 (例如： 1.0.0)
+
+  - type: input
+    attributes:
+      label: GMLIB 版本
+      description: 你所使用的 GMLIB 版本 (例如： 1.0.0)
+
+  - type: textarea
+    attributes:
+      label: 更多信息
+      description: 如果还有更多相关信息，请提供。
