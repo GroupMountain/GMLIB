@@ -1,0 +1,23 @@
+{
+    "format_version": 2,
+    "tooth": "github.com/GroupMountain/GMLIB",
+    "version": "0.3.0",
+    "info": {
+        "name": "GMLIB",
+        "description": "Free Camera Plugin on Bedrock Dedicated Server",
+        "author": "Tsubasa6848",
+        "source": "github.com/GroupMountain/GMLIB",
+        "tags": [
+            "LeveLamina",
+            "GMLIB"
+        ]
+    },
+    "files": {
+        "place": [
+            {
+                "src": "GMLIB/*",
+                "dest": "plugins/GMLIB"
+            }
+        ]
+    }
+}
