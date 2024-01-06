@@ -1,0 +1,28 @@
+name: 新功能建议
+description: 如果需要更多API，请给出你的建议。
+title: "标题：新功能建议"
+labels: ["type: enhancement"]
+body:
+  - type: textarea
+    attributes:
+      label: 您的新功能建议是否与问题有关？请描述。
+      description: 简述你在开发过程中遇到了什么问题？
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 你想要的接口
+      description: 简述你需要的API，以及具体功能。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 你曾经使用过的替代方案
+      description: 简述你对于此问题使用过的替代方案。
+
+  - type: textarea
+    attributes:
+      label: 更多信息
+      description: 给出更多信息帮助我们解决你的问题。
