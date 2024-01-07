@@ -9,10 +9,11 @@ target("GMLIB") -- Change this to your plugin name.
         "/utf-8"
     )
     add_files(
-        "src/**.cpp"
+        "src/**.cc"
     )
     add_includedirs(
-        "src"
+        "src",
+        "include"
     )
     add_packages(
         "levilamina"
