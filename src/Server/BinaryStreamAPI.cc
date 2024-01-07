@@ -1,5 +1,5 @@
-#include "Global.h"
 #include "GMLIB/Server/BinaryStreamAPI.h"
+#include "Global.h"
 
 namespace GMLIB::BinaryStreamHelper {
 
@@ -31,9 +31,7 @@ inline void writeAbilitiesData(BinaryStream& bs, struct SerializedAbilitiesData 
     (abilitiesData, bs);
 }
 
-inline void writeSkin(BinaryStream& bs, class SerializedSkin const& serializedSkin) {
-    serializedSkin.write(bs);
-}
+inline void writeSkin(BinaryStream& bs, class SerializedSkin const& serializedSkin) { serializedSkin.write(bs); }
 
 inline void writeActorLink(BinaryStream& bs, struct ActorLink const& link) {
     bs.writeVarInt64(link.A.id, 0, 0);
@@ -43,4 +41,4 @@ inline void writeActorLink(BinaryStream& bs, struct ActorLink const& link) {
     bs.writeBool(link.mPassengerInitiated, 0, 0);
 }
 
-} // namespace BinaryStreamHelper
+} // namespace GMLIB::BinaryStreamHelper

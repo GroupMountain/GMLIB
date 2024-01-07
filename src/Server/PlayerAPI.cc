@@ -1,13 +1,13 @@
 #include "Global.h"
-#include <GMLIB/Server/PlayerAPI.h>
 #include <GMLIB/Server/CompoundTagAPI.h>
+#include <GMLIB/Server/PlayerAPI.h>
 
 namespace GMLIB::PlayerAPI {
 
 void forEachUuid(bool includeSelfSignedId, std::function<void(std::string_view const& uuid)> callback) {
     static size_t count;
     count = 0;
-    Global<DBStorage>->forEachKeyWithPrefix(
+    GMLIB::Global<DBStorage>->forEachKeyWithPrefix(
         "player_",
         DBHelpers::Category::Player,
         [&callback, includeSelfSignedId](std::string_view key_left, std::string_view data) {
@@ -133,7 +133,7 @@ bool setPlayerNbtTags(mce::UUID const& uuid, CompoundTag* nbt, const std::vector
 bool deletePlayerNbt(std::string serverid) {
     if (serverid.empty()) {
         return false;
-    }    
+    }
     if (GMLIB::Global<DBStorage>->hasKey(serverid, DBHelpers::Category::Player)) {
         GMLIB::Global<DBStorage>->deleteData(serverid, DBHelpers::Category::Player);
         return true;
@@ -142,3 +142,18 @@ bool deletePlayerNbt(std::string serverid) {
 }
 
 } // namespace GMLIB::PlayerAPI
+
+LL_AUTO_TYPED_INSTANCE_HOOK(
+    DBStorageInitEvent,
+    ll::memory::HookPriority::Normal,
+    DBStorage,
+    "??0DBStorage@@QEAA@UDBStorageConfig@@V?$not_null@V?$NonOwnerPointer@VLevelDbEnv@@@Bedrock@@@gsl@@@Z",
+    DBStorage*,
+    struct DBStorageConfig&                        a1,
+    Bedrock::NotNullNonOwnerPtr<class LevelDbEnv>& a2
+) {
+    auto res                 = origin(a1, a2);
+    GMLIB::Global<DBStorage> = this;
+    logger.warn("init");
+    return res;
+}

@@ -1,5 +1,10 @@
 #pragma once
 #include "GMLIB/DllExport.h"
+#include <mc/world/actor/Actor.h>
+#include <mc/deps/core/utility/BinaryStream.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/player/SerializedSkin.h>
+#include <mc/network/packet/ActorLink.h>
 
 namespace GMLIB::BinaryStreamHelper {
 

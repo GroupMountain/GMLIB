@@ -63,7 +63,7 @@ void forceEnableAbilityCommand() { mRegAbilityCommand = true; }
 
 void addEducationEditionRequired() { mEducationEditionEnabled = true; }
 
-} // namespace LevelAPI
+} // namespace GMLIB::LevelAPI
 
 LL_AUTO_INSTANCE_HOOK(
     Achieve1,
