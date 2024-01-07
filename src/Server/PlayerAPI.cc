@@ -106,6 +106,10 @@ bool setPlayerNbt(mce::UUID const& uuid, CompoundTag* nbt) {
     return setOfflineNbt(serverid, nbt);
 }
 
+bool setPlayerNbt(Player* pl, CompoundTag* nbt) {
+    return GMLIB::CompoundTagHelper::setNbt(pl, nbt);
+}
+
 void setNbtTags(CompoundTag* originNbt, CompoundTag* dataNbt, const std::vector<std::string>& tags) {
     for (auto tag : tags) {
         if (dataNbt->get(tag)) {
@@ -154,6 +158,5 @@ LL_AUTO_TYPED_INSTANCE_HOOK(
 ) {
     auto res                 = origin(a1, a2);
     GMLIB::Global<DBStorage> = this;
-    logger.warn("init");
     return res;
 }

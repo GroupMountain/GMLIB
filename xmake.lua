@@ -11,6 +11,9 @@ target("GMLIB") -- Change this to your plugin name.
     add_files(
         "src/**.cc"
     )
+    add_defines(
+        "GMLIB_EXPORTS"
+    )
     add_includedirs(
         "src",
         "include"
