@@ -3,7 +3,7 @@
 #include "GMLIB/Server/LevelAPI.h"
 #include <corecrt_math_defines.h>
 
-namespace SpawnerAPI {
+namespace GMLIB::SpawnerAPI {
 
 bool setProjectile(Actor* owner, Actor* proj, float speed, float offset) {
 	try {

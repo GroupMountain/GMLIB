@@ -1,7 +1,7 @@
 #include "GMLIB/Server/LevelAPI.h"
 #include "Global.h"
 
-namespace LevelAPI {
+namespace GMLIB::LevelAPI {
 
 bool                          mFakeLevelNameEnabled     = false;
 std::string                   mFakeLevelName            = "";
@@ -71,7 +71,7 @@ LL_AUTO_INSTANCE_HOOK(
     "?achievementsWillBeDisabledOnLoad@LevelData@@QEBA_NXZ",
     bool
 ) {
-    if (LevelAPI::mForceAchievementsEnabled) {
+    if (GMLIB::LevelAPI::mForceAchievementsEnabled) {
         return false;
     }
     return origin();
@@ -83,7 +83,7 @@ LL_AUTO_INSTANCE_HOOK(
     "?hasAchievementsDisabled@LevelData@@QEBA_NXZ",
     bool
 ) {
-    if (LevelAPI::mForceAchievementsEnabled) {
+    if (GMLIB::LevelAPI::mForceAchievementsEnabled) {
         return false;
     }
     return origin();
@@ -95,15 +95,15 @@ LL_AUTO_INSTANCE_HOOK(
     "?allowCheats@PropertiesSettings@@QEBA_NXZ",
     bool
 ) {
-    if (LevelAPI::mForceAchievementsEnabled) {
+    if (GMLIB::LevelAPI::mForceAchievementsEnabled) {
         return false;
     }
     return origin();
 }
 
 void initExperiments(LevelData* leveldat) {
-    if (LevelAPI::mExperimentsRequireList.size() >= 1) {
-        for (auto exp : LevelAPI::mExperimentsRequireList) {
+    if (GMLIB::LevelAPI::mExperimentsRequireList.size() >= 1) {
+        for (auto exp : GMLIB::LevelAPI::mExperimentsRequireList) {
             leveldat->getExperiments().setExperimentEnabled(exp, true);
         }
     }
@@ -123,7 +123,7 @@ LL_AUTO_INSTANCE_HOOK(
 }
 
 LL_AUTO_INSTANCE_HOOK(isTrustSkin, ll::memory::HookPriority::Normal, "?isTrustedSkin@SerializedSkin@@QEBA_NXZ", bool) {
-    if (LevelAPI::mForceTrustSkin) {
+    if (GMLIB::LevelAPI::mForceTrustSkin) {
         return true;
     }
     return origin();
@@ -137,7 +137,7 @@ LL_AUTO_TYPED_INSTANCE_HOOK(
     void,
     class BinaryStream& stream
 ) {
-    if (LevelAPI::mCoResourcePack) {
+    if (GMLIB::LevelAPI::mCoResourcePack) {
         this->mData.mResourcePackRequired    = true;
         this->mData.mForceServerPacksEnabled = false;
     }
@@ -152,11 +152,11 @@ LL_AUTO_TYPED_INSTANCE_HOOK(
     void,
     class BinaryStream& stream
 ) {
-    if (LevelAPI::mFakeSeedEnabled) {
-        this->mSettings.mSeed.mValue = LevelAPI::mFakeSeed;
+    if (GMLIB::LevelAPI::mFakeSeedEnabled) {
+        this->mSettings.mSeed.mValue = GMLIB::LevelAPI::mFakeSeed;
     }
-    if (LevelAPI::mFakeLevelNameEnabled) {
-        this->mLevelName = LevelAPI::mFakeLevelName;
+    if (GMLIB::LevelAPI::mFakeLevelNameEnabled) {
+        this->mLevelName = GMLIB::LevelAPI::mFakeLevelName;
     }
     return origin(stream);
 }
@@ -169,11 +169,11 @@ LL_AUTO_TYPED_INSTANCE_HOOK(
     bool
 ) {
     auto res = origin();
-    if (LevelAPI::mEducationEditionEnabled) {
+    if (GMLIB::LevelAPI::mEducationEditionEnabled) {
         this->setEducationFeaturesEnabled(true);
         return true;
     }
-    LevelAPI::mEducationEditionEnabled = res;
+    GMLIB::LevelAPI::mEducationEditionEnabled = res;
     return res;
 }
 
@@ -185,7 +185,7 @@ LL_AUTO_TYPED_INSTANCE_HOOK(
     void,
     class CommandRegistry& registry
 ) {
-    if (LevelAPI::mEducationEditionEnabled == false && LevelAPI::mRegAbilityCommand == true) {
+    if (GMLIB::LevelAPI::mEducationEditionEnabled == false && GMLIB::LevelAPI::mRegAbilityCommand == true) {
         AbilityCommand::setup(registry);
     }
     return origin(registry);

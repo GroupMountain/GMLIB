@@ -1,15 +1,13 @@
 #pragma once
+#include "GMLIB/DllExport.h"
 #include <mc/world/actor/Actor.h>
 
-#ifdef GMLIB_EXPORTS
-#define GMLIB_SpawnerAPI __declspec(dllexport)
-#else
-#define GMLIB_SpawnerAPI __declspec(dllimport)
-#endif
+namespace GMLIB::SpawnerAPI {
 
-namespace SpawnerAPI
-{
-    GMLIB_SpawnerAPI Actor* spawnEntity(Vec3 pos, int dimid, std::string name, Actor* owner = nullptr);
-    GMLIB_SpawnerAPI Actor* shootProjectile(Actor* owner, std::string name, float speed, float offset = 0);
-    GMLIB_SpawnerAPI bool throwEntity(Actor* owner, Actor* actor, float speed, float offset = 0);
-} // namespace SpawnerAPI
+GMLIB_API Actor* spawnEntity(Vec3 pos, int dimid, std::string name, Actor* owner = nullptr);
+
+GMLIB_API Actor* shootProjectile(Actor* owner, std::string name, float speed, float offset = 0);
+
+GMLIB_API bool throwEntity(Actor* owner, Actor* actor, float speed, float offset = 0);
+
+} // namespace GMLIB::SpawnerAPI
