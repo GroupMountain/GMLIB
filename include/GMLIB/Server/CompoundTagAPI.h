@@ -12,7 +12,7 @@ std::unique_ptr<CompoundTag> getNbt(ItemStack* item);
 
 bool setNbt(Actor* ac, CompoundTag* nbt);
 bool setNbt(Player* pl, CompoundTag* nbt);
-bool setNbt(BlockActor* blac, CompoundTag* nbt);
-bool setNbt(ItemStack* item, CompoundTag* nbt);
+void setNbt(BlockActor* blac, CompoundTag* nbt);
+void setNbt(ItemStack* item, CompoundTag* nbt);
 
 } // namespace GMLIB::CompoundTagHelper

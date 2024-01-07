@@ -31,12 +31,12 @@ bool setNbt(Player* pl, CompoundTag* nbt) {
     return pl->load(*nbt, *getDataLoadHelper());
 }
 
-bool setNbt(BlockActor* blac, CompoundTag* nbt) {
-    return blac->load(*nbt, *getDataLoadHelper());
+void setNbt(BlockActor* blac, CompoundTag* nbt) {
+    blac->load(*ll::service::bedrock::getLevel(), *nbt, *getDataLoadHelper());
 }
 
-bool setNbt(ItemStack* item, CompoundTag* nbt) {
-    return item->load(*nbt, *getDataLoadHelper());
+void setNbt(ItemStack* item, CompoundTag* nbt) {
+    item->load(*nbt);
 }
 
 } // namespace GMLIB::CompoundTagHelper
