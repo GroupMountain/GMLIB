@@ -1,4 +1,5 @@
 #include "Global.h"
+#include <GMLIB/Server/FakeListAPI.h>
 namespace GMLIB::FakeListAPI{
     extern std::unordered_map<std::string, PlayerListEntry> fakeListMap;
 

@@ -1,5 +1,5 @@
 #include "Global.h"
-
+#include <GMLIB/Server/FakeListAPI.h>
 LoopbackPacketSender* pktSender;
 namespace GMLIB::FakeListAPI{
     std::unordered_set<std::string> invisibleMap;
