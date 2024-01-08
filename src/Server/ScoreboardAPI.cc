@@ -12,6 +12,24 @@ Objective* addObjective(std::string& name, std::string& displayName) {
 
 Objective* getObjective(std::string& name) { return getServerScoreboard()->getObjective(name); }
 
+bool removeObjective(Objective* objective) { return getServerScoreboard()->removeObjective(objective); }
+
+bool removeObjective(std::string& objective) {
+    auto obj = getObjective(objective);
+    if (obj) {
+        return getServerScoreboard()->removeObjective(obj);
+    }
+    return false;
+}
+
+std::vector<Objective const*> getObjectives() {
+    return getServerScoreboard()->getObjectives();
+}
+
+std::vector<std::string> getObjectiveNames() {
+    return getServerScoreboard()->getObjectiveNames();
+}
+
 std::optional<int> getScore(Objective* objective, ScoreboardId& scoreboardId) {
     if (objective && scoreboardId.isValid()) {
         auto scores = getServerScoreboard()->getIdScores(scoreboardId);
@@ -24,7 +42,7 @@ std::optional<int> getScore(Objective* objective, ScoreboardId& scoreboardId) {
     return {};
 }
 
-ScoreboardId getOfflinePlayerScoreboardId(std::string& serverid) {
+ScoreboardId getPlayerScoreboardId(std::string& serverid) {
     auto nbt = GMLIB::PlayerAPI::getOfflineNbt(serverid);
     if (nbt && nbt->contains("UniqueID")) {
         auto auid = nbt->getInt64("UniqueID");
@@ -34,9 +52,9 @@ ScoreboardId getOfflinePlayerScoreboardId(std::string& serverid) {
     return ScoreboardId::INVALID;
 }
 
-ScoreboardId getOfflinePlayerScoreboardId(mce::UUID& uuid) {
+ScoreboardId getPlayerScoreboardId(mce::UUID& uuid) {
     auto serverid = GMLIB::PlayerAPI::getServeridFromUuid(uuid);
-    return getOfflinePlayerScoreboardId(serverid);
+    return getPlayerScoreboardId(serverid);
 }
 
 std::optional<int> getScore(std::string& objective, std::string& name) {
@@ -58,13 +76,13 @@ std::optional<int> getScore(std::string& objective, Actor* ac) {
 }
 
 std::optional<int> getPlayerScore(std::string& objective, std::string& serverid) {
-    auto id  = getOfflinePlayerScoreboardId(serverid);
+    auto id  = getPlayerScoreboardId(serverid);
     auto obj = getServerScoreboard()->getObjective(objective);
     return getScore(obj, id);
 }
 
 std::optional<int> getPlayerScore(std::string& objective, mce::UUID& uuid) {
-    auto id  = getOfflinePlayerScoreboardId(uuid);
+    auto id  = getPlayerScoreboardId(uuid);
     auto obj = getServerScoreboard()->getObjective(objective);
     return getScore(obj, id);
 }
@@ -100,13 +118,13 @@ std::optional<int> setScore(std::string& objective, Actor* ac, int value, Player
 
 std::optional<int>
 setPlayerScore(std::string& objective, std::string& serverid, int value, PlayerScoreSetFunction action) {
-    auto id  = getOfflinePlayerScoreboardId(serverid);
+    auto id  = getPlayerScoreboardId(serverid);
     auto obj = getServerScoreboard()->getObjective(objective);
     return setScore(obj, id, value, action);
 }
 
 std::optional<int> setPlayerScore(std::string& objective, mce::UUID& uuid, int value, PlayerScoreSetFunction action) {
-    auto id  = getOfflinePlayerScoreboardId(uuid);
+    auto id  = getPlayerScoreboardId(uuid);
     auto obj = getServerScoreboard()->getObjective(objective);
     return setScore(obj, id, value, action);
 }
@@ -114,5 +132,83 @@ std::optional<int> setPlayerScore(std::string& objective, mce::UUID& uuid, int v
 std::optional<int> setPlayerScore(std::string& objective, Player* pl, int value, PlayerScoreSetFunction action) {
     return setScore(objective, pl, value, action);
 }
+
+bool resetScore(Objective* objective, ScoreboardId& scoreboardId) {
+    if (objective && scoreboardId.isValid()) {
+        return getServerScoreboard()->resetPlayerScore(scoreboardId, *objective);
+    }
+    return false;
+}
+
+bool resetScore(std::string& objective, std::string& name) {
+    auto id  = getServerScoreboard()->getScoreboardId(name);
+    auto obj = getServerScoreboard()->getObjective(objective);
+    return resetScore(obj, id);
+}
+
+bool resetScore(std::string& objective, Player* pl) {
+    auto id  = getServerScoreboard()->getScoreboardId(*pl);
+    auto obj = getServerScoreboard()->getObjective(objective);
+    return resetScore(obj, id);
+}
+
+bool resetScore(std::string& objective, Actor* ac) {
+    auto id  = getServerScoreboard()->getScoreboardId(*ac);
+    auto obj = getServerScoreboard()->getObjective(objective);
+    return resetScore(obj, id);
+}
+
+bool resetPlayerScore(std::string& objective, std::string& serverid) {
+    auto id  = getPlayerScoreboardId(serverid);
+    auto obj = getServerScoreboard()->getObjective(objective);
+    return resetScore(obj, id);
+}
+
+bool resetPlayerScore(std::string& objective, mce::UUID& uuid) {
+    auto id  = getPlayerScoreboardId(uuid);
+    auto obj = getServerScoreboard()->getObjective(objective);
+    return resetScore(obj, id);
+}
+
+bool resetPlayerScore(std::string& objective, Player* pl) {
+    return resetScore(objective, pl);
+}
+
+bool resetAllScores(ScoreboardId& scoreboardId) {
+    if (scoreboardId.isValid()) {
+        getServerScoreboard()->resetPlayerScore(scoreboardId);
+        return true;
+    }
+    return false;
+}
+
+bool resetAllScores(std::string& name) {
+    auto id  = getServerScoreboard()->getScoreboardId(name);
+    return resetAllScores(id);
+}
+
+bool resetAllScores(Player* pl) {
+    auto id  = getServerScoreboard()->getScoreboardId(*pl);
+    return resetAllScores(id);
+}
+
+bool resetAllScores(Actor* ac) {
+    auto id  = getServerScoreboard()->getScoreboardId(*ac);
+    return resetAllScores(id);
+}
+
+bool resetPlayerAllScores(std::string& serverid) {
+    auto id  = getPlayerScoreboardId(serverid);
+    return resetAllScores(id);
+}
+
+bool resetPlayerAllScores(mce::UUID& uuid) {
+    auto id  = getPlayerScoreboardId(uuid);
+    return resetAllScores(id);
+}
+
+bool resetPlayerAllScores(Player* pl) { return resetAllScores(pl); }
+
+std::vector<ScoreboardId> getAllScoreboardIds() { return getServerScoreboard()->getTrackedIds(); }
 
 } // namespace GMLIB::ScoreboardAPI
