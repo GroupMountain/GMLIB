@@ -1,8 +1,8 @@
 #include "Global.h"
-#include <GMLIB/Mod/Recipe/CustomFurnaceRecipe.h>
-#include <GMLIB/Mod/Recipe/CustomShapedRecipe.h>
-#include <GMLIB/Mod/Recipe/CustomShapelessRecipe.h>
-#include <GMLIB/Mod/Recipe/CustomShulkerBoxRecipe.h>
+#include "GMLIB/Mod/Recipe/CustomFurnaceRecipe.h"
+#include "GMLIB/Mod/Recipe/CustomShapedRecipe.h"
+#include "GMLIB/Mod/Recipe/CustomShapelessRecipe.h"
+#include "GMLIB/Mod/Recipe/CustomShulkerBoxRecipe.h"
 
 using RecipesMap = std::map<
     class HashedString,
@@ -24,7 +24,7 @@ namespace GMLIB::Mod::Recipe {
 
 template <class T>
     requires std::is_base_of<CustomShapedRecipe, T>::value
-void registerShapedRecipe() {
+GMLIB_API void registerShapedRecipe() {
     SharedPtr<T> ShapedRecipe = SharedPtr<T>::makeShared();
     return ll::service::bedrock::getLevel()->getRecipes().addShapedRecipe(
         ShapedRecipe->getRecipeId(),
@@ -41,7 +41,7 @@ void registerShapedRecipe() {
 
 template <class T>
     requires std::is_base_of<CustomShapelessRecipe, T>::value
-void registerShapelessRecipe() {
+GMLIB_API void registerShapelessRecipe() {
     SharedPtr<T> ShapelessRecipe = SharedPtr<T>::makeShared();
     return ll::service::bedrock::getLevel()->getRecipes().addShapelessRecipe(
         ShapelessRecipe->getRecipeId(),
@@ -57,7 +57,7 @@ void registerShapelessRecipe() {
 
 template <class T>
     requires std::is_base_of<CustomFurnaceRecipe, T>::value
-void registerFurnaceRecipe() {
+GMLIB_API void registerFurnaceRecipe() {
     SharedPtr<T> FurnaceRecipe = SharedPtr<T>::makeShared();
     return ll::service::bedrock::getLevel()->getRecipes().addFurnaceRecipeAuxData(
         FurnaceRecipe->getInput(),
@@ -68,7 +68,7 @@ void registerFurnaceRecipe() {
 
 template <class T>
     requires std::is_base_of<CustomShulkerBoxRecipe, T>::value
-void registerShulkerBoxRecipe() {
+GMLIB_API void registerShulkerBoxRecipe() {
     SharedPtr<T> ShulkerBoxRecipe = SharedPtr<T>::makeShared();
     return ll::service::bedrock::getLevel()->getRecipes().addShulkerBoxRecipe(
         ShulkerBoxRecipe->getRecipeId(),
@@ -80,7 +80,7 @@ void registerShulkerBoxRecipe() {
     );
 }
 
-bool unregisterRecipe(std::string recipe_id) {
+GMLIB_API bool unregisterRecipe(std::string recipe_id) {
     auto AllRecipes = ll::service::bedrock::getLevel()->getRecipes().getRecipesAllTags();
     for (auto& recipe : AllRecipes) {
         if (recipe.second.count(recipe_id)) {

@@ -14,52 +14,52 @@ bool                          mForceAchievementsEnabled = false;
 bool                          mRegAbilityCommand        = false;
 bool                          mEducationEditionEnabled  = false;
 
-BlockSource* getBlockSource(DimensionType dimid) {
+GMLIB_API BlockSource* getBlockSource(DimensionType dimid) {
     return &ll::service::getLevel()->getDimension(dimid)->getBlockSourceFromMainChunkSource();
 }
 
-std::vector<Actor*> getAllEntities() { return ll::service::getLevel()->getRuntimeActorList(); }
+GMLIB_API std::vector<Actor*> getAllEntities() { return ll::service::getLevel()->getRuntimeActorList(); }
 
-std::string getLevelName() { return ll::service::getLevel()->getLevelData().getLevelName(); }
+GMLIB_API std::string getLevelName() { return ll::service::getLevel()->getLevelData().getLevelName(); }
 
-void setLevelName(std::string newName) { ll::service::getLevel()->getLevelData().setLevelName(newName); }
+GMLIB_API void setLevelName(std::string newName) { ll::service::getLevel()->getLevelData().setLevelName(newName); }
 
-void setFakeLevelName(std::string fakeName) {
+GMLIB_API void setFakeLevelName(std::string fakeName) {
     mFakeLevelNameEnabled = true;
     mFakeLevelName        = fakeName;
 }
 
-int64_t getSeed() { return ll::service::getLevel()->getLevelData().getSeed().mValue; }
+GMLIB_API int64_t getSeed() { return ll::service::getLevel()->getLevelData().getSeed().mValue; }
 
-void setFakeSeed(int64_t fakeSeed) {
+GMLIB_API void setFakeSeed(int64_t fakeSeed) {
     mFakeSeedEnabled = true;
     mFakeSeed        = fakeSeed;
 }
 
-void setCoResourcePack(bool enabled) { mCoResourcePack = enabled; }
+GMLIB_API void setCoResourcePack(bool enabled) { mCoResourcePack = enabled; }
 
-void setForceTrustSkin(bool enabled) { mForceTrustSkin = enabled; }
+GMLIB_API void setForceTrustSkin(bool enabled) { mForceTrustSkin = enabled; }
 
-bool getExperimentEnabled(::AllExperiments experiment, bool enabled) {
+GMLIB_API bool getExperimentEnabled(::AllExperiments experiment, bool enabled) {
     return ll::service::getLevel()->getLevelData().getExperiments().isExperimentEnabled(experiment);
 }
 
-void setExperimentEnabled(::AllExperiments experiment, bool enabled) {
+GMLIB_API void setExperimentEnabled(::AllExperiments experiment, bool enabled) {
     ll::service::getLevel()->getLevelData().getExperiments().setExperimentEnabled(experiment, enabled);
 }
 
-void addExperimentsRequire(::AllExperiments experiment) {
+GMLIB_API void addExperimentsRequire(::AllExperiments experiment) {
     if (std::find(mExperimentsRequireList.begin(), mExperimentsRequireList.end(), experiment)
         == mExperimentsRequireList.end()) {
         mExperimentsRequireList.push_back(experiment);
     }
 }
 
-void setForceAchievementsEnabled() { mForceAchievementsEnabled = true; }
+GMLIB_API void setForceAchievementsEnabled() { mForceAchievementsEnabled = true; }
 
-void forceEnableAbilityCommand() { mRegAbilityCommand = true; }
+GMLIB_API void forceEnableAbilityCommand() { mRegAbilityCommand = true; }
 
-void addEducationEditionRequired() { mEducationEditionEnabled = true; }
+GMLIB_API void addEducationEditionRequired() { mEducationEditionEnabled = true; }
 
 } // namespace GMLIB::LevelAPI
 
