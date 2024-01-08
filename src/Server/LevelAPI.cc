@@ -15,9 +15,7 @@ bool                          mRegAbilityCommand        = false;
 bool                          mEducationEditionEnabled  = false;
 
 BlockSource* getBlockSource(DimensionType dimid) {
-    auto  dim = ll::service::getLevel()->getDimension(dimid).mHandle.lock().get();
-    auto& bs  = dim->getBlockSourceFromMainChunkSource();
-    return &bs;
+    return &ll::service::getLevel()->getDimension(dimid)->getBlockSourceFromMainChunkSource();
 }
 
 std::vector<Actor*> getAllEntities() { return ll::service::getLevel()->getRuntimeActorList(); }
