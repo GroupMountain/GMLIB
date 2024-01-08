@@ -15,3 +15,4 @@ build/
 /.xmake
 /CMakeLists.txt
 /bin
+.cache/clangd/index

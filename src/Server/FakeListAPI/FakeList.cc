@@ -8,7 +8,7 @@ inline void sendAddFakeListPacket(PlayerListEntry entry) {
     pkt.emplace(std::move(entry));
     pktSender->send(pkt);
     }
-    inline void sendRemoveFakeListPacket(std::vector<PlayerListEntry> entries) {
+inline void sendRemoveFakeListPacket(std::vector<PlayerListEntry> entries) {
     auto pkt = PlayerListPacket();
     pkt.mAction = PlayerListPacketType::Remove;
     for(auto &entry:entries){
@@ -59,12 +59,19 @@ void removeAllFakeLists() {
     sendRemoveFakeListPacket(entries);
     fakeListMap.clear();
 }
-bool CheckFakeListExists(std::string name,std::string xuid){
+bool checkFakeListExists(std::string name,std::string xuid){
     for (auto fakeListPair : fakeListMap) {
         if (fakeListPair.first == name && fakeListPair.second.mXuid == xuid) {
             return true;
         }
     }
     return false;
+}
+std::vector<std::string> externAllFakeListName() {
+    std::vector<std::string> allFakeLists;
+    for (auto fakeListPair : fakeListMap) {
+        allFakeLists.push_back(fakeListPair.first);
+    }
+    return allFakeLists;
 }
 }
