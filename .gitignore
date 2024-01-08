@@ -12,3 +12,6 @@ _deps
 CMakeSettings.json
 .vscode/
 build/
+/.xmake
+/CMakeLists.txt
+/bin
