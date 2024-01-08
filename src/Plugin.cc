@@ -1,5 +1,7 @@
 #include "Global.h"
 #include "include_all.h"
+#include "ll/api/service/Bedrock.h"
+#include "mc/server/LoopbackPacketSender.h"
 
 ll::Logger logger("GMLIB");
 
@@ -26,6 +28,7 @@ Plugin::Plugin(ll::plugin::NativePlugin& self) : mSelf(self) {
 bool Plugin::enable() {
     // Codes
     initExperiments(&ll::service::bedrock::getLevel()->getLevelData());
+    pktSender=(LoopbackPacketSender*)ll::service::getLevel()->getPacketSender();
     return true;
 }
 
