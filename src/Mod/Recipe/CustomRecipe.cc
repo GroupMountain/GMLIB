@@ -85,12 +85,12 @@ bool unregisterRecipe(std::string recipe_id) {
     for (auto& recipe : AllRecipes) {
         if (recipe.second.count(recipe_id)) {
             recipe.second.erase(recipe_id);
-            CraftingDataPacket::prepareFromRecipes(ll::service::bedrock::getLevel()->getRecipes(), true)->sendToClients();
+            CraftingDataPacket::prepareFromRecipes(ll::service::bedrock::getLevel()->getRecipes(), true)
+                ->sendToClients();
             return true;
         }
     }
     return false;
 }
-
 
 } // namespace GMLIB::Mod::Recipe

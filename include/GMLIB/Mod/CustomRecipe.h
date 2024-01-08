@@ -30,7 +30,7 @@ namespace RapidRecipeLoader {
 GMLIB_API bool loadJsonRecipe(std::string json);
 GMLIB_API bool loadJsonRecipe(nlohmann::json json);
 
-GMLIB_API void addFurnaceRecipe(
+GMLIB_API bool registerFurnaceRecipe(
     std::string                                              recipeId,
     RecipeIngredient                                         input,
     RecipeIngredient                                         output,
@@ -38,10 +38,10 @@ GMLIB_API void addFurnaceRecipe(
     std::variant<std::string, std::vector<RecipeIngredient>> unlock
 );
 
-GMLIB_API void
-addBrewingMixRecipe(std::string recipeId, std::string input, std::string output, RecipeIngredient reagent);
+GMLIB_API bool
+registerBrewingMixRecipe(std::string recipeId, std::string input, std::string output, RecipeIngredient reagent);
 
-GMLIB_API void addBrewingContainerRecipe(
+GMLIB_API bool registerBrewingContainerRecipe(
     std::string                                              recipeId,
     RecipeIngredient                                         input,
     RecipeIngredient                                         output,
@@ -49,7 +49,7 @@ GMLIB_API void addBrewingContainerRecipe(
     std::variant<std::string, std::vector<RecipeIngredient>> unlock
 );
 
-GMLIB_API void addSmithingTransformRecipe(
+GMLIB_API bool registerSmithingTransformRecipe(
     std::string recipeId,
     std::string smithingTemplate,
     std::string base,
@@ -57,10 +57,10 @@ GMLIB_API void addSmithingTransformRecipe(
     std::string result
 );
 
-GMLIB_API void
-addSmithingTrimRecipe(std::string recipeId, std::string smithingTemplate, std::string base, std::string addition);
+GMLIB_API bool
+registerSmithingTrimRecipe(std::string recipeId, std::string smithingTemplate, std::string base, std::string addition);
 
-GMLIB_API void addStoneCutterRecipe(
+GMLIB_API bool registerStoneCutterRecipe(
     std::string                                              recipeId,
     RecipeIngredient                                         input,
     RecipeIngredient                                         output,
@@ -68,7 +68,7 @@ GMLIB_API void addStoneCutterRecipe(
     int                                                      priority
 );
 
-GMLIB_API void addCustomCraftingTagRecipe(
+GMLIB_API bool registerCustomCraftingTagRecipe(
     std::string                                              recipeId,
     std::vector<RecipeIngredient>                            ingredients,
     RecipeIngredient                                         result,
@@ -77,7 +77,7 @@ GMLIB_API void addCustomCraftingTagRecipe(
     int                                                      priority
 );
 
-GMLIB_API void addShapelessCraftingTableRecipe(
+GMLIB_API bool registerShapelessCraftingTableRecipe(
     std::string                                              recipeId,
     std::vector<RecipeIngredient>                            ingredients,
     RecipeIngredient                                         result,
@@ -85,7 +85,7 @@ GMLIB_API void addShapelessCraftingTableRecipe(
     int                                                      priority
 );
 
-GMLIB_API void addShapedCraftingTableRecipe(
+GMLIB_API bool registerShapedCraftingTableRecipe(
     std::string                                              recipeId,
     std::vector<std::string>                                 shape,
     std::vector<std::pair<std::string, RecipeIngredient>>    ingredients,
@@ -94,13 +94,48 @@ GMLIB_API void addShapedCraftingTableRecipe(
     int                                                      priority
 );
 
-GMLIB_API void addShapedCraftingTableRecipe(
+GMLIB_API bool registerShapedCraftingTableRecipe(
     std::string                   recipeId,
     std::vector<std::string>      shape,
     std::vector<RecipeIngredient> ingredients,
     RecipeIngredient              result,
     std::vector<RecipeIngredient> unlock,
     int                           priority
+);
+
+GMLIB_API void registerLockedShapelessCraftingTableRecipe(
+    std::string                recipe_id,
+    std::vector<Recipes::Type> ingredients,
+    ItemStack*                 result,
+    int                        priority
+);
+
+GMLIB_API void
+registerLockedStoneCutterRecipe(std::string recipe_id, Recipes::Type input, ItemStack* result, int priority);
+
+GMLIB_API void registerLockedShapelessCraftingTableRecipe(
+    std::string              recipe_id,
+    std::vector<std::string> ingredients,
+    std::string              result,
+    int                      count,
+    int                      priority
+);
+
+GMLIB_API void registerLockedShapedCraftingTableRecipe(
+    std::string                recipe_id,
+    std::vector<std::string>   shape,
+    std::vector<Recipes::Type> ingredients,
+    ItemStack*                 result,
+    int                        priority
+);
+
+GMLIB_API void registerLockedShapedCraftingTableRecipe(
+    std::string              recipe_id,
+    std::vector<std::string> shape,
+    std::vector<std::string> ingredients,
+    std::string              result,
+    int                      count,
+    int                      priority
 );
 
 } // namespace RapidRecipeLoader

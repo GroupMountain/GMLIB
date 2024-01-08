@@ -7,10 +7,10 @@ Json::Reader reader;
 namespace GMLIB::Mod::Recipe::RapidRecipeLoader {
 
 // 加载json格式
-void addRecipeJson(std::string ricipe_type, std::string json_string) {
+bool addRecipeJson(std::string ricipe_type, std::string json_string) {
     Json::Value value;
     reader.parse(json_string, value, true);
-    ll::service::bedrock::getLevel()
+    return ll::service::bedrock::getLevel()
         ->getRecipes()
         .loadRecipe({ricipe_type, value}, SemVersion(1, 20, 50, "", ""), SemVersion(1, 20, 50, "", ""), true);
 }
@@ -29,7 +29,7 @@ bool loadJsonRecipe(nlohmann::json json) {
     return loadJsonRecipe(json_string);
 }
 
-void addFurnaceRecipe(
+bool registerFurnaceRecipe(
     std::string                                              recipe_id,
     RecipeIngredient                                         input,
     RecipeIngredient                                         output,
@@ -53,10 +53,10 @@ void addFurnaceRecipe(
             });
         }
     }
-    addRecipeJson("recipe_furnace", recipe_json.dump(4));
+    return addRecipeJson("recipe_furnace", recipe_json.dump(4));
 }
 
-void addBrewingMixRecipe(std::string recipe_id, std::string input, std::string output, RecipeIngredient reagent) {
+bool registerBrewingMixRecipe(std::string recipe_id, std::string input, std::string output, RecipeIngredient reagent) {
     nlohmann::ordered_json recipe_json = {
         {"description", {{"identifier", recipe_id}}                                       },
         {"tags",        {"brewing_stand"}                                                 },
@@ -64,10 +64,10 @@ void addBrewingMixRecipe(std::string recipe_id, std::string input, std::string o
         {"reagent",     {{"item", reagent.getFullName()}, {"data", reagent.getAuxValue()}}},
         {"output",      output                                                            }
     };
-    addRecipeJson("recipe_brewing_mix", recipe_json.dump(4));
+    return addRecipeJson("recipe_brewing_mix", recipe_json.dump(4));
 }
 
-void addBrewingContainerRecipe(
+bool registerBrewingContainerRecipe(
     std::string                                              recipe_id,
     RecipeIngredient                                         input,
     RecipeIngredient                                         output,
@@ -92,10 +92,10 @@ void addBrewingContainerRecipe(
             });
         }
     }
-    addRecipeJson("recipe_brewing_container", recipe_json.dump(4));
+    return addRecipeJson("recipe_brewing_container", recipe_json.dump(4));
 }
 
-void addSmithingTransformRecipe(
+bool registerSmithingTransformRecipe(
     std::string recipe_id,
     std::string smithing_template,
     std::string base,
@@ -110,10 +110,10 @@ void addSmithingTransformRecipe(
         {"addition",    addition                   },
         {"result",      result                     }
     };
-    addRecipeJson("recipe_smithing_transform", recipe_json.dump(4));
+    return addRecipeJson("recipe_smithing_transform", recipe_json.dump(4));
 }
 
-void addSmithingTrimRecipe(
+bool registerSmithingTrimRecipe(
     std::string recipe_id,
     std::string smithing_template,
     std::string base,
@@ -126,10 +126,10 @@ void addSmithingTrimRecipe(
         {"base",        base                       },
         {"addition",    addition                   },
     };
-    addRecipeJson("recipe_smithing_trim", recipe_json.dump(4));
+    return addRecipeJson("recipe_smithing_trim", recipe_json.dump(4));
 }
 
-void addStoneCutterRecipe(
+bool registerStoneCutterRecipe(
     std::string                                              recipe_id,
     RecipeIngredient                                         input,
     RecipeIngredient                                         output,
@@ -154,10 +154,10 @@ void addStoneCutterRecipe(
             });
         }
     }
-    addRecipeJson("recipe_shapeless", recipe_json.dump(4));
+    return addRecipeJson("recipe_shapeless", recipe_json.dump(4));
 }
 
-void addCustomCraftingTagRecipe(
+bool registerCustomCraftingTagRecipe(
     std::string                                              recipe_id,
     std::vector<RecipeIngredient>                            ingredients,
     RecipeIngredient                                         result,
@@ -166,8 +166,7 @@ void addCustomCraftingTagRecipe(
     int                                                      priority
 ) {
     if (ingredients.size() == 0) {
-        logger.error("[Recipe] Fail to Register Recipe, id '{}'", recipe_id);
-        return;
+        return false;
     }
     nlohmann::ordered_json recipe_json = {
         {"description", {{"identifier", recipe_id}}                                                                       },
@@ -191,20 +190,20 @@ void addCustomCraftingTagRecipe(
             });
         }
     }
-    addRecipeJson("recipe_shapeless", recipe_json.dump(4));
+    return addRecipeJson("recipe_shapeless", recipe_json.dump(4));
 }
 
-void addShapelessCraftingTableRecipe(
+bool registerShapelessCraftingTableRecipe(
     std::string                                              recipe_id,
     std::vector<RecipeIngredient>                            ingredients,
     RecipeIngredient                                         result,
     std::variant<std::string, std::vector<RecipeIngredient>> unlock,
     int                                                      priority
 ) {
-    addCustomCraftingTagRecipe(recipe_id, ingredients, result, {"crafting_table"}, unlock, priority);
+    return registerCustomCraftingTagRecipe(recipe_id, ingredients, result, {"crafting_table"}, unlock, priority);
 }
 
-void addShapedCraftingTableRecipe(
+bool registerShapedCraftingTableRecipe(
     std::string                                              recipe_id,
     std::vector<std::string>                                 shape,
     std::vector<std::pair<std::string, RecipeIngredient>>    ingredients,
@@ -213,8 +212,7 @@ void addShapedCraftingTableRecipe(
     int                                                      priority
 ) {
     if (ingredients.size() == 0) {
-        logger.error("[Recipe] Fail to Register Recipe, id '{}'", recipe_id);
-        return;
+        return false;
     }
     nlohmann::ordered_json recipe_json = {
         {"description", {{"identifier", recipe_id}}                                                                       },
@@ -239,10 +237,10 @@ void addShapedCraftingTableRecipe(
             {"data", ingredient.second.getAuxValue()}
         };
     }
-    addRecipeJson("recipe_shaped", recipe_json.dump(4));
+    return addRecipeJson("recipe_shaped", recipe_json.dump(4));
 }
 
-void addShapedCraftingTableRecipe(
+bool registerShapedCraftingTableRecipe(
     std::string                   recipe_id,
     std::vector<std::string>      shape,
     std::vector<RecipeIngredient> ingredients,
@@ -251,8 +249,7 @@ void addShapedCraftingTableRecipe(
     int                           priority
 ) {
     if (ingredients.size() == 0) {
-        logger.error("[Recipe] Fail to Register Recipe, id '{}'", recipe_id);
-        return;
+        return false;
     }
     std::vector<std::pair<std::string, RecipeIngredient>> types;
     for (int i = 0; i <= ingredients.size() - 1; i++) {
@@ -260,7 +257,125 @@ void addShapedCraftingTableRecipe(
         auto key    = std::string(1, letter);
         types.push_back({key, ingredients[i]});
     }
-    addShapedCraftingTableRecipe(recipe_id, shape, types, result, unlock, priority);
+    return registerShapedCraftingTableRecipe(recipe_id, shape, types, result, unlock, priority);
+}
+
+void registerLockedShapelessCraftingTableRecipe(
+    std::string                recipe_id,
+    std::vector<Recipes::Type> ingredients,
+    ItemStack*                 result,
+    int                        priority
+) {
+    if (ingredients.size() == 0 || ingredients.size() >= 10) {
+        return;
+    }
+    ll::service::bedrock::getLevel()->getRecipes().addShapelessRecipe(
+        recipe_id,
+        ItemInstance(*result),
+        ingredients,
+        {"crafting_table"},
+        priority,
+        nullptr,
+        {},
+        SemVersion(1, 20, 50, "", "")
+    );
+}
+
+void registerLockedStoneCutterRecipe(std::string recipe_id, Recipes::Type input, ItemStack* result, int priority) {
+    std::vector<Recipes::Type> types = {input};
+    ll::service::bedrock::getLevel()->getRecipes().addShapelessRecipe(
+        recipe_id,
+        ItemInstance(*result),
+        types,
+        {"stonecutter"},
+        priority,
+        nullptr,
+        {},
+        SemVersion(1, 20, 50, "", "")
+    );
+}
+
+void registerLockedShapelessCraftingTableRecipe(
+    std::string              recipe_id,
+    std::vector<std::string> ingredients,
+    std::string              result,
+    int                      count,
+    int                      priority
+) {
+    if (ingredients.size() == 0 || ingredients.size() >= 10) {
+        return;
+    }
+    auto                       item  = ItemStack{result, count};
+    std::vector<Recipes::Type> types = {};
+    for (int i = 0; i <= ingredients.size() - 1; i++) {
+        auto key  = (char)(i + 65);
+        auto type = Recipes::Type(ingredients[i], key, 1, 0);
+        types.push_back(type);
+    }
+    ll::service::bedrock::getLevel()->getRecipes().addShapelessRecipe(
+        recipe_id,
+        ItemInstance(item),
+        types,
+        {"crafting_table"},
+        priority,
+        nullptr,
+        {},
+        SemVersion(1, 20, 50, "", "")
+    );
+}
+
+void registerLockedShapedCraftingTableRecipe(
+    std::string                recipe_id,
+    std::vector<std::string>   shape,
+    std::vector<Recipes::Type> ingredients,
+    ItemStack*                 result,
+    int                        priority
+) {
+    if (ingredients.size() == 0 || ingredients.size() >= 10) {
+        return;
+    }
+    ll::service::bedrock::getLevel()->getRecipes().addShapedRecipe(
+        recipe_id,
+        ItemInstance(*result),
+        shape,
+        ingredients,
+        {"crafting_table"},
+        priority,
+        nullptr,
+        {},
+        SemVersion(1, 20, 50, "", "")
+    );
+}
+
+void registerLockedShapedCraftingTableRecipe(
+    std::string              recipe_id,
+    std::vector<std::string> shape,
+    std::vector<std::string> ingredients,
+    std::string              result,
+    int                      count,
+    int                      priority
+) {
+    if (ingredients.size() == 0 || ingredients.size() >= 10) {
+        return;
+    }
+    auto                       item  = ItemStack{result, count};
+    std::vector<Recipes::Type> types = {};
+    for (int i = 0; i <= ingredients.size() - 1; i++) {
+        auto key  = (char)(i + 65);
+        auto type = Recipes::Type(ingredients[i], key, 1, 0);
+        types.push_back(type);
+    }
+    ll::service::bedrock::getLevel()->getRecipes().addShapedRecipe(
+        recipe_id,
+        ItemInstance(item),
+        shape,
+        types,
+        {"crafting_table"},
+        priority,
+        nullptr,
+        {},
+        SemVersion(1, 20, 50, "", "")
+    );
 }
 
 } // namespace GMLIB::Mod::Recipe::RapidRecipeLoader
