@@ -5,7 +5,7 @@
 
 namespace GMLIB::SpawnerAPI {
 
-bool setProjectile(Actor* owner, Actor* proj, float speed, float offset) {
+GMLIB_API bool setProjectile(Actor* owner, Actor* proj, float speed, float offset) {
     try {
         proj->setOwner(owner->getOrCreateUniqueID());
         proj->teleport(owner->getPosition(), owner->getDimensionId());
@@ -31,7 +31,7 @@ bool setProjectile(Actor* owner, Actor* proj, float speed, float offset) {
     }
 }
 
-Actor* spawnEntity(Vec3 pos, int dimid, std::string name, Actor* owner) {
+GMLIB_API Actor* spawnEntity(Vec3 pos, int dimid, std::string name, Actor* owner) {
     try {
         ll::utils::string_utils::replaceAll(name, "minecraft:", "");
         ActorDefinitionIdentifier identifier(name);
@@ -43,14 +43,14 @@ Actor* spawnEntity(Vec3 pos, int dimid, std::string name, Actor* owner) {
     }
 }
 
-bool throwEntity(Actor* owner, Actor* proj, float speed, float offset) {
+GMLIB_API bool throwEntity(Actor* owner, Actor* proj, float speed, float offset) {
     if (owner && proj && speed > 0) {
         return setProjectile(owner, proj, speed, offset);
     }
     return false;
 }
 
-Actor* shootProjectile(Actor* owner, std::string name, float speed, float offset) {
+GMLIB_API Actor* shootProjectile(Actor* owner, std::string name, float speed, float offset) {
     if (owner) {
         auto proj = SpawnerAPI::spawnEntity(owner->getPosition(), owner->getDimensionId(), name, owner);
         if (proj) {

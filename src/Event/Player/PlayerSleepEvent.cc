@@ -1,23 +1,23 @@
 #include "Global.h"
-#include <GMLIB/Event/Player/PlayerSleepEvent.h>
+#include "GMLIB/Event/Player/PlayerSleepEvent.h"
 
 
 namespace GMLIB::Event::PlayerEvent {
 
-Player const&   PlayerStartSleepBeforeEvent::getPlayer() const { return mPlayer; }
-BlockPos const& PlayerStartSleepBeforeEvent::getPosition() const { return mBlockPos; }
+GMLIB_API Player const&   PlayerStartSleepBeforeEvent::getPlayer() const { return mPlayer; }
+GMLIB_API BlockPos const& PlayerStartSleepBeforeEvent::getPosition() const { return mBlockPos; }
 
-Player const&   PlayerStartSleepAfterEvent::getPlayer() const { return mPlayer; }
-BlockPos const& PlayerStartSleepAfterEvent::getPosition() const { return mBlockPos; }
-bool const&     PlayerStartSleepAfterEvent::getResult() const { return mResult; }
+GMLIB_API Player const&   PlayerStartSleepAfterEvent::getPlayer() const { return mPlayer; }
+GMLIB_API BlockPos const& PlayerStartSleepAfterEvent::getPosition() const { return mBlockPos; }
+GMLIB_API bool const&     PlayerStartSleepAfterEvent::getResult() const { return mResult; }
 
-Player const& PlayerStopSleepBeforeEvent::getPlayer() const { return mPlayer; }
-bool const&   PlayerStopSleepBeforeEvent::isForcefulWakeUp() const { return mForcefulWakeUp; }
-bool const&   PlayerStopSleepBeforeEvent::isUpdateLevelList() const { return mUpdateLevelList; }
+GMLIB_API Player const& PlayerStopSleepBeforeEvent::getPlayer() const { return mPlayer; }
+GMLIB_API bool const&   PlayerStopSleepBeforeEvent::isForcefulWakeUp() const { return mForcefulWakeUp; }
+GMLIB_API bool const&   PlayerStopSleepBeforeEvent::isUpdateLevelList() const { return mUpdateLevelList; }
 
-Player const& PlayerStopSleepAfterEvent::getPlayer() const { return mPlayer; }
-bool const&   PlayerStopSleepAfterEvent::isForcefulWakeUp() const { return mForcefulWakeUp; }
-bool const&   PlayerStopSleepAfterEvent::isUpdateLevelList() const { return mUpdateLevelList; }
+GMLIB_API Player const& PlayerStopSleepAfterEvent::getPlayer() const { return mPlayer; }
+GMLIB_API bool const&   PlayerStopSleepAfterEvent::isForcefulWakeUp() const { return mForcefulWakeUp; }
+GMLIB_API bool const&   PlayerStopSleepAfterEvent::isUpdateLevelList() const { return mUpdateLevelList; }
 
 LL_AUTO_TYPED_INSTANCE_HOOK(
     PlayerStartSleepEventHook,

@@ -1,5 +1,8 @@
 {
     "name": "GMLIB",
     "entry": "GMLIB.dll",
-    "type": "native"
+    "type": "native",
+    "author": "GroupMountain",
+    "description": "Group Mountain Library",
+    "version": "2.0.0-PreRelease2"
 }

@@ -3,12 +3,12 @@
 
 namespace GMLIB::BinaryStreamHelper {
 
-inline void writeCompoundTag(BinaryStream& bs, CompoundTag& tag) {
+GMLIB_API inline void writeCompoundTag(BinaryStream& bs, CompoundTag& tag) {
     LL_SYMBOL_CALL("?write@?$serialize@VCompoundTag@@@@SAXAEBVCompoundTag@@AEAVBinaryStream@@@Z", void, CompoundTag&, BinaryStream&)
     (tag, bs);
 }
 
-inline void writeDataItem(BinaryStream& bs, std::vector<std::unique_ptr<class DataItem>> const& dataItems) {
+GMLIB_API inline void writeDataItem(BinaryStream& bs, std::vector<std::unique_ptr<class DataItem>> const& dataItems) {
     LL_SYMBOL_CALL("?write@?$serialize@V?$vector@V?$unique_ptr@VDataItem@@U?$default_delete@VDataItem@@@std@@@std@@V?$"
                 "allocator@V?$unique_ptr@VDataItem@@U?$default_delete@VDataItem@@@std@@@std@@@2@@std@@@@SAXAEBV?$"
                 "vector@V?$unique_ptr@VDataItem@@U?$default_delete@VDataItem@@@std@@@std@@V?$allocator@V?$unique_ptr@"
@@ -16,24 +16,24 @@ inline void writeDataItem(BinaryStream& bs, std::vector<std::unique_ptr<class Da
     (dataItems, bs);
 }
 
-inline void writeNetworkItemStackDescriptor(BinaryStream& bs, class NetworkItemStackDescriptor const& netItem) {
+GMLIB_API inline void writeNetworkItemStackDescriptor(BinaryStream& bs, class NetworkItemStackDescriptor const& netItem) {
     netItem.write(bs);
 }
 
-inline void writeVec3(BinaryStream& bs, Vec3 vec3) {
+GMLIB_API inline void writeVec3(BinaryStream& bs, Vec3 vec3) {
     bs.writeFloat(vec3.x, 0, 0);
     bs.writeFloat(vec3.y, 0, 0);
     bs.writeFloat(vec3.z, 0, 0);
 }
 
-inline void writeAbilitiesData(BinaryStream& bs, struct SerializedAbilitiesData const& abilitiesData) {
+GMLIB_API inline void writeAbilitiesData(BinaryStream& bs, struct SerializedAbilitiesData const& abilitiesData) {
     LL_SYMBOL_CALL("?write@?$serialize@USerializedAbilitiesData@@@@SAXAEBUSerializedAbilitiesData@@AEAVBinaryStream@@@Z", void, struct SerializedAbilitiesData const&, BinaryStream&)
     (abilitiesData, bs);
 }
 
-inline void writeSkin(BinaryStream& bs, class SerializedSkin const& serializedSkin) { serializedSkin.write(bs); }
+GMLIB_API inline void writeSkin(BinaryStream& bs, class SerializedSkin const& serializedSkin) { serializedSkin.write(bs); }
 
-inline void writeActorLink(BinaryStream& bs, struct ActorLink const& link) {
+GMLIB_API inline void writeActorLink(BinaryStream& bs, struct ActorLink const& link) {
     bs.writeVarInt64(link.A.id, 0, 0);
     bs.writeVarInt64(link.B.id, 0, 0);
     bs.writeUnsignedChar((uchar)link.type, 0, 0);

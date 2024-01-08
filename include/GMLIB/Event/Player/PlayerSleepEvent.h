@@ -1,5 +1,5 @@
 #pragma once
-#include <GMLIB/DllExport.h>
+#include "GMLIB/DllExport.h"
 #include <ll/api/event/player/PlayerEvent.h>
 
 namespace GMLIB::Event::PlayerEvent {
