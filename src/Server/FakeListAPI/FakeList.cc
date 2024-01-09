@@ -60,6 +60,12 @@ void removeAllFakeLists() {
     sendRemoveFakeListPacket(entries);
     fakeListMap.clear();
 }
+PlayerListEntry getFakeList(std::string name){
+    return fakeListMap[name];
+}
+bool checkFakeListExistsName(std::string name){
+    return fakeListMap.count(name);
+}
 bool checkFakeListExists(std::string name,std::string xuid){
     for (auto fakeListPair : fakeListMap) {
         if (fakeListPair.first == name && fakeListPair.second.mXuid == xuid) {

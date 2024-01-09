@@ -10,6 +10,10 @@ namespace GMLIB::FakeListAPI{
 
     GMLIB_API void removeAllFakeLists();
 
+    GMLIB_API PlayerListEntry getFakeList(std::string name);
+
+    GMLIB_API bool checkFakeListExistsName(std::string name);
+
     GMLIB_API bool checkFakeListExists(std::string name,std::string xuid);
 
     GMLIB_API std::vector<std::string> externAllFakeListName();
@@ -18,5 +22,5 @@ namespace GMLIB::FakeListAPI{
 
     GMLIB_API void setSimulatedPlayerOpt(bool set);
 
-    //GMLIB_API
+    GMLIB_API bool getSimulatedPlayerOpt();
 }

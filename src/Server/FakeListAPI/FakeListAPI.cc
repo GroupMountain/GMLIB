@@ -14,6 +14,11 @@ namespace GMLIB::FakeListAPI{
     void setSimulatedPlayerOpt(bool set) {
         simulatedPlayerOptList = set;
     }
+
+    bool getSimulatedPlayerOpt(){
+        return simulatedPlayerOptList;
+    }
+    
     LL_AUTO_TYPED_INSTANCE_HOOK(
     sendAllFakeListPlayerJoin,
     HookPriority::Normal,
