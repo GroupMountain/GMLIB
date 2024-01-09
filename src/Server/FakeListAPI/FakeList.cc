@@ -26,7 +26,7 @@ bool addFakeList(PlayerListEntry entry){
     sendAddFakeListPacket(entry);
     return true;
 }
-bool addFakeList(std::string name, std::string xuid, long long auid = -1, mce::UUID UUID = mce::UUID()){
+bool addFakeList(std::string name, std::string xuid, long long auid, mce::UUID UUID){
     if(name.empty()){
         return false;
     }

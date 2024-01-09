@@ -11,7 +11,9 @@ namespace GMLIB::FakeListAPI{
     extern void sendAddFakeListPacket(PlayerListEntry entry);
     extern void sendRemoveFakeListPacket(std::vector<PlayerListEntry> entries);
 
-
+    void setSimulatedPlayerOpt(bool set) {
+        simulatedPlayerOptList = set;
+    }
     LL_AUTO_TYPED_INSTANCE_HOOK(
     sendAllFakeListPlayerJoin,
     HookPriority::Normal,
