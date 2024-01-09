@@ -28,7 +28,6 @@ Plugin::Plugin(ll::plugin::NativePlugin& self) : mSelf(self) {
 bool Plugin::enable() {
     // Codes
     initExperiments(&ll::service::bedrock::getLevel()->getLevelData());
-    pktSender=(LoopbackPacketSender*)ll::service::getLevel()->getPacketSender();
     return true;
 }
 

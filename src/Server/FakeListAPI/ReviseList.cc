@@ -1,19 +1,23 @@
 #include "Global.h"
 #include <GMLIB/Server/FakeListAPI.h>
+
 namespace GMLIB::FakeListAPI {
-extern std::unordered_map<std::string, std::string>     replaceMap;
-extern std::unordered_map<std::string, PlayerListEntry> fakeListMap;
-extern bool                                             simulatedPlayerOptList;
-extern void                                             sendAddFakeListPacket(PlayerListEntry entry);
-void replaceList(bool add, std::string oldName, std::string newName) {
+
+extern std::unordered_map<std::string, std::string>     mReplaceMap;
+extern std::unordered_map<std::string, PlayerListEntry> mFakeListMap;
+extern bool                                             mSimulatedPlayerOptList;
+
+extern void sendAddFakeListPacket(PlayerListEntry entry);
+
+GMLIB_API void replaceList(bool add, std::string oldName, std::string newName) {
     if (add) {
-        replaceMap[oldName] = newName;
+        mReplaceMap[oldName] = newName;
     } else {
-        replaceMap.erase(oldName);
+        mReplaceMap.erase(oldName);
     }
     ll::service::getLevel()->forEachPlayer([add, oldName, newName](Player& pl) -> bool {
         if (pl.getRealName() == oldName) {
-            if (pl.isSimulatedPlayer() && !simulatedPlayerOptList) {
+            if (pl.isSimulatedPlayer() && !mSimulatedPlayerOptList) {
                 return true;
             }
             auto entry = PlayerListEntry(pl);
@@ -21,8 +25,9 @@ void replaceList(bool add, std::string oldName, std::string newName) {
         }
         return true;
     });
-    if (fakeListMap.count(oldName)) {
-        sendAddFakeListPacket(fakeListMap[oldName]);
+    if (mFakeListMap.count(oldName)) {
+        sendAddFakeListPacket(mFakeListMap[oldName]);
     }
 }
+
 } // namespace GMLIB::FakeListAPI

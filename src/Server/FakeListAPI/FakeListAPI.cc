@@ -2,18 +2,17 @@
 #include "ll/api/service/Bedrock.h"
 #include "mc/world/actor/player/PlayerListPacketType.h"
 #include <GMLIB/Server/FakeListAPI.h>
-LoopbackPacketSender* pktSender;
+
 namespace GMLIB::FakeListAPI {
-std::unordered_set<std::string>                  invisibleMap;
-std::unordered_map<std::string, std::string>     replaceMap;
-std::unordered_map<std::string, PlayerListEntry> fakeListMap;
-bool                                             simulatedPlayerOptList = false;
-extern void                                      sendAddFakeListPacket(PlayerListEntry entry);
-extern void                                      sendRemoveFakeListPacket(std::vector<PlayerListEntry> entries);
 
-void setSimulatedPlayerOpt(bool set) { simulatedPlayerOptList = set; }
+std::unordered_set<std::string>                  mInvisibleMap;
+std::unordered_map<std::string, std::string>     mReplaceMap;
+std::unordered_map<std::string, PlayerListEntry> mFakeListMap;
+bool                                             mSimulatedPlayerOptList = false;
 
-bool getSimulatedPlayerOpt() { return simulatedPlayerOptList; }
+GMLIB_API void setSimulatedPlayerOpt(bool set) { mSimulatedPlayerOptList = set; }
+
+GMLIB_API bool getSimulatedPlayerOpt() { return mSimulatedPlayerOptList; }
 
 LL_AUTO_TYPED_INSTANCE_HOOK(
     sendAllFakeListPlayerJoin,
@@ -24,20 +23,21 @@ LL_AUTO_TYPED_INSTANCE_HOOK(
 ) {
     auto pkt    = PlayerListPacket();
     pkt.mAction = PlayerListPacketType::Add;
-    for (auto fakeListPair : fakeListMap) {
+    for (auto fakeListPair : mFakeListMap) {
         pkt.emplace(std::move(fakeListPair.second));
     }
     BinaryStream bs; // DefaultPermission
     bs.writeUnsignedInt64(-1, 0, 0);
-    bs.writeUnsignedChar((unsigned char)1, 0, 0);
-    bs.writeUnsignedChar((unsigned char)CommandPermissionLevel::Any, 0, 0);
+    bs.writeUnsignedChar((uchar)1, 0, 0);
+    bs.writeUnsignedChar((uchar)CommandPermissionLevel::Any, 0, 0);
     bs.writeUnsignedVarInt(0, 0, 0);
     auto ablitiespkt = MinecraftPackets::createPacket(MinecraftPacketIds::UpdateAbilitiesPacket);
     ablitiespkt->read(bs);
-    pktSender->sendToClient(this->getNetworkIdentifier(), pkt, this->getClientSubId());
-    pktSender->sendToClient(this->getNetworkIdentifier(), *ablitiespkt, this->getClientSubId());
+    pkt.sendToClients();
+    ablitiespkt->sendToClients();
     return origin();
 }
+
 LL_AUTO_TYPED_INSTANCE_HOOK(
     fakeListEmplace,
     HookPriority::Normal,
@@ -47,17 +47,17 @@ LL_AUTO_TYPED_INSTANCE_HOOK(
     PlayerListEntry& entry
 ) {
     if (this->mAction == PlayerListPacketType::Add) {
-        if (invisibleMap.count(entry.mName)) {
+        if (mInvisibleMap.count(entry.mName)) {
             return;
         }
-        if (simulatedPlayerOptList) {
+        if (mSimulatedPlayerOptList) {
             // auto pl=ll::service::getLevel()->getPlayer(entry.mId); 安全性检测?
             if (ll::service::getLevel()->getPlayer(entry.mId)->isSimulatedPlayer()) {
                 return;
             }
         }
-        if (replaceMap.count(entry.mName)) {
-            entry.mName = replaceMap[entry.mName];
+        if (mReplaceMap.count(entry.mName)) {
+            entry.mName = mReplaceMap[entry.mName];
         }
     }
     return origin(entry);

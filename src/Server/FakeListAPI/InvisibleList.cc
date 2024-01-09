@@ -1,3 +1,6 @@
 #include "Global.h"
 #include <GMLIB/Server/FakeListAPI.h>
-namespace GMLIB::FakeListAPI::InvisibleList {}
+
+namespace GMLIB::FakeListAPI::InvisibleList {
+    
+}

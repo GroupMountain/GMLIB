@@ -4,7 +4,6 @@
 
 extern ll::Logger logger;
 extern void       initExperiments(LevelData* leveldat);
-extern LoopbackPacketSender* pktSender;
 
 class DBStorage;
 
