@@ -12,4 +12,8 @@ namespace GMLIB {
 template <typename T>
 inline T* Global = nullptr;
 
+extern void loadLib();
+extern void enableLib();
+extern void disableLib();
+
 } // namespace GMLIB

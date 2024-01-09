@@ -1,5 +1,5 @@
 #pragma once
-#include "GMLIB/DllExport.h"
+#include "GMLIB/GMLIB.h"
 #include "GMLIB/Mod/Recipe/CustomFurnaceRecipe.h"
 #include "GMLIB/Mod/Recipe/CustomShapedRecipe.h"
 #include "GMLIB/Mod/Recipe/CustomShapelessRecipe.h"

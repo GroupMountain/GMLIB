@@ -1,5 +1,5 @@
 #pragma once
-#include "GMLIB/DllExport.h"
+#include "GMLIB/GMLIB.h"
 #include <mc/world/actor/Actor.h>
 #include <mc/deps/core/utility/BinaryStream.h>
 #include <mc/nbt/CompoundTag.h>

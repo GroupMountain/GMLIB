@@ -1,5 +1,5 @@
 #pragma once
-#include "GMLIB/DllExport.h"
+#include "GMLIB/GMLIB.h"
 
 namespace GMLIB::PlayerAPI {
 

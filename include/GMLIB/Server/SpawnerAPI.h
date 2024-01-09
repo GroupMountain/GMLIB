@@ -1,5 +1,5 @@
 #pragma once
-#include "GMLIB/DllExport.h"
+#include "GMLIB/GMLIB.h"
 #include <mc/world/actor/Actor.h>
 
 namespace GMLIB::SpawnerAPI {
