@@ -99,8 +99,6 @@ LL_AUTO_INSTANCE_HOOK(
     return origin();
 }
 
-#include <mc/world/redstone/circuit/components/CircuitComponentList.h>
-
 void initExperiments(LevelData* leveldat) {
     if (GMLIB::LevelAPI::mExperimentsRequireList.size() >= 1) {
         for (auto exp : GMLIB::LevelAPI::mExperimentsRequireList) {
