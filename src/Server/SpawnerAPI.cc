@@ -5,7 +5,7 @@
 
 namespace GMLIB::SpawnerAPI {
 
-GMLIB_API bool setProjectile(Actor* owner, Actor* proj, float speed, float offset) {
+bool setProjectile(Actor* owner, Actor* proj, float speed, float offset) {
     try {
         proj->setOwner(owner->getOrCreateUniqueID());
         proj->teleport(owner->getPosition(), owner->getDimensionId());
@@ -38,6 +38,43 @@ GMLIB_API Actor* spawnEntity(Vec3 pos, int dimid, std::string name, Actor* owner
         auto                      bs = GMLIB::LevelAPI::getBlockSource(dimid);
         Actor* ac = ll::service::getLevel()->getSpawner().spawnProjectile(*bs, identifier, owner, pos, Vec3::ZERO);
         return ac;
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+GMLIB_API Mob*
+spawnMob(Vec3 pos, int dimid, std::string name, Actor* owner, bool naturalSpawn, bool surface, bool fromSpawner) {
+    try {
+        ll::utils::string_utils::replaceAll(name, "minecraft:", "");
+        ActorDefinitionIdentifier identifier(name);
+        auto                      bs = GMLIB::LevelAPI::getBlockSource(dimid);
+
+        Mob* mob = ll::service::getLevel()
+                       ->getSpawner()
+                       .spawnMob(*bs, identifier, owner, pos, naturalSpawn, surface, fromSpawner);
+        return mob;
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+GMLIB_API ItemActor* spawnItem(Vec3 pos, int dimid, ItemStack& item, Actor* owner) {
+    try {
+        auto       bs        = GMLIB::LevelAPI::getBlockSource(dimid);
+        ItemActor* itemActor = ll::service::getLevel()->getSpawner().spawnItem(*bs, item, owner, pos, 0);
+        return itemActor;
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+GMLIB_API ItemActor* spawnItem(Vec3 pos, int dimid, std::string name, int count, int aux, Actor* owner) {
+    try {
+        auto       bs        = GMLIB::LevelAPI::getBlockSource(dimid);
+        auto       item      = ItemStack{name, count, aux};
+        ItemActor* itemActor = ll::service::getLevel()->getSpawner().spawnItem(*bs, item, owner, pos, 0);
+        return itemActor;
     } catch (...) {
         return nullptr;
     }

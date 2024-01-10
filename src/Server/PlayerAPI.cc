@@ -138,12 +138,6 @@ GMLIB_API bool deletePlayerNbt(std::string& serverid) {
     return false;
 }
 
-int64_t nextRandomId() {
-    std::random_device seed;
-    std::mt19937_64    generate(seed());
-    return generate();
-}
-
 GMLIB_API void setSidebar(
     Player*                                         player,
     const std::string&                              title,
@@ -155,8 +149,9 @@ GMLIB_API void setSidebar(
 
     std::vector<ScorePacketInfo> info;
     for (auto& key : data) {
-        ScoreboardId id   = ScoreboardId(nextRandomId());
-        auto         text = key.first;
+        auto         idValue = ll::service::getLevel()->getRandom().nextLong();
+        ScoreboardId id      = ScoreboardId(idValue);
+        auto         text    = key.first;
         auto         scoreInfo =
             ScorePacketInfo(&id, "GMLIB_SIDEBAR_API", IdentityDefinition::Type::FakePlayer, key.second, text);
         info.emplace_back(scoreInfo);
@@ -172,6 +167,50 @@ GMLIB_API void setSidebar(
 
 GMLIB_API void removeSidebar(Player* player) {
     SetDisplayObjectivePacket("sidebar", "", "", "dummy", ObjectiveSortOrder::Ascending).sendTo(*player);
+}
+
+GMLIB_API void setHealth(Player* player, int value) {
+    player->getMutableAttribute(SharedAttributes::HEALTH)->setCurrentValue(value);
+}
+
+GMLIB_API void setMaxHealth(Player* player, int value) {
+    player->getMutableAttribute(SharedAttributes::HEALTH)->setMaxValue(value);
+}
+
+GMLIB_API void setAbsorption(Player* player, int value) {
+    player->getMutableAttribute(SharedAttributes::ABSORPTION)->setCurrentValue(value);
+}
+
+GMLIB_API void setMaxAbsorption(Player* player, int value) {
+    player->getMutableAttribute(SharedAttributes::ABSORPTION)->setMaxValue(value);
+}
+
+GMLIB_API void setAttackDamage(Player* player, int value) {
+    player->getMutableAttribute(SharedAttributes::ATTACK_DAMAGE)->setCurrentValue(value);
+}
+
+GMLIB_API void setJumpStrength(Player* player, int value) {
+    player->getMutableAttribute(SharedAttributes::JUMP_STRENGTH)->setCurrentValue(value);
+}
+
+GMLIB_API void setKnockbackResistance(Player* player, int value) {
+    player->getMutableAttribute(SharedAttributes::KNOCKBACK_RESISTANCE)->setCurrentValue(value);
+}
+
+GMLIB_API void setLavaMovementSpeed(Player* player, int value) {
+    player->getMutableAttribute(SharedAttributes::LAVA_MOVEMENT_SPEED)->setCurrentValue(value);
+}
+
+GMLIB_API void setLuck(Player* player, int value) {
+    player->getMutableAttribute(SharedAttributes::LUCK)->setCurrentValue(value);
+}
+
+GMLIB_API void setMovementSpeed(Player* player, int value) {
+    player->getMutableAttribute(SharedAttributes::MOVEMENT_SPEED)->setCurrentValue(value);
+}
+
+GMLIB_API void setUnderwaterMovementSpeed(Player* player, int value) {
+    player->getMutableAttribute(SharedAttributes::UNDERWATER_MOVEMENT_SPEED)->setCurrentValue(value);
 }
 
 } // namespace GMLIB::PlayerAPI

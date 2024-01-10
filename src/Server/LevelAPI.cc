@@ -40,7 +40,7 @@ GMLIB_API void setCoResourcePack(bool enabled) { mCoResourcePack = enabled; }
 
 GMLIB_API void setForceTrustSkin(bool enabled) { mForceTrustSkin = enabled; }
 
-GMLIB_API bool getExperimentEnabled(::AllExperiments experiment, bool enabled) {
+GMLIB_API bool getExperimentEnabled(::AllExperiments experiment) {
     return ll::service::getLevel()->getLevelData().getExperiments().isExperimentEnabled(experiment);
 }
 
@@ -60,6 +60,68 @@ GMLIB_API void setForceAchievementsEnabled() { mForceAchievementsEnabled = true;
 GMLIB_API void forceEnableAbilityCommand() { mRegAbilityCommand = true; }
 
 GMLIB_API void addEducationEditionRequired() { mEducationEditionEnabled = true; }
+
+GMLIB_API int getTime(int time) { return ll::service::getLevel()->getTime(); }
+
+GMLIB_API void setTime(int time) {
+    ll::service::getLevel()->setTime(time);
+    try {
+        SetTimePacket(time).sendToClients();
+    } catch (...) {}
+}
+
+GMLIB_API WeatherType getWeather() {
+    auto data = &ll::service::getLevel()->getLevelData();
+    if (data->isLightning()) {
+        return WeatherType::Thunder;
+    } else if (data->isRaining()) {
+        return WeatherType::Rain;
+    }
+    return WeatherType::Clear;
+}
+
+GMLIB_API void setWeather(WeatherType weather, int lastTick) {
+    switch (weather) {
+    case WeatherType::Thunder: {
+        ll::service::getLevel()->updateWeather(1, lastTick, 1, lastTick);
+        break;
+    }
+    case WeatherType::Rain: {
+        ll::service::getLevel()->updateWeather(1, lastTick, 0, lastTick);
+        break;
+    }
+    default: {
+        ll::service::getLevel()->updateWeather(0, lastTick, 0, lastTick);
+        break;
+    }
+    }
+}
+
+GMLIB_API void setWeather(WeatherType weather) {
+    int lastTick = 20 * (ll::service::getLevel()->getRandom().nextInt(600) + 300);
+    setWeather(weather, lastTick);
+}
+
+GMLIB_API void setClientWeather(WeatherType weather, Player* pl) {
+    Vec3 pos = {0, 0, 0};
+    switch (weather) {
+    case WeatherType::Thunder: {
+        LevelEventPacket(LevelEvent::StartThunderstorm, pos, 65565).sendTo(*pl);
+        LevelEventPacket(LevelEvent::StartRaining, pos, 65565).sendTo(*pl);
+        break;
+    }
+    case WeatherType::Rain: {
+        LevelEventPacket(LevelEvent::StopThunderstorm, pos, 0).sendTo(*pl);
+        LevelEventPacket(LevelEvent::StartRaining, pos, 65565).sendTo(*pl);
+        break;
+    }
+    default: {
+        LevelEventPacket(LevelEvent::StopThunderstorm, pos, 0).sendTo(*pl);
+        LevelEventPacket(LevelEvent::StopRaining, pos, 0).sendTo(*pl);
+        break;
+    }
+    }
+}
 
 } // namespace GMLIB::LevelAPI
 
