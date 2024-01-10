@@ -17,8 +17,8 @@ GMLIB_API bool isPreReleaseVersion();
 
 GMLIB_API std::string getLibVersionString();
 
-GMLIB_API bool checkLibVersionMatch(SemVersion& minVersion);
+GMLIB_API bool checkLibVersionMatch(SemVersion minVersion);
 
-GMLIB_API bool checkLibVersionMatch(SemVersion& minVersion, SemVersion& maxVersion);
+GMLIB_API bool checkLibVersionMatch(SemVersion minVersion, SemVersion maxVersion);
 
 } // namespace GMLIB
