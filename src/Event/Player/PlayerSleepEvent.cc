@@ -4,22 +4,18 @@
 
 namespace GMLIB::Event::PlayerEvent {
 
-GMLIB_API Player const&   PlayerStartSleepBeforeEvent::getPlayer() const { return mPlayer; }
 GMLIB_API BlockPos const& PlayerStartSleepBeforeEvent::getPosition() const { return mBlockPos; }
 
-GMLIB_API Player const&   PlayerStartSleepAfterEvent::getPlayer() const { return mPlayer; }
 GMLIB_API BlockPos const& PlayerStartSleepAfterEvent::getPosition() const { return mBlockPos; }
 GMLIB_API bool const&     PlayerStartSleepAfterEvent::getResult() const { return mResult; }
 
-GMLIB_API Player const& PlayerStopSleepBeforeEvent::getPlayer() const { return mPlayer; }
 GMLIB_API bool const&   PlayerStopSleepBeforeEvent::isForcefulWakeUp() const { return mForcefulWakeUp; }
 GMLIB_API bool const&   PlayerStopSleepBeforeEvent::isUpdateLevelList() const { return mUpdateLevelList; }
 
-GMLIB_API Player const& PlayerStopSleepAfterEvent::getPlayer() const { return mPlayer; }
 GMLIB_API bool const&   PlayerStopSleepAfterEvent::isForcefulWakeUp() const { return mForcefulWakeUp; }
 GMLIB_API bool const&   PlayerStopSleepAfterEvent::isUpdateLevelList() const { return mUpdateLevelList; }
 
-LL_AUTO_TYPED_INSTANCE_HOOK(
+LL_AUTO_TYPE_INSTANCE_HOOK(
     PlayerStartSleepEventHook,
     ll::memory::HookPriority::Normal,
     Player,
@@ -38,7 +34,7 @@ LL_AUTO_TYPED_INSTANCE_HOOK(
     return res;
 }
 
-LL_AUTO_TYPED_INSTANCE_HOOK(
+LL_AUTO_TYPE_INSTANCE_HOOK(
     PlayerStopSleepEventHook,
     ll::memory::HookPriority::Normal,
     Player,

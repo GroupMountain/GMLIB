@@ -1,6 +1,6 @@
 #include "Global.h"
 
-LL_AUTO_TYPED_INSTANCE_HOOK(
+LL_AUTO_TYPE_INSTANCE_HOOK(
     DBStorageInitEvent,
     ll::memory::HookPriority::Normal,
     DBStorage,
