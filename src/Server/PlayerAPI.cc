@@ -1,4 +1,5 @@
 #include "Global.h"
+#include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/CompoundTagAPI.h>
 #include <GMLIB/Server/PlayerAPI.h>
 
@@ -138,7 +139,7 @@ GMLIB_API bool deletePlayerNbt(std::string& serverid) {
     return false;
 }
 
-GMLIB_API void setSidebar(
+GMLIB_API void setClientSidebar(
     Player*                                         player,
     const std::string&                              title,
     const std::vector<std::pair<std::string, int>>& data,
@@ -165,7 +166,7 @@ GMLIB_API void setSidebar(
         .sendTo(*player);
 }
 
-GMLIB_API void removeSidebar(Player* player) {
+GMLIB_API void removeClientSidebar(Player* player) {
     SetDisplayObjectivePacket("sidebar", "", "", "dummy", ObjectiveSortOrder::Ascending).sendTo(*player);
 }
 
@@ -211,6 +212,71 @@ GMLIB_API void setMovementSpeed(Player* player, int value) {
 
 GMLIB_API void setUnderwaterMovementSpeed(Player* player, int value) {
     player->getMutableAttribute(SharedAttributes::UNDERWATER_MOVEMENT_SPEED)->setCurrentValue(value);
+}
+
+GMLIB_API void setClientGamemode(Player* player, GameType gamemode) {
+    UpdatePlayerGameTypePacket(gamemode, player->getOrCreateUniqueID()).sendTo(*player);
+}
+
+GMLIB_API void setClientBossbar(
+    Player*        player,
+    int64_t        bossbarId,
+    std::string    name,
+    float          percentage,
+    ::BossBarColor color,
+    int            overlay
+) {
+    // AddActorPacket
+    BinaryStream bs1;
+    BinaryStreamHelper::writeVarInt64(bs1, bossbarId);
+    BinaryStreamHelper::writeUnsignedVarInt64(bs1, bossbarId);
+    BinaryStreamHelper::writeString(bs1, "player");
+    BinaryStreamHelper::writeVec3(bs1, Vec3{player->getPosition().x, -66.0f, player->getPosition().z});
+    BinaryStreamHelper::writeVec3(bs1, Vec3{0, 0, 0});
+    BinaryStreamHelper::writeVec3(bs1, Vec3{0, 0, 0});
+    BinaryStreamHelper::writeFloat(bs1, 0.0f);
+    BinaryStreamHelper::writeUnsignedVarInt(bs1, 0);
+    BinaryStreamHelper::writeUnsignedVarInt(bs1, 0);
+    BinaryStreamHelper::writeUnsignedVarInt(bs1, 0);
+    BinaryStreamHelper::writeUnsignedVarInt(bs1, 0);
+    BinaryStreamHelper::writeUnsignedVarInt(bs1, 0);
+    auto pkt1 = MinecraftPackets::createPacket(MinecraftPacketIds::AddActor);
+    pkt1->read(bs1);
+    pkt1->sendTo(*player);
+    // BossEventPacket
+    BinaryStream bs2;
+    bs2.mBuffer->reserve(8 + name.size());
+    BinaryStreamHelper::writeVarInt64(bs2, bossbarId);
+    BinaryStreamHelper::writeUnsignedVarInt(bs2, 0);
+    BinaryStreamHelper::writeString(bs2, name);
+    BinaryStreamHelper::writeFloat(bs2, percentage);
+    BinaryStreamHelper::writeUnsignedShort(bs2, 1);
+    BinaryStreamHelper::writeUnsignedVarInt(bs2, (int)color);
+    BinaryStreamHelper::writeUnsignedVarInt(bs2, overlay);
+    auto pkt2 = MinecraftPackets::createPacket(MinecraftPacketIds::BossEvent);
+    pkt2->read(bs2);
+    pkt2->sendTo(*player);
+}
+
+GMLIB_API void removeClientBossbar(Player* player, int64_t bossbarId) {
+    BinaryStream bs;
+    BinaryStreamHelper::writeVarInt64(bs, bossbarId);
+    BinaryStreamHelper::writeUnsignedVarInt(bs, (int)2);
+    auto pkt = MinecraftPackets::createPacket(MinecraftPacketIds::BossEvent);
+    pkt->read(bs);
+    pkt->sendTo(*player);
+}
+
+GMLIB_API void updateClientBossbar(
+    Player*        player,
+    int64_t        bossbarId,
+    std::string    name,
+    float          percentage,
+    ::BossBarColor color,
+    int            overlay
+) {
+    removeClientBossbar(player, bossbarId);
+    setClientBossbar(player, bossbarId, name, percentage, color, overlay);
 }
 
 } // namespace GMLIB::PlayerAPI

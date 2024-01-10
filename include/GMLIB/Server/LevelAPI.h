@@ -2,6 +2,7 @@
 #include "GMLIB/GMLIB.h"
 #include <mc/enums/AllExperiments.h>
 #include <mc/world/level/Level.h>
+#include <mc/world/level/storage/GameRuleId.h>
 
 enum class WeatherType : int {
     Clear   = 0, // Sunny
@@ -43,5 +44,29 @@ GMLIB_API void        setWeather(WeatherType weather);
 GMLIB_API void        setWeather(WeatherType weather, int lastTick);
 GMLIB_API void        setClientWeather(WeatherType weather, Player* pl);
 
+GMLIB_API std::optional<bool> getGameruleBool(GameRuleId id);
+GMLIB_API std::optional<bool> getGameruleBool(std::string name);
+GMLIB_API std::optional<float> getGameruleFloat(GameRuleId id);
+GMLIB_API std::optional<float> getGameruleFloat(std::string name);
+GMLIB_API std::optional<int> getGameruleInt(GameRuleId id);
+GMLIB_API std::optional<int> getGameruleInt(std::string name);
+
+GMLIB_API void setGamerule(GameRuleId id, bool value);
+GMLIB_API void setGamerule(std::string name, bool value);
+GMLIB_API void setGamerule(GameRuleId id, float value);
+GMLIB_API void setGamerule(std::string name, float value);
+GMLIB_API void setGamerule(GameRuleId id, int value);
+GMLIB_API void setGamerule(std::string name, int value);
+
+GMLIB_API void createExplosion(
+    const Vec3&   pos,
+    DimensionType dimensionId,
+    float         power,
+    Actor*        source          = nullptr,
+    bool          breakBlocks     = true,
+    bool          causeFire       = false,
+    bool          allowUnderwater = false,
+    float         maxResistance   = 3.40282347e+38
+);
 
 } // namespace GMLIB::LevelAPI

@@ -18,13 +18,13 @@ GMLIB_API void setNbtTags(CompoundTag* originNbt, CompoundTag* dataNbt, const st
 GMLIB_API bool setPlayerNbtTags(mce::UUID const& uuid, CompoundTag* nbt, const std::vector<std::string>& tags);
 GMLIB_API bool deletePlayerNbt(std::string& serverid);
 
-GMLIB_API void setSidebar(
+GMLIB_API void setClientSidebar(
     Player*                                         player,
     const std::string&                              title,
     const std::vector<std::pair<std::string, int>>& data,
     ObjectiveSortOrder                              sortOrder = ObjectiveSortOrder::Ascending
 );
-GMLIB_API void removeSidebar(Player* player);
+GMLIB_API void removeClientSidebar(Player* player);
 
 GMLIB_API void setHealth(Player* player, int value);
 GMLIB_API void setMaxHealth(Player* player, int value);
@@ -37,5 +37,26 @@ GMLIB_API void setLavaMovementSpeed(Player* player, int value);
 GMLIB_API void setLuck(Player* player, int value);
 GMLIB_API void setMovementSpeed(Player* player, int value);
 GMLIB_API void setUnderwaterMovementSpeed(Player* player, int value);
+
+GMLIB_API void setClientGamemode(Player* player, GameType gamemode);
+
+GMLIB_API void setClientBossbar(
+    Player*        player,
+    int64_t        bossbarId,
+    std::string    name,
+    float          percentage,
+    ::BossBarColor color,
+    int            overlay
+);
+GMLIB_API void removeClientBossbar(Player* player, int64_t bossbarId);
+GMLIB_API void updateClientBossbar(
+    Player*        player,
+    int64_t        bossbarId,
+    std::string    name,
+    float          percentage,
+    ::BossBarColor color,
+    int            overlay
+);
+
 
 } // namespace GMLIB::PlayerAPI

@@ -123,6 +123,104 @@ GMLIB_API void setClientWeather(WeatherType weather, Player* pl) {
     }
 }
 
+GMLIB_API std::optional<bool> getGameruleBool(GameRuleId id) {
+    auto rule = ll::service::bedrock::getLevel()->getGameRules().getRule(id);
+    if (rule) {
+        if (rule->getType() == GameRule::Type::Bool) {
+            return rule->getBool();
+        }
+    }
+    return {};
+}
+
+GMLIB_API std::optional<bool> getGameruleBool(std::string name) {
+    auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(name);
+    return getGameruleBool(id);
+}
+
+GMLIB_API std::optional<float> getGameruleFloat(GameRuleId id) {
+    auto rule = ll::service::bedrock::getLevel()->getGameRules().getRule(id);
+    if (rule) {
+        if (rule->getType() == GameRule::Type::Float) {
+            return rule->getFloat();
+        }
+    }
+    return {};
+}
+
+GMLIB_API std::optional<float> getGameruleFloat(std::string name) {
+    auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(name);
+    return getGameruleFloat(id);
+}
+
+GMLIB_API std::optional<int> getGameruleInt(GameRuleId id) {
+    auto rule = ll::service::bedrock::getLevel()->getGameRules().getRule(id);
+    if (rule) {
+        if (rule->getType() == GameRule::Type::Int) {
+            return rule->getInt();
+        }
+    }
+    return {};
+}
+
+GMLIB_API std::optional<int> getGameruleInt(std::string name) {
+    auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(name);
+    return getGameruleInt(id);
+}
+
+GMLIB_API void setGamerule(GameRuleId id, bool value) {
+    auto pkt = ll::service::bedrock::getLevel()->getGameRules().setRule(id, value, true, nullptr, nullptr, nullptr);
+    pkt->sendToClients();
+}
+
+GMLIB_API void setGamerule(std::string name, bool value) {
+    auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(name);
+    return setGamerule(id, value);
+}
+
+GMLIB_API void setGamerule(GameRuleId id, float value) {
+    auto pkt = ll::service::bedrock::getLevel()->getGameRules().setRule(id, value, true, nullptr, nullptr, nullptr);
+    pkt->sendToClients();
+}
+
+GMLIB_API void setGamerule(std::string name, float value) {
+    auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(name);
+    return setGamerule(id, value);
+}
+
+GMLIB_API void setGamerule(GameRuleId id, int value) {
+    ll::service::bedrock::getLevel()->getGameRules();
+    auto pkt = ll::service::bedrock::getLevel()->getGameRules().setRule(id, value, true, nullptr, nullptr, nullptr);
+    pkt->sendToClients();
+}
+
+GMLIB_API void setGamerule(std::string name, int value) {
+    auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(name);
+    return setGamerule(id, value);
+}
+
+GMLIB_API void createExplosion(
+    const Vec3&   pos,
+    DimensionType dimensionId,
+    float         power,
+    Actor*        source,
+    bool          breakBlocks,
+    bool          causeFire,
+    bool          allowUnderwater,
+    float         maxResistance
+) {
+    ll::service::bedrock::getLevel()->explode(
+        *getBlockSource(dimensionId),
+        source,
+        pos,
+        power,
+        causeFire,
+        breakBlocks,
+        allowUnderwater,
+        maxResistance
+    );
+}
+
 } // namespace GMLIB::LevelAPI
 
 LL_AUTO_INSTANCE_HOOK(
