@@ -48,4 +48,34 @@ GMLIB_API void setUnderwaterMovementSpeed(Actor* actor, int value) {
     actor->getMutableAttribute(SharedAttributes::UNDERWATER_MOVEMENT_SPEED)->setCurrentValue(value);
 }
 
+GMLIB_API void addEffect(
+    Actor*                actor,
+    MobEffect::EffectType effectType,
+    int                   duration,
+    int                   amplifier,
+    bool                  showParticles,
+    bool                  ambient,
+    bool                  showAnimation
+) {
+    auto effect = MobEffectInstance((uint)effectType, duration, amplifier, ambient, showParticles, showAnimation);
+    actor->addEffect(effect);
+}
+
+GMLIB_API void removeEffect(Actor* actor, MobEffect::EffectType effectType) { actor->removeEffect((int)effectType); }
+
+GMLIB_API std::vector<MobEffectInstance> getAllEffects(Actor* actor) {
+    std::vector<MobEffectInstance> result = {};
+    for (int i = 0; i <= 30; i++) {
+        auto effect = actor->getEffect(i);
+        if (effect) {
+            result.emplace_back(*effect);
+        }
+    }
+    return result;
+}
+
+GMLIB_API void removeAllEffects(Actor* actor) {
+    return actor->removeAllEffects();
+}
+
 } // namespace GMLIB::ActorAPI

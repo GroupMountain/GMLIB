@@ -58,5 +58,19 @@ GMLIB_API void updateClientBossbar(
     int            overlay
 );
 
+GMLIB_API void addEffect(
+    Player*               player,
+    MobEffect::EffectType effectType,
+    int                   duration      = 600,
+    int                   amplifier     = 0,
+    bool                  showParticles = true,
+    bool                  ambient       = false,
+    bool                  showAnimation = false
+);
+GMLIB_API void removeEffect(Player* player, MobEffect::EffectType effectType);
+GMLIB_API void removeAllEffects(Player* player);
+
+GMLIB_API std::vector<MobEffectInstance> getAllEffects(Player* player);
+
 
 } // namespace GMLIB::PlayerAPI

@@ -1,4 +1,5 @@
 #include "Global.h"
+#include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/CompoundTagAPI.h>
 #include <GMLIB/Server/PlayerAPI.h>
@@ -277,6 +278,36 @@ GMLIB_API void updateClientBossbar(
 ) {
     removeClientBossbar(player, bossbarId);
     setClientBossbar(player, bossbarId, name, percentage, color, overlay);
+}
+
+GMLIB_API void addEffect(
+    Player*               player,
+    MobEffect::EffectType effectType,
+    int                   duration,
+    int                   amplifier,
+    bool                  showParticles,
+    bool                  ambient,
+    bool                  showAnimation
+) {
+    return GMLIB::ActorAPI::addEffect(
+        (Actor*)player,
+        effectType,
+        duration,
+        amplifier,
+        showParticles,
+        ambient,
+        showAnimation
+    );
+}
+
+GMLIB_API void removeEffect(Player* player, MobEffect::EffectType effectType) {
+    return player->removeEffect((int)effectType);
+}
+
+GMLIB_API void removeAllEffects(Player* player) { return player->removeAllEffects(); }
+
+GMLIB_API std::vector<MobEffectInstance> getAllEffects(Player* player) {
+    return GMLIB::ActorAPI::getAllEffects((Actor*)player);
 }
 
 } // namespace GMLIB::PlayerAPI

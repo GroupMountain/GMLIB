@@ -18,4 +18,19 @@ GMLIB_API void setLavaMovementSpeed(Actor* actor, int value);
 GMLIB_API void setMovementSpeed(Actor* actor, int value);
 GMLIB_API void setUnderwaterMovementSpeed(Actor* actor, int value);
 
+GMLIB_API void addEffect(
+    Actor*                actor,
+    MobEffect::EffectType effectType,
+    int                   duration      = 600,
+    int                   amplifier     = 0,
+    bool                  showParticles = true,
+    bool                  ambient       = false,
+    bool                  showAnimation = false
+);
+GMLIB_API void removeEffect(Actor* actor, MobEffect::EffectType effectType);
+GMLIB_API void removeAllEffects(Actor* actor);
+
+GMLIB_API std::vector<MobEffectInstance> getAllEffects(Actor* actor);
+
+
 } // namespace GMLIB::ActorAPI
