@@ -1,5 +1,5 @@
 #pragma once
-#include "GMLIB/DllExport.h"
+#include "GMLIB/GMLIB.h"
 #include <mc/enums/AllExperiments.h>
 #include <mc/world/level/Level.h>
 

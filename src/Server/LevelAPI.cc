@@ -127,7 +127,7 @@ LL_AUTO_INSTANCE_HOOK(isTrustSkin, ll::memory::HookPriority::Normal, "?isTrusted
     return origin();
 }
 
-LL_AUTO_TYPED_INSTANCE_HOOK(
+LL_AUTO_TYPE_INSTANCE_HOOK(
     ResourcePacksInfoPacketWrite,
     ll::memory::HookPriority::Normal,
     ResourcePacksInfoPacket,
@@ -142,7 +142,7 @@ LL_AUTO_TYPED_INSTANCE_HOOK(
     return origin(stream);
 }
 
-LL_AUTO_TYPED_INSTANCE_HOOK(
+LL_AUTO_TYPE_INSTANCE_HOOK(
     StartGamePacketWrite,
     ll::memory::HookPriority::Normal,
     StartGamePacket,
@@ -159,7 +159,7 @@ LL_AUTO_TYPED_INSTANCE_HOOK(
     return origin(stream);
 }
 
-LL_AUTO_TYPED_INSTANCE_HOOK(
+LL_AUTO_TYPE_INSTANCE_HOOK(
     EduInit,
     ll::memory::HookPriority::Normal,
     LevelData,
@@ -175,7 +175,7 @@ LL_AUTO_TYPED_INSTANCE_HOOK(
     return res;
 }
 
-LL_AUTO_TYPED_INSTANCE_HOOK(
+LL_AUTO_TYPE_INSTANCE_HOOK(
     RegAbility,
     ll::memory::HookPriority::Normal,
     ChangeSettingCommand,

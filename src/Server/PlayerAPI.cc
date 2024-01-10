@@ -79,7 +79,7 @@ GMLIB_API bool setOfflineNbt(std::string& serverid, CompoundTag* nbt) {
 GMLIB_API std::unique_ptr<CompoundTag> getPlayerNbt(mce::UUID uuid) {
     auto player = ll::service::bedrock::getLevel()->getPlayer(uuid);
     if (player) {
-        auto nbt = player->saveToNbt();
+        auto nbt = player->save();
         return nbt;
     } else {
         auto serverid = getServeridFromUuid(uuid);
@@ -87,7 +87,7 @@ GMLIB_API std::unique_ptr<CompoundTag> getPlayerNbt(mce::UUID uuid) {
     }
 }
 
-GMLIB_API std::unique_ptr<CompoundTag> getPlayerNbt(Player* pl) { return pl->saveToNbt(); }
+GMLIB_API std::unique_ptr<CompoundTag> getPlayerNbt(Player* pl) { return pl->save(); }
 
 GMLIB_API bool setPlayerNbt(mce::UUID const& uuid, CompoundTag* nbt) {
     auto player = ll::service::bedrock::getLevel()->getPlayer(uuid);
@@ -114,7 +114,7 @@ GMLIB_API void setNbtTags(CompoundTag* originNbt, CompoundTag* dataNbt, const st
 GMLIB_API bool setPlayerNbtTags(mce::UUID const& uuid, CompoundTag* nbt, const std::vector<std::string>& tags) {
     auto player = ll::service::bedrock::getLevel()->getPlayer(uuid);
     if (player) {
-        auto data = player->saveToNbt();
+        auto data = player->save();
         setNbtTags(data.get(), nbt, tags);
         return GMLIB::CompoundTagHelper::setNbt(player, data.get());
     }
@@ -136,6 +136,42 @@ GMLIB_API bool deletePlayerNbt(std::string& serverid) {
         return true;
     }
     return false;
+}
+
+int64_t nextRandomId() {
+    std::random_device seed;
+    std::mt19937_64    generate(seed());
+    return generate();
+}
+
+GMLIB_API void setSidebar(
+    Player*                                         player,
+    const std::string&                              title,
+    const std::vector<std::pair<std::string, int>>& data,
+    ObjectiveSortOrder                              sortOrder
+) {
+    SetDisplayObjectivePacket("sidebar", "GMLIB_SIDEBAR_API", title, "dummy", ObjectiveSortOrder(sortOrder))
+        .sendTo(*player);
+
+    std::vector<ScorePacketInfo> info;
+    for (auto& key : data) {
+        ScoreboardId id   = ScoreboardId(nextRandomId());
+        auto         text = key.first;
+        auto         scoreInfo =
+            ScorePacketInfo(&id, "GMLIB_SIDEBAR_API", IdentityDefinition::Type::FakePlayer, key.second, text);
+        info.emplace_back(scoreInfo);
+    }
+    auto pkt        = (SetScorePacket*)(MinecraftPackets::createPacket(MinecraftPacketIds::SetScore).get());
+    pkt->mType      = (ScorePacketType)0;
+    pkt->mScoreInfo = info;
+    pkt->sendTo(*player);
+
+    SetDisplayObjectivePacket("sidebar", "GMLIB_SIDEBAR_API", title, "dummy", ObjectiveSortOrder(sortOrder))
+        .sendTo(*player);
+}
+
+GMLIB_API void removeSidebar(Player* player) {
+    SetDisplayObjectivePacket("sidebar", "", "", "dummy", ObjectiveSortOrder::Ascending).sendTo(*player);
 }
 
 } // namespace GMLIB::PlayerAPI
