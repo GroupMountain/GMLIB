@@ -57,9 +57,9 @@ GMLIB_API bool isPreReleaseVersion() { return !getLibVersion().getPreRelease().e
 
 GMLIB_API std::string getLibVersionString() { return getLibVersion().asString(); }
 
-GMLIB_API bool checkLibVersionMatch(SemVersion& minVersion) { return minVersion.operator>=(getLibVersion()); }
+GMLIB_API bool checkLibVersionMatch(SemVersion minVersion) { return minVersion.operator>=(getLibVersion()); }
 
-GMLIB_API bool checkLibVersionMatch(SemVersion& minVersion, SemVersion& maxVersion) {
+GMLIB_API bool checkLibVersionMatch(SemVersion minVersion, SemVersion maxVersion) {
     auto currentVer = getLibVersion();
     if (minVersion.operator>=(currentVer) && maxVersion.operator<=(currentVer)) {
         return true;
