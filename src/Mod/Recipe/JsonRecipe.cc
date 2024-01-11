@@ -262,7 +262,7 @@ bool GMLIB_CustomRecipe::registerShapedCraftingTableRecipe(
     return registerShapedCraftingTableRecipe(recipe_id, shape, types, result, unlock, priority);
 }
 
-void registerLockedShapelessCraftingTableRecipe(
+void GMLIB_CustomRecipe::registerLockedShapelessCraftingTableRecipe(
     std::string                recipe_id,
     std::vector<Recipes::Type> ingredients,
     ItemStack*                 result,
@@ -283,7 +283,7 @@ void registerLockedShapelessCraftingTableRecipe(
     );
 }
 
-void registerLockedStoneCutterRecipe(std::string recipe_id, Recipes::Type input, ItemStack* result, int priority) {
+void GMLIB_CustomRecipe::registerLockedStoneCutterRecipe(std::string recipe_id, Recipes::Type input, ItemStack* result, int priority) {
     std::vector<Recipes::Type> types = {input};
     ll::service::bedrock::getLevel()->getRecipes().addShapelessRecipe(
         recipe_id,
@@ -297,7 +297,7 @@ void registerLockedStoneCutterRecipe(std::string recipe_id, Recipes::Type input,
     );
 }
 
-void registerLockedShapelessCraftingTableRecipe(
+void GMLIB_CustomRecipe::registerLockedShapelessCraftingTableRecipe(
     std::string              recipe_id,
     std::vector<std::string> ingredients,
     std::string              result,
@@ -326,7 +326,7 @@ void registerLockedShapelessCraftingTableRecipe(
     );
 }
 
-void registerLockedShapedCraftingTableRecipe(
+void GMLIB_CustomRecipe::registerLockedShapedCraftingTableRecipe(
     std::string                recipe_id,
     std::vector<std::string>   shape,
     std::vector<Recipes::Type> ingredients,
@@ -349,7 +349,7 @@ void registerLockedShapedCraftingTableRecipe(
     );
 }
 
-void registerLockedShapedCraftingTableRecipe(
+void GMLIB_CustomRecipe::registerLockedShapedCraftingTableRecipe(
     std::string              recipe_id,
     std::vector<std::string> shape,
     std::vector<std::string> ingredients,
