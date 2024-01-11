@@ -1,10 +1,10 @@
 #include "Global.h"
+#include <GMLIB/Server/ActorAPI.h>
+#include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/CompoundTagAPI.h>
 #include <GMLIB/Server/PlayerAPI.h>
 
-namespace GMLIB::PlayerAPI {
-
-GMLIB_API void forEachUuid(bool includeOfflineSignedId, std::function<void(std::string_view const& uuid)> callback) {
+void forEachUuid(bool includeOfflineSignedId, std::function<void(std::string_view const& uuid)> callback) {
     GMLIB::Global<DBStorage>->forEachKeyWithPrefix(
         "player_",
         DBHelpers::Category::Player,
@@ -33,13 +33,13 @@ GMLIB_API void forEachUuid(bool includeOfflineSignedId, std::function<void(std::
     );
 }
 
-GMLIB_API std::vector<std::string> getAllUuids(bool includeOfflineSignedId) {
+std::vector<std::string> GMLIB_Player::getAllUuids(bool includeOfflineSignedId) {
     std::vector<std::string> uuids;
     forEachUuid(includeOfflineSignedId, [&uuids](std::string_view uuid) { uuids.push_back(std::string(uuid)); });
     return uuids;
 }
 
-GMLIB_API std::unique_ptr<CompoundTag> getUuidDBTag(mce::UUID const& uuid) {
+std::unique_ptr<CompoundTag> GMLIB_Player::getUuidDBTag(mce::UUID const& uuid) {
     auto& dbStorage = *GMLIB::Global<DBStorage>;
     auto  playerKey = "player_" + uuid.asString();
     if (dbStorage.hasKey(playerKey, DBHelpers::Category::Player)) {
@@ -48,7 +48,7 @@ GMLIB_API std::unique_ptr<CompoundTag> getUuidDBTag(mce::UUID const& uuid) {
     return {};
 }
 
-GMLIB_API std::string getServeridFromUuid(mce::UUID const& uuid) {
+std::string GMLIB_Player::getServeridFromUuid(mce::UUID const& uuid) {
     auto DBTag = getUuidDBTag(uuid);
     if (!DBTag) {
         return "";
@@ -56,14 +56,14 @@ GMLIB_API std::string getServeridFromUuid(mce::UUID const& uuid) {
     return DBTag->getString("ServerId");
 }
 
-GMLIB_API std::unique_ptr<CompoundTag> getOfflineNbt(std::string& serverid) {
+std::unique_ptr<CompoundTag> GMLIB_Player::getOfflineNbt(std::string& serverid) {
     if (!GMLIB::Global<DBStorage>->hasKey(serverid, DBHelpers::Category::Player)) {
         return nullptr;
     }
     return GMLIB::Global<DBStorage>->getCompoundTag(serverid, DBHelpers::Category::Player);
 }
 
-GMLIB_API bool setOfflineNbt(std::string& serverid, CompoundTag* nbt) {
+bool GMLIB_Player::setOfflineNbt(std::string& serverid, CompoundTag* nbt) {
     try {
         auto& data = *nbt;
         if (serverid.empty()) {
@@ -76,7 +76,7 @@ GMLIB_API bool setOfflineNbt(std::string& serverid, CompoundTag* nbt) {
     }
 }
 
-GMLIB_API std::unique_ptr<CompoundTag> getPlayerNbt(mce::UUID uuid) {
+std::unique_ptr<CompoundTag> GMLIB_Player::getPlayerNbt(mce::UUID uuid) {
     auto player = ll::service::bedrock::getLevel()->getPlayer(uuid);
     if (player) {
         auto nbt = player->save();
@@ -87,12 +87,12 @@ GMLIB_API std::unique_ptr<CompoundTag> getPlayerNbt(mce::UUID uuid) {
     }
 }
 
-GMLIB_API std::unique_ptr<CompoundTag> getPlayerNbt(Player* pl) { return pl->save(); }
+std::unique_ptr<CompoundTag> GMLIB_Player::getNbt() { return save(); }
 
-GMLIB_API bool setPlayerNbt(mce::UUID const& uuid, CompoundTag* nbt) {
+bool GMLIB_Player::setPlayerNbt(mce::UUID const& uuid, CompoundTag* nbt) {
     auto player = ll::service::bedrock::getLevel()->getPlayer(uuid);
     if (player) {
-        return GMLIB::CompoundTagHelper::setNbt(player, nbt);
+        return player->load(*nbt);
     }
     auto serverid = getServeridFromUuid(uuid);
     if (serverid.empty()) {
@@ -101,9 +101,9 @@ GMLIB_API bool setPlayerNbt(mce::UUID const& uuid, CompoundTag* nbt) {
     return setOfflineNbt(serverid, nbt);
 }
 
-GMLIB_API bool setPlayerNbt(Player* pl, CompoundTag* nbt) { return GMLIB::CompoundTagHelper::setNbt(pl, nbt); }
+bool GMLIB_Player::setNbt(CompoundTag* nbt) { return load(*nbt); }
 
-GMLIB_API void setNbtTags(CompoundTag* originNbt, CompoundTag* dataNbt, const std::vector<std::string>& tags) {
+void setNbtTags(CompoundTag* originNbt, CompoundTag* dataNbt, const std::vector<std::string>& tags) {
     for (auto tag : tags) {
         if (dataNbt->get(tag)) {
             originNbt->put(tag, dataNbt->get(tag)->copy());
@@ -111,12 +111,12 @@ GMLIB_API void setNbtTags(CompoundTag* originNbt, CompoundTag* dataNbt, const st
     }
 }
 
-GMLIB_API bool setPlayerNbtTags(mce::UUID const& uuid, CompoundTag* nbt, const std::vector<std::string>& tags) {
+bool GMLIB_Player::setPlayerNbtTags(mce::UUID const& uuid, CompoundTag* nbt, const std::vector<std::string>& tags) {
     auto player = ll::service::bedrock::getLevel()->getPlayer(uuid);
     if (player) {
         auto data = player->save();
         setNbtTags(data.get(), nbt, tags);
-        return GMLIB::CompoundTagHelper::setNbt(player, data.get());
+        return player->load(*nbt);
     }
     auto serverid = getServeridFromUuid(uuid);
     if (serverid.empty()) {
@@ -127,7 +127,7 @@ GMLIB_API bool setPlayerNbtTags(mce::UUID const& uuid, CompoundTag* nbt, const s
     return setOfflineNbt(serverid, data.get());
 }
 
-GMLIB_API bool deletePlayerNbt(std::string& serverid) {
+bool GMLIB_Player::deletePlayerNbt(std::string& serverid) {
     if (serverid.empty()) {
         return false;
     }
@@ -138,25 +138,24 @@ GMLIB_API bool deletePlayerNbt(std::string& serverid) {
     return false;
 }
 
-int64_t nextRandomId() {
-    std::random_device seed;
-    std::mt19937_64    generate(seed());
-    return generate();
+bool GMLIB_Player::deletePlayerNbt(mce::UUID& uuid) {
+    auto serverid = getServeridFromUuid(uuid);
+    return deletePlayerNbt(serverid);
 }
 
-GMLIB_API void setSidebar(
-    Player*                                         player,
+void GMLIB_Player::setClientSidebar(
     const std::string&                              title,
     const std::vector<std::pair<std::string, int>>& data,
     ObjectiveSortOrder                              sortOrder
 ) {
     SetDisplayObjectivePacket("sidebar", "GMLIB_SIDEBAR_API", title, "dummy", ObjectiveSortOrder(sortOrder))
-        .sendTo(*player);
+        .sendTo(*this);
 
     std::vector<ScorePacketInfo> info;
     for (auto& key : data) {
-        ScoreboardId id   = ScoreboardId(nextRandomId());
-        auto         text = key.first;
+        auto         idValue = ll::service::getLevel()->getRandom().nextLong();
+        ScoreboardId id      = ScoreboardId(idValue);
+        auto         text    = key.first;
         auto         scoreInfo =
             ScorePacketInfo(&id, "GMLIB_SIDEBAR_API", IdentityDefinition::Type::FakePlayer, key.second, text);
         info.emplace_back(scoreInfo);
@@ -164,14 +163,140 @@ GMLIB_API void setSidebar(
     auto pkt        = (SetScorePacket*)(MinecraftPackets::createPacket(MinecraftPacketIds::SetScore).get());
     pkt->mType      = (ScorePacketType)0;
     pkt->mScoreInfo = info;
-    pkt->sendTo(*player);
+    pkt->sendTo(*this);
 
     SetDisplayObjectivePacket("sidebar", "GMLIB_SIDEBAR_API", title, "dummy", ObjectiveSortOrder(sortOrder))
-        .sendTo(*player);
+        .sendTo(*this);
 }
 
-GMLIB_API void removeSidebar(Player* player) {
-    SetDisplayObjectivePacket("sidebar", "", "", "dummy", ObjectiveSortOrder::Ascending).sendTo(*player);
+void GMLIB_Player::removeClientSidebar() {
+    SetDisplayObjectivePacket("sidebar", "", "", "dummy", ObjectiveSortOrder::Ascending).sendTo(*this);
 }
 
-} // namespace GMLIB::PlayerAPI
+void GMLIB_Player::setHealth(int value) {
+    return getMutableAttribute(SharedAttributes::HEALTH)->setCurrentValue(value);
+}
+
+void GMLIB_Player::setMaxHealth(int value) { return getMutableAttribute(SharedAttributes::HEALTH)->setMaxValue(value); }
+
+void GMLIB_Player::setAbsorption(int value) {
+    return getMutableAttribute(SharedAttributes::ABSORPTION)->setCurrentValue(value);
+}
+
+void GMLIB_Player::setMaxAbsorption(int value) {
+    return getMutableAttribute(SharedAttributes::ABSORPTION)->setMaxValue(value);
+}
+
+void GMLIB_Player::setAttackDamage(int value) {
+    return getMutableAttribute(SharedAttributes::ATTACK_DAMAGE)->setCurrentValue(value);
+}
+
+void GMLIB_Player::setJumpStrength(int value) {
+    return getMutableAttribute(SharedAttributes::JUMP_STRENGTH)->setCurrentValue(value);
+}
+
+void GMLIB_Player::setKnockbackResistance(int value) {
+    return getMutableAttribute(SharedAttributes::KNOCKBACK_RESISTANCE)->setCurrentValue(value);
+}
+
+void GMLIB_Player::setLavaMovementSpeed(int value) {
+    return getMutableAttribute(SharedAttributes::LAVA_MOVEMENT_SPEED)->setCurrentValue(value);
+}
+
+void GMLIB_Player::setLuck(int value) { return getMutableAttribute(SharedAttributes::LUCK)->setCurrentValue(value); }
+
+void GMLIB_Player::setMovementSpeed(int value) {
+    return getMutableAttribute(SharedAttributes::MOVEMENT_SPEED)->setCurrentValue(value);
+}
+
+void GMLIB_Player::setUnderwaterMovementSpeed(int value) {
+    return getMutableAttribute(SharedAttributes::UNDERWATER_MOVEMENT_SPEED)->setCurrentValue(value);
+}
+
+void GMLIB_Player::setClientGamemode(GameType gamemode) {
+    UpdatePlayerGameTypePacket(gamemode, getOrCreateUniqueID()).sendTo(*this);
+}
+
+void GMLIB_Player::setClientBossbar(
+    int64_t        bossbarId,
+    std::string    name,
+    float          percentage,
+    ::BossBarColor color,
+    int            overlay
+) {
+    // AddActorPacket
+    GMLIB_BinaryStream bs1;
+    bs1.writeVarInt64(bossbarId);
+    bs1.writeUnsignedVarInt64(bossbarId);
+    bs1.writeString("player");
+    bs1.writeVec3(Vec3{getPosition().x, -66.0f, getPosition().z});
+    bs1.writeVec3(Vec3{0, 0, 0});
+    bs1.writeVec3(Vec3{0, 0, 0});
+    bs1.writeFloat(0.0f);
+    bs1.writeUnsignedVarInt(0);
+    bs1.writeUnsignedVarInt(0);
+    bs1.writeUnsignedVarInt(0);
+    bs1.writeUnsignedVarInt(0);
+    bs1.writeUnsignedVarInt(0);
+    auto pkt1 = MinecraftPackets::createPacket(MinecraftPacketIds::AddActor);
+    pkt1->read(bs1);
+    pkt1->sendTo(*this);
+    // BossEventPacket
+    GMLIB_BinaryStream bs2;
+    bs2.mBuffer->reserve(8 + name.size());
+    bs2.writeVarInt64(bossbarId);
+    bs2.writeUnsignedVarInt(0);
+    bs2.writeString(name);
+    bs2.writeFloat(percentage);
+    bs2.writeUnsignedShort(1);
+    bs2.writeUnsignedVarInt((int)color);
+    bs2.writeUnsignedVarInt(overlay);
+    auto pkt2 = MinecraftPackets::createPacket(MinecraftPacketIds::BossEvent);
+    pkt2->read(bs2);
+    pkt2->sendTo(*this);
+}
+
+void GMLIB_Player::removeClientBossbar(int64_t bossbarId) {
+    GMLIB_BinaryStream bs;
+    bs.writeVarInt64(bossbarId);
+    bs.writeUnsignedVarInt((int)2);
+    auto pkt = MinecraftPackets::createPacket(MinecraftPacketIds::BossEvent);
+    pkt->read(bs);
+    pkt->sendTo(*this);
+}
+
+void GMLIB_Player::updateClientBossbar(
+    int64_t        bossbarId,
+    std::string    name,
+    float          percentage,
+    ::BossBarColor color,
+    int            overlay
+) {
+    removeClientBossbar(bossbarId);
+    setClientBossbar(bossbarId, name, percentage, color, overlay);
+}
+
+void GMLIB_Player::addEffect(
+    MobEffect::EffectType effectType,
+    int                   duration,
+    int                   amplifier,
+    bool                  showParticles,
+    bool                  ambient,
+    bool                  showAnimation
+) {
+    auto effect = MobEffectInstance((uint)effectType, duration, amplifier, ambient, showParticles, showAnimation);
+    return addEffect(effect);
+}
+
+void GMLIB_Player::removeEffect(MobEffect::EffectType effectType) { return removeEffect((int)effectType); }
+
+std::vector<MobEffectInstance> GMLIB_Player::getAllEffects() {
+    std::vector<MobEffectInstance> result = {};
+    for (int i = 0; i <= 30; i++) {
+        auto effect = getEffect(i);
+        if (effect) {
+            result.emplace_back(*effect);
+        }
+    }
+    return result;
+}

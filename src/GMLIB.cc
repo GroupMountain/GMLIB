@@ -1,7 +1,7 @@
+#include "Global.h"
 #include "Version.h"
 #include <GMLIB/GMLIB.h>
 #include <include_all.h>
-#include "Global.h"
 
 ll::Logger logger(LIB_NAME);
 
@@ -33,9 +33,7 @@ void loadLib() {
     printLibInfo();
 }
 
-void enableLib() {
-    initExperiments(&ll::service::bedrock::getLevel()->getLevelData());
-}
+void enableLib() { initExperiments(&ll::service::bedrock::getLevel()->getLevelData()); }
 
 void disableLib() {}
 
@@ -51,18 +49,53 @@ GMLIB_API SemVersion getLibVersion() {
     );
 }
 
+GMLIB_API std::string getLibVersionString() { return getLibVersion().asString(); }
+
 GMLIB_API bool isReleaseVersion() { return getLibVersion().getPreRelease().empty(); }
 
 GMLIB_API bool isPreReleaseVersion() { return !getLibVersion().getPreRelease().empty(); }
 
-GMLIB_API std::string getLibVersionString() { return getLibVersion().asString(); }
+GMLIB_API std::string getPreReleaseInfo() { return getLibVersion().getPreRelease(); }
 
-GMLIB_API bool checkLibVersionMatch(SemVersion minVersion) { return minVersion.operator>=(getLibVersion()); }
+GMLIB_API bool checkLibVersionMatch(SemVersion minVersion) {
+    auto currentVer = getLibVersion();
+    if (currentVer.mMinor >= minVersion.mMajor) {
+        if (currentVer.mMajor == minVersion.mMajor) {
+            if (currentVer.mMinor >= minVersion.mMinor) {
+                if (currentVer.mMinor == minVersion.mMinor) {
+                    if (currentVer.mPatch >= minVersion.mPatch) {
+                        return true;
+                    }
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+        return true;
+    }
+    return false;
+}
 
 GMLIB_API bool checkLibVersionMatch(SemVersion minVersion, SemVersion maxVersion) {
     auto currentVer = getLibVersion();
-    if (minVersion.operator>=(currentVer) && maxVersion.operator<=(currentVer)) {
-        return true;
+    if (checkLibVersionMatch(minVersion)) {
+        if (currentVer.mMinor <= minVersion.mMajor) {
+            if (currentVer.mMajor == minVersion.mMajor) {
+                if (currentVer.mMinor <= minVersion.mMinor) {
+                    if (currentVer.mMinor == minVersion.mMinor) {
+                        if (currentVer.mPatch <= minVersion.mPatch) {
+                            return true;
+                        }
+                        return false;
+                    }
+                    return true;
+                }
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
     return false;
 }

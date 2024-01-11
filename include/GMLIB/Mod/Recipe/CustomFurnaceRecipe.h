@@ -1,9 +1,8 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
+#include "mc/world/item/ItemInstance.h"
 
-namespace GMLIB::Mod::Recipe {
-
-class CustomFurnaceRecipe {
+class GMLIB_CustomFurnaceRecipe {
 public:
 
     virtual ItemInstance getInput() = 0;
@@ -12,4 +11,3 @@ public:
 
     virtual std::vector<HashedString> getCraftingTags() = 0;
 };
-} // namespace GMLIB::Mod::Recipe

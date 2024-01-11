@@ -1,13 +1,25 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
-#include <mc/world/actor/Actor.h>
+#include "GMLIB/Server/ActorAPI.h"
 
-namespace GMLIB::SpawnerAPI {
+class GMLIB_Spawner {
+public:
+    GMLIB_API static GMLIB_Actor* spawnEntity(Vec3 pos, int dimid, std::string name, GMLIB_Actor* owner = nullptr);
 
-GMLIB_API Actor* spawnEntity(Vec3 pos, int dimid, std::string name, Actor* owner = nullptr);
+    GMLIB_API static Mob* spawnMob(
+        Vec3         pos,
+        int          dimid,
+        std::string  name,
+        GMLIB_Actor* owner        = nullptr,
+        bool         naturalSpawn = false,
+        bool         surface      = true,
+        bool         fromSpawner  = false
+    );
 
-GMLIB_API Actor* shootProjectile(Actor* owner, std::string name, float speed, float offset = 0);
+    GMLIB_API static ItemActor* spawnItem(Vec3 pos, int dimid, ItemStack& item, GMLIB_Actor* owner = nullptr);
 
-GMLIB_API bool throwEntity(Actor* owner, Actor* actor, float speed, float offset = 0);
+    GMLIB_API static ItemActor*
+    spawnItem(Vec3 pos, int dimid, std::string name, int count = 1, int aux = 0, GMLIB_Actor* owner = nullptr);
 
-} // namespace GMLIB::SpawnerAPI
+    GMLIB_API static GMLIB_Actor* spawnProjectile(GMLIB_Actor* owner, std::string name, float speed, float offset = 0);
+};
