@@ -1,6 +1,7 @@
-#include "GMLIB/Server/ActorAPI.h"
-#include "GMLIB/Server/CompoundTagAPI.h"
 #include "Global.h"
+#include <GMLIB/Server/ActorAPI.h>
+#include <GMLIB/Server/CompoundTagAPI.h>
+#include <corecrt_math_defines.h>
 
 namespace GMLIB::ActorAPI {
 
@@ -74,8 +75,45 @@ GMLIB_API std::vector<MobEffectInstance> getAllEffects(Actor* actor) {
     return result;
 }
 
-GMLIB_API void removeAllEffects(Actor* actor) {
-    return actor->removeAllEffects();
+GMLIB_API void removeAllEffects(Actor* actor) { return actor->removeAllEffects(); }
+
+GMLIB_API bool setProjectile(Actor* owner, Actor* proj, float speed, float offset) {
+    if (owner && proj) {
+        try {
+            proj->setOwner(owner->getOrCreateUniqueID());
+            proj->teleport(owner->getPosition(), owner->getDimensionId());
+            if (speed > 0) {
+                auto berot = owner->getRotation();
+                if (offset > 0) { // 偏移
+                    // 初始化随机数生成器
+                    std::srand(static_cast<unsigned>(std::time(nullptr)));
+                    double x_offset = (std::rand() % 200 - 100) / 100.0 * offset; // 在-1到1之间生成随机偏移
+                    double y_offset = (std::rand() % 200 - 100) / 100.0 * offset;
+                    // 调整角度
+                    berot.x += x_offset;
+                    berot.y += y_offset;
+                }
+                auto dx = -speed * sin(berot.y * M_PI / 180) * cos(berot.x * M_PI / 180);
+                auto dz = speed * cos(berot.y * M_PI / 180) * cos(berot.x * M_PI / 180);
+                auto dy = speed * sin(berot.x * M_PI / 180);
+                proj->setVelocity({dx, -dy, dz});
+            }
+            return true;
+        } catch (...) {
+            return false;
+        }
+    }
+    return false;
+}
+
+GMLIB_API bool throwEntity(Actor* owner, Actor* projectile, float speed, float offset) {
+    if (projectile->hasCategory(ActorCategory::Player)) {
+        return false;
+    }
+    if (speed > 0) {
+        return setProjectile(owner, projectile, speed, offset);
+    }
+    return false;
 }
 
 } // namespace GMLIB::ActorAPI

@@ -16,9 +16,7 @@ GMLIB_API Mob*   spawnMob(
   );
 GMLIB_API ItemActor* spawnItem(Vec3 pos, int dimid, ItemStack& item, Actor* owner = nullptr);
 GMLIB_API ItemActor*
-spawnItem(Vec3 pos, int dimid, std::string name, int count = 1, int aux = 0, Actor* owner = nullptr);
-
-GMLIB_API Actor* shootProjectile(Actor* owner, std::string name, float speed, float offset = 0);
-GMLIB_API bool   throwEntity(Actor* owner, Actor* actor, float speed, float offset = 0);
+                 spawnItem(Vec3 pos, int dimid, std::string name, int count = 1, int aux = 0, Actor* owner = nullptr);
+GMLIB_API Actor* spawnProjectile(Actor* owner, std::string name, float speed, float offset = 0);
 
 } // namespace GMLIB::SpawnerAPI
