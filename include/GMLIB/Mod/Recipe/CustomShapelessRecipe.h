@@ -1,9 +1,7 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
 
-namespace GMLIB::Mod::Recipe {
-
-class CustomShapelessRecipe {
+class GMLIB_CustomShapelessRecipe {
 public:
     virtual std::string getRecipeId() = 0;
 
@@ -25,5 +23,3 @@ public:
 
     virtual SemVersion getSemVersion() { return SemVersion(1, 20, 50, "", ""); }
 };
-
-} // namespace GMLIB::Mod::Recipe

@@ -1,10 +1,7 @@
+#include "GMLIB/Mod/CustomRecipe.h"
 #include "Global.h"
-#include "GMLIB/Mod/Recipe/CustomShapedRecipe.h"
-#include "GMLIB/Mod/Recipe/CustomShapelessRecipe.h"
 
 Json::Reader reader;
-
-namespace GMLIB::Mod::Recipe::RapidRecipeLoader {
 
 // 加载json格式
 bool addRecipeJson(std::string ricipe_type, std::string json_string) {
@@ -16,7 +13,7 @@ bool addRecipeJson(std::string ricipe_type, std::string json_string) {
 }
 
 // json形式构造
-GMLIB_API bool loadJsonRecipe(std::string json) {
+bool GMLIB_CustomRecipe::loadJsonRecipe(std::string json) {
     Json::Value value;
     reader.parse(json, value, true);
     auto info = ll::service::bedrock::getLevel()->getRecipes().extractRecipeObjInfo(value);
@@ -24,12 +21,12 @@ GMLIB_API bool loadJsonRecipe(std::string json) {
     return ll::service::bedrock::getLevel()->getRecipes().loadRecipe(info, ver, ver, true);
 }
 
-GMLIB_API bool loadJsonRecipe(nlohmann::json json) {
+bool GMLIB_CustomRecipe::loadJsonRecipe(nlohmann::json json) {
     auto json_string = json.dump(4);
     return loadJsonRecipe(json_string);
 }
 
-GMLIB_API bool registerFurnaceRecipe(
+bool GMLIB_CustomRecipe::registerFurnaceRecipe(
     std::string                                              recipe_id,
     RecipeIngredient                                         input,
     RecipeIngredient                                         output,
@@ -56,7 +53,12 @@ GMLIB_API bool registerFurnaceRecipe(
     return addRecipeJson("recipe_furnace", recipe_json.dump(4));
 }
 
-GMLIB_API bool registerBrewingMixRecipe(std::string recipe_id, std::string input, std::string output, RecipeIngredient reagent) {
+bool GMLIB_CustomRecipe::registerBrewingMixRecipe(
+    std::string      recipe_id,
+    std::string      input,
+    std::string      output,
+    RecipeIngredient reagent
+) {
     nlohmann::ordered_json recipe_json = {
         {"description", {{"identifier", recipe_id}}                                       },
         {"tags",        {"brewing_stand"}                                                 },
@@ -67,7 +69,7 @@ GMLIB_API bool registerBrewingMixRecipe(std::string recipe_id, std::string input
     return addRecipeJson("recipe_brewing_mix", recipe_json.dump(4));
 }
 
-GMLIB_API bool registerBrewingContainerRecipe(
+bool GMLIB_CustomRecipe::registerBrewingContainerRecipe(
     std::string                                              recipe_id,
     RecipeIngredient                                         input,
     RecipeIngredient                                         output,
@@ -95,7 +97,7 @@ GMLIB_API bool registerBrewingContainerRecipe(
     return addRecipeJson("recipe_brewing_container", recipe_json.dump(4));
 }
 
-GMLIB_API bool registerSmithingTransformRecipe(
+bool GMLIB_CustomRecipe::registerSmithingTransformRecipe(
     std::string recipe_id,
     std::string smithing_template,
     std::string base,
@@ -113,7 +115,7 @@ GMLIB_API bool registerSmithingTransformRecipe(
     return addRecipeJson("recipe_smithing_transform", recipe_json.dump(4));
 }
 
-GMLIB_API bool registerSmithingTrimRecipe(
+bool GMLIB_CustomRecipe::registerSmithingTrimRecipe(
     std::string recipe_id,
     std::string smithing_template,
     std::string base,
@@ -129,7 +131,7 @@ GMLIB_API bool registerSmithingTrimRecipe(
     return addRecipeJson("recipe_smithing_trim", recipe_json.dump(4));
 }
 
-GMLIB_API bool registerStoneCutterRecipe(
+bool GMLIB_CustomRecipe::registerStoneCutterRecipe(
     std::string                                              recipe_id,
     RecipeIngredient                                         input,
     RecipeIngredient                                         output,
@@ -157,7 +159,7 @@ GMLIB_API bool registerStoneCutterRecipe(
     return addRecipeJson("recipe_shapeless", recipe_json.dump(4));
 }
 
-GMLIB_API bool registerCustomCraftingTagRecipe(
+bool GMLIB_CustomRecipe::registerCustomCraftingTagRecipe(
     std::string                                              recipe_id,
     std::vector<RecipeIngredient>                            ingredients,
     RecipeIngredient                                         result,
@@ -193,7 +195,7 @@ GMLIB_API bool registerCustomCraftingTagRecipe(
     return addRecipeJson("recipe_shapeless", recipe_json.dump(4));
 }
 
-GMLIB_API bool registerShapelessCraftingTableRecipe(
+bool GMLIB_CustomRecipe::registerShapelessCraftingTableRecipe(
     std::string                                              recipe_id,
     std::vector<RecipeIngredient>                            ingredients,
     RecipeIngredient                                         result,
@@ -203,7 +205,7 @@ GMLIB_API bool registerShapelessCraftingTableRecipe(
     return registerCustomCraftingTagRecipe(recipe_id, ingredients, result, {"crafting_table"}, unlock, priority);
 }
 
-GMLIB_API bool registerShapedCraftingTableRecipe(
+bool GMLIB_CustomRecipe::registerShapedCraftingTableRecipe(
     std::string                                              recipe_id,
     std::vector<std::string>                                 shape,
     std::vector<std::pair<std::string, RecipeIngredient>>    ingredients,
@@ -240,13 +242,13 @@ GMLIB_API bool registerShapedCraftingTableRecipe(
     return addRecipeJson("recipe_shaped", recipe_json.dump(4));
 }
 
-GMLIB_API bool registerShapedCraftingTableRecipe(
-    std::string                   recipe_id,
-    std::vector<std::string>      shape,
-    std::vector<RecipeIngredient> ingredients,
-    RecipeIngredient              result,
-    std::vector<RecipeIngredient> unlock,
-    int                           priority
+bool GMLIB_CustomRecipe::registerShapedCraftingTableRecipe(
+    std::string                                              recipe_id,
+    std::vector<std::string>                                 shape,
+    std::vector<RecipeIngredient>                            ingredients,
+    RecipeIngredient                                         result,
+    std::variant<std::string, std::vector<RecipeIngredient>> unlock,
+    int                                                      priority
 ) {
     if (ingredients.size() == 0) {
         return false;
@@ -260,7 +262,7 @@ GMLIB_API bool registerShapedCraftingTableRecipe(
     return registerShapedCraftingTableRecipe(recipe_id, shape, types, result, unlock, priority);
 }
 
-GMLIB_API void registerLockedShapelessCraftingTableRecipe(
+void registerLockedShapelessCraftingTableRecipe(
     std::string                recipe_id,
     std::vector<Recipes::Type> ingredients,
     ItemStack*                 result,
@@ -281,7 +283,7 @@ GMLIB_API void registerLockedShapelessCraftingTableRecipe(
     );
 }
 
-GMLIB_API void registerLockedStoneCutterRecipe(std::string recipe_id, Recipes::Type input, ItemStack* result, int priority) {
+void registerLockedStoneCutterRecipe(std::string recipe_id, Recipes::Type input, ItemStack* result, int priority) {
     std::vector<Recipes::Type> types = {input};
     ll::service::bedrock::getLevel()->getRecipes().addShapelessRecipe(
         recipe_id,
@@ -295,7 +297,7 @@ GMLIB_API void registerLockedStoneCutterRecipe(std::string recipe_id, Recipes::T
     );
 }
 
-GMLIB_API void registerLockedShapelessCraftingTableRecipe(
+void registerLockedShapelessCraftingTableRecipe(
     std::string              recipe_id,
     std::vector<std::string> ingredients,
     std::string              result,
@@ -324,7 +326,7 @@ GMLIB_API void registerLockedShapelessCraftingTableRecipe(
     );
 }
 
-GMLIB_API void registerLockedShapedCraftingTableRecipe(
+void registerLockedShapedCraftingTableRecipe(
     std::string                recipe_id,
     std::vector<std::string>   shape,
     std::vector<Recipes::Type> ingredients,
@@ -347,7 +349,7 @@ GMLIB_API void registerLockedShapedCraftingTableRecipe(
     );
 }
 
-GMLIB_API void registerLockedShapedCraftingTableRecipe(
+void registerLockedShapedCraftingTableRecipe(
     std::string              recipe_id,
     std::vector<std::string> shape,
     std::vector<std::string> ingredients,
@@ -377,5 +379,3 @@ GMLIB_API void registerLockedShapedCraftingTableRecipe(
         SemVersion(1, 20, 50, "", "")
     );
 }
-
-} // namespace GMLIB::Mod::Recipe::RapidRecipeLoader

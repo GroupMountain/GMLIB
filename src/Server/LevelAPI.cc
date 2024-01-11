@@ -14,64 +14,70 @@ bool                          mForceAchievementsEnabled = false;
 bool                          mRegAbilityCommand        = false;
 bool                          mEducationEditionEnabled  = false;
 
-GMLIB_API BlockSource* getBlockSource(DimensionType dimid) {
-    return &ll::service::getLevel()->getDimension(dimid)->getBlockSourceFromMainChunkSource();
+} // namespace GMLIB::LevelAPI
+
+GMLIB_Level* GMLIB_Level::getLevel() { return (GMLIB_Level*)ll::service::getLevel().as_ptr(); }
+
+BlockSource* GMLIB_Level::getBlockSource(DimensionType dimid) {
+    return &getDimension(dimid)->getBlockSourceFromMainChunkSource();
 }
 
-GMLIB_API std::vector<Actor*> getAllEntities() { return ll::service::getLevel()->getRuntimeActorList(); }
+std::vector<Actor*> GMLIB_Level::getAllEntities() { return getRuntimeActorList(); }
 
-GMLIB_API std::string getLevelName() { return ll::service::getLevel()->getLevelData().getLevelName(); }
+std::string GMLIB_Level::getLevelName() { return getLevelData().getLevelName(); }
 
-GMLIB_API void setLevelName(std::string newName) { ll::service::getLevel()->getLevelData().setLevelName(newName); }
+void GMLIB_Level::setLevelName(std::string newName) { getLevelData().setLevelName(newName); }
 
-GMLIB_API void setFakeLevelName(std::string fakeName) {
-    mFakeLevelNameEnabled = true;
-    mFakeLevelName        = fakeName;
+void GMLIB_Level::setFakeLevelName(std::string fakeName) {
+    GMLIB::LevelAPI::mFakeLevelNameEnabled = true;
+    GMLIB::LevelAPI::mFakeLevelName        = fakeName;
 }
 
-GMLIB_API int64_t getSeed() { return ll::service::getLevel()->getLevelData().getSeed().mValue; }
+int64_t GMLIB_Level::getSeed() { return getLevelData().getSeed().mValue; }
 
-GMLIB_API void setFakeSeed(int64_t fakeSeed) {
-    mFakeSeedEnabled = true;
-    mFakeSeed        = fakeSeed;
+void GMLIB_Level::setFakeSeed(int64_t fakeSeed) {
+    GMLIB::LevelAPI::mFakeSeedEnabled = true;
+    GMLIB::LevelAPI::mFakeSeed        = fakeSeed;
 }
 
-GMLIB_API void setCoResourcePack(bool enabled) { mCoResourcePack = enabled; }
+void GMLIB_Level::setCoResourcePack(bool enabled) { GMLIB::LevelAPI::mCoResourcePack = enabled; }
 
-GMLIB_API void setForceTrustSkin(bool enabled) { mForceTrustSkin = enabled; }
+void GMLIB_Level::setForceTrustSkin(bool enabled) { GMLIB::LevelAPI::mForceTrustSkin = enabled; }
 
-GMLIB_API bool getExperimentEnabled(::AllExperiments experiment) {
-    return ll::service::getLevel()->getLevelData().getExperiments().isExperimentEnabled(experiment);
+bool GMLIB_Level::getExperimentEnabled(::AllExperiments experiment) {
+    return getLevelData().getExperiments().isExperimentEnabled(experiment);
 }
 
-GMLIB_API void setExperimentEnabled(::AllExperiments experiment, bool enabled) {
-    ll::service::getLevel()->getLevelData().getExperiments().setExperimentEnabled(experiment, enabled);
+void GMLIB_Level::setExperimentEnabled(::AllExperiments experiment, bool enabled) {
+    getLevelData().getExperiments().setExperimentEnabled(experiment, enabled);
 }
 
-GMLIB_API void addExperimentsRequire(::AllExperiments experiment) {
-    if (std::find(mExperimentsRequireList.begin(), mExperimentsRequireList.end(), experiment)
-        == mExperimentsRequireList.end()) {
-        mExperimentsRequireList.push_back(experiment);
+void GMLIB_Level::addExperimentsRequire(::AllExperiments experiment) {
+    if (std::find(
+            GMLIB::LevelAPI::mExperimentsRequireList.begin(),
+            GMLIB::LevelAPI::mExperimentsRequireList.end(),
+            experiment
+        )
+        == GMLIB::LevelAPI::mExperimentsRequireList.end()) {
+        GMLIB::LevelAPI::mExperimentsRequireList.push_back(experiment);
     }
 }
 
-GMLIB_API void setForceAchievementsEnabled() { mForceAchievementsEnabled = true; }
+void GMLIB_Level::setForceAchievementsEnabled() { GMLIB::LevelAPI::mForceAchievementsEnabled = true; }
 
-GMLIB_API void forceEnableAbilityCommand() { mRegAbilityCommand = true; }
+void GMLIB_Level::forceEnableAbilityCommand() { GMLIB::LevelAPI::mRegAbilityCommand = true; }
 
-GMLIB_API void addEducationEditionRequired() { mEducationEditionEnabled = true; }
+void GMLIB_Level::addEducationEditionRequired() { GMLIB::LevelAPI::mEducationEditionEnabled = true; }
 
-GMLIB_API int getTime(int time) { return ll::service::getLevel()->getTime(); }
-
-GMLIB_API void setTime(int time) {
-    ll::service::getLevel()->setTime(time);
+void GMLIB_Level::setTime(int time) {
+    setTime(time);
     try {
         SetTimePacket(time).sendToClients();
     } catch (...) {}
 }
 
-GMLIB_API WeatherType getWeather() {
-    auto data = &ll::service::getLevel()->getLevelData();
+WeatherType GMLIB_Level::getWeather() {
+    auto data = &getLevelData();
     if (data->isLightning()) {
         return WeatherType::Thunder;
     } else if (data->isRaining()) {
@@ -80,29 +86,29 @@ GMLIB_API WeatherType getWeather() {
     return WeatherType::Clear;
 }
 
-GMLIB_API void setWeather(WeatherType weather, int lastTick) {
+void GMLIB_Level::setWeather(WeatherType weather, int lastTick) {
     switch (weather) {
     case WeatherType::Thunder: {
-        ll::service::getLevel()->updateWeather(1, lastTick, 1, lastTick);
+        updateWeather(1, lastTick, 1, lastTick);
         break;
     }
     case WeatherType::Rain: {
-        ll::service::getLevel()->updateWeather(1, lastTick, 0, lastTick);
+        updateWeather(1, lastTick, 0, lastTick);
         break;
     }
     default: {
-        ll::service::getLevel()->updateWeather(0, lastTick, 0, lastTick);
+        updateWeather(0, lastTick, 0, lastTick);
         break;
     }
     }
 }
 
-GMLIB_API void setWeather(WeatherType weather) {
-    int lastTick = 20 * (ll::service::getLevel()->getRandom().nextInt(600) + 300);
+void GMLIB_Level::setWeather(WeatherType weather) {
+    int lastTick = 20 * (getRandom().nextInt(600) + 300);
     setWeather(weather, lastTick);
 }
 
-GMLIB_API void setClientWeather(WeatherType weather, Player* pl) {
+void GMLIB_Level::setClientWeather(WeatherType weather, Player* pl) {
     Vec3 pos = {0, 0, 0};
     switch (weather) {
     case WeatherType::Thunder: {
@@ -123,7 +129,7 @@ GMLIB_API void setClientWeather(WeatherType weather, Player* pl) {
     }
 }
 
-GMLIB_API std::optional<bool> getGameruleBool(GameRuleId id) {
+std::optional<bool> GMLIB_Level::getGameruleBool(GameRuleId id) {
     auto rule = ll::service::bedrock::getLevel()->getGameRules().getRule(id);
     if (rule) {
         if (rule->getType() == GameRule::Type::Bool) {
@@ -133,12 +139,12 @@ GMLIB_API std::optional<bool> getGameruleBool(GameRuleId id) {
     return {};
 }
 
-GMLIB_API std::optional<bool> getGameruleBool(std::string name) {
+std::optional<bool> GMLIB_Level::getGameruleBool(std::string name) {
     auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(name);
     return getGameruleBool(id);
 }
 
-GMLIB_API std::optional<float> getGameruleFloat(GameRuleId id) {
+std::optional<float> GMLIB_Level::getGameruleFloat(GameRuleId id) {
     auto rule = ll::service::bedrock::getLevel()->getGameRules().getRule(id);
     if (rule) {
         if (rule->getType() == GameRule::Type::Float) {
@@ -148,12 +154,12 @@ GMLIB_API std::optional<float> getGameruleFloat(GameRuleId id) {
     return {};
 }
 
-GMLIB_API std::optional<float> getGameruleFloat(std::string name) {
+std::optional<float> GMLIB_Level::getGameruleFloat(std::string name) {
     auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(name);
     return getGameruleFloat(id);
 }
 
-GMLIB_API std::optional<int> getGameruleInt(GameRuleId id) {
+std::optional<int> GMLIB_Level::getGameruleInt(GameRuleId id) {
     auto rule = ll::service::bedrock::getLevel()->getGameRules().getRule(id);
     if (rule) {
         if (rule->getType() == GameRule::Type::Int) {
@@ -163,43 +169,43 @@ GMLIB_API std::optional<int> getGameruleInt(GameRuleId id) {
     return {};
 }
 
-GMLIB_API std::optional<int> getGameruleInt(std::string name) {
+std::optional<int> GMLIB_Level::getGameruleInt(std::string name) {
     auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(name);
     return getGameruleInt(id);
 }
 
-GMLIB_API void setGamerule(GameRuleId id, bool value) {
+void GMLIB_Level::setGamerule(GameRuleId id, bool value) {
     auto pkt = ll::service::bedrock::getLevel()->getGameRules().setRule(id, value, true, nullptr, nullptr, nullptr);
     pkt->sendToClients();
 }
 
-GMLIB_API void setGamerule(std::string name, bool value) {
+void GMLIB_Level::setGamerule(std::string name, bool value) {
     auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(name);
     return setGamerule(id, value);
 }
 
-GMLIB_API void setGamerule(GameRuleId id, float value) {
+void GMLIB_Level::setGamerule(GameRuleId id, float value) {
     auto pkt = ll::service::bedrock::getLevel()->getGameRules().setRule(id, value, true, nullptr, nullptr, nullptr);
     pkt->sendToClients();
 }
 
-GMLIB_API void setGamerule(std::string name, float value) {
+void GMLIB_Level::setGamerule(std::string name, float value) {
     auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(name);
     return setGamerule(id, value);
 }
 
-GMLIB_API void setGamerule(GameRuleId id, int value) {
+void GMLIB_Level::setGamerule(GameRuleId id, int value) {
     ll::service::bedrock::getLevel()->getGameRules();
     auto pkt = ll::service::bedrock::getLevel()->getGameRules().setRule(id, value, true, nullptr, nullptr, nullptr);
     pkt->sendToClients();
 }
 
-GMLIB_API void setGamerule(std::string name, int value) {
+void GMLIB_Level::setGamerule(std::string name, int value) {
     auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(name);
     return setGamerule(id, value);
 }
 
-GMLIB_API void createExplosion(
+void GMLIB_Level::createExplosion(
     const Vec3&   pos,
     DimensionType dimensionId,
     float         power,
@@ -209,19 +215,9 @@ GMLIB_API void createExplosion(
     bool          allowUnderwater,
     float         maxResistance
 ) {
-    ll::service::bedrock::getLevel()->explode(
-        *getBlockSource(dimensionId),
-        source,
-        pos,
-        power,
-        causeFire,
-        breakBlocks,
-        allowUnderwater,
-        maxResistance
-    );
+    explode(*getBlockSource(dimensionId), source, pos, power, causeFire, breakBlocks, allowUnderwater, maxResistance);
 }
 
-} // namespace GMLIB::LevelAPI
 
 LL_AUTO_INSTANCE_HOOK(
     Achieve1,
