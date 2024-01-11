@@ -362,3 +362,15 @@ bool GMLIB_Player::resetPlayerScore(mce::UUID& uuid) {
     auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
     return scoreboard->resetPlayerAllScores(uuid);
 }
+
+ItemStack* GMLIB_Player::getMainHandSlot() { return (ItemStack*)&getItemSlot(Puv::Legacy::EquipmentSlot::Mainhand); }
+
+bool GMLIB_Player::setMainHandSlot(ItemStack& itemStack) {
+    return setItemSlot(Puv::Legacy::EquipmentSlot::Mainhand, itemStack);
+}
+
+ItemStack* GMLIB_Player::getOffHandSlot() { return (ItemStack*)&getItemSlot(Puv::Legacy::EquipmentSlot::Offhand); }
+
+bool GMLIB_Player::setOffHandSlot(ItemStack& itemStack) {
+    return setItemSlot(Puv::Legacy::EquipmentSlot::Offhand, itemStack);
+}

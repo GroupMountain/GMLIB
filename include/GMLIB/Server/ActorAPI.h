@@ -34,6 +34,8 @@ public:
 
     GMLIB_API bool setProjectile(Actor* projectile, float speed, float offset);
 
+    GMLIB_API bool shootProjectile(std::string typeName, float speed, float offset);
+
     GMLIB_API bool throwEntity(Actor* projectile, float speed, float offset = 0);
 
     GMLIB_API void setHealth(int value);
@@ -55,4 +57,12 @@ public:
     GMLIB_API void setMovementSpeed(int value);
 
     GMLIB_API void setUnderwaterMovementSpeed(int value);
+
+    GMLIB_API ItemStack* getMainHandSlot();
+
+    GMLIB_API void setMainHandSlot(ItemStack& itemStack);
+
+    GMLIB_API ItemStack* getOffHandSlot();
+
+    GMLIB_API void setOffHandSlot(ItemStack& itemStack);
 };

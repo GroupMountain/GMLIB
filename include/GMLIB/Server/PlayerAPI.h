@@ -68,6 +68,8 @@ public:
 
     GMLIB_API bool resetScore(std::string objective);
 
+    GMLIB_API bool shootProjectile(std::string typeName, float speed, float offset);
+
     GMLIB_API bool resetScore();
 
     GMLIB_API void setClientSidebar(
@@ -122,4 +124,13 @@ public:
     GMLIB_API void removeEffect(MobEffect::EffectType effectType);
 
     GMLIB_API std::vector<MobEffectInstance> getAllEffects();
+
+    GMLIB_API ItemStack* getMainHandSlot();
+
+    GMLIB_API bool setMainHandSlot(ItemStack& itemStack);
+
+    GMLIB_API ItemStack* getOffHandSlot();
+
+    GMLIB_API bool setOffHandSlot(ItemStack& itemStack);
+
 };
