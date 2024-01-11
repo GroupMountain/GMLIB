@@ -1,8 +1,8 @@
 #include "Global.h"
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
-#include <GMLIB/Server/CompoundTagAPI.h>
 #include <GMLIB/Server/PlayerAPI.h>
+#include <GMLIB/Server/ScoreboardAPI.h>
 
 void forEachUuid(bool includeOfflineSignedId, std::function<void(std::string_view const& uuid)> callback) {
     GMLIB::Global<DBStorage>->forEachKeyWithPrefix(
@@ -56,14 +56,14 @@ std::string GMLIB_Player::getServeridFromUuid(mce::UUID const& uuid) {
     return DBTag->getString("ServerId");
 }
 
-std::unique_ptr<CompoundTag> GMLIB_Player::getOfflineNbt(std::string& serverid) {
+std::unique_ptr<CompoundTag> GMLIB_Player::getOfflineNbt(std::string serverid) {
     if (!GMLIB::Global<DBStorage>->hasKey(serverid, DBHelpers::Category::Player)) {
         return nullptr;
     }
     return GMLIB::Global<DBStorage>->getCompoundTag(serverid, DBHelpers::Category::Player);
 }
 
-bool GMLIB_Player::setOfflineNbt(std::string& serverid, CompoundTag* nbt) {
+bool GMLIB_Player::setOfflineNbt(std::string serverid, CompoundTag* nbt) {
     try {
         auto& data = *nbt;
         if (serverid.empty()) {
@@ -127,7 +127,7 @@ bool GMLIB_Player::setPlayerNbtTags(mce::UUID const& uuid, CompoundTag* nbt, con
     return setOfflineNbt(serverid, data.get());
 }
 
-bool GMLIB_Player::deletePlayerNbt(std::string& serverid) {
+bool GMLIB_Player::deletePlayerNbt(std::string serverid) {
     if (serverid.empty()) {
         return false;
     }
@@ -144,7 +144,7 @@ bool GMLIB_Player::deletePlayerNbt(mce::UUID& uuid) {
 }
 
 void GMLIB_Player::setClientSidebar(
-    const std::string&                              title,
+    const std::string                               title,
     const std::vector<std::pair<std::string, int>>& data,
     ObjectiveSortOrder                              sortOrder
 ) {
@@ -299,4 +299,66 @@ std::vector<MobEffectInstance> GMLIB_Player::getAllEffects() {
         }
     }
     return result;
+}
+
+std::optional<int> GMLIB_Player::getScore(std::string objective) {
+    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    return scoreboard->getPlayerScore(objective, this);
+}
+
+std::optional<int> GMLIB_Player::setScore(std::string objective, int value, PlayerScoreSetFunction action) {
+    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    return scoreboard->setPlayerScore(objective, this, value, action);
+}
+
+bool GMLIB_Player::resetScore(std::string objective) {
+    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    return scoreboard->resetPlayerScore(objective, this);
+}
+
+bool GMLIB_Player::resetScore() {
+    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    return scoreboard->resetPlayerAllScores(this);
+}
+
+std::optional<int> GMLIB_Player::getPlayerScore(std::string serverid, std::string objective) {
+    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    return scoreboard->getPlayerScore(objective, serverid);
+}
+
+std::optional<int> GMLIB_Player::getPlayerScore(mce::UUID& uuid, std::string objective) {
+    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    return scoreboard->getPlayerScore(objective, uuid);
+}
+
+std::optional<int>
+GMLIB_Player::setPlayerScore(std::string serverid, std::string objective, int value, PlayerScoreSetFunction action) {
+    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    return scoreboard->setPlayerScore(objective, serverid, value, action);
+}
+
+std::optional<int>
+GMLIB_Player::setPlayerScore(mce::UUID& uuid, std::string objective, int value, PlayerScoreSetFunction action) {
+    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    return scoreboard->setPlayerScore(objective, uuid, value, action);
+}
+
+bool GMLIB_Player::resetPlayerScore(std::string serverid, std::string objective) {
+    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    return scoreboard->resetPlayerScore(objective, serverid);
+}
+
+bool GMLIB_Player::resetPlayerScore(mce::UUID& uuid, std::string objective) {
+    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    return scoreboard->resetPlayerScore(objective, uuid);
+}
+
+bool GMLIB_Player::resetPlayerScore(std::string serverid) {
+    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    return scoreboard->resetPlayerAllScores(serverid);
+}
+
+bool GMLIB_Player::resetPlayerScore(mce::UUID& uuid) {
+    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    return scoreboard->resetPlayerAllScores(uuid);
 }
