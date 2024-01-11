@@ -1,5 +1,7 @@
 #include "Global.h"
 #include "include_all.h"
+#include "ll/api/service/Bedrock.h"
+#include "mc/server/LoopbackPacketSender.h"
 
 namespace plugin {
 
