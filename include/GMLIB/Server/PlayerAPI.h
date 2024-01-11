@@ -30,6 +30,8 @@ public:
 
     GMLIB_API static bool deletePlayerNbt(mce::UUID& uuid);
 
+    GMLIB_API static bool getPlayerScore(mce::UUID& uuid);
+
 public:
     GMLIB_API std::unique_ptr<CompoundTag> getNbt();
 

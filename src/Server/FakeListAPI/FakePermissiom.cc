@@ -1,6 +1,3 @@
-#include "Global.h"
+#include "Server/FakeListAPI/FakeListAPI.h"
 #include <GMLIB/Server/FakeListAPI.h>
 
-namespace GMLIB::FakeListAPI::FakePermission {
-//
-}
