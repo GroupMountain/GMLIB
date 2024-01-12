@@ -32,11 +32,11 @@ public:
 
     GMLIB_API std::vector<MobEffectInstance> getAllEffects();
 
-    GMLIB_API bool setProjectile(Actor* projectile, float speed, float offset);
+    GMLIB_API bool setProjectile(Actor* projectile, float speed = 2, float offset = 3);
 
-    GMLIB_API bool shootProjectile(std::string typeName, float speed, float offset);
+    GMLIB_API GMLIB_Actor* shootProjectile(std::string typeName, float speed = 2, float offset = 3);
 
-    GMLIB_API bool throwEntity(Actor* projectile, float speed, float offset = 0);
+    GMLIB_API bool throwEntity(Actor* projectile, float speed = 2, float offset = 3);
 
     GMLIB_API void setHealth(int value);
 

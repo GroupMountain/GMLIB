@@ -20,23 +20,23 @@ public:
 
     GMLIB_API void setAuxValue(short auxValue);
 
-    GMLIB_API std::vector<BlockLegacy*> getCanDestroy();
+    GMLIB_API std::vector<const BlockLegacy*> getCanDestroy();
 
-    GMLIB_API void setCanDestroy(std::vector<BlockLegacy*> blocks);
+    GMLIB_API void setCanDestroy(std::vector<const BlockLegacy*> blocks);
 
-    GMLIB_API void setCanDestroy(std::vector<std::string>& blocks);
+    GMLIB_API std::optional<bool> setCanDestroy(std::vector<std::string>& blocks);
 
-    GMLIB_API std::vector<BlockLegacy*> getCanPlaceOn();
+    GMLIB_API std::vector<const BlockLegacy*> getCanPlaceOn();
 
-    GMLIB_API void setCanPlaceOn(std::vector<BlockLegacy*> blocks);
+    GMLIB_API void setCanPlaceOn(std::vector<const BlockLegacy*> blocks);
 
-    GMLIB_API void setCanPlaceOn(std::vector<std::string>& blocks);
+    GMLIB_API std::optional<bool> setCanPlaceOn(std::vector<std::string>& blocks);
 
-    GMLIB_API void setShouldKeepOnDeath(bool value);
+    GMLIB_API bool setShouldKeepOnDeath(bool value);
 
-    GMLIB_API bool getShouldKeepOnDeath();
+    GMLIB_API std::optional<bool> getShouldKeepOnDeath();
 
-    GMLIB_API void setItemLockMode(::ItemLockMode mode);
+    GMLIB_API bool setItemLockMode(::ItemLockMode mode);
 
-    GMLIB_API ::ItemLockMode getItemLockMode();
+    GMLIB_API std::optional<ItemLockMode> getItemLockMode();
 };

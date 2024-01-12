@@ -21,5 +21,5 @@ public:
     GMLIB_API static ItemActor*
     spawnItem(Vec3 pos, int dimid, std::string name, int count = 1, int aux = 0, GMLIB_Actor* owner = nullptr);
 
-    GMLIB_API static GMLIB_Actor* spawnProjectile(GMLIB_Actor* owner, std::string name, float speed, float offset = 0);
+    GMLIB_API static GMLIB_Actor* spawnProjectile(GMLIB_Actor* owner, std::string name, float speed = 2, float offset = 3);
 };

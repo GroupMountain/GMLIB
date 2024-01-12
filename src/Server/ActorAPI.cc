@@ -2,6 +2,7 @@
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/CompoundTagAPI.h>
 #include <corecrt_math_defines.h>
+#include <GMLIB/Server/SpawnerAPI.h>
 
 bool GMLIB_Actor::isPlayer() const { return hasCategory(ActorCategory::Player); }
 
@@ -11,7 +12,7 @@ bool GMLIB_Actor::isMob() const { return hasCategory(ActorCategory::Mob); }
 
 std::unique_ptr<CompoundTag> GMLIB_Actor::getNbt() {
     auto nbt = std::make_unique<CompoundTag>();
-    saveWithoutId(*nbt);
+    save(*nbt);
     return std::move(nbt);
 }
 
@@ -127,4 +128,8 @@ ItemStack* GMLIB_Actor::getOffHandSlot() { return (ItemStack*)&getEquippedSlot(P
 
 void GMLIB_Actor::setOffHandSlot(ItemStack& itemStack) {
     return setEquippedSlot(Puv::Legacy::EquipmentSlot::Offhand, itemStack);
+}
+
+GMLIB_Actor* GMLIB_Actor::shootProjectile(std::string typeName, float speed, float offset) {
+    return GMLIB_Spawner::spawnProjectile((GMLIB_Actor*)this, typeName, speed, offset);
 }

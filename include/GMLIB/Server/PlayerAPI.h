@@ -1,5 +1,6 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
+#include "GMLIB/Server/ActorAPI.h"
 #include "mc/world/actor/player/Player.h"
 
 class GMLIB_Player : public Player {
@@ -68,7 +69,7 @@ public:
 
     GMLIB_API bool resetScore(std::string objective);
 
-    GMLIB_API bool shootProjectile(std::string typeName, float speed, float offset);
+    GMLIB_API GMLIB_Actor* shootProjectile(std::string typeName, float speed = 2, float offset = 3);
 
     GMLIB_API bool resetScore();
 
@@ -133,4 +134,16 @@ public:
 
     GMLIB_API bool setOffHandSlot(ItemStack& itemStack);
 
+    // ToDo API
+    // If you need any API, please open an issue on https://github.com/GroupMountain/GMLIB/issues 
+
+    // GMLIB_API bool giveItem(ItemStack& item, bool drop = false);
+
+    // GMLIB_API bool giveItem(std::string name, int count = 1, short aux = 0, bool drop = false);
+
+    // GMLIB_API int clearItem(std::string name, int count = 1, short aux = -1);
+
+    // GMLIB_API int hasItem(std::string name, short aux = -1);
+
+    // GMLIB_API bool setFreezing(float percentage = 1.0f);
 };
