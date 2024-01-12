@@ -89,4 +89,9 @@ public:
         bool          allowUnderwater = false,
         float         maxResistance   = 3.40282347e+38
     );
+
+    // ToDo API
+    // If you need any API, please open an issue on https://github.com/GroupMountain/GMLIB/issues 
+
+    // GMLIB_API int fillBlock();
 };

@@ -28,4 +28,11 @@ public:
     GMLIB_API static void setSimulatedPlayerListOptimizeEnabled(bool value = true);
 
     GMLIB_API static bool getSimulatedPlayerListOptimizeEnabled();
+
+    // ToDo API
+    // If you need any API, please open an issue on https://github.com/GroupMountain/GMLIB/issues 
+
+    // GMLIB_API static bool setFakePermission();
+
+    // GMLIB_API static bool removePlayerFromList();
 };

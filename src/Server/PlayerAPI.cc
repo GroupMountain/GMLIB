@@ -3,6 +3,7 @@
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/PlayerAPI.h>
 #include <GMLIB/Server/ScoreboardAPI.h>
+#include <GMLIB/Server/SpawnerAPI.h>
 
 void forEachUuid(bool includeOfflineSignedId, std::function<void(std::string_view const& uuid)> callback) {
     GMLIB::Global<DBStorage>->forEachKeyWithPrefix(
@@ -77,17 +78,20 @@ bool GMLIB_Player::setOfflineNbt(std::string serverid, CompoundTag* nbt) {
 }
 
 std::unique_ptr<CompoundTag> GMLIB_Player::getPlayerNbt(mce::UUID uuid) {
-    auto player = ll::service::bedrock::getLevel()->getPlayer(uuid);
+    auto player = (GMLIB_Player*)ll::service::bedrock::getLevel()->getPlayer(uuid);
     if (player) {
-        auto nbt = player->save();
-        return nbt;
+        return player->getNbt();
     } else {
         auto serverid = getServeridFromUuid(uuid);
         return getOfflineNbt(serverid);
     }
 }
 
-std::unique_ptr<CompoundTag> GMLIB_Player::getNbt() { return save(); }
+std::unique_ptr<CompoundTag> GMLIB_Player::getNbt() {
+    auto nbt = std::make_unique<CompoundTag>();
+    save(*nbt);
+    return std::move(nbt);
+}
 
 bool GMLIB_Player::setPlayerNbt(mce::UUID const& uuid, CompoundTag* nbt) {
     auto player = ll::service::bedrock::getLevel()->getPlayer(uuid);
@@ -112,9 +116,9 @@ void setNbtTags(CompoundTag* originNbt, CompoundTag* dataNbt, const std::vector<
 }
 
 bool GMLIB_Player::setPlayerNbtTags(mce::UUID const& uuid, CompoundTag* nbt, const std::vector<std::string>& tags) {
-    auto player = ll::service::bedrock::getLevel()->getPlayer(uuid);
+    auto player = (GMLIB_Player*)ll::service::bedrock::getLevel()->getPlayer(uuid);
     if (player) {
-        auto data = player->save();
+        auto data = player->getNbt();
         setNbtTags(data.get(), nbt, tags);
         return player->load(*nbt);
     }
@@ -142,6 +146,17 @@ bool GMLIB_Player::deletePlayerNbt(mce::UUID& uuid) {
     auto serverid = getServeridFromUuid(uuid);
     return deletePlayerNbt(serverid);
 }
+
+/*
+//  Add to ScorePacketInfo.h
+//  comment MCAPI ScorePacketInfo(struct ScorePacketInfo&&);
+
+    [[nodiscard]] inline ScorePacketInfo(ScoreboardId* scoreboardId, std::string objective, IdentityDefinition::Type
+type, int value, std::string& fakeName) : mScoreboardId(*scoreboardId) , mObjectiveName(objective) , mIdentityType(type)
+        , mScoreValue(value)
+        , mFakePlayerName(fakeName) {
+    }
+*/
 
 void GMLIB_Player::setClientSidebar(
     const std::string                               title,
@@ -361,4 +376,20 @@ bool GMLIB_Player::resetPlayerScore(std::string serverid) {
 bool GMLIB_Player::resetPlayerScore(mce::UUID& uuid) {
     auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
     return scoreboard->resetPlayerAllScores(uuid);
+}
+
+ItemStack* GMLIB_Player::getMainHandSlot() { return (ItemStack*)&getItemSlot(Puv::Legacy::EquipmentSlot::Mainhand); }
+
+bool GMLIB_Player::setMainHandSlot(ItemStack& itemStack) {
+    return setItemSlot(Puv::Legacy::EquipmentSlot::Mainhand, itemStack);
+}
+
+ItemStack* GMLIB_Player::getOffHandSlot() { return (ItemStack*)&getItemSlot(Puv::Legacy::EquipmentSlot::Offhand); }
+
+bool GMLIB_Player::setOffHandSlot(ItemStack& itemStack) {
+    return setItemSlot(Puv::Legacy::EquipmentSlot::Offhand, itemStack);
+}
+
+GMLIB_Actor* GMLIB_Player::shootProjectile(std::string typeName, float speed, float offset) {
+    return GMLIB_Spawner::spawnProjectile((GMLIB_Actor*)this, typeName, speed, offset);
 }

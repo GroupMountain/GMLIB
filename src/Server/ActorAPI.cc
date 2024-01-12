@@ -2,6 +2,7 @@
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/CompoundTagAPI.h>
 #include <corecrt_math_defines.h>
+#include <GMLIB/Server/SpawnerAPI.h>
 
 bool GMLIB_Actor::isPlayer() const { return hasCategory(ActorCategory::Player); }
 
@@ -9,9 +10,9 @@ bool GMLIB_Actor::isItemActor() const { return hasCategory(ActorCategory::Item);
 
 bool GMLIB_Actor::isMob() const { return hasCategory(ActorCategory::Mob); }
 
-std::unique_ptr<CompoundTag> GMLIB_Actor::getNbt() { 
+std::unique_ptr<CompoundTag> GMLIB_Actor::getNbt() {
     auto nbt = std::make_unique<CompoundTag>();
-    saveWithoutId(*nbt);
+    save(*nbt);
     return std::move(nbt);
 }
 
@@ -65,9 +66,7 @@ void GMLIB_Actor::addEffect(
     return addEffect(effect);
 }
 
-void GMLIB_Actor::removeEffect(MobEffect::EffectType effectType) {
-    return removeEffect((int)effectType);
-}
+void GMLIB_Actor::removeEffect(MobEffect::EffectType effectType) { return removeEffect((int)effectType); }
 
 std::vector<MobEffectInstance> GMLIB_Actor::getAllEffects() {
     std::vector<MobEffectInstance> result = {};
@@ -117,4 +116,20 @@ bool GMLIB_Actor::throwEntity(Actor* projectile, float speed, float offset) {
         return setProjectile(projectile, speed, offset);
     }
     return false;
+}
+
+ItemStack* GMLIB_Actor::getMainHandSlot() { return (ItemStack*)&getEquippedSlot(Puv::Legacy::EquipmentSlot::Mainhand); }
+
+void GMLIB_Actor::setMainHandSlot(ItemStack& itemStack) {
+    return setEquippedSlot(Puv::Legacy::EquipmentSlot::Mainhand, itemStack);
+}
+
+ItemStack* GMLIB_Actor::getOffHandSlot() { return (ItemStack*)&getEquippedSlot(Puv::Legacy::EquipmentSlot::Offhand); }
+
+void GMLIB_Actor::setOffHandSlot(ItemStack& itemStack) {
+    return setEquippedSlot(Puv::Legacy::EquipmentSlot::Offhand, itemStack);
+}
+
+GMLIB_Actor* GMLIB_Actor::shootProjectile(std::string typeName, float speed, float offset) {
+    return GMLIB_Spawner::spawnProjectile((GMLIB_Actor*)this, typeName, speed, offset);
 }
