@@ -51,6 +51,18 @@ inline void GMLIB_BinaryStream::writeUuid(mce::UUID const& uuid) {
     writeUnsignedInt64(uuid.b);
 }
 
+inline void GMLIB_BinaryStream::writePropertySyncData(struct PropertySyncData const& syncdata) {
+    writeUnsignedVarInt(syncdata.mIntEntries.size());
+    for (auto IntEntry : syncdata.mIntEntries) {
+        writeUnsignedVarInt(IntEntry.mPropertyIndex);
+        writeVarInt(IntEntry.mData);
+    }
+    writeUnsignedVarInt(syncdata.mFloatEntries.size());
+    for (auto FloatEntry : syncdata.mIntEntries) {
+        writeUnsignedVarInt(FloatEntry.mPropertyIndex);
+        writeFloat(FloatEntry.mData);
+    }
+}
 // Basic API Export
 
 inline void GMLIB_BinaryStream::writeBool(bool data) { ((BinaryStream*)this)->writeBool(data); }

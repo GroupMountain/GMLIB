@@ -26,6 +26,8 @@ public:
 
     GMLIB_API void writeUuid(mce::UUID const& data);
 
+    GMLIB_API void writePropertySyncData(struct PropertySyncData const& syncdata);
+
 public:
     // Basic API Export
     GMLIB_API void writeBool(bool data);
