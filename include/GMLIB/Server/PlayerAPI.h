@@ -134,6 +134,8 @@ public:
 
     GMLIB_API void setOffHandSlot(ItemStack& itemStack);
 
+    GMLIB_API void setFreezing(float percentage = 1.0f);
+
     // ToDo API
     // If you need any API, please open an issue on https://github.com/GroupMountain/GMLIB/issues 
 
@@ -144,6 +146,4 @@ public:
     // GMLIB_API int clearItem(std::string name, int count = 1, short aux = -1);
 
     // GMLIB_API int hasItem(std::string name, short aux = -1);
-
-    // GMLIB_API bool setFreezing(float percentage = 1.0f);
 };

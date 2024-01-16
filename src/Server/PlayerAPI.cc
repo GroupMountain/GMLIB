@@ -393,3 +393,7 @@ void GMLIB_Player::setOffHandSlot(ItemStack& itemStack) {
 GMLIB_Actor* GMLIB_Player::shootProjectile(std::string typeName, float speed, float offset) {
     return GMLIB_Spawner::spawnProjectile((GMLIB_Actor*)this, typeName, speed, offset);
 }
+
+void GMLIB_Player::setFreezing(float percentage) {
+    getEntityData().set<float>(0x78, percentage);
+}
