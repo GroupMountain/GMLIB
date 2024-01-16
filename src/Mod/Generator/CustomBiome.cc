@@ -14,14 +14,14 @@ void GMLIB_CustomBiome::registerBiomeClimates(std::string id, BiomeData data) {
     GMLIB_Level::addExperimentsRequire((AllExperiments)7);
 }
 
-// 6 | createWorldScreen.experimentalholiday
-// 7 | createWorldScreen.experimentalbiomes
-// 8 | createWorldScreen.experimentalCreatorFeatures
-// 9 | createWorldScreen.experimentalGameTest
-// 10 | createWorldScreen.experimentalMolangFeatures
-// 12 | createWorldScreen.experimentalCameras
-// 15 | createWorldScreen.experimentalVillagerTradesRebalance
-// 16 | createWorldScreen.experimentalUpdateAnnounced2023
+// 6 | ExperimentalHoliday
+// 7 | ExperimentalBiomes
+// 8 | ExperimentalCreatorFeatures
+// 9 | ExperimentalGameTest
+// 10 | ExperimentalMolangFeatures
+// 12 | ExperimentalCameras
+// 15 | ExperimentalVillagerTradesRebalance
+// 16 | ExperimentalUpdateAnnounced2023
 
 void GMLIB_CustomBiome::registerEmptyBiome(std::string id, BiomeData data) {
     mNewBiomes.push_back(id);
