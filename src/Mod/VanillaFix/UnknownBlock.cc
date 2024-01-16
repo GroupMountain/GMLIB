@@ -1,16 +1,16 @@
 #include "Global.h"
-#include <GMLIB/Mod/UnknownBlock.h>
+#include <GMLIB/Mod/VanillaFix.h>
 #include <GMLIB/Server/LevelAPI.h>
 
 std::unordered_set<std::string>                       mUnknownBlockLegacyNameList;
 bool                                                  mAutoCleanUnknownBlockEnabled = false;
 std::unordered_map<int, std::unordered_set<ChunkPos>> mFixedChunksList              = {};
 
-std::unordered_set<std::string> GMLIB_UnknownBlock::getUnknownBlockLegacyNameList() {
+std::unordered_set<std::string> GMLIB_VanillaFix::getUnknownBlockLegacyNameList() {
     return mUnknownBlockLegacyNameList;
 }
 
-GMLIB_API void GMLIB_UnknownBlock::setAutoCleanUnknownBlockEnabled(bool value = true) {
+GMLIB_API void GMLIB_VanillaFix::setAutoCleanUnknownBlockEnabled(bool value = true) {
     mAutoCleanUnknownBlockEnabled = value;
 }
 
