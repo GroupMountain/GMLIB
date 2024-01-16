@@ -105,9 +105,9 @@ public:
     GMLIB_API bool setBlock(std::string name, short aux, BlockPos& pos, DimensionType dimId);
 
     GMLIB_API int
-    fillBlock(BlockPos startpos, BlockPos endpos, DimensionType dimId, Block* block, FillMode mode = FillMode::Replace);
+    fillBlocks(BlockPos startpos, BlockPos endpos, DimensionType dimId, Block* block, FillMode mode = FillMode::Replace);
 
-    GMLIB_API int fillBlock(
+    GMLIB_API int fillBlocks(
         BlockPos       startpos,
         BlockPos       endpos,
         DimensionType  dimId,
@@ -116,9 +116,9 @@ public:
         FillMode       mode     = FillMode::Replace
     );
 
-    GMLIB_API int fillBlock(BlockPos startpos, BlockPos endpos, DimensionType dimId, Block* oldBlock, Block* newBlock);
+    GMLIB_API int fillBlocks(BlockPos startpos, BlockPos endpos, DimensionType dimId, Block* oldBlock, Block* newBlock);
 
-    GMLIB_API int fillBlock(
+    GMLIB_API int fillBlocks(
         BlockPos       startpos,
         BlockPos       endpos,
         DimensionType  dimId,

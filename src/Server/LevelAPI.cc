@@ -246,7 +246,7 @@ bool checkPosInRange(BlockPos pos, BlockPos startpos, BlockPos endpos) {
     return false;
 }
 
-int GMLIB_Level::fillBlock(BlockPos startpos, BlockPos endpos, DimensionType dimensionId, Block* block, FillMode mode) {
+int GMLIB_Level::fillBlocks(BlockPos startpos, BlockPos endpos, DimensionType dimensionId, Block* block, FillMode mode) {
     int  count       = 0;
     auto blockSource = getBlockSource(dimensionId);
     if (checkFillPos(startpos, endpos)) {
@@ -294,7 +294,7 @@ int GMLIB_Level::fillBlock(BlockPos startpos, BlockPos endpos, DimensionType dim
     return 0;
 }
 
-int GMLIB_Level::fillBlock(
+int GMLIB_Level::fillBlocks(
     BlockPos       startpos,
     BlockPos       endpos,
     DimensionType  dimId,
@@ -304,12 +304,12 @@ int GMLIB_Level::fillBlock(
 ) {
     Block* block = (Block*)Block::tryGetFromRegistry(name, tileData).as_ptr();
     if (block) {
-        return fillBlock(startpos, endpos, dimId, block, mode);
+        return fillBlocks(startpos, endpos, dimId, block, mode);
     }
     return 0;
 }
 
-int GMLIB_Level::fillBlock(BlockPos startpos, BlockPos endpos, DimensionType dimId, Block* newblock, Block* oldblock) {
+int GMLIB_Level::fillBlocks(BlockPos startpos, BlockPos endpos, DimensionType dimId, Block* newblock, Block* oldblock) {
     int  count       = 0;
     auto blockSource = getBlockSource(dimId);
     if (checkFillPos(startpos, endpos)) {
@@ -328,6 +328,23 @@ int GMLIB_Level::fillBlock(BlockPos startpos, BlockPos endpos, DimensionType dim
             }
         }
         return count;
+    }
+    return 0;
+}
+
+int GMLIB_Level::fillBlocks(
+    BlockPos       startpos,
+    BlockPos       endpos,
+    DimensionType  dimId,
+    std::string    oldName,
+    unsigned short oldTileData,
+    std::string    newName,
+    unsigned short newTileData
+) {
+    Block* newblock = (Block*)Block::tryGetFromRegistry(newName, newTileData).as_ptr();
+    Block* oldblock = (Block*)Block::tryGetFromRegistry(oldName, oldTileData).as_ptr();
+    if (newblock && oldblock) {
+        return fillBlocks(startpos, endpos, dimId, newblock, oldblock);
     }
     return 0;
 }
