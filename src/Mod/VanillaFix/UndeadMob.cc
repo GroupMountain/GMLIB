@@ -3,7 +3,7 @@
 
 bool mEnableUndeadFix = false;
 
-void GMLIB_VanillaFix::setFixCustomUndeadMobs(bool value = true) {
+void GMLIB_VanillaFix::setFixCustomUndeadMobs(bool value) {
     mEnableUndeadFix = value;
 }
 

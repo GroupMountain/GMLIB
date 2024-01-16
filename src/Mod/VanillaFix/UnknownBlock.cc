@@ -10,7 +10,7 @@ std::unordered_set<std::string> GMLIB_VanillaFix::getUnknownBlockLegacyNameList(
     return mUnknownBlockLegacyNameList;
 }
 
-GMLIB_API void GMLIB_VanillaFix::setAutoCleanUnknownBlockEnabled(bool value = true) {
+GMLIB_API void GMLIB_VanillaFix::setAutoCleanUnknownBlockEnabled(bool value) {
     mAutoCleanUnknownBlockEnabled = value;
 }
 
