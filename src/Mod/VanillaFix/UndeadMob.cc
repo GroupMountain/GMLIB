@@ -14,6 +14,5 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     "?isInvertedHealAndHarm@Actor@@UEBA_NXZ",
     bool) 
 {
-    
     return mEnableUndeadFix ? this->hasFamily("undead") : origin();
 }

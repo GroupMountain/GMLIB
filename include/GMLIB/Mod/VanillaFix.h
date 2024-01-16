@@ -1,3 +1,4 @@
+#pragma once
 #include "GMLIB/GMLIB.h"
 
 class GMLIB_VanillaFix {
