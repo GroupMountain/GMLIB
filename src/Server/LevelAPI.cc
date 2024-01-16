@@ -246,7 +246,13 @@ bool checkPosInRange(BlockPos pos, BlockPos startpos, BlockPos endpos) {
     return false;
 }
 
-int GMLIB_Level::fillBlocks(BlockPos startpos, BlockPos endpos, DimensionType dimensionId, Block* block, FillMode mode) {
+int GMLIB_Level::fillBlocks(
+    BlockPos      startpos,
+    BlockPos      endpos,
+    DimensionType dimensionId,
+    Block*        block,
+    FillMode      mode
+) {
     int  count       = 0;
     auto blockSource = getBlockSource(dimensionId);
     if (checkFillPos(startpos, endpos)) {
