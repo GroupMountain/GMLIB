@@ -128,11 +128,11 @@ public:
 
     GMLIB_API ItemStack* getMainHandSlot();
 
-    GMLIB_API bool setMainHandSlot(ItemStack& itemStack);
+    GMLIB_API void setMainHandSlot(ItemStack& itemStack);
 
     GMLIB_API ItemStack* getOffHandSlot();
 
-    GMLIB_API bool setOffHandSlot(ItemStack& itemStack);
+    GMLIB_API void setOffHandSlot(ItemStack& itemStack);
 
     // ToDo API
     // If you need any API, please open an issue on https://github.com/GroupMountain/GMLIB/issues 

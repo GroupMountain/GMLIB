@@ -378,16 +378,16 @@ bool GMLIB_Player::resetPlayerScore(mce::UUID& uuid) {
     return scoreboard->resetPlayerAllScores(uuid);
 }
 
-ItemStack* GMLIB_Player::getMainHandSlot() { return (ItemStack*)&getItemSlot(Puv::Legacy::EquipmentSlot::Mainhand); }
+ItemStack* GMLIB_Player::getMainHandSlot() { return (ItemStack*)&getEquippedSlot(Puv::Legacy::EquipmentSlot::Mainhand); }
 
-bool GMLIB_Player::setMainHandSlot(ItemStack& itemStack) {
-    return setItemSlot(Puv::Legacy::EquipmentSlot::Mainhand, itemStack);
+void GMLIB_Player::setMainHandSlot(ItemStack& itemStack) {
+    return setEquippedSlot(Puv::Legacy::EquipmentSlot::Mainhand, itemStack);
 }
 
-ItemStack* GMLIB_Player::getOffHandSlot() { return (ItemStack*)&getItemSlot(Puv::Legacy::EquipmentSlot::Offhand); }
+ItemStack* GMLIB_Player::getOffHandSlot() { return (ItemStack*)&getEquippedSlot(Puv::Legacy::EquipmentSlot::Offhand); }
 
-bool GMLIB_Player::setOffHandSlot(ItemStack& itemStack) {
-    return setItemSlot(Puv::Legacy::EquipmentSlot::Offhand, itemStack);
+void GMLIB_Player::setOffHandSlot(ItemStack& itemStack) {
+    return setEquippedSlot(Puv::Legacy::EquipmentSlot::Offhand, itemStack);
 }
 
 GMLIB_Actor* GMLIB_Player::shootProjectile(std::string typeName, float speed, float offset) {
