@@ -1,4 +1,5 @@
 #include "Global.h"
+#include "mc/world/item/NetworkItemStackDescriptor.h"
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/FloatingTextAPI.h>
@@ -97,7 +98,7 @@ LL_AUTO_INSTANCE_HOOK(
     bs.writeType(nisd);
     bs.writeVec3(ft->mPosition);
     bs.writeVec3(Vec3{0, 0, 0});
-    bs.writeDataItem(dataItemList);
+    bs.writeType(dataItemList);
     bs.writeBool(false);
     GMLIB_NetworkPacket<(int)MinecraftPacketIds::AddItemActor> pkt(bs.getAndReleaseData());
     pkt.sendToClients();
