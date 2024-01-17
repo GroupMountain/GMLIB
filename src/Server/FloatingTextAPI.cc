@@ -85,11 +85,7 @@ LL_AUTO_INSTANCE_HOOK(
 ) {
     origin(a1, a2, a3);
 
-    auto ft = new FloatingText("傻逼", {0, 120, 0}, 0);
-
-    std::vector<std::unique_ptr<DataItem>> dataItemList;
-    dataItemList.emplace_back(DataItem::create(ActorDataIDs::Name, ft->mText));
-    dataItemList.emplace_back(DataItem::create<schar>(ActorDataIDs::NametagAlwaysShow, true));
+    auto               ft   = new FloatingText("傻逼", {0, 120, 0}, 0);
     auto               item = std::make_unique<ItemStack>(ItemStack{"minecraft:air"});
     auto               nisd = NetworkItemStackDescriptor(*item);
     GMLIB_BinaryStream bs;
@@ -98,7 +94,15 @@ LL_AUTO_INSTANCE_HOOK(
     bs.writeType(nisd);
     bs.writeVec3(ft->mPosition);
     bs.writeVec3(Vec3{0, 0, 0});
-    bs.writeType(dataItemList);
+    // DataItem
+    bs.writeUnsignedVarInt(2);
+    bs.writeUnsignedVarInt((uint)0x4);
+    bs.writeUnsignedVarInt((uint)0x4);
+    bs.writeString(ft->mText);
+    bs.writeUnsignedVarInt((uint)0x51);
+    bs.writeUnsignedVarInt((uint)0x0);
+    bs.writeBool(true);
+
     bs.writeBool(false);
     GMLIB_NetworkPacket<(int)MinecraftPacketIds::AddItemActor> pkt(bs.getAndReleaseData());
     pkt.sendToClients();
