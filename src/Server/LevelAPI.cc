@@ -399,19 +399,6 @@ void initExperiments(LevelData* leveldat) {
     }
 }
 
-LL_AUTO_INSTANCE_HOOK(
-    LevelDatInit,
-    ll::memory::HookPriority::Normal,
-    "?getLevelData@ExternalFileLevelStorageSource@@UEBA?AVLevelData@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$"
-    "allocator@D@2@@std@@@Z",
-    LevelData*,
-    std::string& a1
-) {
-    auto res = origin(a1);
-    initExperiments(res);
-    return res;
-}
-
 LL_AUTO_INSTANCE_HOOK(isTrustSkin, ll::memory::HookPriority::Normal, "?isTrustedSkin@SerializedSkin@@QEBA_NXZ", bool) {
     if (GMLIB::LevelAPI::mForceTrustSkin) {
         return true;
