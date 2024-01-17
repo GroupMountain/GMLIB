@@ -11,7 +11,7 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     UndeadMobFix,
     HookPriority::Highest,
     Actor,  
-    "?isInvertedHealAndHarm@Actor@@UEBA_NXZ",
+    "?isInvertedHealAndHarm@Actor@@QEBA_NXZ",
     bool) 
 {
     return mEnableUndeadFix ? this->hasFamily("undead") : origin();
