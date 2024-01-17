@@ -123,7 +123,7 @@ LL_AUTO_INSTANCE_HOOK(
     });
     origin(a1, a2, a3);
 }
-*/
+
 
 //
 

@@ -11,7 +11,6 @@ public:
 
 public:
     FloatingText(std::string text, Vec3 position, DimensionType dimensionId);
-    ~FloatingText();
 
     FloatingText() = delete;
 
@@ -19,15 +18,17 @@ public:
     static FloatingText* getFloatingText(int64 runtimeId);
 
 public:
-    int64_t getFloatingTextRuntimeId();
+    virtual ~FloatingText();
 
-    void sendToClient(Player* pl);
+    virtual int64_t getFloatingTextRuntimeId();
 
-    void sendToAllClients();
+    virtual void sendToClient(Player* pl);
 
-    void removeFromClient(Player* pl);
+    virtual void sendToAllClients();
 
-    void removeFromAllClients();
+    virtual void removeFromClient(Player* pl);
 
-    void updateText(std::string newText);
+    virtual void removeFromAllClients();
+
+    virtual void updateText(std::string newText);
 };
