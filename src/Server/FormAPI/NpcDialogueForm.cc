@@ -22,7 +22,7 @@ std::string npcAction = R"([
       "type" : 1
    },
    {
-      "button_name" : "",
+      "button_name" : "sff",
       "data" : [
          {
             "cmd_line" : "say test2",
@@ -34,7 +34,7 @@ std::string npcAction = R"([
       "type" : 1
    },
    {
-      "button_name" : "",
+      "button_name" : "sd",
       "data" : [
          {
             "cmd_line" : "say test3",
@@ -46,14 +46,14 @@ std::string npcAction = R"([
       "type" : 1
    },
    {
-      "button_name" : "原神启动",
+      "button_name" : "qa",
       "data" : [
          {
             "cmd_line" : "/hhh",
             "cmd_ver" : 36
          },
          {
-            "cmd_line" : "傻逼oj",
+            "cmd_line" : "oj",
             "cmd_ver" : 36
          }
       ],
