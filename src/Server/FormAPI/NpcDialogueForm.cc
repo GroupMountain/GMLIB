@@ -3,7 +3,7 @@
 #include <GMLIB/Server/FormAPI/NpcDialogueForm.h>
 #include <GMLIB/Server/NetworkPacketAPI.h>
 #include <GMLIB/Server/ActorAPI.h>
-/*
+
 
 std::string npcData =
     R"({"picker_offsets":{"scale":[1.70,1.70,1.70],"translate":[0,20,0]},"portrait_offsets":{"scale":[1.750,1.750,1.750],"translate":[-7,50,0]},"skin_list":[{"variant":0},{"variant":1},{"variant":2},{"variant":3},{"variant":4},{"variant":5},{"variant":6},{"variant":7},{"variant":8},{"variant":9},{"variant":10},{"variant":11},{"variant":12},{"variant":13},{"variant":14},{"variant":15},{"variant":16},{"variant":17},{"variant":18},{"variant":19},{"variant":25},{"variant":26},{"variant":27},{"variant":28},{"variant":29},{"variant":30},{"variant":31},{"variant":32},{"variant":33},{"variant":34},{"variant":20},{"variant":21},{"variant":22},{"variant":23},{"variant":24},{"variant":35},{"variant":36},{"variant":37},{"variant":38},{"variant":39},{"variant":40},{"variant":41},{"variant":42},{"variant":43},{"variant":44},{"variant":50},{"variant":51},{"variant":52},{"variant":53},{"variant":54},{"variant":45},{"variant":46},{"variant":47},{"variant":48},{"variant":49},{"variant":55},{"variant":56},{"variant":57},{"variant":58},{"variant":59}]})";
@@ -46,14 +46,14 @@ std::string npcAction = R"([
       "type" : 1
    },
    {
-      "button_name" : "q",
+      "button_name" : "原神启动",
       "data" : [
          {
             "cmd_line" : "/hhh",
             "cmd_ver" : 36
          },
          {
-            "cmd_line" : "sb",
+            "cmd_line" : "傻逼oj",
             "cmd_ver" : 36
          }
       ],
@@ -66,15 +66,14 @@ std::string npcAction = R"([
 
 
 void sendFakeNpc(Player* pl) {
-    auto auid = GMLIB_Actor::getNextActorUniqueID();
+    auto auid = 8848;//GMLIB_Actor::getNextActorUniqueID();塞个随机数或者大点的
     logger.warn("{}", auid);
     // DataItem
-    std::vector<std::unique_ptr<DataItem>> npcDataItem;
-    npcDataItem.emplace_back(DataItem::create<schar>(ActorDataIDs::HasNpc, true));
-    npcDataItem.emplace_back(DataItem::create(ActorDataIDs::NpcData, npcData));
-    npcDataItem.emplace_back(DataItem::create(ActorDataIDs::Actions, npcAction));
-    npcDataItem.emplace_back(DataItem::create(ActorDataIDs::InteractText, std::string("傻逼")));
-    npcDataItem.emplace_back(DataItem::create(ActorDataIDs::Name, std::string("测试")));
+    //std::vector<std::unique_ptr<DataItem>> npcDataItem;
+    //npcDataItem.emplace_back(DataItem::create<schar>(ActorDataIDs::HasNpc, true));
+    //npcDataItem.emplace_back(DataItem::create(ActorDataIDs::NpcData, npcData));
+    //npcDataItem.emplace_back(DataItem::create(ActorDataIDs::Actions, npcAction));
+    //npcDataItem.emplace_back(DataItem::create(ActorDataIDs::InteractText, std::string("傻逼oj")));
     // AddActorPacket
     GMLIB_BinaryStream bs1;
     bs1.writeVarInt64(auid);
@@ -86,7 +85,24 @@ void sendFakeNpc(Player* pl) {
     bs1.writeFloat(0.0f);
     bs1.writeFloat(0.0f);
     bs1.writeUnsignedVarInt(0);
-    bs1.writeDataItem(npcDataItem);
+    //bs1.writeDataItem(npcDataItem);
+    bs1.writeUnsignedVarInt(5);
+    bs1.writeUnsignedVarInt((uint)0x4);
+    bs1.writeUnsignedVarInt((uint)0x4);
+    bs1.writeString("测试");
+    bs1.writeUnsignedVarInt((uint)0x27);
+    bs1.writeUnsignedVarInt((uint)0x0);
+    bs1.writeBool(true);
+    bs1.writeUnsignedVarInt((uint)0x28);
+    bs1.writeUnsignedVarInt((uint)0x4);
+    bs1.writeString(npcData);
+    bs1.writeUnsignedVarInt((uint)0x29);
+    bs1.writeUnsignedVarInt((uint)0x4);
+    bs1.writeString(npcAction);
+    bs1.writeUnsignedVarInt((uint)0x64);
+    bs1.writeUnsignedVarInt((uint)0x4);
+    bs1.writeString("傻逼oj");
+
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
