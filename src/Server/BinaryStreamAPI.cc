@@ -17,7 +17,7 @@ inline void GMLIB_BinaryStream::writeDataItem(std::vector<std::unique_ptr<class 
 }
 
 inline void GMLIB_BinaryStream::writeNetworkItemStackDescriptor(class NetworkItemStackDescriptor const& netItem) {
-    netItem.write(*this);
+    this->writeType(netItem);
 }
 
 inline void GMLIB_BinaryStream::writeVec3(Vec3 vec3) {

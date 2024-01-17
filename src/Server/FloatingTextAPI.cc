@@ -1,4 +1,5 @@
 #include "Global.h"
+#include "mc/world/item/NetworkItemStackDescriptor.h"
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/FloatingTextAPI.h>
@@ -89,17 +90,19 @@ LL_AUTO_INSTANCE_HOOK(
     std::vector<std::unique_ptr<DataItem>> dataItemList;
     dataItemList.emplace_back(DataItem::create(ActorDataIDs::Name, ft->mText));
     dataItemList.emplace_back(DataItem::create<schar>(ActorDataIDs::NametagAlwaysShow, true));
-    auto item = std::make_unique<ItemStack>(ItemStack{"minecraft:bedrock"});
-    // ItemStackDescriptor        isd(*item->getItem(), item->getAuxValue(), 1, nullptr);
-    // NetworkItemStackDescriptor nisd(isd);
-    auto               nisd = NetworkItemStackDescriptor(*item);
+    auto nbt = std::unique_ptr<CompoundTag>((CompoundTag*)Tag::newTag(Tag::Type::Compound).release());
+    nbt->putByte("WasPickedUp", 0);
+    nbt->putShort("Damage", 0);
+    nbt->putString("Name", std::move("minecraft:air"));
+    nbt->putByte("Count", 1);
+    auto               item = ItemStack::fromTag(*nbt);
     GMLIB_BinaryStream bs;
     bs.writeVarInt64(ft->mRuntimeId);
     bs.writeUnsignedVarInt64(ft->mRuntimeId);
-    bs.writeNetworkItemStackDescriptor(nisd);
+    bs.writeNetworkItemStackDescriptor(NetworkItemStackDescriptor(item));
     bs.writeVec3(ft->mPosition);
     bs.writeVec3(Vec3{0, 0, 0});
-    bs.writeDataItem(dataItemList);
+    bs.writeType(dataItemList);
     bs.writeBool(false);
     GMLIB_NetworkPacket<(int)MinecraftPacketIds::AddItemActor> pkt(bs.getAndReleaseData());
     pkt.sendToClients();
