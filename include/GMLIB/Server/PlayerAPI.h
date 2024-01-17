@@ -108,6 +108,8 @@ public:
     GMLIB_API void
     setClientBossbar(int64_t bossbarId, std::string name, float percentage, ::BossBarColor color, int overlay);
 
+    GMLIB_API int64_t setClientBossbar(std::string name, float percentage, ::BossBarColor color, int overlay);
+
     GMLIB_API void removeClientBossbar(int64_t bossbarId);
 
     GMLIB_API void
@@ -137,7 +139,7 @@ public:
     GMLIB_API void setFreezing(float percentage = 1.0f);
 
     // ToDo API
-    // If you need any API, please open an issue on https://github.com/GroupMountain/GMLIB/issues 
+    // If you need any API, please open an issue on https://github.com/GroupMountain/GMLIB/issues
 
     // GMLIB_API bool giveItem(ItemStack& item, bool drop = false);
 
