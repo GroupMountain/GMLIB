@@ -2,6 +2,8 @@
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/FormAPI/NpcDialogueForm.h>
 #include <GMLIB/Server/NetworkPacketAPI.h>
+#include <GMLIB/Server/ActorAPI.h>
+/*
 
 std::string npcData =
     R"({"picker_offsets":{"scale":[1.70,1.70,1.70],"translate":[0,20,0]},"portrait_offsets":{"scale":[1.750,1.750,1.750],"translate":[-7,50,0]},"skin_list":[{"variant":0},{"variant":1},{"variant":2},{"variant":3},{"variant":4},{"variant":5},{"variant":6},{"variant":7},{"variant":8},{"variant":9},{"variant":10},{"variant":11},{"variant":12},{"variant":13},{"variant":14},{"variant":15},{"variant":16},{"variant":17},{"variant":18},{"variant":19},{"variant":25},{"variant":26},{"variant":27},{"variant":28},{"variant":29},{"variant":30},{"variant":31},{"variant":32},{"variant":33},{"variant":34},{"variant":20},{"variant":21},{"variant":22},{"variant":23},{"variant":24},{"variant":35},{"variant":36},{"variant":37},{"variant":38},{"variant":39},{"variant":40},{"variant":41},{"variant":42},{"variant":43},{"variant":44},{"variant":50},{"variant":51},{"variant":52},{"variant":53},{"variant":54},{"variant":45},{"variant":46},{"variant":47},{"variant":48},{"variant":49},{"variant":55},{"variant":56},{"variant":57},{"variant":58},{"variant":59}]})";
@@ -61,54 +63,45 @@ std::string npcAction = R"([
    }
 ])";
 
-int64_t nextLong() {
-    auto res = ll::service::getLevel()->getRandom().nextLong();
-    while (ll::service::getLevel()->fetchEntity(ActorUniqueID(res)) != nullptr) {
-        res = ll::service::getLevel()->getRandom().nextLong();
-    }
-    return res;
-}
+
 
 void sendFakeNpc(Player* pl) {
-    auto auid = nextLong();
-    // dataItem
+    auto auid = GMLIB_Actor::getNextActorUniqueID();
+    logger.warn("{}", auid);
+    // DataItem
     std::vector<std::unique_ptr<DataItem>> npcDataItem;
     npcDataItem.emplace_back(DataItem::create<schar>(ActorDataIDs::HasNpc, true));
     npcDataItem.emplace_back(DataItem::create(ActorDataIDs::NpcData, npcData));
     npcDataItem.emplace_back(DataItem::create(ActorDataIDs::Actions, npcAction));
     npcDataItem.emplace_back(DataItem::create(ActorDataIDs::InteractText, std::string("傻逼")));
     npcDataItem.emplace_back(DataItem::create(ActorDataIDs::Name, std::string("测试")));
+    // AddActorPacket
     GMLIB_BinaryStream bs1;
-    // ActorUniqueID
     bs1.writeVarInt64(auid);
-    // ActorRuntimeID
-    bs1.writeUnsignedVarInt64(auid + 1145141919810);
-    // ActorDefinitionIdentifider
+    bs1.writeUnsignedVarInt64(auid);
     bs1.writeString("npc");
-    // Position  Vec3
     bs1.writeVec3(Vec3{pl->getPosition().x, -66.0f, pl->getPosition().z});
-    // Velocity  Vec3
     bs1.writeVec3(Vec3{0, 0, 0});
-    // Rot  Vec2
+    bs1.writeVec2(Vec2{0, 0});
     bs1.writeFloat(0.0f);
     bs1.writeFloat(0.0f);
-    // YHeadRotation
-    bs1.writeFloat(0.0f);
-    // YBodyRotation
-    bs1.writeFloat(0.0f);
-    // Atrribute
     bs1.writeUnsignedVarInt(0);
-    // DataItem
     bs1.writeDataItem(npcDataItem);
-    // PropertySyncData
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
-    // ActorLinks
     bs1.writeUnsignedVarInt(0);
     GMLIB_NetworkPacket<(int)MinecraftPacketIds::AddActor> pkt1(bs1.getAndReleaseData());
     pkt1.sendTo(*pl);
     logger.warn("send 1");
-    auto pkt2 = NpcDialoguePacket(ActorUniqueID(auid));
+    // NpcDialoguePacket
+    GMLIB_BinaryStream bs2;
+    bs2.writeUnsignedInt64(auid);  // ActorUniqueId
+    bs2.writeVarInt(0);   // 0: Open  1: Close
+    bs2.writeString("1145141919810");  // Dialogue
+    bs2.writeString("jb");  // SceneName
+    bs2.writeString("sb");  // NpcName
+    bs2.writeString(npcAction);   // ActionJSON
+    GMLIB_NetworkPacket<(int)MinecraftPacketIds::NpcDialoguePacket> pkt2(bs2.getAndReleaseData());
     pkt2.sendTo(*pl);
     logger.warn("send 2");
 }
@@ -130,6 +123,7 @@ LL_AUTO_INSTANCE_HOOK(
     });
     origin(a1, a2, a3);
 }
+*/
 
 //
 
@@ -240,5 +234,55 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
             logger.error("data {}", en->getEntityData().getString(0x29));
         }
     }
+}
+
+
+__int64 __fastcall NpcDialoguePacket::write(NpcDialoguePacket *this, struct BinaryStream *a2)
+{
+  char *v4; // rcx
+  __int64 v5; // rax
+  char *v6; // rcx
+  __int64 v7; // rax
+  char *v8; // rcx
+  __int64 v9; // rax
+  char *v10; // rcx
+  __int64 v11; // rax
+  char *v13; // [rsp+20h] [rbp-18h] BYREF
+  __int64 v14; // [rsp+28h] [rbp-10h]
+
+  BinaryStream::writeUnsignedInt64(a2, *((_QWORD *)this + 6), 0i64, 0i64);
+  BinaryStream::writeVarInt(a2, *((_DWORD *)this + 14), 0i64, 0i64);
+  v4 = (char *)this + 64;
+  if ( *((_QWORD *)this + 11) >= 0x10ui64 )
+    v4 = (char *)*((_QWORD *)this + 8);
+  v5 = *((_QWORD *)this + 10);
+  v13 = v4;
+  v14 = v5;
+  ((void (__fastcall *)(struct BinaryStream *, char **, _QWORD, _QWORD))BinaryStream::writeString)(a2, &v13, 0i64, 0i64);
+  v6 = (char *)this + 96;
+  if ( *((_QWORD *)this + 15) >= 0x10ui64 )
+    v6 = (char *)*((_QWORD *)this + 12);
+  v7 = *((_QWORD *)this + 14);
+  v13 = v6;
+  v14 = v7;
+  ((void (__fastcall *)(struct BinaryStream *, char **, _QWORD, _QWORD))BinaryStream::writeString)(a2, &v13, 0i64, 0i64);
+  v8 = (char *)this + 128;
+  if ( *((_QWORD *)this + 19) >= 0x10ui64 )
+    v8 = (char *)*((_QWORD *)this + 16);
+  v9 = *((_QWORD *)this + 18);
+  v13 = v8;
+  v14 = v9;
+  ((void (__fastcall *)(struct BinaryStream *, char **, _QWORD, _QWORD))BinaryStream::writeString)(a2, &v13, 0i64, 0i64);
+  v10 = (char *)this + 160;
+  if ( *((_QWORD *)this + 23) >= 0x10ui64 )
+    v10 = (char *)*((_QWORD *)this + 20);
+  v11 = *((_QWORD *)this + 22);
+  v13 = v10;
+  v14 = v11;
+  return ((__int64 (__fastcall *)(struct BinaryStream *, char **, _QWORD, _QWORD))BinaryStream::writeString)(
+           a2,
+           &v13,
+           0i64,
+           0i64);
 }
 */

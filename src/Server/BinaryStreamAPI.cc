@@ -26,6 +26,11 @@ inline void GMLIB_BinaryStream::writeVec3(Vec3 vec3) {
     writeFloat(vec3.z);
 }
 
+inline void GMLIB_BinaryStream::writeVec2(Vec2 data) {
+    writeFloat(data.x);
+    writeFloat(data.z);
+}
+
 inline void GMLIB_BinaryStream::writeBlockPos(BlockPos pos) {
     writeVarInt(pos.x);
     writeUnsignedVarInt(pos.y);

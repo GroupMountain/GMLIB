@@ -1,8 +1,8 @@
 #include "Global.h"
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/CompoundTagAPI.h>
-#include <corecrt_math_defines.h>
 #include <GMLIB/Server/SpawnerAPI.h>
+#include <corecrt_math_defines.h>
 
 bool GMLIB_Actor::isPlayer() const { return hasCategory(ActorCategory::Player); }
 
@@ -132,4 +132,12 @@ void GMLIB_Actor::setOffHandSlot(ItemStack& itemStack) {
 
 GMLIB_Actor* GMLIB_Actor::shootProjectile(std::string typeName, float speed, float offset) {
     return GMLIB_Spawner::spawnProjectile((GMLIB_Actor*)this, typeName, speed, offset);
+}
+
+int64_t GMLIB_Actor::getNextActorUniqueID() {
+    auto res = ll::service::getLevel()->getRandom().nextLong();
+    while (ll::service::getLevel()->fetchEntity(ActorUniqueID(res)) != nullptr) {
+        res = ll::service::getLevel()->getRandom().nextLong();
+    }
+    return res;
 }

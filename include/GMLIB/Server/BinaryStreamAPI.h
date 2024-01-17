@@ -19,6 +19,8 @@ public:
 
     GMLIB_API void writeVec3(Vec3 data);
 
+    GMLIB_API void writeVec2(Vec2 data);
+
     GMLIB_API void writeBlockPos(BlockPos data);
 
     GMLIB_API void writeAbilitiesData(struct SerializedAbilitiesData const& data);

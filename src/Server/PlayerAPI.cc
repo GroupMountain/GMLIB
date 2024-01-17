@@ -1,10 +1,10 @@
 #include "Global.h"
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
+#include <GMLIB/Server/NetworkPacketAPI.h>
 #include <GMLIB/Server/PlayerAPI.h>
 #include <GMLIB/Server/ScoreboardAPI.h>
 #include <GMLIB/Server/SpawnerAPI.h>
-#include <GMLIB/Server/NetworkPacketAPI.h>
 
 void forEachUuid(bool includeOfflineSignedId, std::function<void(std::string_view const& uuid)> callback) {
     GMLIB::Global<DBStorage>->forEachKeyWithPrefix(
@@ -169,7 +169,7 @@ void GMLIB_Player::setClientSidebar(
 
     std::vector<ScorePacketInfo> info;
     for (auto& key : data) {
-        auto         idValue = ll::service::getLevel()->getRandom().nextLong();
+        auto         idValue = GMLIB_Actor::getNextActorUniqueID();
         ScoreboardId id      = ScoreboardId(idValue);
         auto         text    = key.first;
         auto         scoreInfo =
@@ -247,7 +247,8 @@ void GMLIB_Player::setClientBossbar(
     bs1.writeString("player");
     bs1.writeVec3(Vec3{getPosition().x, -66.0f, getPosition().z});
     bs1.writeVec3(Vec3{0, 0, 0});
-    bs1.writeVec3(Vec3{0, 0, 0});
+    bs1.writeVec2(Vec2{0, 0});
+    bs1.writeFloat(0.0f);
     bs1.writeFloat(0.0f);
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
@@ -269,6 +270,12 @@ void GMLIB_Player::setClientBossbar(
     auto pkt2 = MinecraftPackets::createPacket(MinecraftPacketIds::BossEvent);
     pkt2->read(bs2);
     pkt2->sendTo(*this);
+}
+
+int64_t GMLIB_Player::setClientBossbar(std::string name, float percentage, ::BossBarColor color, int overlay) {
+    auto bossbarId = GMLIB_Actor::getNextActorUniqueID();
+    setClientBossbar(bossbarId, name, percentage, color, overlay);
+    return bossbarId;
 }
 
 void GMLIB_Player::removeClientBossbar(int64_t bossbarId) {
@@ -378,7 +385,9 @@ bool GMLIB_Player::resetPlayerScore(mce::UUID& uuid) {
     return scoreboard->resetPlayerAllScores(uuid);
 }
 
-ItemStack* GMLIB_Player::getMainHandSlot() { return (ItemStack*)&getEquippedSlot(Puv::Legacy::EquipmentSlot::Mainhand); }
+ItemStack* GMLIB_Player::getMainHandSlot() {
+    return (ItemStack*)&getEquippedSlot(Puv::Legacy::EquipmentSlot::Mainhand);
+}
 
 void GMLIB_Player::setMainHandSlot(ItemStack& itemStack) {
     return setEquippedSlot(Puv::Legacy::EquipmentSlot::Mainhand, itemStack);
@@ -394,6 +403,4 @@ GMLIB_Actor* GMLIB_Player::shootProjectile(std::string typeName, float speed, fl
     return GMLIB_Spawner::spawnProjectile((GMLIB_Actor*)this, typeName, speed, offset);
 }
 
-void GMLIB_Player::setFreezing(float percentage) {
-    getEntityData().set<float>(0x78, percentage);
-}
+void GMLIB_Player::setFreezing(float percentage) { getEntityData().set<float>(0x78, percentage); }
