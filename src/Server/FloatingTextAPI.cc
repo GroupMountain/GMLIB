@@ -32,7 +32,7 @@ GMLIB_NetworkPacket<15> createFloatingTextPacket(FloatingText* ft) {
     GMLIB_BinaryStream         bs;
     bs.writeVarInt64(ft->mRuntimeId);
     bs.writeUnsignedVarInt64(ft->mRuntimeId);
-    bs.writeNetworkItemStackDescriptor(nisd);
+    bs.writeType(nisd);
     bs.writeVec3(ft->mPosition);
     bs.writeVec3(Vec3{0, 0, 0});
 
@@ -89,14 +89,12 @@ LL_AUTO_INSTANCE_HOOK(
     std::vector<std::unique_ptr<DataItem>> dataItemList;
     dataItemList.emplace_back(DataItem::create(ActorDataIDs::Name, ft->mText));
     dataItemList.emplace_back(DataItem::create<schar>(ActorDataIDs::NametagAlwaysShow, true));
-    auto item = std::make_unique<ItemStack>(ItemStack{"minecraft:bedrock"});
-    // ItemStackDescriptor        isd(*item->getItem(), item->getAuxValue(), 1, nullptr);
-    // NetworkItemStackDescriptor nisd(isd);
+    auto               item = std::make_unique<ItemStack>(ItemStack{"minecraft:air"});
     auto               nisd = NetworkItemStackDescriptor(*item);
     GMLIB_BinaryStream bs;
     bs.writeVarInt64(ft->mRuntimeId);
     bs.writeUnsignedVarInt64(ft->mRuntimeId);
-    bs.writeNetworkItemStackDescriptor(nisd);
+    bs.writeType(nisd);
     bs.writeVec3(ft->mPosition);
     bs.writeVec3(Vec3{0, 0, 0});
     bs.writeDataItem(dataItemList);

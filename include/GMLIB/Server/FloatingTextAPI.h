@@ -12,8 +12,6 @@ public:
 public:
     FloatingText(std::string text, Vec3 position, DimensionType dimensionId);
 
-    FloatingText() = delete;
-
 public:
     static FloatingText* getFloatingText(int64 runtimeId);
 

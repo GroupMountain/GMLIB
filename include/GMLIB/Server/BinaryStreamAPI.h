@@ -15,8 +15,6 @@ public:
 
     GMLIB_API void writeDataItem(std::vector<std::unique_ptr<class DataItem>> const& data);
 
-    GMLIB_API void writeNetworkItemStackDescriptor(class NetworkItemStackDescriptor const& data);
-
     GMLIB_API void writeVec3(Vec3 data);
 
     GMLIB_API void writeVec2(Vec2 data);
