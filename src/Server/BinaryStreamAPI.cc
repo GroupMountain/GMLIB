@@ -1,6 +1,7 @@
 #include "GMLIB/Server/BinaryStreamAPI.h"
 #include "Global.h"
 
+inline std::string GMLIB_BinaryStream::getRaw() { return *ll::memory::dAccess<std::string*>(this, 96); }
 
 inline void GMLIB_BinaryStream::writeCompoundTag(CompoundTag& tag) {
     LL_SYMBOL_CALL("?write@?$serialize@VCompoundTag@@@@SAXAEBVCompoundTag@@AEAVBinaryStream@@@Z", void, CompoundTag&, BinaryStream&)

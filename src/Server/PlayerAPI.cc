@@ -4,6 +4,7 @@
 #include <GMLIB/Server/PlayerAPI.h>
 #include <GMLIB/Server/ScoreboardAPI.h>
 #include <GMLIB/Server/SpawnerAPI.h>
+#include <GMLIB/Server/NetworkPacketAPI.h>
 
 void forEachUuid(bool includeOfflineSignedId, std::function<void(std::string_view const& uuid)> callback) {
     GMLIB::Global<DBStorage>->forEachKeyWithPrefix(
@@ -253,9 +254,8 @@ void GMLIB_Player::setClientBossbar(
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
-    auto pkt1 = MinecraftPackets::createPacket(MinecraftPacketIds::AddActor);
-    pkt1->read(bs1);
-    pkt1->sendTo(*this);
+    GMLIB_NetworkPacket<(int)MinecraftPacketIds::AddActor> pkt1(bs1.getAndReleaseData());
+    pkt1.sendTo(*this);
     // BossEventPacket
     GMLIB_BinaryStream bs2;
     bs2.mBuffer->reserve(8 + name.size());

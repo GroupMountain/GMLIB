@@ -8,6 +8,9 @@
 
 class GMLIB_BinaryStream : public BinaryStream {
 public:
+    GMLIB_API std::string getRaw();
+
+public:
     GMLIB_API void writeCompoundTag(CompoundTag& data);
 
     GMLIB_API void writeDataItem(std::vector<std::unique_ptr<class DataItem>> const& data);
