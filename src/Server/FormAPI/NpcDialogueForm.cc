@@ -40,7 +40,7 @@ GMLIB_NpcDialogueForm::~GMLIB_NpcDialogueForm() {
     mRuntimeNpcFormList.erase(mFormRuntimeId);
 }
 
-int GMLIB_NpcDialogueForm::addAction(std::string name, std::vector<std::string> cmds, NpcDialogueFormAction type) {
+int GMLIB_NpcDialogueForm::addAction(std::string name, NpcDialogueFormAction type, std::vector<std::string> cmds) {
     std::string                         text;
     std::vector<nlohmann::ordered_json> data;
     for (auto cmd : cmds) {
@@ -131,7 +131,6 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
             }
             fm->mCallback(pl, (int)packet.mActionIndex, packet.mType);
             if (type >= 0 && type <= 2) {
-                logger.warn("delete");
                 delete fm;
             }
         }
