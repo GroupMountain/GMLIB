@@ -1,8 +1,8 @@
 #include "Global.h"
+#include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/FormAPI/NpcDialogueForm.h>
 #include <GMLIB/Server/NetworkPacketAPI.h>
-#include <GMLIB/Server/ActorAPI.h>
 
 
 std::string npcData =
@@ -63,17 +63,31 @@ std::string npcAction = R"([
    }
 ])";
 
+int genRandomNumber() {
+    std::random_device                 rd;
+    std::mt19937                       gen(rd());
+    std::uniform_int_distribution<int> dis(0, 99999999);
+    int                                randomNumber = dis(gen);
+    return randomNumber;
+}
 
+int getNextNpcId() {
+    auto result = genRandomNumber();
+    while (ll::service::getLevel()->fetchEntity(ActorUniqueID(result))) {
+        result = genRandomNumber();
+    }
+    return result;
+}
 
 void sendFakeNpc(Player* pl) {
-    auto auid = 8848;//GMLIB_Actor::getNextActorUniqueID();塞个随机数或者大点的
+    auto auid = getNextNpcId();
     logger.warn("{}", auid);
     // DataItem
-    //std::vector<std::unique_ptr<DataItem>> npcDataItem;
-    //npcDataItem.emplace_back(DataItem::create<schar>(ActorDataIDs::HasNpc, true));
-    //npcDataItem.emplace_back(DataItem::create(ActorDataIDs::NpcData, npcData));
-    //npcDataItem.emplace_back(DataItem::create(ActorDataIDs::Actions, npcAction));
-    //npcDataItem.emplace_back(DataItem::create(ActorDataIDs::InteractText, std::string("傻逼oj")));
+    // std::vector<std::unique_ptr<DataItem>> npcDataItem;
+    // npcDataItem.emplace_back(DataItem::create<schar>(ActorDataIDs::HasNpc, true));
+    // npcDataItem.emplace_back(DataItem::create(ActorDataIDs::NpcData, npcData));
+    // npcDataItem.emplace_back(DataItem::create(ActorDataIDs::Actions, npcAction));
+    // npcDataItem.emplace_back(DataItem::create(ActorDataIDs::InteractText, std::string("傻逼oj")));
     // AddActorPacket
     GMLIB_BinaryStream bs1;
     bs1.writeVarInt64(auid);
@@ -85,7 +99,7 @@ void sendFakeNpc(Player* pl) {
     bs1.writeFloat(0.0f);
     bs1.writeFloat(0.0f);
     bs1.writeUnsignedVarInt(0);
-    //bs1.writeDataItem(npcDataItem);
+    // bs1.writeDataItem(npcDataItem);
     bs1.writeUnsignedVarInt(5);
     bs1.writeUnsignedVarInt((uint)0x4);
     bs1.writeUnsignedVarInt((uint)0x4);
@@ -111,12 +125,12 @@ void sendFakeNpc(Player* pl) {
     logger.warn("send 1");
     // NpcDialoguePacket
     GMLIB_BinaryStream bs2;
-    bs2.writeUnsignedInt64(auid);  // ActorUniqueId
-    bs2.writeVarInt(0);   // 0: Open  1: Close
-    bs2.writeString("1145141919810");  // Dialogue
-    bs2.writeString("jb");  // SceneName
-    bs2.writeString("sb");  // NpcName
-    bs2.writeString(npcAction);   // ActionJSON
+    bs2.writeUnsignedInt64(auid);     // ActorUniqueId
+    bs2.writeVarInt(0);               // 0: Open  1: Close
+    bs2.writeString("1145141919810"); // Dialogue
+    bs2.writeString("jbjbjbjbjb");    // SceneName
+    bs2.writeString("sbsbsbsbsb");    // NpcName
+    bs2.writeString(npcAction);       // ActionJSON
     GMLIB_NetworkPacket<(int)MinecraftPacketIds::NpcDialoguePacket> pkt2(bs2.getAndReleaseData());
     pkt2.sendTo(*pl);
     logger.warn("send 2");
@@ -135,8 +149,6 @@ LL_AUTO_INSTANCE_HOOK(
     ll::service::getLevel()->forEachPlayer([](Player& pl) -> bool {
         logger.warn("{}", pl.getRealName());
         sendFakeNpc(&pl);
-        //auto gpl = (GMLIB_Player*)&pl;
-        //gpl->setClientSidebar("114514", {{"114", 1}, {"514", 2},{ "1919810", 3}});
         return true;
     });
     origin(a1, a2, a3);
@@ -276,31 +288,15 @@ __int64 __fastcall NpcDialoguePacket::write(NpcDialoguePacket *this, struct Bina
   v5 = *((_QWORD *)this + 10);
   v13 = v4;
   v14 = v5;
-  ((void (__fastcall *)(struct BinaryStream *, char **, _QWORD, _QWORD))BinaryStream::writeString)(a2, &v13, 0i64, 0i64);
-  v6 = (char *)this + 96;
-  if ( *((_QWORD *)this + 15) >= 0x10ui64 )
-    v6 = (char *)*((_QWORD *)this + 12);
-  v7 = *((_QWORD *)this + 14);
-  v13 = v6;
-  v14 = v7;
-  ((void (__fastcall *)(struct BinaryStream *, char **, _QWORD, _QWORD))BinaryStream::writeString)(a2, &v13, 0i64, 0i64);
-  v8 = (char *)this + 128;
-  if ( *((_QWORD *)this + 19) >= 0x10ui64 )
-    v8 = (char *)*((_QWORD *)this + 16);
-  v9 = *((_QWORD *)this + 18);
-  v13 = v8;
-  v14 = v9;
-  ((void (__fastcall *)(struct BinaryStream *, char **, _QWORD, _QWORD))BinaryStream::writeString)(a2, &v13, 0i64, 0i64);
-  v10 = (char *)this + 160;
-  if ( *((_QWORD *)this + 23) >= 0x10ui64 )
-    v10 = (char *)*((_QWORD *)this + 20);
-  v11 = *((_QWORD *)this + 22);
-  v13 = v10;
-  v14 = v11;
-  return ((__int64 (__fastcall *)(struct BinaryStream *, char **, _QWORD, _QWORD))BinaryStream::writeString)(
-           a2,
-           &v13,
-           0i64,
-           0i64);
+  ((void (__fastcall *)(struct BinaryStream *, char **, _QWORD, _QWORD))BinaryStream::writeString)(a2, &v13, 0i64,
+0i64); v6 = (char *)this + 96; if ( *((_QWORD *)this + 15) >= 0x10ui64 ) v6 = (char *)*((_QWORD *)this + 12); v7 =
+*((_QWORD *)this + 14); v13 = v6; v14 = v7;
+  ((void (__fastcall *)(struct BinaryStream *, char **, _QWORD, _QWORD))BinaryStream::writeString)(a2, &v13, 0i64,
+0i64); v8 = (char *)this + 128; if ( *((_QWORD *)this + 19) >= 0x10ui64 ) v8 = (char *)*((_QWORD *)this + 16); v9 =
+*((_QWORD *)this + 18); v13 = v8; v14 = v9;
+  ((void (__fastcall *)(struct BinaryStream *, char **, _QWORD, _QWORD))BinaryStream::writeString)(a2, &v13, 0i64,
+0i64); v10 = (char *)this + 160; if ( *((_QWORD *)this + 23) >= 0x10ui64 ) v10 = (char *)*((_QWORD *)this + 20); v11 =
+*((_QWORD *)this + 22); v13 = v10; v14 = v11; return ((__int64 (__fastcall *)(struct BinaryStream *, char **, _QWORD,
+_QWORD))BinaryStream::writeString)( a2, &v13, 0i64, 0i64);
 }
 */
