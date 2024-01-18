@@ -9,6 +9,9 @@ public:
     using Actor::removeEffect;
 
 public:
+    GMLIB_API static int64_t getNextActorUniqueID();
+
+public:
     GMLIB_API bool isPlayer() const;
 
     GMLIB_API bool isItemActor() const;

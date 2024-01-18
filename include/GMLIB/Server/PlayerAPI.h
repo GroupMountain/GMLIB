@@ -73,11 +73,12 @@ public:
 
     GMLIB_API bool resetScore();
 
-    GMLIB_API void setClientSidebar(
-        const std::string                               title,
-        const std::vector<std::pair<std::string, int>>& data,
-        ObjectiveSortOrder                              sortOrder = ObjectiveSortOrder::Ascending
-    );
+    // Broken
+    // GMLIB_API void setClientSidebar(
+    //     const std::string                               title,
+    //     const std::vector<std::pair<std::string, int>>& data,
+    //     ObjectiveSortOrder                              sortOrder = ObjectiveSortOrder::Ascending
+    // );
 
     GMLIB_API void removeClientSidebar();
 
@@ -105,8 +106,16 @@ public:
 
     GMLIB_API void setClientGamemode(GameType gamemode);
 
-    GMLIB_API void
-    setClientBossbar(int64_t bossbarId, std::string name, float percentage, ::BossBarColor color, int overlay);
+    GMLIB_API void setClientBossbar(
+        int64_t        bossbarId,
+        std::string    name,
+        float          percentage,
+        ::BossBarColor color   = BossBarColor::Purple,
+        int            overlay = 1
+    );
+
+    GMLIB_API int64_t
+    setClientBossbar(std::string name, float percentage, ::BossBarColor color = BossBarColor::Purple, int overlay = 1);
 
     GMLIB_API void removeClientBossbar(int64_t bossbarId);
 
@@ -128,14 +137,16 @@ public:
 
     GMLIB_API ItemStack* getMainHandSlot();
 
-    GMLIB_API bool setMainHandSlot(ItemStack& itemStack);
+    GMLIB_API void setMainHandSlot(ItemStack& itemStack);
 
     GMLIB_API ItemStack* getOffHandSlot();
 
-    GMLIB_API bool setOffHandSlot(ItemStack& itemStack);
+    GMLIB_API void setOffHandSlot(ItemStack& itemStack);
+
+    GMLIB_API void setFreezing(float percentage = 1.0f);
 
     // ToDo API
-    // If you need any API, please open an issue on https://github.com/GroupMountain/GMLIB/issues 
+    // If you need any API, please open an issue on https://github.com/GroupMountain/GMLIB/issues
 
     // GMLIB_API bool giveItem(ItemStack& item, bool drop = false);
 
@@ -144,6 +155,4 @@ public:
     // GMLIB_API int clearItem(std::string name, int count = 1, short aux = -1);
 
     // GMLIB_API int hasItem(std::string name, short aux = -1);
-
-    // GMLIB_API bool setFreezing(float percentage = 1.0f);
 };

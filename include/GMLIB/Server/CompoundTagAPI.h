@@ -7,19 +7,24 @@ public:
 
     GMLIB_API static std::unique_ptr<CompoundTag> createCompoundTag();
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getNbt(Actor* ac);
+    GMLIB_API static std::unique_ptr<CompoundTag> getFromActor(Actor* ac);
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getNbt(Player* pl);
+    GMLIB_API static std::unique_ptr<CompoundTag> getFromPlayer(Player* pl);
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getNbt(BlockActor* blac);
+    GMLIB_API static std::unique_ptr<CompoundTag> getFromBlockActor(BlockActor* blac);
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getNbt(ItemStack* item);
+    GMLIB_API static std::unique_ptr<CompoundTag> getFromItemStack(ItemStack* item);
 
-    GMLIB_API static bool setNbt(Actor* ac, CompoundTag* nbt);
+    GMLIB_API static std::unique_ptr<CompoundTag> getFromBlock(Block* block);
 
-    GMLIB_API static bool setNbt(Player* pl, CompoundTag* nbt);
+public:
+    GMLIB_API bool setToActor(Actor* ac, CompoundTag* nbt);
 
-    GMLIB_API static void setNbt(BlockActor* blac, CompoundTag* nbt);
+    GMLIB_API bool setToPlayer(Player* pl, CompoundTag* nbt);
 
-    GMLIB_API static void setNbt(ItemStack* item, CompoundTag* nbt);
+    GMLIB_API void setToBlockActor(BlockActor* blac, CompoundTag* nbt);
+
+    GMLIB_API void setToItemStack(ItemStack* item, CompoundTag* nbt);
+
+    GMLIB_API void setToBlock(Block* block, CompoundTag* nbt);
 };

@@ -8,13 +8,16 @@
 
 class GMLIB_BinaryStream : public BinaryStream {
 public:
+    GMLIB_API std::string getRaw();
+
+public:
     GMLIB_API void writeCompoundTag(CompoundTag& data);
 
     GMLIB_API void writeDataItem(std::vector<std::unique_ptr<class DataItem>> const& data);
 
-    GMLIB_API void writeNetworkItemStackDescriptor(class NetworkItemStackDescriptor const& data);
-
     GMLIB_API void writeVec3(Vec3 data);
+
+    GMLIB_API void writeVec2(Vec2 data);
 
     GMLIB_API void writeBlockPos(BlockPos data);
 
@@ -25,6 +28,8 @@ public:
     GMLIB_API void writeActorLink(struct ActorLink const& data);
 
     GMLIB_API void writeUuid(mce::UUID const& data);
+
+    GMLIB_API void writePropertySyncData(struct PropertySyncData const& syncdata);
 
 public:
     // Basic API Export

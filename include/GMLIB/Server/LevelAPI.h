@@ -10,6 +10,14 @@ enum class WeatherType : int {
     Thunder = 2  // Lightning
 };
 
+enum class FillMode : int {
+    Replace = 0, // Replace Air
+    Keep    = 1,
+    Outline = 2,
+    Hollow  = 3,
+    Destroy = 4
+};
+
 class GMLIB_Level : public Level {
 public:
     GMLIB_API static GMLIB_Level* getLevel();
@@ -90,8 +98,33 @@ public:
         float         maxResistance   = 3.40282347e+38
     );
 
-    // ToDo API
-    // If you need any API, please open an issue on https://github.com/GroupMountain/GMLIB/issues 
+    GMLIB_API Block* getBlock(BlockPos& pos, DimensionType dimId);
 
-    // GMLIB_API int fillBlock();
+    GMLIB_API bool setBlock(Block* block, BlockPos& pos, DimensionType dimId);
+
+    GMLIB_API bool setBlock(std::string name, short aux, BlockPos& pos, DimensionType dimId);
+
+    GMLIB_API int
+    fillBlocks(BlockPos startpos, BlockPos endpos, DimensionType dimId, Block* block, FillMode mode = FillMode::Replace);
+
+    GMLIB_API int fillBlocks(
+        BlockPos       startpos,
+        BlockPos       endpos,
+        DimensionType  dimId,
+        std::string    name,
+        unsigned short tileData = 0,
+        FillMode       mode     = FillMode::Replace
+    );
+
+    GMLIB_API int fillBlocks(BlockPos startpos, BlockPos endpos, DimensionType dimId, Block* oldBlock, Block* newBlock);
+
+    GMLIB_API int fillBlocks(
+        BlockPos       startpos,
+        BlockPos       endpos,
+        DimensionType  dimId,
+        std::string    oldName,
+        unsigned short oldTileData,
+        std::string    newName,
+        unsigned short newTileData
+    );
 };

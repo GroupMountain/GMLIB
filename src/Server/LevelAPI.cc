@@ -218,6 +218,142 @@ void GMLIB_Level::createExplosion(
     explode(*getBlockSource(dimensionId), source, pos, power, causeFire, breakBlocks, allowUnderwater, maxResistance);
 }
 
+Block* GMLIB_Level::getBlock(BlockPos& pos, DimensionType dimid) {
+    return (Block*)&getBlockSource(dimid)->getBlock(pos);
+}
+
+bool GMLIB_Level::setBlock(Block* block, BlockPos& pos, DimensionType dimid) {
+    return getBlockSource(dimid)->setBlock(pos, *block, 3, nullptr, nullptr);
+}
+
+bool GMLIB_Level::setBlock(std::string name, short aux, BlockPos& pos, DimensionType dimid) {
+    auto block = Block::tryGetFromRegistry(name, aux);
+    return getBlockSource(dimid)->setBlock(pos, block, 3, nullptr, nullptr);
+}
+
+bool checkFillPos(BlockPos startpos, BlockPos endpos) {
+    if (startpos.x <= endpos.x && startpos.y <= endpos.y && startpos.z <= endpos.z) {
+        return true;
+    }
+    return false;
+}
+
+bool checkPosInRange(BlockPos pos, BlockPos startpos, BlockPos endpos) {
+    if (pos.x > startpos.x && pos.y > startpos.y && pos.z > startpos.z && pos.x < endpos.x && pos.y < endpos.y
+        && pos.z < endpos.z) {
+        return true;
+    }
+    return false;
+}
+
+int GMLIB_Level::fillBlocks(
+    BlockPos      startpos,
+    BlockPos      endpos,
+    DimensionType dimensionId,
+    Block*        block,
+    FillMode      mode
+) {
+    int  count       = 0;
+    auto blockSource = getBlockSource(dimensionId);
+    if (checkFillPos(startpos, endpos)) {
+        int lx = endpos.x - startpos.x;
+        int ly = endpos.y - startpos.y;
+        int lz = endpos.z - startpos.z;
+        for (int i = 0; i <= lx; i++) {
+            for (int j = 0; j <= ly; j++) {
+                for (int k = 0; k <= lz; k++) {
+                    BlockPos pos = {startpos.x + i, startpos.y + j, startpos.z + k};
+                    switch (mode) {
+                    case FillMode::Hollow:
+                        if (checkPosInRange(pos, startpos, endpos)) {
+                            blockSource->setBlock(pos, *block, 3, nullptr, nullptr);
+                            count++;
+                        }
+                    case FillMode::Outline:
+                        if (!checkPosInRange(pos, startpos, endpos)) {
+                            blockSource->setBlock(pos, *block, 3, nullptr, nullptr);
+                            count++;
+                        }
+                        break;
+
+                    case FillMode::Destroy:
+                        destroyBlock(*getBlockSource(dimensionId), pos, true);
+                    case FillMode::Replace:
+                        blockSource->setBlock(pos, *block, 3, nullptr, nullptr);
+                        count++;
+                        break;
+
+                    case FillMode::Keep:
+                        if (blockSource->getBlock(pos).isAir()) {
+                            blockSource->setBlock(pos, *block, 3, nullptr, nullptr);
+                            count++;
+                        }
+                        break;
+                    default:
+                        return 0;
+                    }
+                }
+            }
+        }
+        return count;
+    }
+    return 0;
+}
+
+int GMLIB_Level::fillBlocks(
+    BlockPos       startpos,
+    BlockPos       endpos,
+    DimensionType  dimId,
+    std::string    name,
+    unsigned short tileData,
+    FillMode       mode
+) {
+    Block* block = (Block*)Block::tryGetFromRegistry(name, tileData).as_ptr();
+    if (block) {
+        return fillBlocks(startpos, endpos, dimId, block, mode);
+    }
+    return 0;
+}
+
+int GMLIB_Level::fillBlocks(BlockPos startpos, BlockPos endpos, DimensionType dimId, Block* newblock, Block* oldblock) {
+    int  count       = 0;
+    auto blockSource = getBlockSource(dimId);
+    if (checkFillPos(startpos, endpos)) {
+        int lx = endpos.x - startpos.x;
+        int ly = endpos.y - startpos.y;
+        int lz = endpos.z - startpos.z;
+        for (int i = 0; i <= lx; i++) {
+            for (int j = 0; j <= ly; j++) {
+                for (int k = 0; k <= lz; k++) {
+                    BlockPos pos = {startpos.x + i, startpos.y + j, startpos.z + k};
+                    if ((Block*)&blockSource->getBlock(pos) == oldblock) {
+                        blockSource->setBlock(pos, *newblock, 3, nullptr, nullptr);
+                        count++;
+                    }
+                }
+            }
+        }
+        return count;
+    }
+    return 0;
+}
+
+int GMLIB_Level::fillBlocks(
+    BlockPos       startpos,
+    BlockPos       endpos,
+    DimensionType  dimId,
+    std::string    oldName,
+    unsigned short oldTileData,
+    std::string    newName,
+    unsigned short newTileData
+) {
+    Block* newblock = (Block*)Block::tryGetFromRegistry(newName, newTileData).as_ptr();
+    Block* oldblock = (Block*)Block::tryGetFromRegistry(oldName, oldTileData).as_ptr();
+    if (newblock && oldblock) {
+        return fillBlocks(startpos, endpos, dimId, newblock, oldblock);
+    }
+    return 0;
+}
 
 LL_AUTO_INSTANCE_HOOK(
     Achieve1,
@@ -261,19 +397,6 @@ void initExperiments(LevelData* leveldat) {
             leveldat->getExperiments().setExperimentEnabled(exp, true);
         }
     }
-}
-
-LL_AUTO_INSTANCE_HOOK(
-    LevelDatInit,
-    ll::memory::HookPriority::Normal,
-    "?getLevelData@ExternalFileLevelStorageSource@@UEBA?AVLevelData@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$"
-    "allocator@D@2@@std@@@Z",
-    LevelData*,
-    std::string& a1
-) {
-    auto res = origin(a1);
-    initExperiments(res);
-    return res;
 }
 
 LL_AUTO_INSTANCE_HOOK(isTrustSkin, ll::memory::HookPriority::Normal, "?isTrustedSkin@SerializedSkin@@QEBA_NXZ", bool) {

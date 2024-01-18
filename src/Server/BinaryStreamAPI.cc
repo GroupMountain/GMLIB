@@ -1,6 +1,7 @@
 #include "GMLIB/Server/BinaryStreamAPI.h"
 #include "Global.h"
 
+inline std::string GMLIB_BinaryStream::getRaw() { return *ll::memory::dAccess<std::string*>(this, 96); }
 
 inline void GMLIB_BinaryStream::writeCompoundTag(CompoundTag& tag) {
     LL_SYMBOL_CALL("?write@?$serialize@VCompoundTag@@@@SAXAEBVCompoundTag@@AEAVBinaryStream@@@Z", void, CompoundTag&, BinaryStream&)
@@ -15,14 +16,15 @@ inline void GMLIB_BinaryStream::writeDataItem(std::vector<std::unique_ptr<class 
     (dataItems, *this);
 }
 
-inline void GMLIB_BinaryStream::writeNetworkItemStackDescriptor(class NetworkItemStackDescriptor const& netItem) {
-    netItem.write(*this);
-}
-
 inline void GMLIB_BinaryStream::writeVec3(Vec3 vec3) {
     writeFloat(vec3.x);
     writeFloat(vec3.y);
     writeFloat(vec3.z);
+}
+
+inline void GMLIB_BinaryStream::writeVec2(Vec2 data) {
+    writeFloat(data.x);
+    writeFloat(data.z);
 }
 
 inline void GMLIB_BinaryStream::writeBlockPos(BlockPos pos) {
@@ -51,6 +53,18 @@ inline void GMLIB_BinaryStream::writeUuid(mce::UUID const& uuid) {
     writeUnsignedInt64(uuid.b);
 }
 
+inline void GMLIB_BinaryStream::writePropertySyncData(struct PropertySyncData const& syncdata) {
+    writeUnsignedVarInt(syncdata.mIntEntries.size());
+    for (auto IntEntry : syncdata.mIntEntries) {
+        writeUnsignedVarInt(IntEntry.mPropertyIndex);
+        writeVarInt(IntEntry.mData);
+    }
+    writeUnsignedVarInt(syncdata.mFloatEntries.size());
+    for (auto FloatEntry : syncdata.mIntEntries) {
+        writeUnsignedVarInt(FloatEntry.mPropertyIndex);
+        writeFloat(FloatEntry.mData);
+    }
+}
 // Basic API Export
 
 inline void GMLIB_BinaryStream::writeBool(bool data) { ((BinaryStream*)this)->writeBool(data); }
