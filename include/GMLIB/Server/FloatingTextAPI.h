@@ -20,19 +20,18 @@ public:
     GMLIB_API static bool deleteFloatingText(int64 runtimeId);
 
 public:
-    GMLIB_API virtual ~FloatingText();
+    virtual ~FloatingText();
 
-    GMLIB_API virtual int64_t getFloatingTextRuntimeId();
+public:
+    GMLIB_API int64_t getFloatingTextRuntimeId();
 
-    GMLIB_API virtual void sendToClient(Player* pl);
+    GMLIB_API void sendToClient(Player* pl);
 
-    GMLIB_API virtual void sendToAllClients();
+    GMLIB_API void sendToAllClients();
 
-    GMLIB_API virtual void removeFromClient(Player* pl);
+    GMLIB_API void removeFromClient(Player* pl);
 
-    GMLIB_API virtual void removeFromAllClients();
+    GMLIB_API void removeFromAllClients();
 
-    GMLIB_API virtual void updateText(std::string newText);
-
-    GMLIB_API virtual void removeFromServer();
+    GMLIB_API void updateText(std::string newText);
 };

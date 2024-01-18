@@ -78,16 +78,10 @@ FloatingText* FloatingText::getFloatingText(int64 runtimeId) {
     return nullptr;
 }
 
-void FloatingText::removeFromServer() {
-    removeFromAllClients();
-    RuntimeFloatingTextList.erase(mRuntimeId);
-    delete this;
-}
-
 bool FloatingText::deleteFloatingText(int64 runtimeId) {
     auto ft = getFloatingText(runtimeId);
     if (ft) {
-        ft->removeFromServer();
+        delete ft;
         return true;
     }
     return false;
