@@ -4,9 +4,123 @@
 #include <GMLIB/Server/FormAPI/NpcDialogueForm.h>
 #include <GMLIB/Server/NetworkPacketAPI.h>
 
+int genRandomNumber() {
+    std::random_device                 rd;
+    std::mt19937                       gen(rd());
+    std::uniform_int_distribution<int> dis(0, 99999999);
+    int                                randomNumber = dis(gen);
+    return randomNumber;
+}
+
+int getNextNpcId() {
+    auto result = genRandomNumber();
+    while (ll::service::getLevel()->fetchEntity(ActorUniqueID(result))) {
+        result = genRandomNumber();
+    }
+    return result;
+}
 
 std::string npcData =
     R"({"picker_offsets":{"scale":[1.70,1.70,1.70],"translate":[0,20,0]},"portrait_offsets":{"scale":[1.750,1.750,1.750],"translate":[-7,50,0]},"skin_list":[{"variant":0},{"variant":1},{"variant":2},{"variant":3},{"variant":4},{"variant":5},{"variant":6},{"variant":7},{"variant":8},{"variant":9},{"variant":10},{"variant":11},{"variant":12},{"variant":13},{"variant":14},{"variant":15},{"variant":16},{"variant":17},{"variant":18},{"variant":19},{"variant":25},{"variant":26},{"variant":27},{"variant":28},{"variant":29},{"variant":30},{"variant":31},{"variant":32},{"variant":33},{"variant":34},{"variant":20},{"variant":21},{"variant":22},{"variant":23},{"variant":24},{"variant":35},{"variant":36},{"variant":37},{"variant":38},{"variant":39},{"variant":40},{"variant":41},{"variant":42},{"variant":43},{"variant":44},{"variant":50},{"variant":51},{"variant":52},{"variant":53},{"variant":54},{"variant":45},{"variant":46},{"variant":47},{"variant":48},{"variant":49},{"variant":55},{"variant":56},{"variant":57},{"variant":58},{"variant":59}]})";
+std::string enptyAction = R"([])";
+
+GMLIB_NpcDialogueForm::GMLIB_NpcDialogueForm(std::string npcName, std::string sceneName, std::string dialogue)
+: mNpcName(npcName),
+  mSceneName(sceneName),
+  mDialogue(dialogue) {
+    mActionJSON = nlohmann::ordered_json::parse(enptyAction);
+}
+
+void GMLIB_NpcDialogueForm::addButton(std::string name, std::vector<std::string> cmds) {
+    std::string                         text;
+    std::vector<nlohmann::ordered_json> data;
+    for (auto cmd : cmds) {
+        text = text + cmd + "\n";
+        data.push_back({
+            {"cmd_line", cmd},
+            {"cmd_ver",  36 }
+        });
+    }
+    nlohmann::ordered_json json;
+    json["button_name"] = name;
+    json["data"]        = data;
+    json["mode"]        = 0;
+    json["text"]        = text;
+    json["type"]        = 1;
+    mActionJSON.push_back(json);
+}
+
+void GMLIB_NpcDialogueForm::sendTo(Player* pl) {
+    auto actionJson = mActionJSON.dump(4);
+    logger.warn("{}", actionJson);
+    auto               auid = getNextNpcId();
+    GMLIB_BinaryStream bs1;
+    bs1.writeVarInt64(auid);
+    bs1.writeUnsignedVarInt64(auid);
+    bs1.writeString("npc");
+    bs1.writeVec3(Vec3{pl->getPosition().x, -66.0f, pl->getPosition().z});
+    bs1.writeVec3(Vec3{0, 0, 0});
+    bs1.writeVec2(Vec2{0, 0});
+    bs1.writeFloat(0.0f);
+    bs1.writeFloat(0.0f);
+    bs1.writeUnsignedVarInt(0);
+    // DataItem
+    bs1.writeUnsignedVarInt(5);
+    bs1.writeUnsignedVarInt((uint)0x4);
+    bs1.writeUnsignedVarInt((uint)0x4);
+    bs1.writeString("GMLIB-GMLIB_NpcDialogueForm");
+    bs1.writeUnsignedVarInt((uint)0x27);
+    bs1.writeUnsignedVarInt((uint)0x0);
+    bs1.writeBool(true);
+    bs1.writeUnsignedVarInt((uint)0x28);
+    bs1.writeUnsignedVarInt((uint)0x4);
+    bs1.writeString(npcData);
+    bs1.writeUnsignedVarInt((uint)0x29);
+    bs1.writeUnsignedVarInt((uint)0x4);
+    bs1.writeString(actionJson);
+    bs1.writeUnsignedVarInt((uint)0x64);
+    bs1.writeUnsignedVarInt((uint)0x4);
+    bs1.writeString("GMLIB-GMLIB_NpcDialogueForm");
+    bs1.writeUnsignedVarInt(0);
+    bs1.writeUnsignedVarInt(0);
+    bs1.writeUnsignedVarInt(0);
+    GMLIB_NetworkPacket<(int)MinecraftPacketIds::AddActor> pkt1(bs1.getAndReleaseData());
+    pkt1.sendTo(*pl);
+    // NpcDialoguePacket
+    GMLIB_BinaryStream bs2;
+    bs2.writeUnsignedInt64(auid); // ActorUniqueId
+    bs2.writeVarInt(0);           // 0: Open  1: Close
+    bs2.writeString(mDialogue);   // Dialogue
+    bs2.writeString(mSceneName);  // SceneName
+    bs2.writeString(mNpcName);    // NpcName
+    bs2.writeString(actionJson);  // ActionJSON
+    GMLIB_NetworkPacket<(int)MinecraftPacketIds::NpcDialoguePacket> pkt2(bs2.getAndReleaseData());
+    pkt2.sendTo(*pl);
+}
+
+LL_AUTO_INSTANCE_HOOK(
+    Test1,
+    ll::memory::HookPriority::Normal,
+    "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@AEAVCommandContext@@_N@Z",
+    void,
+    void* a1,
+    void* a2,
+    bool  a3
+) {
+    auto fm = new GMLIB_NpcDialogueForm("傻逼", "114514", "听我说谢谢你");
+    fm->addButton("按钮1", {"say test1"});
+    fm->addButton("按钮2", {"say test2"});
+
+    ll::service::getLevel()->forEachPlayer([&](Player& pl) -> bool {
+        logger.warn("{}", pl.getRealName());
+        fm->sendTo(&pl);
+        return true;
+    });
+
+    origin(a1, a2, a3);
+}
+
+/*
 
 std::string npcAction = R"([
    {
@@ -63,21 +177,7 @@ std::string npcAction = R"([
    }
 ])";
 
-int genRandomNumber() {
-    std::random_device                 rd;
-    std::mt19937                       gen(rd());
-    std::uniform_int_distribution<int> dis(0, 99999999);
-    int                                randomNumber = dis(gen);
-    return randomNumber;
-}
 
-int getNextNpcId() {
-    auto result = genRandomNumber();
-    while (ll::service::getLevel()->fetchEntity(ActorUniqueID(result))) {
-        result = genRandomNumber();
-    }
-    return result;
-}
 
 void sendFakeNpc(Player* pl) {
     auto               auid = getNextNpcId();
@@ -95,7 +195,7 @@ void sendFakeNpc(Player* pl) {
     bs1.writeUnsignedVarInt(5);
     bs1.writeUnsignedVarInt((uint)0x4);
     bs1.writeUnsignedVarInt((uint)0x4);
-    bs1.writeString("GMLIB-NpcDialogueForm");
+    bs1.writeString("GMLIB-GMLIB_NpcDialogueForm");
     bs1.writeUnsignedVarInt((uint)0x27);
     bs1.writeUnsignedVarInt((uint)0x0);
     bs1.writeBool(true);
@@ -107,7 +207,7 @@ void sendFakeNpc(Player* pl) {
     bs1.writeString(npcAction);
     bs1.writeUnsignedVarInt((uint)0x64);
     bs1.writeUnsignedVarInt((uint)0x4);
-    bs1.writeString("GMLIB-NpcDialogueForm");
+    bs1.writeString("GMLIB-GMLIB_NpcDialogueForm");
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
@@ -135,15 +235,16 @@ LL_AUTO_INSTANCE_HOOK(
     void* a2,
     bool  a3
 ) {
-    //ll::service::getLevel()->forEachPlayer([](Player& pl) -> bool {
-        //logger.warn("{}", pl.getRealName());
-        //sendFakeNpc(&pl);
-        //return true;
-    //});
+    ll::service::getLevel()->forEachPlayer([](Player& pl) -> bool {
+        logger.warn("{}", pl.getRealName());
+        // sendFakeNpc(&pl);
+        return true;
+    });
     origin(a1, a2, a3);
 }
 
 
+*/
 //
 
 /*

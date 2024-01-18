@@ -92,21 +92,3 @@ bool FloatingText::deleteFloatingText(int64 runtimeId) {
     }
     return false;
 }
-
-#include <GMLIB/Server/PlayerAPI.h>
-LL_AUTO_INSTANCE_HOOK(
-    Test2,
-    ll::memory::HookPriority::Normal,
-    "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@AEAVCommandContext@@_N@Z",
-    void,
-    void* a1,
-    void* a2,
-    bool  a3
-) {
-    origin(a1, a2, a3);
-
-    auto ft = new FloatingText("傻逼", {0, 120, 0}, 0);
-    ft->sendToAllClients();
-    ft->removeFromServer();
-    // delete ft;
-}

@@ -10,7 +10,8 @@ public:
     DimensionType mDimensionId;
 
 public:
-    FloatingText(std::string text, Vec3 position, DimensionType dimensionId);
+    GMLIB_API FloatingText(std::string text, Vec3 position, DimensionType dimensionId);
+
     FloatingText() = delete;
 
 public:
