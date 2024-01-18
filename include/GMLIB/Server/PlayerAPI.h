@@ -106,10 +106,16 @@ public:
 
     GMLIB_API void setClientGamemode(GameType gamemode);
 
-    GMLIB_API void
-    setClientBossbar(int64_t bossbarId, std::string name, float percentage, ::BossBarColor color, int overlay);
+    GMLIB_API void setClientBossbar(
+        int64_t        bossbarId,
+        std::string    name,
+        float          percentage,
+        ::BossBarColor color   = BossBarColor::Purple,
+        int            overlay = 1
+    );
 
-    GMLIB_API int64_t setClientBossbar(std::string name, float percentage, ::BossBarColor color, int overlay);
+    GMLIB_API int64_t
+    setClientBossbar(std::string name, float percentage, ::BossBarColor color = BossBarColor::Purple, int overlay = 1);
 
     GMLIB_API void removeClientBossbar(int64_t bossbarId);
 
