@@ -132,7 +132,7 @@ bool GMLIB_Player::setPlayerNbtTags(mce::UUID const& uuid, CompoundTag* nbt, con
     return setOfflineNbt(serverid, data.get());
 }
 
-bool GMLIB_Player::deletePlayerNbt(std::string serverid) {
+bool GMLIB_Player::deleteOfflinePlayerNbt(std::string serverid) {
     if (serverid.empty()) {
         return false;
     }
@@ -144,22 +144,17 @@ bool GMLIB_Player::deletePlayerNbt(std::string serverid) {
 }
 
 bool GMLIB_Player::deletePlayerNbt(mce::UUID& uuid) {
+    auto pl = ll::service::getLevel()->getPlayer(uuid);
+    if (pl) {
+        auto serverid = pl->getServerId();
+        ll::service::getLevel()->getLevelStorage().deleteData(serverid, DBHelpers::Category::Player);
+        return true;
+    }
     auto serverid = getServeridFromUuid(uuid);
-    return deletePlayerNbt(serverid);
+    return deleteOfflinePlayerNbt(serverid);
 }
 
-/*
-//  Add to ScorePacketInfo.h
-//  comment MCAPI ScorePacketInfo(struct ScorePacketInfo&&);
 
-    [[nodiscard]] inline ScorePacketInfo(ScoreboardId* scoreboardId, std::string objective, IdentityDefinition::Type
-type, int value, std::string& fakeName) : mScoreboardId(*scoreboardId) , mObjectiveName(objective) , mIdentityType(type)
-        , mScoreValue(value)
-        , mFakePlayerName(fakeName) {
-    }
-*/
-
-/*
 void GMLIB_Player::setClientSidebar(
     const std::string                               title,
     const std::vector<std::pair<std::string, int>>& data,
@@ -170,11 +165,15 @@ void GMLIB_Player::setClientSidebar(
 
     std::vector<ScorePacketInfo> info;
     for (auto& key : data) {
-        auto         idValue = GMLIB_Actor::getNextActorUniqueID();
-        ScoreboardId id      = ScoreboardId(idValue);
-        auto         text    = key.first;
-        auto         scoreInfo =
-            ScorePacketInfo(&id, "GMLIB_SIDEBAR_API", IdentityDefinition::Type::FakePlayer, key.second, text);
+        auto                idValue   = GMLIB_Actor::getNextActorUniqueID();
+        const ScoreboardId& id        = ScoreboardId(idValue);
+        auto                text      = key.first;
+        auto                scoreInfo = ScorePacketInfo();
+        scoreInfo.mScoreboardId       = id;
+        scoreInfo.mObjectiveName      = "GMLIB_SIDEBAR_API";
+        scoreInfo.mIdentityType       = IdentityDefinition::Type::FakePlayer;
+        scoreInfo.mScoreValue         = key.second;
+        scoreInfo.mFakePlayerName     = text;
         info.emplace_back(scoreInfo);
     }
     auto pkt        = (SetScorePacket*)(MinecraftPackets::createPacket(MinecraftPacketIds::SetScore).get());
@@ -185,7 +184,7 @@ void GMLIB_Player::setClientSidebar(
     SetDisplayObjectivePacket("sidebar", "GMLIB_SIDEBAR_API", title, "dummy", ObjectiveSortOrder(sortOrder))
         .sendTo(*this);
 }
-*/
+
 
 void GMLIB_Player::removeClientSidebar() {
     SetDisplayObjectivePacket("sidebar", "", "", "dummy", ObjectiveSortOrder::Ascending).sendTo(*this);

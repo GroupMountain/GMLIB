@@ -27,7 +27,7 @@ public:
     GMLIB_API static bool
     setPlayerNbtTags(mce::UUID const& uuid, CompoundTag* nbt, const std::vector<std::string>& tags);
 
-    GMLIB_API static bool deletePlayerNbt(std::string serverid);
+    GMLIB_API static bool deleteOfflinePlayerNbt(std::string serverid);
 
     GMLIB_API static bool deletePlayerNbt(mce::UUID& uuid);
 
@@ -73,12 +73,12 @@ public:
 
     GMLIB_API bool resetScore();
 
-    // Broken
-    // GMLIB_API void setClientSidebar(
-    //     const std::string                               title,
-    //     const std::vector<std::pair<std::string, int>>& data,
-    //     ObjectiveSortOrder                              sortOrder = ObjectiveSortOrder::Ascending
-    // );
+    
+    GMLIB_API void setClientSidebar(
+        const std::string                               title,
+        const std::vector<std::pair<std::string, int>>& data,
+        ObjectiveSortOrder                              sortOrder = ObjectiveSortOrder::Ascending
+    );
 
     GMLIB_API void removeClientSidebar();
 
