@@ -11,26 +11,27 @@ public:
 
 public:
     FloatingText(std::string text, Vec3 position, DimensionType dimensionId);
+    FloatingText() = delete;
 
 public:
-    static FloatingText* getFloatingText(int64 runtimeId);
+    GMLIB_API static FloatingText* getFloatingText(int64 runtimeId);
 
-    static bool deleteFloatingText(int64 runtimeId);
+    GMLIB_API static bool deleteFloatingText(int64 runtimeId);
 
 public:
-    virtual ~FloatingText();
+    GMLIB_API virtual ~FloatingText();
 
-    virtual int64_t getFloatingTextRuntimeId();
+    GMLIB_API virtual int64_t getFloatingTextRuntimeId();
 
-    virtual void sendToClient(Player* pl);
+    GMLIB_API virtual void sendToClient(Player* pl);
 
-    virtual void sendToAllClients();
+    GMLIB_API virtual void sendToAllClients();
 
-    virtual void removeFromClient(Player* pl);
+    GMLIB_API virtual void removeFromClient(Player* pl);
 
-    virtual void removeFromAllClients();
+    GMLIB_API virtual void removeFromAllClients();
 
-    virtual void updateText(std::string newText);
+    GMLIB_API virtual void updateText(std::string newText);
 
-    //virtual bool removeFromServer();
+    GMLIB_API virtual void removeFromServer();
 };

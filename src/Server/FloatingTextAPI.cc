@@ -13,39 +13,39 @@ FloatingText::FloatingText(std::string text, Vec3 position, DimensionType dimens
   mDimensionId(dimensionId) {
     mRuntimeId = GMLIB_Actor::getNextActorUniqueID();
     RuntimeFloatingTextList.insert({mRuntimeId, this});
-    logger.warn("create {} {} {} {}", mText, mRuntimeId, mDimensionId.id, mPosition.toString());
 }
 
 FloatingText::~FloatingText() {
     removeFromAllClients();
     RuntimeFloatingTextList.erase(mRuntimeId);
-    delete this;
 }
 
 int64_t FloatingText::getFloatingTextRuntimeId() { return mRuntimeId; }
 
 GMLIB_NetworkPacket<15> createFloatingTextPacket(FloatingText* ft) {
-    std::vector<std::unique_ptr<DataItem>> dataItemList;
-    dataItemList.emplace_back(DataItem::create(ActorDataIDs::Name, ft->mText));
-    dataItemList.emplace_back(DataItem::create<schar>(ActorDataIDs::NametagAlwaysShow, true));
-    ItemStackDescriptor isd(*ll::service::getLevel()->getItemRegistry().lookupByName("minecraft:air"), 0, 1, nullptr);
-    NetworkItemStackDescriptor nisd(isd);
-    GMLIB_BinaryStream         bs;
+    auto               item = std::make_unique<ItemStack>(ItemStack{"minecraft:air"});
+    auto               nisd = NetworkItemStackDescriptor(*item);
+    GMLIB_BinaryStream bs;
     bs.writeVarInt64(ft->mRuntimeId);
     bs.writeUnsignedVarInt64(ft->mRuntimeId);
     bs.writeType(nisd);
     bs.writeVec3(ft->mPosition);
     bs.writeVec3(Vec3{0, 0, 0});
-
-    bs.writeDataItem(dataItemList);
-
+    // DataItem
+    bs.writeUnsignedVarInt(2);
+    bs.writeUnsignedVarInt((uint)0x4);
+    bs.writeUnsignedVarInt((uint)0x4);
+    bs.writeString(ft->mText);
+    bs.writeUnsignedVarInt((uint)0x51);
+    bs.writeUnsignedVarInt((uint)0x0);
+    bs.writeBool(true);
     bs.writeBool(false);
     GMLIB_NetworkPacket<(int)MinecraftPacketIds::AddItemActor> pkt(bs.getAndReleaseData());
     return pkt;
 }
 
 void FloatingText::sendToClient(Player* pl) {
-    if (!pl->isSimulatedPlayer()) {
+    if (!pl->isSimulatedPlayer() && pl->getDimensionId() == mDimensionId) {
         auto pkt = createFloatingTextPacket(this);
         pkt.sendTo(*pl);
     }
@@ -53,7 +53,12 @@ void FloatingText::sendToClient(Player* pl) {
 
 void FloatingText::sendToAllClients() {
     auto pkt = createFloatingTextPacket(this);
-    pkt.sendToClients();
+    ll::service::getLevel()->forEachPlayer([&](Player& pl) -> bool {
+        if (!pl.isSimulatedPlayer() && pl.getDimensionId() == mDimensionId) {
+            pkt.sendTo(pl);
+        }
+        return true;
+    });
 }
 
 void FloatingText::removeFromAllClients() { RemoveActorPacket(ActorUniqueID(this->mRuntimeId)).sendToClients(); }
@@ -73,6 +78,21 @@ FloatingText* FloatingText::getFloatingText(int64 runtimeId) {
     return nullptr;
 }
 
+void FloatingText::removeFromServer() {
+    removeFromAllClients();
+    RuntimeFloatingTextList.erase(mRuntimeId);
+    delete this;
+}
+
+bool FloatingText::deleteFloatingText(int64 runtimeId) {
+    auto ft = getFloatingText(runtimeId);
+    if (ft) {
+        ft->removeFromServer();
+        return true;
+    }
+    return false;
+}
+
 #include <GMLIB/Server/PlayerAPI.h>
 LL_AUTO_INSTANCE_HOOK(
     Test2,
@@ -85,25 +105,8 @@ LL_AUTO_INSTANCE_HOOK(
 ) {
     origin(a1, a2, a3);
 
-    auto               ft   = new FloatingText("傻逼", {0, 120, 0}, 0);
-    auto               item = std::make_unique<ItemStack>(ItemStack{"minecraft:air"});
-    auto               nisd = NetworkItemStackDescriptor(*item);
-    GMLIB_BinaryStream bs;
-    bs.writeVarInt64(ft->mRuntimeId);
-    bs.writeUnsignedVarInt64(ft->mRuntimeId);
-    bs.writeType(nisd);
-    bs.writeVec3(ft->mPosition);
-    bs.writeVec3(Vec3{0, 0, 0});
-    // DataItem
-    bs.writeUnsignedVarInt(2);
-    bs.writeUnsignedVarInt((uint)0x4);
-    bs.writeUnsignedVarInt((uint)0x4);
-    bs.writeString(ft->mText);
-    bs.writeUnsignedVarInt((uint)0x51);
-    bs.writeUnsignedVarInt((uint)0x0);
-    bs.writeBool(true);
-
-    bs.writeBool(false);
-    GMLIB_NetworkPacket<(int)MinecraftPacketIds::AddItemActor> pkt(bs.getAndReleaseData());
-    pkt.sendToClients();
+    auto ft = new FloatingText("傻逼", {0, 120, 0}, 0);
+    ft->sendToAllClients();
+    ft->removeFromServer();
+    // delete ft;
 }

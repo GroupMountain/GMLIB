@@ -80,15 +80,7 @@ int getNextNpcId() {
 }
 
 void sendFakeNpc(Player* pl) {
-    auto auid = getNextNpcId();
-    logger.warn("{}", auid);
-    // DataItem
-    // std::vector<std::unique_ptr<DataItem>> npcDataItem;
-    // npcDataItem.emplace_back(DataItem::create<schar>(ActorDataIDs::HasNpc, true));
-    // npcDataItem.emplace_back(DataItem::create(ActorDataIDs::NpcData, npcData));
-    // npcDataItem.emplace_back(DataItem::create(ActorDataIDs::Actions, npcAction));
-    // npcDataItem.emplace_back(DataItem::create(ActorDataIDs::InteractText, std::string("傻逼oj")));
-    // AddActorPacket
+    auto               auid = getNextNpcId();
     GMLIB_BinaryStream bs1;
     bs1.writeVarInt64(auid);
     bs1.writeUnsignedVarInt64(auid);
@@ -99,11 +91,11 @@ void sendFakeNpc(Player* pl) {
     bs1.writeFloat(0.0f);
     bs1.writeFloat(0.0f);
     bs1.writeUnsignedVarInt(0);
-    // bs1.writeDataItem(npcDataItem);
+    // DataItem
     bs1.writeUnsignedVarInt(5);
     bs1.writeUnsignedVarInt((uint)0x4);
     bs1.writeUnsignedVarInt((uint)0x4);
-    bs1.writeString("测试");
+    bs1.writeString("GMLIB-NpcDialogueForm");
     bs1.writeUnsignedVarInt((uint)0x27);
     bs1.writeUnsignedVarInt((uint)0x0);
     bs1.writeBool(true);
@@ -115,14 +107,12 @@ void sendFakeNpc(Player* pl) {
     bs1.writeString(npcAction);
     bs1.writeUnsignedVarInt((uint)0x64);
     bs1.writeUnsignedVarInt((uint)0x4);
-    bs1.writeString("傻逼oj");
-
+    bs1.writeString("GMLIB-NpcDialogueForm");
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
     GMLIB_NetworkPacket<(int)MinecraftPacketIds::AddActor> pkt1(bs1.getAndReleaseData());
     pkt1.sendTo(*pl);
-    logger.warn("send 1");
     // NpcDialoguePacket
     GMLIB_BinaryStream bs2;
     bs2.writeUnsignedInt64(auid);     // ActorUniqueId
@@ -133,7 +123,6 @@ void sendFakeNpc(Player* pl) {
     bs2.writeString(npcAction);       // ActionJSON
     GMLIB_NetworkPacket<(int)MinecraftPacketIds::NpcDialoguePacket> pkt2(bs2.getAndReleaseData());
     pkt2.sendTo(*pl);
-    logger.warn("send 2");
 }
 
 #include <GMLIB/Server/PlayerAPI.h>
@@ -146,11 +135,11 @@ LL_AUTO_INSTANCE_HOOK(
     void* a2,
     bool  a3
 ) {
-    ll::service::getLevel()->forEachPlayer([](Player& pl) -> bool {
-        logger.warn("{}", pl.getRealName());
-        sendFakeNpc(&pl);
-        return true;
-    });
+    //ll::service::getLevel()->forEachPlayer([](Player& pl) -> bool {
+        //logger.warn("{}", pl.getRealName());
+        //sendFakeNpc(&pl);
+        //return true;
+    //});
     origin(a1, a2, a3);
 }
 
