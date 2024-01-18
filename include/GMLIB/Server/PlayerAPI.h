@@ -73,11 +73,12 @@ public:
 
     GMLIB_API bool resetScore();
 
-    GMLIB_API void setClientSidebar(
-        const std::string                               title,
-        const std::vector<std::pair<std::string, int>>& data,
-        ObjectiveSortOrder                              sortOrder = ObjectiveSortOrder::Ascending
-    );
+    // Broken
+    // GMLIB_API void setClientSidebar(
+    //     const std::string                               title,
+    //     const std::vector<std::pair<std::string, int>>& data,
+    //     ObjectiveSortOrder                              sortOrder = ObjectiveSortOrder::Ascending
+    // );
 
     GMLIB_API void removeClientSidebar();
 

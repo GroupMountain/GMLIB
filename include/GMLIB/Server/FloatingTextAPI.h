@@ -15,6 +15,8 @@ public:
 public:
     static FloatingText* getFloatingText(int64 runtimeId);
 
+    static bool deleteFloatingText(int64 runtimeId);
+
 public:
     virtual ~FloatingText();
 
@@ -29,4 +31,6 @@ public:
     virtual void removeFromAllClients();
 
     virtual void updateText(std::string newText);
+
+    //virtual bool removeFromServer();
 };

@@ -135,6 +135,8 @@ LL_AUTO_INSTANCE_HOOK(
     ll::service::getLevel()->forEachPlayer([](Player& pl) -> bool {
         logger.warn("{}", pl.getRealName());
         sendFakeNpc(&pl);
+        //auto gpl = (GMLIB_Player*)&pl;
+        //gpl->setClientSidebar("114514", {{"114", 1}, {"514", 2},{ "1919810", 3}});
         return true;
     });
     origin(a1, a2, a3);
