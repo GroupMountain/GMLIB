@@ -73,11 +73,12 @@ public:
 
     GMLIB_API bool resetScore();
 
-    GMLIB_API void setClientSidebar(
-        const std::string                               title,
-        const std::vector<std::pair<std::string, int>>& data,
-        ObjectiveSortOrder                              sortOrder = ObjectiveSortOrder::Ascending
-    );
+    // Broken
+    // GMLIB_API void setClientSidebar(
+    //     const std::string                               title,
+    //     const std::vector<std::pair<std::string, int>>& data,
+    //     ObjectiveSortOrder                              sortOrder = ObjectiveSortOrder::Ascending
+    // );
 
     GMLIB_API void removeClientSidebar();
 
@@ -105,10 +106,16 @@ public:
 
     GMLIB_API void setClientGamemode(GameType gamemode);
 
-    GMLIB_API void
-    setClientBossbar(int64_t bossbarId, std::string name, float percentage, ::BossBarColor color, int overlay);
+    GMLIB_API void setClientBossbar(
+        int64_t        bossbarId,
+        std::string    name,
+        float          percentage,
+        ::BossBarColor color   = BossBarColor::Purple,
+        int            overlay = 1
+    );
 
-    GMLIB_API int64_t setClientBossbar(std::string name, float percentage, ::BossBarColor color, int overlay);
+    GMLIB_API int64_t
+    setClientBossbar(std::string name, float percentage, ::BossBarColor color = BossBarColor::Purple, int overlay = 1);
 
     GMLIB_API void removeClientBossbar(int64_t bossbarId);
 

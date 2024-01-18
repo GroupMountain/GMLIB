@@ -1,7 +1,12 @@
 add_rules("mode.debug", "mode.release", "mode.releasedbg")
 
 add_repositories("liteldev-repo https://github.com/LiteLDev/xmake-repo.git")
-add_requires("levilamina 0.4.1") -- or add_requires("levilamina x.x.x") to specify target LeviLamina version
+
+if not has_config("vs_runtime") then
+    set_runtimes("MD")
+end
+
+add_requires("levilamina") -- or add_requires("levilamina x.x.x") to specify target LeviLamina version
 
 target("GMLIB") -- Change this to your plugin name.
     add_cxflags(
