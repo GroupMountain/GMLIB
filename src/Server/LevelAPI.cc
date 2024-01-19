@@ -365,27 +365,6 @@ int GMLIB_Level::fillBlocks(
     return 0;
 }
 
-void CaculateTPS() {
-    std::thread([] {
-        while (true) {
-            std::this_thread::sleep_for(std::chrono::seconds(1));
-            culculate_mspt = true;
-            GMLIB::LevelAPI::mTickList.push_back(GMLIB::LevelAPI::mTicks);
-            GMLIB::LevelAPI::mTicks = 0;
-            if (GMLIB::LevelAPI::mTickList.size() >= 60) {
-                GMLIB::LevelAPI::mTickList.clear();
-                continue;
-            }
-            uint ticks_minute = 0;
-            for (auto i : GMLIB::LevelAPI::mTickList) {
-                ticks_minute = ticks_minute + i;
-            }
-            float res                    = (float)ticks_minute / ((float)GMLIB::LevelAPI::mTickList.size());
-            GMLIB::LevelAPI::mAverageTps = res >= 20 ? 20 : res;
-        }
-    }).detach();
-}
-
 double GMLIB_Level::getServerMspt() { return GMLIB::LevelAPI::mMspt; }
 
 float GMLIB_Level::getServerAverageTps() { return GMLIB::LevelAPI::mAverageTps; }
@@ -403,7 +382,7 @@ void GMLIB_Level::setTickScale(float scale) {
 }
 
 bool GMLIB_Level::isTickFreezed() {
-    ll::service::getMinecraft()->getSimPaused();
+    return ll::service::getMinecraft()->getSimPaused();
 }
 
 LL_AUTO_INSTANCE_HOOK(
@@ -530,4 +509,25 @@ LL_AUTO_TYPE_INSTANCE_HOOK(LevelTickHook, ll::memory::HookPriority::Normal, Leve
         GMLIB::LevelAPI::mMspt = (double)timeReslut / 1000;
         culculate_mspt         = false;
     }
+}
+
+void CaculateTPS() {
+    std::thread([] {
+        while (true) {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            culculate_mspt = true;
+            GMLIB::LevelAPI::mTickList.push_back(GMLIB::LevelAPI::mTicks);
+            GMLIB::LevelAPI::mTicks = 0;
+            if (GMLIB::LevelAPI::mTickList.size() >= 60) {
+                GMLIB::LevelAPI::mTickList.clear();
+                continue;
+            }
+            uint ticks_minute = 0;
+            for (auto i : GMLIB::LevelAPI::mTickList) {
+                ticks_minute = ticks_minute + i;
+            }
+            float res                    = (float)ticks_minute / ((float)GMLIB::LevelAPI::mTickList.size());
+            GMLIB::LevelAPI::mAverageTps = res >= 20 ? 20 : res;
+        }
+    }).detach();
 }
