@@ -4,16 +4,16 @@
 
 namespace GMLIB::Event::PlayerEvent {
 
-GMLIB_API BlockPos const& PlayerStartSleepBeforeEvent::getPosition() const { return mBlockPos; }
+BlockPos const& PlayerStartSleepBeforeEvent::getPosition() const { return mBlockPos; }
 
-GMLIB_API BlockPos const& PlayerStartSleepAfterEvent::getPosition() const { return mBlockPos; }
-GMLIB_API bool const&     PlayerStartSleepAfterEvent::getResult() const { return mResult; }
+BlockPos const& PlayerStartSleepAfterEvent::getPosition() const { return mBlockPos; }
+bool const&     PlayerStartSleepAfterEvent::getResult() const { return mResult; }
 
-GMLIB_API bool const&   PlayerStopSleepBeforeEvent::isForcefulWakeUp() const { return mForcefulWakeUp; }
-GMLIB_API bool const&   PlayerStopSleepBeforeEvent::isUpdateLevelList() const { return mUpdateLevelList; }
+bool const&   PlayerStopSleepBeforeEvent::isForcefulWakeUp() const { return mForcefulWakeUp; }
+bool const&   PlayerStopSleepBeforeEvent::isUpdateLevelList() const { return mUpdateLevelList; }
 
-GMLIB_API bool const&   PlayerStopSleepAfterEvent::isForcefulWakeUp() const { return mForcefulWakeUp; }
-GMLIB_API bool const&   PlayerStopSleepAfterEvent::isUpdateLevelList() const { return mUpdateLevelList; }
+bool const&   PlayerStopSleepAfterEvent::isForcefulWakeUp() const { return mForcefulWakeUp; }
+bool const&   PlayerStopSleepAfterEvent::isUpdateLevelList() const { return mUpdateLevelList; }
 
 LL_AUTO_TYPE_INSTANCE_HOOK(
     PlayerStartSleepEventHook,

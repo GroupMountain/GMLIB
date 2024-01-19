@@ -34,17 +34,15 @@ std::unique_ptr<CompoundTag> GMLIB_CompoundTag::getFromBlock(Block* block) {
 
 std::unique_ptr<CompoundTag> GMLIB_CompoundTag::getFromItemStack(ItemStack* item) { return item->save(); }
 
-bool GMLIB_CompoundTag::setToActor(Actor* ac, CompoundTag* nbt) { return ac->load(*nbt); }
+bool GMLIB_CompoundTag::setToActor(Actor* ac) { return ac->load(*this); }
 
-bool GMLIB_CompoundTag::setToPlayer(Player* pl, CompoundTag* nbt) { return pl->load(*nbt); }
+bool GMLIB_CompoundTag::setToPlayer(Player* pl) { return pl->load(*this); }
 
-void GMLIB_CompoundTag::setToBlockActor(BlockActor* blac, CompoundTag* nbt) {
-    blac->load(ll::service::getLevel(), *nbt);
-}
+void GMLIB_CompoundTag::setToBlockActor(BlockActor* blac) { blac->load(ll::service::getLevel(), *this); }
 
-void GMLIB_CompoundTag::setToItemStack(ItemStack* item, CompoundTag* nbt) { item->load(*nbt); }
+void GMLIB_CompoundTag::setToItemStack(ItemStack* item) { item->load(*this); }
 
-void GMLIB_CompoundTag::setToBlock(Block* block, CompoundTag* nbt) {
+void GMLIB_CompoundTag::setToBlock(Block* block) {
     auto ctag = (CompoundTag*)((uintptr_t)block + 160);
-    ctag->deepCopy(*nbt);
+    ctag->deepCopy(*this);
 }

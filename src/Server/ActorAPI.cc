@@ -16,7 +16,7 @@ std::unique_ptr<CompoundTag> GMLIB_Actor::getNbt() {
     return std::move(nbt);
 }
 
-bool GMLIB_Actor::setNbt(CompoundTag* nbt) { return load(*nbt); }
+bool GMLIB_Actor::setNbt(CompoundTag& nbt) { return load(nbt); }
 
 void GMLIB_Actor::setHealth(int value) { return getMutableAttribute(SharedAttributes::HEALTH)->setCurrentValue(value); }
 

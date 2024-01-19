@@ -18,13 +18,13 @@ public:
     GMLIB_API static std::unique_ptr<CompoundTag> getFromBlock(Block* block);
 
 public:
-    GMLIB_API bool setToActor(Actor* ac, CompoundTag* nbt);
+    GMLIB_API bool setToActor(Actor* ac);
 
-    GMLIB_API bool setToPlayer(Player* pl, CompoundTag* nbt);
+    GMLIB_API bool setToPlayer(Player* pl);
 
-    GMLIB_API void setToBlockActor(BlockActor* blac, CompoundTag* nbt);
+    GMLIB_API void setToBlockActor(BlockActor* blac);
 
-    GMLIB_API void setToItemStack(ItemStack* item, CompoundTag* nbt);
+    GMLIB_API void setToItemStack(ItemStack* item);
 
-    GMLIB_API void setToBlock(Block* block, CompoundTag* nbt);
+    GMLIB_API void setToBlock(Block* block);
 };

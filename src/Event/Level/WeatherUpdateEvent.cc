@@ -3,15 +3,15 @@
 
 namespace GMLIB::Event::LevelEvent {
 
-GMLIB_API int const& WeatherUpdateBeforeEvent::getRainingLastTick() const { return mRainingLastTick; }
-GMLIB_API int const& WeatherUpdateBeforeEvent::getLightningLastTick() const { return mLightningLastTick; }
-GMLIB_API int const& WeatherUpdateBeforeEvent::getRainLevel() const { return mRainLevel; }
-GMLIB_API int const& WeatherUpdateBeforeEvent::getLightningLevel() const { return mLightningLevel; }
+int const& WeatherUpdateBeforeEvent::getRainingLastTick() const { return mRainingLastTick; }
+int const& WeatherUpdateBeforeEvent::getLightningLastTick() const { return mLightningLastTick; }
+int const& WeatherUpdateBeforeEvent::getRainLevel() const { return mRainLevel; }
+int const& WeatherUpdateBeforeEvent::getLightningLevel() const { return mLightningLevel; }
 
-GMLIB_API int const& WeatherUpdateAfterEvent::getRainingLastTick() const { return mRainingLastTick; }
-GMLIB_API int const& WeatherUpdateAfterEvent::getLightningLastTick() const { return mLightningLastTick; }
-GMLIB_API int const& WeatherUpdateAfterEvent::getRainLevel() const { return mRainLevel; }
-GMLIB_API int const& WeatherUpdateAfterEvent::getLightningLevel() const { return mLightningLevel; }
+int const& WeatherUpdateAfterEvent::getRainingLastTick() const { return mRainingLastTick; }
+int const& WeatherUpdateAfterEvent::getLightningLastTick() const { return mLightningLastTick; }
+int const& WeatherUpdateAfterEvent::getRainLevel() const { return mRainLevel; }
+int const& WeatherUpdateAfterEvent::getLightningLevel() const { return mLightningLevel; }
 
 LL_AUTO_TYPE_INSTANCE_HOOK(
     WeatherUpdateEventHook,

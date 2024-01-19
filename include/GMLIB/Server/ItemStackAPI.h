@@ -6,7 +6,7 @@ class GMLIB_ItemStack : public ItemStack {
 public:
     GMLIB_API std::unique_ptr<CompoundTag> getNbt();
 
-    GMLIB_API void setNbt(CompoundTag* nbt);
+    GMLIB_API void setNbt(CompoundTag& nbt);
 
     GMLIB_API void setItem(std::string name, int count = 1, short auxValue = 0);
 

@@ -104,8 +104,13 @@ public:
 
     GMLIB_API bool setBlock(std::string name, short aux, BlockPos& pos, DimensionType dimId);
 
-    GMLIB_API int
-    fillBlocks(BlockPos startpos, BlockPos endpos, DimensionType dimId, Block* block, FillMode mode = FillMode::Replace);
+    GMLIB_API int fillBlocks(
+        BlockPos      startpos,
+        BlockPos      endpos,
+        DimensionType dimId,
+        Block*        block,
+        FillMode      mode = FillMode::Replace
+    );
 
     GMLIB_API int fillBlocks(
         BlockPos       startpos,
@@ -127,4 +132,16 @@ public:
         std::string    newName,
         unsigned short newTileData
     );
+
+    GMLIB_API double getServerMspt();
+
+    GMLIB_API float getServerAverageTps();
+
+    GMLIB_API float getServerCurrentTps();
+
+    GMLIB_API void setFreezeTick(bool freeze = true);
+
+    GMLIB_API bool isTickFreezed();
+
+    GMLIB_API void setTickScale(float scale = 1.0f);
 };

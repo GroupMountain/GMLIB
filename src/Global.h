@@ -3,7 +3,9 @@
 #include "include_all.h"
 
 extern ll::Logger logger;
-extern void       initExperiments(LevelData* leveldat);
+
+extern void initExperiments(LevelData* leveldat);
+extern void CaculateTPS();
 
 class DBStorage;
 

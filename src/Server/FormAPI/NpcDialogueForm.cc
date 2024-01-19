@@ -79,7 +79,7 @@ void GMLIB_NpcDialogueForm::sendTo(
     bs1.writeUnsignedVarInt(5);
     bs1.writeUnsignedVarInt((uint)0x4);
     bs1.writeUnsignedVarInt((uint)0x4);
-    bs1.writeString("GMLIB-GMLIB_NpcDialogueForm");
+    bs1.writeString("GMLIB-NpcDialogueForm");
     bs1.writeUnsignedVarInt((uint)0x27);
     bs1.writeUnsignedVarInt((uint)0x0);
     bs1.writeBool(true);
@@ -91,7 +91,7 @@ void GMLIB_NpcDialogueForm::sendTo(
     bs1.writeString(actionJson);
     bs1.writeUnsignedVarInt((uint)0x64);
     bs1.writeUnsignedVarInt((uint)0x4);
-    bs1.writeString("GMLIB-GMLIB_NpcDialogueForm");
+    bs1.writeString("GMLIB-NpcDialogueForm");
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);

@@ -18,16 +18,16 @@ public:
 
     GMLIB_API static std::unique_ptr<CompoundTag> getOfflineNbt(std::string serverid);
 
-    GMLIB_API static bool setOfflineNbt(std::string serverid, CompoundTag* nbt);
+    GMLIB_API static bool setOfflineNbt(std::string serverid, CompoundTag& nbt);
 
     GMLIB_API static std::unique_ptr<CompoundTag> getPlayerNbt(mce::UUID uuid);
 
-    GMLIB_API static bool setPlayerNbt(mce::UUID const& uuid, CompoundTag* nbt);
+    GMLIB_API static bool setPlayerNbt(mce::UUID const& uuid, CompoundTag& nbt);
 
     GMLIB_API static bool
-    setPlayerNbtTags(mce::UUID const& uuid, CompoundTag* nbt, const std::vector<std::string>& tags);
+    setPlayerNbtTags(mce::UUID const& uuid, CompoundTag& nbt, const std::vector<std::string>& tags);
 
-    GMLIB_API static bool deletePlayerNbt(std::string serverid);
+    GMLIB_API static bool deleteOfflinePlayerNbt(std::string serverid);
 
     GMLIB_API static bool deletePlayerNbt(mce::UUID& uuid);
 
@@ -60,7 +60,7 @@ public:
 public:
     GMLIB_API std::unique_ptr<CompoundTag> getNbt();
 
-    GMLIB_API bool setNbt(CompoundTag* nbt);
+    GMLIB_API bool setNbt(CompoundTag& nbt);
 
     GMLIB_API std::optional<int> getScore(std::string objective);
 
@@ -73,12 +73,12 @@ public:
 
     GMLIB_API bool resetScore();
 
-    // Broken
-    // GMLIB_API void setClientSidebar(
-    //     const std::string                               title,
-    //     const std::vector<std::pair<std::string, int>>& data,
-    //     ObjectiveSortOrder                              sortOrder = ObjectiveSortOrder::Ascending
-    // );
+    
+    GMLIB_API void setClientSidebar(
+        const std::string                               title,
+        const std::vector<std::pair<std::string, int>>& data,
+        ObjectiveSortOrder                              sortOrder = ObjectiveSortOrder::Ascending
+    );
 
     GMLIB_API void removeClientSidebar();
 
