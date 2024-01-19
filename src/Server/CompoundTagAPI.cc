@@ -38,9 +38,7 @@ bool GMLIB_CompoundTag::setToActor(Actor* ac) { return ac->load(*this); }
 
 bool GMLIB_CompoundTag::setToPlayer(Player* pl) { return pl->load(*this); }
 
-void GMLIB_CompoundTag::setToBlockActor(BlockActor* blac) {
-    blac->load(ll::service::getLevel(), *this);
-}
+void GMLIB_CompoundTag::setToBlockActor(BlockActor* blac) { blac->load(ll::service::getLevel(), *this); }
 
 void GMLIB_CompoundTag::setToItemStack(ItemStack* item) { item->load(*this); }
 

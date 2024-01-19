@@ -373,17 +373,11 @@ float GMLIB_Level::getServerCurrentTps() {
     return GMLIB::LevelAPI::mMspt <= 50 ? 20 : (float)(1000.0 / GMLIB::LevelAPI::mMspt);
 }
 
-void GMLIB_Level::setFreezeTick(bool freeze) {
-    ll::service::getMinecraft()->setSimTimePause(freeze);
-}
+void GMLIB_Level::setFreezeTick(bool freeze) { ll::service::getMinecraft()->setSimTimePause(freeze); }
 
-void GMLIB_Level::setTickScale(float scale) {
-    ll::service::getMinecraft()->setSimTimeScale(scale);
-}
+void GMLIB_Level::setTickScale(float scale) { ll::service::getMinecraft()->setSimTimeScale(scale); }
 
-bool GMLIB_Level::isTickFreezed() {
-    return ll::service::getMinecraft()->getSimPaused();
-}
+bool GMLIB_Level::isTickFreezed() { return ll::service::getMinecraft()->getSimPaused(); }
 
 LL_AUTO_INSTANCE_HOOK(
     Achieve1,
