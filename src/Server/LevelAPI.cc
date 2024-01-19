@@ -1,6 +1,12 @@
 #include "GMLIB/Server/LevelAPI.h"
 #include "Global.h"
 
+typedef std::chrono::high_resolution_clock timer_clock;
+#define TIMER_START auto start = timer_clock::now();
+#define TIMER_END                                                                                                      \
+    auto      elapsed    = timer_clock::now() - start;                                                                 \
+    long long timeReslut = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
+
 namespace GMLIB::LevelAPI {
 
 bool                          mFakeLevelNameEnabled     = false;
@@ -13,6 +19,10 @@ std::vector<::AllExperiments> mExperimentsRequireList   = {};
 bool                          mForceAchievementsEnabled = false;
 bool                          mRegAbilityCommand        = false;
 bool                          mEducationEditionEnabled  = false;
+uint                          mTicks                    = 0;
+float                         mAverageTps               = 20;
+double                        mMspt                     = 0;
+std::list<ushort>             mTickList                 = {};
 
 } // namespace GMLIB::LevelAPI
 
@@ -355,6 +365,47 @@ int GMLIB_Level::fillBlocks(
     return 0;
 }
 
+void CaculateTPS() {
+    std::thread([] {
+        while (true) {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            culculate_mspt = true;
+            GMLIB::LevelAPI::mTickList.push_back(GMLIB::LevelAPI::mTicks);
+            GMLIB::LevelAPI::mTicks = 0;
+            if (GMLIB::LevelAPI::mTickList.size() >= 60) {
+                GMLIB::LevelAPI::mTickList.clear();
+                continue;
+            }
+            uint ticks_minute = 0;
+            for (auto i : GMLIB::LevelAPI::mTickList) {
+                ticks_minute = ticks_minute + i;
+            }
+            float res                    = (float)ticks_minute / ((float)GMLIB::LevelAPI::mTickList.size());
+            GMLIB::LevelAPI::mAverageTps = res >= 20 ? 20 : res;
+        }
+    }).detach();
+}
+
+double GMLIB_Level::getServerMspt() { return GMLIB::LevelAPI::mMspt; }
+
+float GMLIB_Level::getServerAverageTps() { return GMLIB::LevelAPI::mAverageTps; }
+
+float GMLIB_Level::getServerCurrentTps() {
+    return GMLIB::LevelAPI::mMspt <= 50 ? 20 : (float)(1000.0 / GMLIB::LevelAPI::mMspt);
+}
+
+void GMLIB_Level::setFreezeTick(bool freeze) {
+    ll::service::getMinecraft()->setSimTimePause(freeze);
+}
+
+void GMLIB_Level::setTickScale(float scale) {
+    ll::service::getMinecraft()->setSimTimeScale(scale);
+}
+
+bool GMLIB_Level::isTickFreezed() {
+    ll::service::getMinecraft()->getSimPaused();
+}
+
 LL_AUTO_INSTANCE_HOOK(
     Achieve1,
     ll::memory::HookPriority::Normal,
@@ -466,4 +517,17 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
         AbilityCommand::setup(registry);
     }
     return origin(registry);
+}
+
+bool culculate_mspt = false;
+LL_AUTO_TYPE_INSTANCE_HOOK(LevelTickHook, ll::memory::HookPriority::Normal, Level, "?tick@Level@@UEAAXXZ", void) {
+    GMLIB::LevelAPI::mTicks++;
+    TIMER_START
+    origin();
+    TIMER_END
+    culculate_mspt = true;
+    if (culculate_mspt) {
+        GMLIB::LevelAPI::mMspt = (double)timeReslut / 1000;
+        culculate_mspt         = false;
+    }
 }

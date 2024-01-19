@@ -20,7 +20,7 @@ public:
 
     GMLIB_API std::unique_ptr<CompoundTag> getNbt();
 
-    GMLIB_API bool setNbt(CompoundTag* nbt);
+    GMLIB_API bool setNbt(CompoundTag& nbt);
 
     GMLIB_API void addEffect(
         MobEffect::EffectType effectType,

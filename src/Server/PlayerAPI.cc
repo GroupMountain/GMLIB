@@ -65,13 +65,12 @@ std::unique_ptr<CompoundTag> GMLIB_Player::getOfflineNbt(std::string serverid) {
     return GMLIB::Global<DBStorage>->getCompoundTag(serverid, DBHelpers::Category::Player);
 }
 
-bool GMLIB_Player::setOfflineNbt(std::string serverid, CompoundTag* nbt) {
+bool GMLIB_Player::setOfflineNbt(std::string serverid, CompoundTag& nbt) {
     try {
-        auto& data = *nbt;
         if (serverid.empty()) {
             return false;
         }
-        GMLIB::Global<DBStorage>->saveData(serverid, data.toBinaryNbt(), DBHelpers::Category::Player);
+        GMLIB::Global<DBStorage>->saveData(serverid, nbt.toBinaryNbt(), DBHelpers::Category::Player);
         return true;
     } catch (...) {
         return false;
@@ -94,10 +93,10 @@ std::unique_ptr<CompoundTag> GMLIB_Player::getNbt() {
     return std::move(nbt);
 }
 
-bool GMLIB_Player::setPlayerNbt(mce::UUID const& uuid, CompoundTag* nbt) {
+bool GMLIB_Player::setPlayerNbt(mce::UUID const& uuid, CompoundTag& nbt) {
     auto player = ll::service::bedrock::getLevel()->getPlayer(uuid);
     if (player) {
-        return player->load(*nbt);
+        return player->load(nbt);
     }
     auto serverid = getServeridFromUuid(uuid);
     if (serverid.empty()) {
@@ -106,30 +105,30 @@ bool GMLIB_Player::setPlayerNbt(mce::UUID const& uuid, CompoundTag* nbt) {
     return setOfflineNbt(serverid, nbt);
 }
 
-bool GMLIB_Player::setNbt(CompoundTag* nbt) { return load(*nbt); }
+bool GMLIB_Player::setNbt(CompoundTag& nbt) { return load(nbt); }
 
-void setNbtTags(CompoundTag* originNbt, CompoundTag* dataNbt, const std::vector<std::string>& tags) {
+void setNbtTags(CompoundTag& originNbt, CompoundTag& dataNbt, const std::vector<std::string>& tags) {
     for (auto tag : tags) {
-        if (dataNbt->get(tag)) {
-            originNbt->put(tag, dataNbt->get(tag)->copy());
+        if (dataNbt.get(tag)) {
+            originNbt.put(tag, dataNbt.get(tag)->copy());
         }
     }
 }
 
-bool GMLIB_Player::setPlayerNbtTags(mce::UUID const& uuid, CompoundTag* nbt, const std::vector<std::string>& tags) {
+bool GMLIB_Player::setPlayerNbtTags(mce::UUID const& uuid, CompoundTag& nbt, const std::vector<std::string>& tags) {
     auto player = (GMLIB_Player*)ll::service::bedrock::getLevel()->getPlayer(uuid);
     if (player) {
         auto data = player->getNbt();
-        setNbtTags(data.get(), nbt, tags);
-        return player->load(*nbt);
+        setNbtTags(*data, nbt, tags);
+        return player->load(nbt);
     }
     auto serverid = getServeridFromUuid(uuid);
     if (serverid.empty()) {
         return false;
     }
     auto data = getOfflineNbt(serverid);
-    setNbtTags(data.get(), nbt, tags);
-    return setOfflineNbt(serverid, data.get());
+    setNbtTags(*data, nbt, tags);
+    return setOfflineNbt(serverid, *data);
 }
 
 bool GMLIB_Player::deleteOfflinePlayerNbt(std::string serverid) {

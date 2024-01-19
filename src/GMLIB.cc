@@ -33,7 +33,10 @@ void loadLib() {
     printLibInfo();
 }
 
-void enableLib() { initExperiments(&ll::service::bedrock::getLevel()->getLevelData()); }
+void enableLib() { 
+    initExperiments(&ll::service::bedrock::getLevel()->getLevelData());
+    CaculateTPS(); 
+}
 
 void disableLib() {}
 
