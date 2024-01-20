@@ -46,60 +46,6 @@ bool GMLIB_JsonConfig::writeFile() {
 
 nlohmann::ordered_json GMLIB_JsonConfig::getSelf() { return mValue; }
 
-template <typename T>
-std::optional<T> GMLIB_JsonConfig::getValue(std::vector<std::string> path) {
-    try {
-        if (path.empty()) {
-            return {};
-        }
-        auto value = mValue;
-        for (auto& key : path) {
-            if (value.is_object() && value.contains(key)) {
-                value = value[key];
-            } else {
-                return {};
-            }
-        }
-        return value.get<T>();
-    } catch (...) {
-        return {};
-    }
-}
-
-template <typename T>
-T GMLIB_JsonConfig::getValue(std::vector<std::string> path, T defaultValue) {
-    try {
-        std::optional<T> result = getValue<T>(path);
-        if (result.has_value) {
-            return result.value();
-        }
-        this->setValue<T>(path, defaultValue);
-        return defaultValue;
-    } catch (...) {
-        return false;
-    }
-}
-
-template <typename T>
-bool GMLIB_JsonConfig::setValue(std::vector<std::string> path, T data) {
-    try {
-        if (path.empty()) {
-            return false;
-        }
-        nlohmann::ordered_json* jsonObj = &mValue;
-        for (auto& key : path) {
-            if (jsonObj->is_null()) {
-                *jsonObj = nlohmann::ordered_json::object();
-            }
-            jsonObj = &(*jsonObj)[key];
-        }
-        *jsonObj = data;
-        return this->writeFile();
-    } catch (...) {
-        return false;
-    }
-}
-
 bool GMLIB_JsonConfig::deleteKey(std::vector<std::string> path) {
     try {
         if (path.empty()) {

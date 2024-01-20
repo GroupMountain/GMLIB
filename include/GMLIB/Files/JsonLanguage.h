@@ -6,9 +6,9 @@ class GMLIB_JsonLanguage : public GMLIB_JsonConfig {
 public:
     
 public:
-    GMLIB_JsonLanguage(std::string filePath, std::string defaultJson);
-    GMLIB_JsonLanguage(std::string filePath, nlohmann::ordered_json defaultJson);
-    GMLIB_JsonLanguage() = delete;
+    GMLIB_API GMLIB_JsonLanguage(std::string filePath, std::string defaultJson);
+    GMLIB_API GMLIB_JsonLanguage(std::string filePath, nlohmann::ordered_json defaultJson);
+    GMLIB_API GMLIB_JsonLanguage() = delete;
 
 public:
     GMLIB_API std::string getValue(std::string key);
