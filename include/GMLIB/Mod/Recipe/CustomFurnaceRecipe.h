@@ -6,7 +6,6 @@ namespace GMLIB::Mod {
 
 class CustomFurnaceRecipe {
 public:
-
     virtual ItemInstance getInput() = 0;
 
     virtual ItemInstance getResult() = 0;
@@ -14,4 +13,4 @@ public:
     virtual std::vector<HashedString> getCraftingTags() = 0;
 };
 
-}
+} // namespace GMLIB::Mod

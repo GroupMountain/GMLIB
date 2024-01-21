@@ -12,5 +12,4 @@ public:
     GMLIB_API void static setFixCustomUndeadMobs(bool value = true);
 };
 
-
 }

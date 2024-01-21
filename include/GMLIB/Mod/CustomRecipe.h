@@ -12,19 +12,61 @@ class CustomRecipe {
 public:
     template <class T>
         requires std::is_base_of<CustomShapedRecipe, T>::value
-    GMLIB_API static void registerShapedRecipe();
+    inline static void registerShapedRecipe() {
+        SharedPtr<T> ShapedRecipe = SharedPtr<T>::makeShared();
+        return ll::service::bedrock::getLevel()->getRecipes().addShapedRecipe(
+            ShapedRecipe->getRecipeId(),
+            ShapedRecipe->getResult(),
+            ShapedRecipe->getShape(),
+            ShapedRecipe->getIngredients(),
+            ShapedRecipe->getCraftingTags(),
+            ShapedRecipe->getPriority(),
+            ShapedRecipe->getConstructor(),
+            ShapedRecipe->getRecipeUnlockingRequirement(),
+            ShapedRecipe->getSemVersion()
+        );
+    }
 
     template <class T>
         requires std::is_base_of<CustomShapelessRecipe, T>::value
-    GMLIB_API static void registerShapelessRecipe();
+    inline static void registerShapelessRecipe() {
+        SharedPtr<T> ShapelessRecipe = SharedPtr<T>::makeShared();
+        return ll::service::bedrock::getLevel()->getRecipes().addShapelessRecipe(
+            ShapelessRecipe->getRecipeId(),
+            ShapelessRecipe->getResult(),
+            ShapelessRecipe->getIngredients(),
+            ShapelessRecipe->getCraftingTags(),
+            ShapelessRecipe->getPriority(),
+            ShapelessRecipe->getConstructor(),
+            ShapelessRecipe->getRecipeUnlockingRequirement(),
+            ShapelessRecipe->getSemVersion()
+        );
+    }
 
     template <class T>
         requires std::is_base_of<CustomFurnaceRecipe, T>::value
-    GMLIB_API static void registerFurnaceRecipe();
+    inline static void registerFurnaceRecipe() {
+        SharedPtr<T> FurnaceRecipe = SharedPtr<T>::makeShared();
+        return ll::service::bedrock::getLevel()->getRecipes().addFurnaceRecipeAuxData(
+            FurnaceRecipe->getInput(),
+            FurnaceRecipe->getResult(),
+            FurnaceRecipe->getCraftingTags()
+        );
+    }
 
     template <class T>
         requires std::is_base_of<CustomShulkerBoxRecipe, T>::value
-    GMLIB_API static void registerShulkerBoxRecipe();
+    inline static void registerShulkerBoxRecipe() {
+        SharedPtr<T> ShulkerBoxRecipe = SharedPtr<T>::makeShared();
+        return ll::service::bedrock::getLevel()->getRecipes().addShulkerBoxRecipe(
+            ShulkerBoxRecipe->getRecipeId(),
+            ShulkerBoxRecipe->getResult(),
+            ShulkerBoxRecipe->getIngredients(),
+            ShulkerBoxRecipe->getCraftingTags(),
+            ShulkerBoxRecipe->getRecipeUnlockingRequirement(),
+            ShulkerBoxRecipe->getSemVersion()
+        );
+    }
 
     GMLIB_API static bool unregisterRecipe(std::string recipe_id);
 
@@ -146,4 +188,4 @@ public:
     );
 };
 
-}
+} // namespace GMLIB::Mod
