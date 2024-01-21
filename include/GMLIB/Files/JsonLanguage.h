@@ -22,6 +22,7 @@ GMLIB_API bool deleteKey(nlohmann::json json, std::string key, std::string path)
 
 GMLIB_API bool deleteKeys(nlohmann::json json, std::vector<std::string> keys, std::string path);
 
-GMLIB_API std::string translate(nlohmann::json json, std::string key, std::vector<std::string> data, std::string translateKey);
+GMLIB_API std::string
+translate(nlohmann::json json, std::string key, std::vector<std::string> data = {}, std::string translateKey = "%0$s");
 
 } // namespace GMLIB::Files::JsonLanguage

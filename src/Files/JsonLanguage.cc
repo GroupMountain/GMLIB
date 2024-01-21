@@ -69,6 +69,9 @@ bool deleteKeys(nlohmann::json json, std::vector<std::string> keys, std::string 
 
 std::string translate(nlohmann::json json, std::string key, std::vector<std::string> data, std::string translateKey) {
     auto lang = getValue(json, key);
+    if (data.empty()) {
+        return lang;
+    }
     for (int i = 0; i <= data.size() - 1; i++) {
         auto oldValue = translateKey;
         ll::utils::string_utils::replaceAll(oldValue, "0", std::to_string(i + 1));
@@ -77,4 +80,4 @@ std::string translate(nlohmann::json json, std::string key, std::vector<std::str
     return lang;
 }
 
-} // namespace GMLIB::JsonLanguage
+} // namespace GMLIB::Files::JsonLanguage
