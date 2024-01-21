@@ -1,6 +1,8 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
 
+namespace GMLIB::Mod {
+
 enum class BiomeType {
     Surface     = 0, // Surface Biome
     Underground = 1  // Underground Biome
@@ -16,9 +18,11 @@ struct BiomeData {
     float                   mOffset;
 };
 
-class GMLIB_CustomBiome {
+class CustomBiome {
 public:
     GMLIB_API static void registerBiomeClimates(std::string id, BiomeData data);
 
-    GMLIB_API static void registerEmptyBiome(std::string id, BiomeData data) ;
+    GMLIB_API static void registerEmptyBiome(std::string id, BiomeData data);
 };
+
+} // namespace GMLIB::Mod

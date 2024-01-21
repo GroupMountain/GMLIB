@@ -1,11 +1,13 @@
 #include "Server/FakeListAPI/FakeListAPI.h"
 #include <GMLIB/Server/FakeListAPI.h>
 
-void GMLIB_FakeList::setSimulatedPlayerListOptimizeEnabled(bool value) {
+namespace GMLIB::Server {
+
+void FakeList::setSimulatedPlayerListOptimizeEnabled(bool value) {
     GMLIB::FakeListAPI::mSimulatedPlayerOptList = value;
 }
 
-bool GMLIB_FakeList::getSimulatedPlayerListOptimizeEnabled() { return GMLIB::FakeListAPI::mSimulatedPlayerOptList; }
+bool FakeList::getSimulatedPlayerListOptimizeEnabled() { return GMLIB::FakeListAPI::mSimulatedPlayerOptList; }
 
 
 LL_AUTO_TYPE_INSTANCE_HOOK(
@@ -55,4 +57,6 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
         }
     }
     return origin(entry);
+}
+
 }

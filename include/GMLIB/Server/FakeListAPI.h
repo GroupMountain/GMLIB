@@ -2,7 +2,9 @@
 #include "GMLIB/GMLIB.h"
 #include "mc/network/packet/PlayerListEntry.h"
 
-class GMLIB_FakeList {
+namespace GMLIB::Server {
+
+class FakeList {
 public:
     GMLIB_API static bool addFakeList(PlayerListEntry entry);
 
@@ -30,9 +32,11 @@ public:
     GMLIB_API static bool getSimulatedPlayerListOptimizeEnabled();
 
     // ToDo API
-    // If you need any API, please open an issue on https://github.com/GroupMountain/GMLIB/issues 
+    // If you need any API, please open an issue on https://github.com/GroupMountain/GMLIB/issues
 
     // GMLIB_API static bool setFakePermission();
 
     // GMLIB_API static bool removePlayerFromList();
 };
+
+} // namespace GMLIB::Server

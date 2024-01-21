@@ -1,7 +1,9 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
 
-class GMLIB_VanillaFix {
+namespace GMLIB::Mod {
+
+class VanillaFix {
 public:
     GMLIB_API std::unordered_set<std::string> static getUnknownBlockLegacyNameList();
 
@@ -9,3 +11,5 @@ public:
 
     GMLIB_API void static setFixCustomUndeadMobs(bool value = true);
 };
+
+}

@@ -1,18 +1,24 @@
 #include "Global.h"
 #include <GMLIB/Files/JsonConfig.h>
 
-GMLIB_JsonConfig::GMLIB_JsonConfig(std::string filePath, std::string defaultJson) : mFilePath(filePath) {
+
+namespace GMLIB::Files {
+
+JsonConfig::JsonConfig(std::string filePath, std::string defaultJson) : mFilePath(filePath) {
     auto json_value = nlohmann::ordered_json::parse(defaultJson, nullptr, true, true);
     mValue          = json_value;
 }
 
-GMLIB_JsonConfig::GMLIB_JsonConfig(std::string filePath, nlohmann::ordered_json defaultJson)
+JsonConfig::JsonConfig(std::string filePath, nlohmann::ordered_json defaultJson)
 : mFilePath(filePath),
   mValue(defaultJson) {}
 
-GMLIB_JsonConfig::~GMLIB_JsonConfig() { mValue.clear(); }
+JsonConfig::~JsonConfig() {
+    writeFile();
+    mValue.clear();
+}
 
-bool GMLIB_JsonConfig::initConfig() {
+bool JsonConfig::initConfig() {
     try {
         auto dirPath = std::filesystem::path(mFilePath).parent_path();
         if (!std::filesystem::exists(dirPath)) {
@@ -30,7 +36,7 @@ bool GMLIB_JsonConfig::initConfig() {
     }
 }
 
-bool GMLIB_JsonConfig::writeFile() {
+bool JsonConfig::writeFile() {
     try {
         std::ofstream newFile(mFilePath);
         if (!newFile.is_open()) {
@@ -44,9 +50,9 @@ bool GMLIB_JsonConfig::writeFile() {
     }
 }
 
-nlohmann::ordered_json GMLIB_JsonConfig::getSelf() { return mValue; }
+nlohmann::ordered_json JsonConfig::getSelf() { return mValue; }
 
-bool GMLIB_JsonConfig::deleteKey(std::vector<std::string> path) {
+bool JsonConfig::deleteKey(std::vector<std::string> path) {
     try {
         if (path.empty()) {
             return false;
@@ -65,3 +71,5 @@ bool GMLIB_JsonConfig::deleteKey(std::vector<std::string> path) {
         return false;
     }
 }
+
+} // namespace GMLIB::Config

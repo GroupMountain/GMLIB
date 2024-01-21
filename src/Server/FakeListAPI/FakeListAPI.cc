@@ -1,6 +1,8 @@
 #include "Server/FakeListAPI/FakeListAPI.h"
 #include <GMLIB/Server/FakeListAPI.h>
 
+namespace GMLIB::Server {
+
 inline void sendAddFakeListPacket(PlayerListEntry entry) {
     auto pkt    = PlayerListPacket();
     pkt.mAction = PlayerListPacketType::Add;
@@ -17,7 +19,7 @@ inline void sendRemoveFakeListPacket(std::vector<PlayerListEntry> entries) {
     pkt.sendToClients();
 }
 
-bool GMLIB_FakeList::addFakeList(PlayerListEntry entry) {
+bool FakeList::addFakeList(PlayerListEntry entry) {
     if (entry.mName.empty()) {
         return false;
     }
@@ -26,7 +28,7 @@ bool GMLIB_FakeList::addFakeList(PlayerListEntry entry) {
     return true;
 }
 
-bool GMLIB_FakeList::addFakeList(std::string name, std::string xuid, ActorUniqueID uniqueId, mce::UUID uuid) {
+bool FakeList::addFakeList(std::string name, std::string xuid, ActorUniqueID uniqueId, mce::UUID uuid) {
     if (name.empty()) {
         return false;
     }
@@ -42,7 +44,7 @@ bool GMLIB_FakeList::addFakeList(std::string name, std::string xuid, ActorUnique
     return true;
 }
 
-bool GMLIB_FakeList::removeFakeList(std::string nameOrXuid) {
+bool FakeList::removeFakeList(std::string nameOrXuid) {
     bool isRemoved = false;
     for (auto fakeListPair : GMLIB::FakeListAPI::mFakeListMap) {
         if (fakeListPair.first == nameOrXuid || fakeListPair.second.mXuid == nameOrXuid) {
@@ -54,7 +56,7 @@ bool GMLIB_FakeList::removeFakeList(std::string nameOrXuid) {
     return isRemoved;
 }
 
-void GMLIB_FakeList::removeAllFakeLists() {
+void FakeList::removeAllFakeLists() {
     std::vector<PlayerListEntry> entries;
     for (auto fakeListPair : GMLIB::FakeListAPI::mFakeListMap) {
         entries.push_back(fakeListPair.second);
@@ -63,11 +65,11 @@ void GMLIB_FakeList::removeAllFakeLists() {
     GMLIB::FakeListAPI::mFakeListMap.clear();
 }
 
-PlayerListEntry GMLIB_FakeList::getFakeList(std::string name) { return GMLIB::FakeListAPI::mFakeListMap[name]; }
+PlayerListEntry FakeList::getFakeList(std::string name) { return GMLIB::FakeListAPI::mFakeListMap[name]; }
 
-bool GMLIB_FakeList::checkFakeListExistsName(std::string name) { return GMLIB::FakeListAPI::mFakeListMap.count(name); }
+bool FakeList::checkFakeListExistsName(std::string name) { return GMLIB::FakeListAPI::mFakeListMap.count(name); }
 
-bool GMLIB_FakeList::checkFakeListExists(std::string name, std::string xuid) {
+bool FakeList::checkFakeListExists(std::string name, std::string xuid) {
     for (auto fakeListPair : GMLIB::FakeListAPI::mFakeListMap) {
         if (fakeListPair.first == name && fakeListPair.second.mXuid == xuid) {
             return true;
@@ -76,7 +78,7 @@ bool GMLIB_FakeList::checkFakeListExists(std::string name, std::string xuid) {
     return false;
 }
 
-std::vector<std::string> GMLIB_FakeList::getAllFakeNames() {
+std::vector<std::string> FakeList::getAllFakeNames() {
     std::vector<std::string> allFakeLists;
     for (auto fakeListPair : GMLIB::FakeListAPI::mFakeListMap) {
         allFakeLists.push_back(fakeListPair.first);
@@ -101,12 +103,14 @@ inline void updatePlayerList(std::string realName) {
     }
 }
 
-void GMLIB_FakeList::setListName(std::string realName, std::string fakeName) {
+void FakeList::setListName(std::string realName, std::string fakeName) {
     GMLIB::FakeListAPI::mReplaceMap[realName] = fakeName;
     updatePlayerList(realName);
 }
 
-void GMLIB_FakeList::resetListName(std::string realName) {
+void FakeList::resetListName(std::string realName) {
     GMLIB::FakeListAPI::mReplaceMap.erase(realName);
     updatePlayerList(realName);
+}
+
 }

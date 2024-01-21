@@ -1,7 +1,9 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
 
-class GMLIB_CustomShulkerBoxRecipe {
+namespace GMLIB::Mod {
+
+class CustomShulkerBoxRecipe {
 public:
     virtual std::string getRecipeId() = 0;
 
@@ -15,3 +17,5 @@ public:
 
     virtual SemVersion getSemVersion() { return SemVersion(1, 20, 50, "", ""); }
 };
+
+}

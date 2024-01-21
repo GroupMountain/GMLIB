@@ -3,6 +3,8 @@
 
 Json::Reader reader;
 
+namespace GMLIB::Mod {
+
 // 加载json格式
 bool addRecipeJson(std::string ricipe_type, std::string json_string) {
     Json::Value value;
@@ -13,7 +15,7 @@ bool addRecipeJson(std::string ricipe_type, std::string json_string) {
 }
 
 // json形式构造
-bool GMLIB_CustomRecipe::loadJsonRecipe(std::string json) {
+bool CustomRecipe::loadJsonRecipe(std::string json) {
     Json::Value value;
     reader.parse(json, value, true);
     auto info = ll::service::bedrock::getLevel()->getRecipes().extractRecipeObjInfo(value);
@@ -21,12 +23,12 @@ bool GMLIB_CustomRecipe::loadJsonRecipe(std::string json) {
     return ll::service::bedrock::getLevel()->getRecipes().loadRecipe(info, ver, ver, true);
 }
 
-bool GMLIB_CustomRecipe::loadJsonRecipe(nlohmann::json json) {
+bool CustomRecipe::loadJsonRecipe(nlohmann::json json) {
     auto json_string = json.dump(4);
     return loadJsonRecipe(json_string);
 }
 
-bool GMLIB_CustomRecipe::registerFurnaceRecipe(
+bool CustomRecipe::registerFurnaceRecipe(
     std::string                                              recipe_id,
     RecipeIngredient                                         input,
     RecipeIngredient                                         output,
@@ -53,7 +55,7 @@ bool GMLIB_CustomRecipe::registerFurnaceRecipe(
     return addRecipeJson("recipe_furnace", recipe_json.dump(4));
 }
 
-bool GMLIB_CustomRecipe::registerBrewingMixRecipe(
+bool CustomRecipe::registerBrewingMixRecipe(
     std::string      recipe_id,
     std::string      input,
     std::string      output,
@@ -69,7 +71,7 @@ bool GMLIB_CustomRecipe::registerBrewingMixRecipe(
     return addRecipeJson("recipe_brewing_mix", recipe_json.dump(4));
 }
 
-bool GMLIB_CustomRecipe::registerBrewingContainerRecipe(
+bool CustomRecipe::registerBrewingContainerRecipe(
     std::string                                              recipe_id,
     RecipeIngredient                                         input,
     RecipeIngredient                                         output,
@@ -97,7 +99,7 @@ bool GMLIB_CustomRecipe::registerBrewingContainerRecipe(
     return addRecipeJson("recipe_brewing_container", recipe_json.dump(4));
 }
 
-bool GMLIB_CustomRecipe::registerSmithingTransformRecipe(
+bool CustomRecipe::registerSmithingTransformRecipe(
     std::string recipe_id,
     std::string smithing_template,
     std::string base,
@@ -115,7 +117,7 @@ bool GMLIB_CustomRecipe::registerSmithingTransformRecipe(
     return addRecipeJson("recipe_smithing_transform", recipe_json.dump(4));
 }
 
-bool GMLIB_CustomRecipe::registerSmithingTrimRecipe(
+bool CustomRecipe::registerSmithingTrimRecipe(
     std::string recipe_id,
     std::string smithing_template,
     std::string base,
@@ -131,7 +133,7 @@ bool GMLIB_CustomRecipe::registerSmithingTrimRecipe(
     return addRecipeJson("recipe_smithing_trim", recipe_json.dump(4));
 }
 
-bool GMLIB_CustomRecipe::registerStoneCutterRecipe(
+bool CustomRecipe::registerStoneCutterRecipe(
     std::string                                              recipe_id,
     RecipeIngredient                                         input,
     RecipeIngredient                                         output,
@@ -159,7 +161,7 @@ bool GMLIB_CustomRecipe::registerStoneCutterRecipe(
     return addRecipeJson("recipe_shapeless", recipe_json.dump(4));
 }
 
-bool GMLIB_CustomRecipe::registerCustomCraftingTagRecipe(
+bool CustomRecipe::registerCustomCraftingTagRecipe(
     std::string                                              recipe_id,
     std::vector<RecipeIngredient>                            ingredients,
     RecipeIngredient                                         result,
@@ -195,7 +197,7 @@ bool GMLIB_CustomRecipe::registerCustomCraftingTagRecipe(
     return addRecipeJson("recipe_shapeless", recipe_json.dump(4));
 }
 
-bool GMLIB_CustomRecipe::registerShapelessCraftingTableRecipe(
+bool CustomRecipe::registerShapelessCraftingTableRecipe(
     std::string                                              recipe_id,
     std::vector<RecipeIngredient>                            ingredients,
     RecipeIngredient                                         result,
@@ -205,7 +207,7 @@ bool GMLIB_CustomRecipe::registerShapelessCraftingTableRecipe(
     return registerCustomCraftingTagRecipe(recipe_id, ingredients, result, {"crafting_table"}, unlock, priority);
 }
 
-bool GMLIB_CustomRecipe::registerShapedCraftingTableRecipe(
+bool CustomRecipe::registerShapedCraftingTableRecipe(
     std::string                                              recipe_id,
     std::vector<std::string>                                 shape,
     std::vector<std::pair<std::string, RecipeIngredient>>    ingredients,
@@ -242,7 +244,7 @@ bool GMLIB_CustomRecipe::registerShapedCraftingTableRecipe(
     return addRecipeJson("recipe_shaped", recipe_json.dump(4));
 }
 
-bool GMLIB_CustomRecipe::registerShapedCraftingTableRecipe(
+bool CustomRecipe::registerShapedCraftingTableRecipe(
     std::string                                              recipe_id,
     std::vector<std::string>                                 shape,
     std::vector<RecipeIngredient>                            ingredients,
@@ -262,7 +264,7 @@ bool GMLIB_CustomRecipe::registerShapedCraftingTableRecipe(
     return registerShapedCraftingTableRecipe(recipe_id, shape, types, result, unlock, priority);
 }
 
-void GMLIB_CustomRecipe::registerLockedShapelessCraftingTableRecipe(
+void CustomRecipe::registerLockedShapelessCraftingTableRecipe(
     std::string                recipe_id,
     std::vector<Recipes::Type> ingredients,
     ItemStack*                 result,
@@ -283,7 +285,12 @@ void GMLIB_CustomRecipe::registerLockedShapelessCraftingTableRecipe(
     );
 }
 
-void GMLIB_CustomRecipe::registerLockedStoneCutterRecipe(std::string recipe_id, Recipes::Type input, ItemStack* result, int priority) {
+void CustomRecipe::registerLockedStoneCutterRecipe(
+    std::string   recipe_id,
+    Recipes::Type input,
+    ItemStack*    result,
+    int           priority
+) {
     std::vector<Recipes::Type> types = {input};
     ll::service::bedrock::getLevel()->getRecipes().addShapelessRecipe(
         recipe_id,
@@ -297,7 +304,7 @@ void GMLIB_CustomRecipe::registerLockedStoneCutterRecipe(std::string recipe_id, 
     );
 }
 
-void GMLIB_CustomRecipe::registerLockedShapelessCraftingTableRecipe(
+void CustomRecipe::registerLockedShapelessCraftingTableRecipe(
     std::string              recipe_id,
     std::vector<std::string> ingredients,
     std::string              result,
@@ -326,7 +333,7 @@ void GMLIB_CustomRecipe::registerLockedShapelessCraftingTableRecipe(
     );
 }
 
-void GMLIB_CustomRecipe::registerLockedShapedCraftingTableRecipe(
+void CustomRecipe::registerLockedShapedCraftingTableRecipe(
     std::string                recipe_id,
     std::vector<std::string>   shape,
     std::vector<Recipes::Type> ingredients,
@@ -349,7 +356,7 @@ void GMLIB_CustomRecipe::registerLockedShapedCraftingTableRecipe(
     );
 }
 
-void GMLIB_CustomRecipe::registerLockedShapedCraftingTableRecipe(
+void CustomRecipe::registerLockedShapedCraftingTableRecipe(
     std::string              recipe_id,
     std::vector<std::string> shape,
     std::vector<std::string> ingredients,
@@ -379,3 +386,5 @@ void GMLIB_CustomRecipe::registerLockedShapedCraftingTableRecipe(
         SemVersion(1, 20, 50, "", "")
     );
 }
+
+} // namespace GMLIB::Mod

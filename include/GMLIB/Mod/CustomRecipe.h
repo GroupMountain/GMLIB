@@ -5,24 +5,69 @@
 #include "GMLIB/Mod/Recipe/CustomShapelessRecipe.h"
 #include "GMLIB/Mod/Recipe/CustomShulkerBoxRecipe.h"
 #include <nlohmann/json.hpp>
+#include "ll/api/service/Bedrock.h"
 
-class GMLIB_CustomRecipe {
+namespace GMLIB::Mod {
+
+class CustomRecipe {
 public:
     template <class T>
-        requires std::is_base_of<GMLIB_CustomShapedRecipe, T>::value
-    GMLIB_API static void registerShapedRecipe();
+        requires std::is_base_of<CustomShapedRecipe, T>::value
+    inline static void registerShapedRecipe() {
+        SharedPtr<T> ShapedRecipe = SharedPtr<T>::makeShared();
+        return ll::service::bedrock::getLevel()->getRecipes().addShapedRecipe(
+            ShapedRecipe->getRecipeId(),
+            ShapedRecipe->getResult(),
+            ShapedRecipe->getShape(),
+            ShapedRecipe->getIngredients(),
+            ShapedRecipe->getCraftingTags(),
+            ShapedRecipe->getPriority(),
+            ShapedRecipe->getConstructor(),
+            ShapedRecipe->getRecipeUnlockingRequirement(),
+            ShapedRecipe->getSemVersion()
+        );
+    }
 
     template <class T>
-        requires std::is_base_of<GMLIB_CustomShapelessRecipe, T>::value
-    GMLIB_API static void registerShapelessRecipe();
+        requires std::is_base_of<CustomShapelessRecipe, T>::value
+    inline static void registerShapelessRecipe() {
+        SharedPtr<T> ShapelessRecipe = SharedPtr<T>::makeShared();
+        return ll::service::bedrock::getLevel()->getRecipes().addShapelessRecipe(
+            ShapelessRecipe->getRecipeId(),
+            ShapelessRecipe->getResult(),
+            ShapelessRecipe->getIngredients(),
+            ShapelessRecipe->getCraftingTags(),
+            ShapelessRecipe->getPriority(),
+            ShapelessRecipe->getConstructor(),
+            ShapelessRecipe->getRecipeUnlockingRequirement(),
+            ShapelessRecipe->getSemVersion()
+        );
+    }
 
     template <class T>
-        requires std::is_base_of<GMLIB_CustomFurnaceRecipe, T>::value
-    GMLIB_API static void registerFurnaceRecipe();
+        requires std::is_base_of<CustomFurnaceRecipe, T>::value
+    inline static void registerFurnaceRecipe() {
+        SharedPtr<T> FurnaceRecipe = SharedPtr<T>::makeShared();
+        return ll::service::bedrock::getLevel()->getRecipes().addFurnaceRecipeAuxData(
+            FurnaceRecipe->getInput(),
+            FurnaceRecipe->getResult(),
+            FurnaceRecipe->getCraftingTags()
+        );
+    }
 
     template <class T>
-        requires std::is_base_of<GMLIB_CustomShulkerBoxRecipe, T>::value
-    GMLIB_API static void registerShulkerBoxRecipe();
+        requires std::is_base_of<CustomShulkerBoxRecipe, T>::value
+    inline static void registerShulkerBoxRecipe() {
+        SharedPtr<T> ShulkerBoxRecipe = SharedPtr<T>::makeShared();
+        return ll::service::bedrock::getLevel()->getRecipes().addShulkerBoxRecipe(
+            ShulkerBoxRecipe->getRecipeId(),
+            ShulkerBoxRecipe->getResult(),
+            ShulkerBoxRecipe->getIngredients(),
+            ShulkerBoxRecipe->getCraftingTags(),
+            ShulkerBoxRecipe->getRecipeUnlockingRequirement(),
+            ShulkerBoxRecipe->getSemVersion()
+        );
+    }
 
     GMLIB_API static bool unregisterRecipe(std::string recipe_id);
 
@@ -143,3 +188,5 @@ public:
         int                      priority = 50
     );
 };
+
+} // namespace GMLIB::Mod
