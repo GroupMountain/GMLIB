@@ -5,6 +5,7 @@
 #include "GMLIB/Mod/Recipe/CustomShapelessRecipe.h"
 #include "GMLIB/Mod/Recipe/CustomShulkerBoxRecipe.h"
 #include <nlohmann/json.hpp>
+#include "ll/api/service/Bedrock.h"
 
 namespace GMLIB::Mod {
 
