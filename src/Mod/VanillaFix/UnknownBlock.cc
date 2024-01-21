@@ -2,17 +2,15 @@
 #include <GMLIB/Mod/VanillaFix.h>
 #include <GMLIB/Server/LevelAPI.h>
 
+namespace GMLIB::Mod {
+
 std::unordered_set<std::string>                       mUnknownBlockLegacyNameList;
 bool                                                  mAutoCleanUnknownBlockEnabled = false;
 std::unordered_map<int, std::unordered_set<ChunkPos>> mFixedChunksList              = {};
 
-std::unordered_set<std::string> GMLIB_VanillaFix::getUnknownBlockLegacyNameList() {
-    return mUnknownBlockLegacyNameList;
-}
+std::unordered_set<std::string> VanillaFix::getUnknownBlockLegacyNameList() { return mUnknownBlockLegacyNameList; }
 
-GMLIB_API void GMLIB_VanillaFix::setAutoCleanUnknownBlockEnabled(bool value) {
-    mAutoCleanUnknownBlockEnabled = value;
-}
+GMLIB_API void VanillaFix::setAutoCleanUnknownBlockEnabled(bool value) { mAutoCleanUnknownBlockEnabled = value; }
 
 std::pair<int, int> getHeightInfo(int dimid) {
     switch (dimid) {
@@ -77,3 +75,5 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     }
     return origin();
 }
+
+} // namespace GMLIB::Mod

@@ -2,7 +2,9 @@
 #include "GMLIB/GMLIB.h"
 #include "mc/world/item/ItemInstance.h"
 
-class GMLIB_CustomFurnaceRecipe {
+namespace GMLIB::Mod {
+
+class CustomFurnaceRecipe {
 public:
 
     virtual ItemInstance getInput() = 0;
@@ -11,3 +13,5 @@ public:
 
     virtual std::vector<HashedString> getCraftingTags() = 0;
 };
+
+}

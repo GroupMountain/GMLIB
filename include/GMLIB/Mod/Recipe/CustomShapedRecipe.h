@@ -3,7 +3,9 @@
 #include "mc/world/item/crafting/Recipes.h"
 #include "mc/world/item/crafting/RecipeUnlockingRequirement.h"
 
-class GMLIB_CustomShapedRecipe {
+namespace GMLIB::Mod {
+
+class CustomShapedRecipe {
 public:
     virtual std::string getRecipeId() = 0;
 
@@ -27,3 +29,5 @@ public:
 
     virtual SemVersion getSemVersion() { return SemVersion(1, 20, 50, "", ""); }
 };
+
+}

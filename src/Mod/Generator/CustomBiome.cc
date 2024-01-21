@@ -4,11 +4,13 @@
 
 // Add "Parameter() = default" to Parameter.h
 
+namespace GMLIB::Mod {
+
 std::unordered_map<std::string, BiomeData> mClimates;
 std::vector<std::string>                   mNewBiomes;
 bool                                       mCustomBiomeEnabled = false;
 
-void GMLIB_CustomBiome::registerBiomeClimates(std::string id, BiomeData data) {
+void CustomBiome::registerBiomeClimates(std::string id, BiomeData data) {
     mClimates[id]       = data;
     mCustomBiomeEnabled = true;
     GMLIB_Level::addExperimentsRequire((AllExperiments)7);
@@ -23,9 +25,9 @@ void GMLIB_CustomBiome::registerBiomeClimates(std::string id, BiomeData data) {
 // 15 | ExperimentalVillagerTradesRebalance
 // 16 | ExperimentalUpdateAnnounced2023
 
-void GMLIB_CustomBiome::registerEmptyBiome(std::string id, BiomeData data) {
+void CustomBiome::registerEmptyBiome(std::string id, BiomeData data) {
     mNewBiomes.push_back(id);
-    GMLIB_CustomBiome::registerBiomeClimates(id, data);
+    CustomBiome::registerBiomeClimates(id, data);
 }
 
 LL_AUTO_TYPE_INSTANCE_HOOK(
@@ -95,4 +97,6 @@ LL_AUTO_INSTANCE_HOOK(ClientGen, HookPriority::Highest, "?isClientSideGenEnabled
         return false;
     }
     return origin();
+}
+
 }

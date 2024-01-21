@@ -1,5 +1,5 @@
-#include "Global.h"
 #include "GMLIB/Mod/CustomRecipe.h"
+#include "Global.h"
 
 using RecipesMap = std::map<
     class HashedString,
@@ -18,10 +18,11 @@ using RecipesMap = std::map<
             class std::allocator<struct std::pair<std::string const, class std::shared_ptr<class Recipe>>>>>>>;
 
 
+namespace GMLIB::Mod {
 
 template <class T>
-    requires std::is_base_of<GMLIB_CustomShapedRecipe, T>::value
-void GMLIB_CustomRecipe::registerShapedRecipe() {
+    requires std::is_base_of<CustomShapedRecipe, T>::value
+void CustomRecipe::registerShapedRecipe() {
     SharedPtr<T> ShapedRecipe = SharedPtr<T>::makeShared();
     return ll::service::bedrock::getLevel()->getRecipes().addShapedRecipe(
         ShapedRecipe->getRecipeId(),
@@ -37,8 +38,8 @@ void GMLIB_CustomRecipe::registerShapedRecipe() {
 }
 
 template <class T>
-    requires std::is_base_of<GMLIB_CustomShapelessRecipe, T>::value
-void GMLIB_CustomRecipe::registerShapelessRecipe() {
+    requires std::is_base_of<CustomShapelessRecipe, T>::value
+void CustomRecipe::registerShapelessRecipe() {
     SharedPtr<T> ShapelessRecipe = SharedPtr<T>::makeShared();
     return ll::service::bedrock::getLevel()->getRecipes().addShapelessRecipe(
         ShapelessRecipe->getRecipeId(),
@@ -53,8 +54,8 @@ void GMLIB_CustomRecipe::registerShapelessRecipe() {
 }
 
 template <class T>
-    requires std::is_base_of<GMLIB_CustomFurnaceRecipe, T>::value
-void GMLIB_CustomRecipe::registerFurnaceRecipe() {
+    requires std::is_base_of<CustomFurnaceRecipe, T>::value
+void CustomRecipe::registerFurnaceRecipe() {
     SharedPtr<T> FurnaceRecipe = SharedPtr<T>::makeShared();
     return ll::service::bedrock::getLevel()->getRecipes().addFurnaceRecipeAuxData(
         FurnaceRecipe->getInput(),
@@ -64,8 +65,8 @@ void GMLIB_CustomRecipe::registerFurnaceRecipe() {
 }
 
 template <class T>
-    requires std::is_base_of<GMLIB_CustomShulkerBoxRecipe, T>::value
-void GMLIB_CustomRecipe::registerShulkerBoxRecipe() {
+    requires std::is_base_of<CustomShulkerBoxRecipe, T>::value
+void CustomRecipe::registerShulkerBoxRecipe() {
     SharedPtr<T> ShulkerBoxRecipe = SharedPtr<T>::makeShared();
     return ll::service::bedrock::getLevel()->getRecipes().addShulkerBoxRecipe(
         ShulkerBoxRecipe->getRecipeId(),
@@ -77,7 +78,7 @@ void GMLIB_CustomRecipe::registerShulkerBoxRecipe() {
     );
 }
 
-bool GMLIB_CustomRecipe::unregisterRecipe(std::string recipe_id) {
+bool CustomRecipe::unregisterRecipe(std::string recipe_id) {
     auto AllRecipes = ll::service::bedrock::getLevel()->getRecipes().getRecipesAllTags();
     for (auto& recipe : AllRecipes) {
         if (recipe.second.count(recipe_id)) {
@@ -89,3 +90,5 @@ bool GMLIB_CustomRecipe::unregisterRecipe(std::string recipe_id) {
     }
     return false;
 }
+
+} // namespace GMLIB::Mod

@@ -6,22 +6,24 @@
 #include "GMLIB/Mod/Recipe/CustomShulkerBoxRecipe.h"
 #include <nlohmann/json.hpp>
 
-class GMLIB_CustomRecipe {
+namespace GMLIB::Mod {
+
+class CustomRecipe {
 public:
     template <class T>
-        requires std::is_base_of<GMLIB_CustomShapedRecipe, T>::value
+        requires std::is_base_of<CustomShapedRecipe, T>::value
     GMLIB_API static void registerShapedRecipe();
 
     template <class T>
-        requires std::is_base_of<GMLIB_CustomShapelessRecipe, T>::value
+        requires std::is_base_of<CustomShapelessRecipe, T>::value
     GMLIB_API static void registerShapelessRecipe();
 
     template <class T>
-        requires std::is_base_of<GMLIB_CustomFurnaceRecipe, T>::value
+        requires std::is_base_of<CustomFurnaceRecipe, T>::value
     GMLIB_API static void registerFurnaceRecipe();
 
     template <class T>
-        requires std::is_base_of<GMLIB_CustomShulkerBoxRecipe, T>::value
+        requires std::is_base_of<CustomShulkerBoxRecipe, T>::value
     GMLIB_API static void registerShulkerBoxRecipe();
 
     GMLIB_API static bool unregisterRecipe(std::string recipe_id);
@@ -143,3 +145,5 @@ public:
         int                      priority = 50
     );
 };
+
+}

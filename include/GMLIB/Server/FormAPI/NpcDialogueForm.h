@@ -2,7 +2,9 @@
 #include "GMLIB/GMLIB.h"
 
 
-class GMLIB_NpcDialogueForm {
+namespace GMLIB::Server::Form {
+
+class NpcDialogueForm {
 public:
     enum class NpcDialogueFormAction : int {
         Button = 0, // Button Mode
@@ -19,12 +21,12 @@ public:
     std::function<void(Player* pl, int index, NpcRequestPacket::RequestType type)> mCallback;
 
 public:
-    GMLIB_API GMLIB_NpcDialogueForm(std::string npcName, std::string sceneName, std::string dialogue);
+    GMLIB_API NpcDialogueForm(std::string npcName, std::string sceneName, std::string dialogue);
 
-    GMLIB_NpcDialogueForm() = delete;
+    NpcDialogueForm() = delete;
 
 public:
-    virtual ~GMLIB_NpcDialogueForm();
+    virtual ~NpcDialogueForm();
 
 public:
     GMLIB_API int addAction(
@@ -36,3 +38,5 @@ public:
     GMLIB_API void
     sendTo(Player* pl, std::function<void(Player* pl, int index, NpcRequestPacket::RequestType type)> callback);
 };
+
+}
