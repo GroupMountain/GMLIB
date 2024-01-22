@@ -1,11 +1,14 @@
 #include "Global.h"
 #include "include_all.h"
 
+extern void Test();
+
 namespace plugin {
 
 Plugin::Plugin(ll::plugin::NativePlugin& self) : mSelf(self) {
     // Code for loading the plugin goes here.
     GMLIB::loadLib();
+    Test();
 }
 
 bool Plugin::enable() {
