@@ -4,12 +4,16 @@
 namespace GMLIB::Files::JsonLanguage {
 
 nlohmann::json initLanguage(std::string path, nlohmann::json& defaultFile) {
+    writeOrUpdateFile(path, defaultFile);
+    return readFromFile(path);
+}
+
+void writeOrUpdateFile(std::string path, nlohmann::json& defaultFile) {
     if (!std::filesystem::exists(path)) {
         writeFile(path, defaultFile);
     } else {
         updateFile(path, defaultFile);
     }
-    return readFromFile(path);
 }
 
 nlohmann::json initLanguage(std::string path, std::string& defaultFile) {
