@@ -27,7 +27,7 @@ std::string getKeyFromLine(std::string& line) {
     return res;
 }
 
-bool hasKey(std::string& key, std::vector<std::string> lines) {
+bool hasKey(std::string& key, std::vector<std::string>& lines) {
     for (auto& line : lines) {
         if (getKeyFromLine(line) == key) {
             return true;
@@ -36,7 +36,7 @@ bool hasKey(std::string& key, std::vector<std::string> lines) {
     return false;
 }
 
-std::vector<std::string> splitStringByNewline(const std::string input) {
+std::vector<std::string> splitStringByNewline(const std::string& input) {
     std::vector<std::string> lines;
     size_t                   startPos = 0;
     while (startPos < input.size()) {
@@ -144,7 +144,8 @@ void ResourceLanguage::initLanguage() {
         newLang.close();
     }
     if (std::filesystem::exists(path + pathLangDir + "languages.json")) {
-        auto oldData = GMLIB::Files::JsonLanguage::readFromFile(path + pathLangDir + "languages.json");
+        auto readPath = path + pathLangDir + "languages.json";
+        auto oldData  = GMLIB::Files::JsonLanguage::readFromFile(readPath);
         langJson.merge_patch(oldData);
     }
     std::ofstream newLangJson(path + pathLangDir + "languages.json");
@@ -152,11 +153,11 @@ void ResourceLanguage::initLanguage() {
     newLangJson.close();
 }
 
-void ResourceLanguage::addLanguage(std::string identifider, std::string language) {
+void ResourceLanguage::addLanguage(std::string identifider, std::string& language) {
     mLanguages[identifider] = language;
 }
 
-void ResourceLanguage::addLanguages(std::vector<std::pair<std::string, std::string>> languages) {
+void ResourceLanguage::addLanguages(std::vector<std::pair<std::string, std::string>>& languages) {
     for (auto& data : languages) {
         mLanguages[data.first] = data.second;
     }
