@@ -25,7 +25,7 @@ void addResourcePackPath(ResourcePackRepository* repo, PackType type) {
 }
 
 LL_AUTO_TYPE_INSTANCE_HOOK(
-    TestHook1,
+    PacksBuildEvent,
     ll::memory::HookPriority::Normal,
     ResourcePack,
     "??0ResourcePack@@QEAA@AEAVPack@@@Z",
@@ -42,7 +42,7 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
 
 
 LL_AUTO_STATIC_HOOK(
-    TestHook2,
+    PacksLoadEvent,
     ll::memory::HookPriority::Normal,
     "?deserialize@ResourcePackStack@@SA?AV?$unique_ptr@VResourcePackStack@@U?$default_delete@VResourcePackStack@@@"
     "std@@@std@@AEAV?$basic_istream@DU?$char_traits@D@std@@@3@AEBV?$not_null@V?$NonOwnerPointer@$$"
@@ -73,7 +73,7 @@ LL_AUTO_STATIC_HOOK(
 }
 
 LL_AUTO_TYPE_INSTANCE_HOOK(
-    TestHook3,
+    ResourcePackRepositoryInitEvent,
     ll::memory::HookPriority::Normal,
     ResourcePackRepository,
     "?_initialize@ResourcePackRepository@@AEAAXXZ",
