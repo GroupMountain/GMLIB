@@ -5,14 +5,15 @@
 namespace GMLIB::Files {
 
 class JsonConfig {
-public:
+private:
     std::string            mFilePath;
     nlohmann::ordered_json mValue;
 
 public:
     GMLIB_API JsonConfig(std::string filePath, std::string defaultJson);
     GMLIB_API JsonConfig(std::string filePath, nlohmann::ordered_json defaultJson);
-    GMLIB_API JsonConfig() = delete;
+
+    JsonConfig() = delete;
 
 public:
     virtual ~JsonConfig();
