@@ -164,22 +164,3 @@ void ResourceLanguage::addLanguages(std::vector<std::pair<std::string, std::stri
 }
 
 } // namespace GMLIB::Files
-
-std::string testLang = R"(
-accessibility.chat.tts.gamepad.back=按%s返回	#
-accessibility.chat.tts.gamepad.exitChat=按%s退出聊天	#
-accessibility.chat.tts.gamepad.sendMessage=按%s发送消息	#
-accessibility.chat.tts.says=%s说%s	#
-accessibility.chat.tts.hideChat=隐藏聊天	#
-accessibility.chat.tts.keyboard=键盘	#
-accessibility.chat.tts.muteChatToggle=全部静音	#
-accessibility.chat.tts.sendChatMessage=发送	#
-accessibility.chat.tts.textboxTitle=聊天	#
-)";
-
-#include <GMLIB/Mod/CustomPacks.h>
-void Test() {
-    auto lang = new GMLIB::Files::ResourceLanguage("./plugins/testdir", "TestPlugin");
-    lang->addLanguage("zh_CN", testLang);
-    lang->initLanguage();
-}
