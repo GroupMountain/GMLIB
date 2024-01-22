@@ -23,9 +23,9 @@ public:
     ResourceLanguage() = delete;
 
 public:
-    GMLIB_API void addLanguage(std::string identifider, std::string language);
+    GMLIB_API void addLanguage(std::string identifider, std::string& language);
 
-    GMLIB_API void addLanguages(std::vector<std::pair<std::string, std::string>> languages);
+    GMLIB_API void addLanguages(std::vector<std::pair<std::string, std::string>>& languages);
 
     GMLIB_API void initLanguage();
 };
