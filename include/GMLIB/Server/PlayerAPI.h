@@ -14,29 +14,36 @@ public:
 
     GMLIB_API static std::unique_ptr<CompoundTag> getUuidDBTag(mce::UUID const& uuid);
 
-    GMLIB_API static std::string getServeridFromUuid(mce::UUID const& uuid);
+    GMLIB_API static std::string getServerIdFromUuid(mce::UUID const& uuid);
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getOfflineNbt(std::string serverid);
+    GMLIB_API static std::unique_ptr<CompoundTag> getOfflineNbt(std::string& serverId);
 
-    GMLIB_API static bool setOfflineNbt(std::string serverid, CompoundTag& nbt);
+    GMLIB_API static bool setOfflineNbt(std::string& serverId, CompoundTag& nbt);
+
+    GMLIB_API static std::unique_ptr<CompoundTag> getPlayerNbt(std::string& serverId); //
 
     GMLIB_API static std::unique_ptr<CompoundTag> getPlayerNbt(mce::UUID uuid);
+
+    GMLIB_API static bool setPlayerNbt(std::string& serverId, CompoundTag& nbt);
 
     GMLIB_API static bool setPlayerNbt(mce::UUID const& uuid, CompoundTag& nbt);
 
     GMLIB_API static bool
+    setPlayerNbtTags(std::string& serverId, CompoundTag& nbt, const std::vector<std::string>& tags);
+
+    GMLIB_API static bool
     setPlayerNbtTags(mce::UUID const& uuid, CompoundTag& nbt, const std::vector<std::string>& tags);
 
-    GMLIB_API static bool deleteOfflinePlayerNbt(std::string serverid);
+    GMLIB_API static bool deletePlayerNbt(std::string& serverId);
 
     GMLIB_API static bool deletePlayerNbt(mce::UUID& uuid);
 
-    GMLIB_API static std::optional<int> getPlayerScore(std::string serverid, std::string objective);
+    GMLIB_API static std::optional<int> getPlayerScore(std::string& serverId, std::string objective);
 
     GMLIB_API static std::optional<int> getPlayerScore(mce::UUID& uuid, std::string objective);
 
     GMLIB_API static std::optional<int> setPlayerScore(
-        std::string            serverid,
+        std::string&           serverId,
         std::string            objective,
         int                    value,
         PlayerScoreSetFunction action = PlayerScoreSetFunction::Set
@@ -49,11 +56,11 @@ public:
         PlayerScoreSetFunction action = PlayerScoreSetFunction::Set
     );
 
-    GMLIB_API static bool resetPlayerScore(std::string serverid, std::string objective);
+    GMLIB_API static bool resetPlayerScore(std::string& serverId, std::string objective);
 
     GMLIB_API static bool resetPlayerScore(mce::UUID& uuid, std::string objective);
 
-    GMLIB_API static bool resetPlayerScore(std::string serverid);
+    GMLIB_API static bool resetPlayerScore(std::string& serverId);
 
     GMLIB_API static bool resetPlayerScore(mce::UUID& uuid);
 
@@ -73,7 +80,7 @@ public:
 
     GMLIB_API bool resetScore();
 
-    
+
     GMLIB_API void setClientSidebar(
         const std::string                               title,
         const std::vector<std::pair<std::string, int>>& data,

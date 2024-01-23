@@ -50,7 +50,7 @@ std::unique_ptr<CompoundTag> GMLIB_Player::getUuidDBTag(mce::UUID const& uuid) {
     return {};
 }
 
-std::string GMLIB_Player::getServeridFromUuid(mce::UUID const& uuid) {
+std::string GMLIB_Player::getServerIdFromUuid(mce::UUID const& uuid) {
     auto DBTag = getUuidDBTag(uuid);
     if (!DBTag) {
         return "";
@@ -58,33 +58,40 @@ std::string GMLIB_Player::getServeridFromUuid(mce::UUID const& uuid) {
     return DBTag->getString("ServerId");
 }
 
-std::unique_ptr<CompoundTag> GMLIB_Player::getOfflineNbt(std::string serverid) {
-    if (!GMLIB::Global<DBStorage>->hasKey(serverid, DBHelpers::Category::Player)) {
+std::unique_ptr<CompoundTag> GMLIB_Player::getOfflineNbt(std::string& serverId) {
+    if (!GMLIB::Global<DBStorage>->hasKey(serverId, DBHelpers::Category::Player)) {
         return nullptr;
     }
-    return GMLIB::Global<DBStorage>->getCompoundTag(serverid, DBHelpers::Category::Player);
+    return GMLIB::Global<DBStorage>->getCompoundTag(serverId, DBHelpers::Category::Player);
 }
 
-bool GMLIB_Player::setOfflineNbt(std::string serverid, CompoundTag& nbt) {
+bool GMLIB_Player::setOfflineNbt(std::string& serverId, CompoundTag& nbt) {
     try {
-        if (serverid.empty()) {
+        if (serverId.empty()) {
             return false;
         }
-        GMLIB::Global<DBStorage>->saveData(serverid, nbt.toBinaryNbt(), DBHelpers::Category::Player);
+        GMLIB::Global<DBStorage>->saveData(serverId, nbt.toBinaryNbt(), DBHelpers::Category::Player);
         return true;
     } catch (...) {
         return false;
     }
 }
 
-std::unique_ptr<CompoundTag> GMLIB_Player::getPlayerNbt(mce::UUID uuid) {
-    auto player = (GMLIB_Player*)ll::service::bedrock::getLevel()->getPlayer(uuid);
+std::unique_ptr<CompoundTag> GMLIB_Player::getPlayerNbt(std::string& serverId) {
+    if (serverId.empty()) {
+        return nullptr;
+    }
+    auto player = (GMLIB_Player*)ll::service::bedrock::getLevel()->getPlayerFromServerId(serverId);
     if (player) {
         return player->getNbt();
     } else {
-        auto serverid = getServeridFromUuid(uuid);
-        return getOfflineNbt(serverid);
+        return getOfflineNbt(serverId);
     }
+}
+
+std::unique_ptr<CompoundTag> GMLIB_Player::getPlayerNbt(mce::UUID uuid) {
+    auto serverId = getServerIdFromUuid(uuid);
+    return getPlayerNbt(serverId);
 }
 
 std::unique_ptr<CompoundTag> GMLIB_Player::getNbt() {
@@ -93,16 +100,20 @@ std::unique_ptr<CompoundTag> GMLIB_Player::getNbt() {
     return std::move(nbt);
 }
 
-bool GMLIB_Player::setPlayerNbt(mce::UUID const& uuid, CompoundTag& nbt) {
-    auto player = ll::service::bedrock::getLevel()->getPlayer(uuid);
+bool GMLIB_Player::setPlayerNbt(std::string& serverId, CompoundTag& nbt) {
+    if (serverId.empty()) {
+        return false;
+    }
+    auto player = ll::service::bedrock::getLevel()->getPlayerFromServerId(serverId);
     if (player) {
         return player->load(nbt);
     }
-    auto serverid = getServeridFromUuid(uuid);
-    if (serverid.empty()) {
-        return false;
-    }
-    return setOfflineNbt(serverid, nbt);
+    return setOfflineNbt(serverId, nbt);
+}
+
+bool GMLIB_Player::setPlayerNbt(mce::UUID const& uuid, CompoundTag& nbt) {
+    auto serverId = getServerIdFromUuid(uuid);
+    return setPlayerNbt(serverId, nbt);
 }
 
 bool GMLIB_Player::setNbt(CompoundTag& nbt) { return load(nbt); }
@@ -115,28 +126,37 @@ void setNbtTags(CompoundTag& originNbt, CompoundTag& dataNbt, const std::vector<
     }
 }
 
-bool GMLIB_Player::setPlayerNbtTags(mce::UUID const& uuid, CompoundTag& nbt, const std::vector<std::string>& tags) {
-    auto player = (GMLIB_Player*)ll::service::bedrock::getLevel()->getPlayer(uuid);
+bool GMLIB_Player::setPlayerNbtTags(std::string& serverId, CompoundTag& nbt, const std::vector<std::string>& tags) {
+    if (serverId.empty()) {
+        return false;
+    }
+    auto player = (GMLIB_Player*)ll::service::bedrock::getLevel()->getPlayerFromServerId(serverId);
     if (player) {
         auto data = player->getNbt();
         setNbtTags(*data, nbt, tags);
         return player->load(nbt);
     }
-    auto serverid = getServeridFromUuid(uuid);
-    if (serverid.empty()) {
-        return false;
-    }
-    auto data = getOfflineNbt(serverid);
+    auto data = getOfflineNbt(serverId);
     setNbtTags(*data, nbt, tags);
-    return setOfflineNbt(serverid, *data);
+    return setOfflineNbt(serverId, *data);
 }
 
-bool GMLIB_Player::deleteOfflinePlayerNbt(std::string serverid) {
-    if (serverid.empty()) {
+bool GMLIB_Player::setPlayerNbtTags(mce::UUID const& uuid, CompoundTag& nbt, const std::vector<std::string>& tags) {
+    auto serverId = getServerIdFromUuid(uuid);
+    return setPlayerNbtTags(serverId, nbt, tags);
+}
+
+bool GMLIB_Player::deletePlayerNbt(std::string& serverId) {
+    if (serverId.empty()) {
         return false;
     }
-    if (GMLIB::Global<DBStorage>->hasKey(serverid, DBHelpers::Category::Player)) {
-        GMLIB::Global<DBStorage>->deleteData(serverid, DBHelpers::Category::Player);
+    auto pl = ll::service::getLevel()->getPlayerFromServerId(serverId);
+    if (pl) {
+        ll::service::getLevel()->getLevelStorage().deleteData(serverId, DBHelpers::Category::Player);
+        return true;
+    }
+    if (GMLIB::Global<DBStorage>->hasKey(serverId, DBHelpers::Category::Player)) {
+        GMLIB::Global<DBStorage>->deleteData(serverId, DBHelpers::Category::Player);
         return true;
     }
     return false;
@@ -145,12 +165,11 @@ bool GMLIB_Player::deleteOfflinePlayerNbt(std::string serverid) {
 bool GMLIB_Player::deletePlayerNbt(mce::UUID& uuid) {
     auto pl = ll::service::getLevel()->getPlayer(uuid);
     if (pl) {
-        auto serverid = pl->getServerId();
-        ll::service::getLevel()->getLevelStorage().deleteData(serverid, DBHelpers::Category::Player);
-        return true;
+        auto serverId = pl->getServerId();
+        return deletePlayerNbt(serverId);
     }
-    auto serverid = getServeridFromUuid(uuid);
-    return deleteOfflinePlayerNbt(serverid);
+    auto serverId = getServerIdFromUuid(uuid);
+    return deletePlayerNbt(serverId);
 }
 
 
@@ -343,9 +362,9 @@ bool GMLIB_Player::resetScore() {
     return scoreboard->resetPlayerAllScores(this);
 }
 
-std::optional<int> GMLIB_Player::getPlayerScore(std::string serverid, std::string objective) {
+std::optional<int> GMLIB_Player::getPlayerScore(std::string& serverId, std::string objective) {
     auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
-    return scoreboard->getPlayerScore(objective, serverid);
+    return scoreboard->getPlayerScore(objective, serverId);
 }
 
 std::optional<int> GMLIB_Player::getPlayerScore(mce::UUID& uuid, std::string objective) {
@@ -354,9 +373,9 @@ std::optional<int> GMLIB_Player::getPlayerScore(mce::UUID& uuid, std::string obj
 }
 
 std::optional<int>
-GMLIB_Player::setPlayerScore(std::string serverid, std::string objective, int value, PlayerScoreSetFunction action) {
+GMLIB_Player::setPlayerScore(std::string& serverId, std::string objective, int value, PlayerScoreSetFunction action) {
     auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
-    return scoreboard->setPlayerScore(objective, serverid, value, action);
+    return scoreboard->setPlayerScore(objective, serverId, value, action);
 }
 
 std::optional<int>
@@ -365,9 +384,9 @@ GMLIB_Player::setPlayerScore(mce::UUID& uuid, std::string objective, int value, 
     return scoreboard->setPlayerScore(objective, uuid, value, action);
 }
 
-bool GMLIB_Player::resetPlayerScore(std::string serverid, std::string objective) {
+bool GMLIB_Player::resetPlayerScore(std::string& serverId, std::string objective) {
     auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
-    return scoreboard->resetPlayerScore(objective, serverid);
+    return scoreboard->resetPlayerScore(objective, serverId);
 }
 
 bool GMLIB_Player::resetPlayerScore(mce::UUID& uuid, std::string objective) {
@@ -375,9 +394,9 @@ bool GMLIB_Player::resetPlayerScore(mce::UUID& uuid, std::string objective) {
     return scoreboard->resetPlayerScore(objective, uuid);
 }
 
-bool GMLIB_Player::resetPlayerScore(std::string serverid) {
+bool GMLIB_Player::resetPlayerScore(std::string& serverId) {
     auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
-    return scoreboard->resetPlayerAllScores(serverid);
+    return scoreboard->resetPlayerAllScores(serverId);
 }
 
 bool GMLIB_Player::resetPlayerScore(mce::UUID& uuid) {

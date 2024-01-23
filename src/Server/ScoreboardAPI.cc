@@ -43,7 +43,7 @@ ScoreboardId GMLIB_Scoreboard::getPlayerScoreboardId(std::string serverid) {
 }
 
 ScoreboardId GMLIB_Scoreboard::getPlayerScoreboardId(mce::UUID& uuid) {
-    auto serverid = GMLIB_Player::getServeridFromUuid(uuid);
+    auto serverid = GMLIB_Player::getServerIdFromUuid(uuid);
     return getPlayerScoreboardId(serverid);
 }
 
