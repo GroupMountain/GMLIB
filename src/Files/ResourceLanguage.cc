@@ -1,5 +1,5 @@
 #include "Global.h"
-#include <GMLIB/Files/JsonLanguage.h>
+#include <GMLIB/Files/JsonFile.h>
 #include <GMLIB/Files/McLang.h>
 #include <GMLIB/Files/ResourceLanguage.h>
 #include <GMLIB/Mod/CustomPacks.h>
@@ -82,7 +82,7 @@ void ResourceLanguage::initLanguage() {
     }
     if (std::filesystem::exists(path + pathLangDir + "languages.json")) {
         auto readPath    = path + pathLangDir + "languages.json";
-        auto oldData     = GMLIB::Files::JsonLanguage::readFromFile(readPath);
+        auto oldData     = GMLIB::Files::JsonFile::readFromFile(readPath);
         auto oldLangKeys = oldData.get<std::vector<std::string>>();
         for (auto& lk : oldLangKeys) {
             if (!mLanguages.count(lk)) {
