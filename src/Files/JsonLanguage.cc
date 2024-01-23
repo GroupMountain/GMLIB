@@ -9,6 +9,10 @@ nlohmann::json initLanguage(std::string path, nlohmann::json& defaultFile) {
 }
 
 void writeOrUpdateFile(std::string path, nlohmann::json& defaultFile) {
+    auto dirPath = std::filesystem::path(path).parent_path();
+    if (!std::filesystem::exists(dirPath)) {
+        std::filesystem::create_directories(dirPath);
+    }
     if (!std::filesystem::exists(path)) {
         writeFile(path, defaultFile);
     } else {

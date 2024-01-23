@@ -114,6 +114,9 @@ std::string McLang::translate(std::string key, std::vector<std::string> data, st
     auto value = get(key);
     if (value.has_value()) {
         auto result = value.value();
+        if (data.empty()) {
+            return result;
+        }
         for (int i = 0; i <= data.size() - 1; i++) {
             auto oldValue = translateKeys;
             ll::utils::string_utils::replaceAll(oldValue, "0", std::to_string(i + 1));
