@@ -8,14 +8,6 @@ GMLIB_API nlohmann::json initLanguage(std::string path, nlohmann::json& defaultF
 
 GMLIB_API nlohmann::json initLanguage(std::string path, std::string& defaultFile);
 
-GMLIB_API void updateFile(std::string& path, nlohmann::json& newFile);
-
-GMLIB_API void updateFile(std::string& path, std::string& newFile);
-
-GMLIB_API nlohmann::json readFromFile(std::string& path);
-
-GMLIB_API bool writeFile(std::string& path, nlohmann::json& json);
-
 GMLIB_API std::string getValue(nlohmann::json& json, std::string key);
 
 GMLIB_API std::string getValue(nlohmann::json& json, std::string key, std::string defaultValue);
