@@ -110,3 +110,20 @@ std::optional<std::string> getUuidByName(std::string& name) {
 }
 
 } // namespace GMLIB::Server::UserCache
+
+LL_AUTO_TYPE_INSTANCE_HOOK(
+    PlayerLoginHook,
+    ll::memory::HookPriority::Normal,
+    ServerNetworkHandler,
+    "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVLoginPacket@@@Z",
+    void,
+    class NetworkIdentifier const& source,
+    class LoginPacket const&       packet
+) {
+    origin(source, packet);
+    auto cert     = packet.mConnectionRequest->getCertificate();
+    auto uuid     = ExtendedCertificate::getIdentity(*cert);
+    auto xuid     = ExtendedCertificate::getXuid(*cert, false);
+    auto realName = ExtendedCertificate::getIdentityName(*cert);
+    GMLIB::Server::UserCache::updateUserCache(uuid, xuid, realName);
+}
