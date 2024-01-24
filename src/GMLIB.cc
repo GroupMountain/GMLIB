@@ -31,6 +31,7 @@ void printLibInfo() {
 void loadLib() {
     printLogo();
     printLibInfo();
+    GMLIB::Server::UserCache::initUserCache();
 }
 
 void enableLib() { 
