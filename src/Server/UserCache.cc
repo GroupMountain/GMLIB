@@ -113,7 +113,7 @@ std::optional<std::string> getUuidByName(std::string& name) {
 
 LL_AUTO_TYPE_INSTANCE_HOOK(
     PlayerLoginHook,
-    ll::memory::HookPriority::Normal,
+    ll::memory::HookPriority::Lowest,
     ServerNetworkHandler,
     "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVLoginPacket@@@Z",
     void,
