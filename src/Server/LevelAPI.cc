@@ -34,6 +34,17 @@ BlockSource* GMLIB_Level::getBlockSource(DimensionType dimid) {
 
 std::vector<Actor*> GMLIB_Level::getAllEntities() { return getRuntimeActorList(); }
 
+Actor* GMLIB_Level::getEntity(ActorUniqueID auid) { return fetchEntity(auid); }
+
+std::vector<Player*> GMLIB_Level::getAllPlayers() {
+    std::vector<Player*> result = {};
+    this->forEachPlayer([&](Player& player) -> bool {
+        result.push_back(&player);
+        return true;
+    });
+    return result;
+}
+
 std::string GMLIB_Level::getLevelName() { return getLevelData().getLevelName(); }
 
 void GMLIB_Level::setLevelName(std::string newName) { getLevelData().setLevelName(newName); }
