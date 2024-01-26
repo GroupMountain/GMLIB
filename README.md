@@ -11,10 +11,10 @@ BDS**）的插件开发者提供更多的API，一定程度上弥补了 `LeviLam
 `GMLIB` 封装了大量 `LeviLamina` 未直接提供的API，为插件开发者提供了更多便利。
 插件开发者可以直接调用 `GMLIB` 中的现成API，而非重复造轮子。
 
-`GMLIB` 的API支持使用头文件和动态链接库导入（原生插件），也支持使用 `LeviLamina` 提供的RemoteCall API进行导入。
+`GMLIB` 的API支持使用头文件和静态链接库导入，我们提供了模板插件和GMLIB的SDK。
 对于调用 `GMLIB API` 的代码来说，如果GMLIB没有API改动，仅需本项目在底层适配更新即可，给插件开发与维护带来了很大的便利。
 
-`GMLIB` 主要分为 `EventAPI` `ServerAPI`两大模块，全部内容均为开源的。
+`GMLIB` 的全部内容均为开源的。
 
 
 ## 📕 编写插件和使用API
@@ -28,11 +28,6 @@ BDS**）的插件开发者提供更多的API，一定程度上弥补了 `LeviLam
 2. 添加头文件
 3. 添加动态库
 4. 编写你的代码...
-
-#### 其它插件（`C++`、`JavaScript(Node.js)`、`Lua` 、`Python`、`.NET`）
-1. 正常创建 `LeviLamina` 插件项目。
-2. 使用 `RemoteCall API` 导入你需要使用的API。
-3. 编写你的代码。
 
 ## 🔨 构建项目
 
