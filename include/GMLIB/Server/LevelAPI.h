@@ -45,6 +45,10 @@ public:
 
     GMLIB_API std::vector<Actor*> getAllEntities();
 
+    GMLIB_API Actor* getEntity(ActorUniqueID auid);
+
+    GMLIB_API std::vector<Player*> getAllPlayers();
+
     GMLIB_API std::string getLevelName();
 
     GMLIB_API void setLevelName(std::string newName);
