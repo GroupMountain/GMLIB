@@ -29,7 +29,7 @@ public:
 
     GMLIB_API void writeUuid(mce::UUID const& data);
 
-    GMLIB_API void writePropertySyncData(struct PropertySyncData const& syncdata);
+    GMLIB_API void writePropertySyncData(struct PropertySyncData const& data);
 
 public:
     // Basic API Export

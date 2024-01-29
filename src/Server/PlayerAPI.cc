@@ -173,6 +173,7 @@ bool GMLIB_Player::deletePlayerNbt(mce::UUID& uuid) {
 }
 
 
+/*
 void GMLIB_Player::setClientSidebar(
     const std::string                               title,
     const std::vector<std::pair<std::string, int>>& data,
@@ -202,6 +203,7 @@ void GMLIB_Player::setClientSidebar(
     SetDisplayObjectivePacket("sidebar", "GMLIB_SIDEBAR_API", title, "dummy", ObjectiveSortOrder(sortOrder))
         .sendTo(*this);
 }
+*/
 
 
 void GMLIB_Player::removeClientSidebar() {
