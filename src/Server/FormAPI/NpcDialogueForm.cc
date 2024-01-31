@@ -26,13 +26,12 @@ int getNextNpcId() {
 
 std::string npcData =
     R"({"picker_offsets":{"scale":[1.70,1.70,1.70],"translate":[0,20,0]},"portrait_offsets":{"scale":[1.750,1.750,1.750],"translate":[-7,50,0]},"skin_list":[{"variant":0},{"variant":1},{"variant":2},{"variant":3},{"variant":4},{"variant":5},{"variant":6},{"variant":7},{"variant":8},{"variant":9},{"variant":10},{"variant":11},{"variant":12},{"variant":13},{"variant":14},{"variant":15},{"variant":16},{"variant":17},{"variant":18},{"variant":19},{"variant":25},{"variant":26},{"variant":27},{"variant":28},{"variant":29},{"variant":30},{"variant":31},{"variant":32},{"variant":33},{"variant":34},{"variant":20},{"variant":21},{"variant":22},{"variant":23},{"variant":24},{"variant":35},{"variant":36},{"variant":37},{"variant":38},{"variant":39},{"variant":40},{"variant":41},{"variant":42},{"variant":43},{"variant":44},{"variant":50},{"variant":51},{"variant":52},{"variant":53},{"variant":54},{"variant":45},{"variant":46},{"variant":47},{"variant":48},{"variant":49},{"variant":55},{"variant":56},{"variant":57},{"variant":58},{"variant":59}]})";
-std::string enptyAction = R"([])";
 
 NpcDialogueForm::NpcDialogueForm(std::string npcName, std::string sceneName, std::string dialogue)
 : mNpcName(npcName),
   mSceneName(sceneName),
   mDialogue(dialogue) {
-    mActionJSON    = nlohmann::ordered_json::parse(enptyAction);
+    mActionJSON    = nlohmann::ordered_json::array();
     mFormRuntimeId = getNextNpcId();
 }
 

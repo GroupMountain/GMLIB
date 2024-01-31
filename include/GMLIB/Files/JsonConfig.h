@@ -16,7 +16,7 @@ public:
     JsonConfig() = delete;
 
 public:
-    virtual ~JsonConfig();
+    GMLIB_API virtual ~JsonConfig();
 
 public:
     GMLIB_API bool initConfig();
