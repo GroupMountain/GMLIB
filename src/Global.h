@@ -2,6 +2,8 @@
 #include "Plugin.h"
 #include "include_all.h"
 
+#define S(x) std::to_string(x)
+
 extern ll::Logger logger;
 
 extern void initExperiments(LevelData* leveldat);

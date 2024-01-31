@@ -1,6 +1,6 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
-#include <ll/api/event/player/PlayerEvent.h>
+#include "ll/api/event/player/PlayerEvent.h"
 
 namespace GMLIB::Event::PlayerEvent {
 
