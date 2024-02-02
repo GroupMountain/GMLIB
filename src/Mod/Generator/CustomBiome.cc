@@ -1,17 +1,18 @@
 #include "Global.h"
 #include <GMLIB/Mod/CustomBiome.h>
 #include <GMLIB/Server/LevelAPI.h>
+#include <utility>
 
 // Add "Parameter() = default" to Parameter.h
 
 namespace GMLIB::Mod {
 
-std::unordered_map<std::string, BiomeData> mClimates;
-std::vector<std::string>                   mNewBiomes;
-bool                                       mCustomBiomeEnabled = false;
+std::unordered_map<std::string, std::vector<BiomeData>> mClimates;
+std::vector<std::string>                                mNewBiomes;
+bool                                                    mCustomBiomeEnabled = false;
 
 void CustomBiome::registerBiomeClimates(std::string id, BiomeData data) {
-    mClimates[id]       = data;
+    mClimates[id].push_back(data);
     mCustomBiomeEnabled = true;
     GMLIB_Level::addExperimentsRequire((AllExperiments)7);
 }
@@ -42,31 +43,32 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
 ) {
     origin(a1, a2);
     if (mCustomBiomeEnabled) {
-        for (auto& [name, data] : mClimates) {
-            if (data.mType == BiomeType::Surface) {
-                this->_addSurfaceBiome(
-                    *a1,
-                    data.mTemperatureRange,
-                    data.mHumidityRange,
-                    data.mContinentalnessRange,
-                    data.mErosionRange,
-                    data.mWeirdnessRange,
-                    data.mOffset,
-                    a2->lookupByName(name)
-                );
-            } else if (data.mType == BiomeType::Underground) {
-                this->_addUndergroundBiome(
-                    *a1,
-                    data.mTemperatureRange,
-                    data.mHumidityRange,
-                    data.mContinentalnessRange,
-                    data.mErosionRange,
-                    data.mWeirdnessRange,
-                    data.mOffset,
-                    a2->lookupByName(name)
-                );
-            } else {
-                __assume(false);
+        for (auto& [name, climates] : mClimates) {
+            for (auto& data : climates) {
+                if (data.mType == BiomeType::Surface) {
+                    this->_addSurfaceBiome(
+                        *a1,
+                        data.mTemperatureRange,
+                        data.mHumidityRange,
+                        data.mContinentalnessRange,
+                        data.mErosionRange,
+                        data.mWeirdnessRange,
+                        data.mOffset,
+                        a2->lookupByName(name)
+                    );
+                } else if (data.mType == BiomeType::Underground) {
+                    this->_addUndergroundBiome(
+                        *a1,
+                        data.mTemperatureRange,
+                        data.mHumidityRange,
+                        data.mContinentalnessRange,
+                        data.mErosionRange,
+                        data.mWeirdnessRange,
+                        data.mOffset,
+                        a2->lookupByName(name)
+                    );
+                }
+                std::unreachable();
             }
         }
         mClimates.clear();
@@ -99,4 +101,4 @@ LL_AUTO_INSTANCE_HOOK(ClientGen, HookPriority::Highest, "?isClientSideGenEnabled
     return origin();
 }
 
-}
+} // namespace GMLIB::Mod
