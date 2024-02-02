@@ -40,6 +40,7 @@ nlohmann::json initLanguage(std::string path, nlohmann::json& defaultFile) {
     } else {
         updateFile(path, defaultFile);
     }
+    return readFromFile(path);
 }
 
 nlohmann::json initLanguage(std::string path, std::string& defaultFile) {
