@@ -1,6 +1,7 @@
 #pragma once
 #include "Plugin.h"
-#include "include_all.h"
+#include <GMLIB/include_ll.h>
+#include <GMLIB/include_mc.h>
 
 #define S(x) std::to_string(x)
 

@@ -40,7 +40,6 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     return pack;
 }
 
-
 LL_AUTO_STATIC_HOOK(
     PacksLoadEvent,
     ll::memory::HookPriority::Normal,
