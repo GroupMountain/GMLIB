@@ -96,7 +96,7 @@ void NpcDialogueForm::sendTo(
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
-    GMLIB_NetworkPacket<(int)MinecraftPacketIds::AddActor> pkt1(bs1.getAndReleaseData());
+    GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::AddActor> pkt1(bs1.getAndReleaseData());
     pkt1.sendTo(*pl);
     // NpcDialoguePacket
     GMLIB_BinaryStream bs2;
@@ -106,7 +106,7 @@ void NpcDialogueForm::sendTo(
     bs2.writeString(mSceneName);            // SceneName
     bs2.writeString(mNpcName);              // NpcName
     bs2.writeString(actionJson);            // ActionJSON
-    GMLIB_NetworkPacket<(int)MinecraftPacketIds::NpcDialoguePacket> pkt2(bs2.getAndReleaseData());
+    GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::NpcDialoguePacket> pkt2(bs2.getAndReleaseData());
     pkt2.sendTo(*pl);
     mRuntimeNpcFormList[mFormRuntimeId] = this;
     mCallback                           = callback;
