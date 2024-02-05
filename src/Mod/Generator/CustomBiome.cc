@@ -2,8 +2,6 @@
 #include <GMLIB/Mod/CustomBiome.h>
 #include <GMLIB/Server/LevelAPI.h>
 
-// Add "Parameter() = default" to Parameter.h
-
 namespace GMLIB::Mod {
 
 std::unordered_map<std::string, BiomeData> mClimates;

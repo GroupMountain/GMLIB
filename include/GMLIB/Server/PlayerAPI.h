@@ -1,7 +1,10 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
 #include "GMLIB/Server/ActorAPI.h"
+#include "mc/enums/BossBarColor.h"
+#include "mc/enums/ObjectiveSortOrder.h"
 #include "mc/world/actor/player/Player.h"
+#include "mc/world/actor/player/PlayerScoreSetFunction.h"
 
 class GMLIB_Player : public Player {
 public:
@@ -120,13 +123,22 @@ public:
         int            overlay = 1
     );
 
-    GMLIB_API int64_t
-    setClientBossbar(std::string name, float percentage, ::BossBarColor color = BossBarColor::Purple, int overlay = 1);
+    GMLIB_API int64_t setClientBossbar(
+        std::string    name,
+        float          percentage = 1.00f,
+        ::BossBarColor color      = BossBarColor::Purple,
+        int            overlay    = 1
+    );
 
     GMLIB_API void removeClientBossbar(int64_t bossbarId);
 
-    GMLIB_API void
-    updateClientBossbar(int64_t bossbarId, std::string name, float percentage, ::BossBarColor color, int overlay);
+    GMLIB_API void updateClientBossbar(
+        int64_t        bossbarId,
+        std::string    name,
+        float          percentage = 1.00f,
+        ::BossBarColor color      = BossBarColor::Purple,
+        int            overlay    = 1
+    );
 
     GMLIB_API void addEffect(
         MobEffect::EffectType effectType,

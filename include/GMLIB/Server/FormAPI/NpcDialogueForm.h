@@ -1,6 +1,7 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
-
+#include "mc/network/packet/NpcRequestPacket.h"
+#include "mc/world/actor/player/Player.h"
 
 namespace GMLIB::Server::Form {
 
@@ -39,4 +40,4 @@ public:
     sendTo(Player* pl, std::function<void(Player* pl, int index, NpcRequestPacket::RequestType type)> callback);
 };
 
-}
+} // namespace GMLIB::Server::Form

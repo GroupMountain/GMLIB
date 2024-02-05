@@ -1,5 +1,6 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
+#include "mc/world/item/components/ItemLockMode.h"
 #include "mc/world/item/registry/ItemStack.h"
 
 class GMLIB_ItemStack : public ItemStack {

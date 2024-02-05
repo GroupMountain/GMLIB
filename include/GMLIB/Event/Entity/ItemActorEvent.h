@@ -1,6 +1,7 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
-#include <ll/api/event/entity/ActorEvent.h>
+#include "ll/api/event/entity/ActorEvent.h"
+#include "mc/world/actor/item/ItemActor.h"
 
 namespace GMLIB::Event::EntityEvent {
 

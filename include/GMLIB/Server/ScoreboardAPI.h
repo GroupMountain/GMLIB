@@ -1,5 +1,6 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
+#include "mc/world/scores/Scoreboard.h"
 
 class GMLIB_Scoreboard : public Scoreboard {
 public:
