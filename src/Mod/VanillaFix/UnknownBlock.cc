@@ -10,8 +10,6 @@ std::unordered_map<int, std::unordered_set<ChunkPos>> mFixedChunksList          
 
 std::unordered_set<std::string> VanillaFix::getUnknownBlockLegacyNameList() { return mUnknownBlockLegacyNameList; }
 
-GMLIB_API void VanillaFix::setAutoCleanUnknownBlockEnabled(bool value) { mAutoCleanUnknownBlockEnabled = value; }
-
 std::pair<int, int> getHeightInfo(int dimid) {
     switch (dimid) {
     case 0:
@@ -46,7 +44,7 @@ void setChunkFixed(ChunkPos cp, int dimid) {
     mFixedChunksList[dimid].insert(cp);
 }
 
-LL_AUTO_INSTANCE_HOOK(
+LL_INSTANCE_HOOK(
     LoadUnknownBlock,
     HookPriority::Normal,
     "??0UnknownBlock@@QEAA@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HAEBVMaterial@@@Z",
@@ -59,7 +57,7 @@ LL_AUTO_INSTANCE_HOOK(
     return origin(a1, a2, a3);
 }
 
-LL_AUTO_TYPE_INSTANCE_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     ChunkLoadEvent,
     HookPriority::Normal,
     LevelChunk,
@@ -74,6 +72,14 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
         }
     }
     return origin();
+}
+
+GMLIB_API void VanillaFix::setAutoCleanUnknownBlockEnabled() {
+    if (!mAutoCleanUnknownBlockEnabled) {
+        ll::memory::HookRegistrar<LoadUnknownBlock>().hook();
+        ll::memory::HookRegistrar<ChunkLoadEvent>().hook();
+        mAutoCleanUnknownBlockEnabled = true;
+    }
 }
 
 } // namespace GMLIB::Mod

@@ -22,7 +22,7 @@ FloatingText::~FloatingText() {
 
 int64_t FloatingText::getFloatingTextRuntimeId() { return mRuntimeId; }
 
-GMLIB_NetworkPacket<15> createFloatingTextPacket(FloatingText* ft) {
+GMLIB::Server::NetworkPacket<15> createFloatingTextPacket(FloatingText* ft) {
     auto               item = std::make_unique<ItemStack>(ItemStack{"minecraft:air"});
     auto               nisd = NetworkItemStackDescriptor(*item);
     GMLIB_BinaryStream bs;
@@ -40,7 +40,7 @@ GMLIB_NetworkPacket<15> createFloatingTextPacket(FloatingText* ft) {
     bs.writeUnsignedVarInt((uint)0x0);
     bs.writeBool(true);
     bs.writeBool(false);
-    GMLIB_NetworkPacket<(int)MinecraftPacketIds::AddItemActor> pkt(bs.getAndReleaseData());
+    GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::AddItemActor> pkt(bs.getAndReleaseData());
     return pkt;
 }
 

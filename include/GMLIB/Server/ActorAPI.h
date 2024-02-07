@@ -1,6 +1,7 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
 #include "mc/world/actor/Actor.h"
+#include "mc/world/effect/MobEffect.h"
 
 class GMLIB_Actor : public Actor {
 public:

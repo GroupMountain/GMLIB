@@ -24,6 +24,7 @@ void printLogo() {
 void printLibInfo() {
     logger.info("GMLIB Loaded!");
     logger.info("Version: {}", Version::getLibVersionString());
+    logger.info("GMLIB is a free library for LeviLamina licensed under LGPLv3");
     logger.info("Author: {}", LIB_AUTHOR);
     logger.info("Repository: {}", LIB_REPOSITORT);
 }
@@ -34,9 +35,9 @@ void loadLib() {
     GMLIB::Server::UserCache::initUserCache();
 }
 
-void enableLib() { 
+void enableLib() {
     initExperiments(&ll::service::bedrock::getLevel()->getLevelData());
-    CaculateTPS(); 
+    CaculateTPS();
 }
 
 void disableLib() {}

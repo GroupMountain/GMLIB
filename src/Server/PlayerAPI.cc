@@ -272,7 +272,7 @@ void GMLIB_Player::setClientBossbar(
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
-    GMLIB_NetworkPacket<(int)MinecraftPacketIds::AddActor> pkt1(bs1.getAndReleaseData());
+    GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::AddActor> pkt1(bs1.getAndReleaseData());
     pkt1.sendTo(*this);
     // BossEventPacket
     GMLIB_BinaryStream bs2;
