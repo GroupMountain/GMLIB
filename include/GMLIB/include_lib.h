@@ -4,9 +4,6 @@
 
 #pragma once
 #include "GMLIB/GMLIB.h"
-#include "GMLIB/include_lib.h"
-#include "GMLIB/include_ll.h"
-#include "GMLIB/include_mc.h"
 #include "GMLIB/Event/Entity/DeathMessageEvent.h"
 #include "GMLIB/Event/Entity/ItemActorEvent.h"
 #include "GMLIB/Event/Entity/ItemActorSpawnEvent.h"
