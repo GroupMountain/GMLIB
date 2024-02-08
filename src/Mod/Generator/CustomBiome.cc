@@ -11,8 +11,12 @@ bool                                                    mCustomBiomeEnabled = fa
 
 void CustomBiome::registerBiomeClimates(std::string id, BiomeData data) {
     mClimates[id].push_back(data);
-    mCustomBiomeEnabled = true;
     GMLIB_Level::addExperimentsRequire((AllExperiments)7);
+    if (!mCustomBiomeEnabled) {
+        ll::memory::HookRegistrar<OverworldBiomeBuilderHook>().hook();
+        ll::memory::HookRegistrar<BiomeRegistryHook>().hook();
+        mCustomBiomeEnabled = true;
+    }
 }
 
 // 6 | ExperimentalHoliday
@@ -29,7 +33,7 @@ void CustomBiome::registerEmptyBiome(std::string id, BiomeData data) {
     CustomBiome::registerBiomeClimates(id, data);
 }
 
-LL_AUTO_TYPE_INSTANCE_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     OverworldBiomeBuilderHook,
     HookPriority::Highest,
     OverworldBiomeBuilder,
@@ -73,7 +77,7 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     }
 }
 
-LL_AUTO_STATIC_HOOK(
+LL_STATIC_HOOK(
     BiomeRegistryHook,
     HookPriority::Highest,
     "?initBiomes@VanillaBiomes@@SAXAEAVBiomeRegistry@@AEBUSpawnSettings@"
