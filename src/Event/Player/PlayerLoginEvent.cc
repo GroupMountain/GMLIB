@@ -40,7 +40,6 @@ LL_TYPE_INSTANCE_HOOK(
     class NetworkIdentifier const& source,
     class LoginPacket const&       packet
 ) {
-    logger.warn("Hook Test");
     auto beforeEvent = PlayerLoginBeforeEvent(*this, source);
     ll::event::EventBus::getInstance().publish(beforeEvent);
     if (beforeEvent.isCancelled()) {
