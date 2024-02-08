@@ -9,16 +9,6 @@ std::unordered_map<std::string, std::vector<BiomeData>> mClimates;
 std::vector<std::string>                                mNewBiomes;
 bool                                                    mCustomBiomeEnabled = false;
 
-void CustomBiome::registerBiomeClimates(std::string id, BiomeData data) {
-    mClimates[id].push_back(data);
-    GMLIB_Level::addExperimentsRequire((AllExperiments)7);
-    if (!mCustomBiomeEnabled) {
-        ll::memory::HookRegistrar<OverworldBiomeBuilderHook>().hook();
-        ll::memory::HookRegistrar<BiomeRegistryHook>().hook();
-        mCustomBiomeEnabled = true;
-    }
-}
-
 // 6 | ExperimentalHoliday
 // 7 | ExperimentalBiomes
 // 8 | ExperimentalCreatorFeatures
@@ -44,37 +34,35 @@ LL_TYPE_INSTANCE_HOOK(
     BiomeRegistry*                 a2
 ) {
     origin(a1, a2);
-    if (mCustomBiomeEnabled) {
-        for (auto& [name, climates] : mClimates) {
-            for (auto& data : climates) {
-                if (data.mType == BiomeType::Surface) {
-                    this->_addSurfaceBiome(
-                        *a1,
-                        data.mTemperatureRange,
-                        data.mHumidityRange,
-                        data.mContinentalnessRange,
-                        data.mErosionRange,
-                        data.mWeirdnessRange,
-                        data.mOffset,
-                        a2->lookupByName(name)
-                    );
-                } else if (data.mType == BiomeType::Underground) {
-                    this->_addUndergroundBiome(
-                        *a1,
-                        data.mTemperatureRange,
-                        data.mHumidityRange,
-                        data.mContinentalnessRange,
-                        data.mErosionRange,
-                        data.mWeirdnessRange,
-                        data.mOffset,
-                        a2->lookupByName(name)
-                    );
-                }
-                std::unreachable();
+    for (auto& [name, climates] : mClimates) {
+        for (auto& data : climates) {
+            if (data.mType == BiomeType::Surface) {
+                this->_addSurfaceBiome(
+                    *a1,
+                    data.mTemperatureRange,
+                    data.mHumidityRange,
+                    data.mContinentalnessRange,
+                    data.mErosionRange,
+                    data.mWeirdnessRange,
+                    data.mOffset,
+                    a2->lookupByName(name)
+                );
+            } else if (data.mType == BiomeType::Underground) {
+                this->_addUndergroundBiome(
+                    *a1,
+                    data.mTemperatureRange,
+                    data.mHumidityRange,
+                    data.mContinentalnessRange,
+                    data.mErosionRange,
+                    data.mWeirdnessRange,
+                    data.mOffset,
+                    a2->lookupByName(name)
+                );
             }
+            std::unreachable();
         }
-        mClimates.clear();
     }
+    mClimates.clear();
 }
 
 LL_STATIC_HOOK(
@@ -88,19 +76,25 @@ LL_STATIC_HOOK(
     void*          a3,
     void*          a4
 ) {
-    if (mCustomBiomeEnabled) {
-        for (auto& name : mNewBiomes) {
-            a1->registerBiome(name);
-        }
+    for (auto& name : mNewBiomes) {
+        a1->registerBiome(name);
     }
     return origin(a1, a2, a3, a4);
 }
 
-LL_AUTO_INSTANCE_HOOK(ClientGen, HookPriority::Highest, "?isClientSideGenEnabled@PropertiesSettings@@QEBA_NXZ", bool) {
-    if (mCustomBiomeEnabled) {
-        return false;
+LL_INSTANCE_HOOK(ClientGenHook, HookPriority::Highest, "?isClientSideGenEnabled@PropertiesSettings@@QEBA_NXZ", bool) {
+    return false;
+}
+
+void CustomBiome::registerBiomeClimates(std::string id, BiomeData data) {
+    mClimates[id].push_back(data);
+    GMLIB_Level::addExperimentsRequire((AllExperiments)7);
+    if (!mCustomBiomeEnabled) {
+        ll::memory::HookRegistrar<OverworldBiomeBuilderHook>().hook();
+        ll::memory::HookRegistrar<BiomeRegistryHook>().hook();
+        ll::memory::HookRegistrar<ClientGenHook>().hook();
+        mCustomBiomeEnabled = true;
     }
-    return origin();
 }
 
 } // namespace GMLIB::Mod
