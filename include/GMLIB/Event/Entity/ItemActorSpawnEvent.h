@@ -31,7 +31,7 @@ public:
     GMLIB_API Vec3 const&        getPosition() const;
     GMLIB_API ItemStack const&   getItem() const;
     GMLIB_API Actor* const       getSpawner() const;
-    GMLIB_API int const&         getThrowTime() const;
+    GMLIB_API int const          getThrowTime() const;
 };
 
 class ItemActorSpawnAfterEvent : public ItemActorEvent {
@@ -61,7 +61,7 @@ public:
     GMLIB_API Vec3 const&        getPosition() const;
     GMLIB_API ItemStack const&   getItem() const;
     GMLIB_API Actor* const       getSpawner() const;
-    GMLIB_API int const&         getThrowTime() const;
+    GMLIB_API int const          getThrowTime() const;
 };
 
 } // namespace GMLIB::Event::EntityEvent

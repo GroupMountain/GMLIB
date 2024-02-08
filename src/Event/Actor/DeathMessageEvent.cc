@@ -8,9 +8,9 @@ using DEATH_MESSAGE = std::pair<std::string, std::vector<std::string>>;
 ActorDamageSource const& DeathMessageBeforeEvent::getDamageSource() const { return mDamageSource; }
 
 ActorDamageSource const& DeathMessageAfterEvent::getDamageSource() const { return mDamageSource; }
-DEATH_MESSAGE const&     DeathMessageAfterEvent::getDeathMessage() const { return mDeathMessage; }
+DEATH_MESSAGE const      DeathMessageAfterEvent::getDeathMessage() const { return mDeathMessage; }
 
-LL_AUTO_TYPE_INSTANCE_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     DeathMessageEvent1,
     HookPriority::Normal,
     ActorDamageSource,
@@ -33,7 +33,7 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     return result;
 }
 
-LL_AUTO_TYPE_INSTANCE_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     DeathMessageEvent2,
     HookPriority::Normal,
     ActorDamageByActorSource,
@@ -56,7 +56,7 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     return result;
 }
 
-LL_AUTO_TYPE_INSTANCE_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     DeathMessageEvent3,
     HookPriority::Normal,
     ActorDamageByBlockSource,
@@ -79,7 +79,7 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     return result;
 }
 
-LL_AUTO_TYPE_INSTANCE_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     DeathMessageEvent4,
     HookPriority::Normal,
     ActorDamageByChildActorSource,
@@ -102,5 +102,28 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     return result;
 }
 
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory1(ll::event::ListenerBase&);
+class DeathMessageBeforeEventEmitter : public ll::event::Emitter<emitterFactory1, DeathMessageBeforeEvent> {
+    ll::memory::HookRegistrar<DeathMessageEvent1> hook1;
+    ll::memory::HookRegistrar<DeathMessageEvent2> hook2;
+    ll::memory::HookRegistrar<DeathMessageEvent3> hook3;
+    ll::memory::HookRegistrar<DeathMessageEvent4> hook4;
+};
+
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory1(ll::event::ListenerBase&) {
+    return std::make_unique<DeathMessageBeforeEventEmitter>();
+}
+
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::ListenerBase&);
+class DeathMessageAfterEventEmitter : public ll::event::Emitter<emitterFactory2, DeathMessageAfterEvent> {
+    ll::memory::HookRegistrar<DeathMessageEvent1> hook1;
+    ll::memory::HookRegistrar<DeathMessageEvent2> hook2;
+    ll::memory::HookRegistrar<DeathMessageEvent3> hook3;
+    ll::memory::HookRegistrar<DeathMessageEvent4> hook4;
+};
+
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::ListenerBase&) {
+    return std::make_unique<DeathMessageAfterEventEmitter>();
+}
 
 } // namespace GMLIB::Event::EntityEvent

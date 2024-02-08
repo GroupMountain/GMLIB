@@ -24,10 +24,10 @@ public:
       mLightningLastTick(lightningLastTick),
       mLightningLevel(lightningLevel) {}
 
-    GMLIB_API int const& getRainingLastTick() const;
-    GMLIB_API int const& getLightningLastTick() const;
-    GMLIB_API int const& getRainLevel() const;
-    GMLIB_API int const& getLightningLevel() const;
+    GMLIB_API int const getRainingLastTick() const;
+    GMLIB_API int const getLightningLastTick() const;
+    GMLIB_API int const getRainLevel() const;
+    GMLIB_API int const getLightningLevel() const;
 };
 
 class WeatherUpdateAfterEvent : public ll::event::world::LevelEvent {
@@ -50,10 +50,10 @@ public:
       mLightningLastTick(lightningLastTick),
       mLightningLevel(lightningLevel) {}
 
-    GMLIB_API int const& getRainingLastTick() const;
-    GMLIB_API int const& getLightningLastTick() const;
-    GMLIB_API int const& getRainLevel() const;
-    GMLIB_API int const& getLightningLevel() const;
+    GMLIB_API int const getRainingLastTick() const;
+    GMLIB_API int const getLightningLastTick() const;
+    GMLIB_API int const getRainLevel() const;
+    GMLIB_API int const getLightningLevel() const;
 };
 
 } // namespace GMLIB::Event::LevelEvent

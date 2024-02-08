@@ -1,5 +1,6 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
+#include "ll/api/event/Cancellable.h"
 #include "ll/api/event/player/PlayerEvent.h"
 
 namespace GMLIB::Event::PlayerEvent {
@@ -27,7 +28,7 @@ public:
     }
 
     GMLIB_API BlockPos const& getPosition() const;
-    GMLIB_API bool const&     getResult() const;
+    GMLIB_API bool const      getResult() const;
 };
 
 class PlayerStopSleepBeforeEvent : public ll::event::Cancellable<ll::event::player::PlayerEvent> {
@@ -40,8 +41,8 @@ public:
       mForcefulWakeUp(forcefulWakeUp),
       mUpdateLevelList(updateLevelList) {}
 
-    GMLIB_API bool const& isForcefulWakeUp() const;
-    GMLIB_API bool const& isUpdateLevelList() const;
+    GMLIB_API bool const isForcefulWakeUp() const;
+    GMLIB_API bool const isUpdateLevelList() const;
 };
 
 class PlayerStopSleepAfterEvent : public ll::event::player::PlayerEvent {
@@ -54,8 +55,8 @@ public:
       mForcefulWakeUp(forcefulWakeUp),
       mUpdateLevelList(updateLevelList) {}
 
-    GMLIB_API bool const& isForcefulWakeUp() const;
-    GMLIB_API bool const& isUpdateLevelList() const;
+    GMLIB_API bool const isForcefulWakeUp() const;
+    GMLIB_API bool const isUpdateLevelList() const;
 };
 
 } // namespace GMLIB::Event::PlayerEvent

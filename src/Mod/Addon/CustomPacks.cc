@@ -5,13 +5,7 @@ namespace GMLIB::Mod {
 
 std::vector<std::string> mAllResourcePath;
 std::vector<std::string> mPackListCache;
-
-void CustomPacks::addCustomPackPath(std::string path) {
-    if (!std::filesystem::exists(path)) {
-        std::filesystem::create_directories(path);
-    }
-    mAllResourcePath.push_back(path);
-}
+bool                     mCustomPackEnabled = false;
 
 void addResourcePackPath(ResourcePackRepository* repo, PackType type) {
     auto  CompositePack     = ll::memory::dAccess<CompositePackSource*>(repo, 96);
@@ -24,7 +18,7 @@ void addResourcePackPath(ResourcePackRepository* repo, PackType type) {
     repo->refreshPacks();
 }
 
-LL_AUTO_TYPE_INSTANCE_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     PacksBuildEvent,
     ll::memory::HookPriority::Normal,
     ResourcePack,
@@ -40,7 +34,7 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     return pack;
 }
 
-LL_AUTO_STATIC_HOOK(
+LL_STATIC_HOOK(
     PacksLoadEvent,
     ll::memory::HookPriority::Normal,
     "?deserialize@ResourcePackStack@@SA?AV?$unique_ptr@VResourcePackStack@@U?$default_delete@VResourcePackStack@@@"
@@ -71,7 +65,7 @@ LL_AUTO_STATIC_HOOK(
     return stack;
 }
 
-LL_AUTO_TYPE_INSTANCE_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     ResourcePackRepositoryInitEvent,
     ll::memory::HookPriority::Normal,
     ResourcePackRepository,
@@ -81,6 +75,19 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     addResourcePackPath(this, PackType::Behavior);
     addResourcePackPath(this, PackType::Resources);
     return origin();
+}
+
+void CustomPacks::addCustomPackPath(std::string path) {
+    if (!mCustomPackEnabled) {
+        ll::memory::HookRegistrar<PacksBuildEvent>().hook();
+        ll::memory::HookRegistrar<ResourcePackRepositoryInitEvent>().hook();
+        ll::memory::HookRegistrar<PacksLoadEvent>().hook();
+        mCustomPackEnabled = true;
+    }
+    if (!std::filesystem::exists(path)) {
+        std::filesystem::create_directories(path);
+    }
+    mAllResourcePath.push_back(path);
 }
 
 } // namespace GMLIB::Mod

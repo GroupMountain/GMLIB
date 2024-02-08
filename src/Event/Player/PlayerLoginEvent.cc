@@ -8,19 +8,19 @@ NetworkIdentifier const&    PlayerLoginBeforeEvent::getNetworkIdentifier() const
 
 ServerNetworkHandler const& PlayerLoginAfterEvent::getServerNetworkHandler() const { return mServerNetworkHandler; }
 NetworkIdentifier const&    PlayerLoginAfterEvent::getNetworkIdentifier() const { return mNetworkIdentifier; }
-mce::UUID const&            PlayerLoginAfterEvent::getUuid() const { return mUuid; }
-std::string const&          PlayerLoginAfterEvent::getServerAuthXuid() const { return mServerAuthXuid; }
-std::string const&          PlayerLoginAfterEvent::getClientAuthXuid() const { return mClientAuthXuid; }
-std::string const&          PlayerLoginAfterEvent::getRealName() const { return mRealName; }
-std::string const&          PlayerLoginAfterEvent::getIpAndPort() const { return mIpAndPort; }
+mce::UUID const             PlayerLoginAfterEvent::getUuid() const { return mUuid; }
+std::string const           PlayerLoginAfterEvent::getServerAuthXuid() const { return mServerAuthXuid; }
+std::string const           PlayerLoginAfterEvent::getClientAuthXuid() const { return mClientAuthXuid; }
+std::string const           PlayerLoginAfterEvent::getRealName() const { return mRealName; }
+std::string const           PlayerLoginAfterEvent::getIpAndPort() const { return mIpAndPort; }
 
-std::string const& PlayerLoginAfterEvent::getIp() const {
+std::string const PlayerLoginAfterEvent::getIp() const {
     auto ipAndPort = getIpAndPort();
     auto pos       = ipAndPort.find(":");
     return ipAndPort.substr(0, pos);
 }
 
-std::string const& PlayerLoginAfterEvent::getPort() const {
+std::string const PlayerLoginAfterEvent::getPort() const {
     auto ipAndPort = getIpAndPort();
     auto pos       = ipAndPort.find(":");
     return ipAndPort.substr(pos + 1);
@@ -31,8 +31,8 @@ void PlayerLoginAfterEvent::disConnectClient(std::string reason) const {
         ->disconnectClient(getNetworkIdentifier(), Connection::DisconnectFailReason::Kicked, reason, false);
 }
 
-LL_AUTO_TYPE_INSTANCE_HOOK(
-    PlayerLoginHook,
+LL_TYPE_INSTANCE_HOOK(
+    PlayerLoginEventHook,
     ll::memory::HookPriority::Normal,
     ServerNetworkHandler,
     "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVLoginPacket@@@Z",
@@ -40,6 +40,7 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     class NetworkIdentifier const& source,
     class LoginPacket const&       packet
 ) {
+    logger.warn("Hook Test");
     auto beforeEvent = PlayerLoginBeforeEvent(*this, source);
     ll::event::EventBus::getInstance().publish(beforeEvent);
     if (beforeEvent.isCancelled()) {
@@ -56,5 +57,22 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     ll::event::EventBus::getInstance().publish(afterEvent);
 }
 
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory1(ll::event::ListenerBase&);
+class PlayerLoginBeforeEventEmitter : public ll::event::Emitter<emitterFactory1, PlayerLoginBeforeEvent> {
+    ll::memory::HookRegistrar<PlayerLoginEventHook> hook;
+};
+
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory1(ll::event::ListenerBase&) {
+    return std::make_unique<PlayerLoginBeforeEventEmitter>();
+}
+
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::ListenerBase&);
+class PlayerLoginAfterEventEmitter : public ll::event::Emitter<emitterFactory2, PlayerLoginAfterEvent> {
+    ll::memory::HookRegistrar<PlayerLoginEventHook> hook;
+};
+
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::ListenerBase&) {
+    return std::make_unique<PlayerLoginAfterEventEmitter>();
+}
 
 } // namespace GMLIB::Event::PlayerEvent

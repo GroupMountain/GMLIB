@@ -28,21 +28,21 @@ public:
 class PlayerLoginAfterEvent : public ll::event::Event {
     ServerNetworkHandler const& mServerNetworkHandler;
     NetworkIdentifier const&    mNetworkIdentifier;
-    mce::UUID const&            mUuid;
-    std::string const&          mServerAuthXuid;
-    std::string const&          mClientAuthXuid;
-    std::string const&          mRealName;
-    std::string const&          mIpAndPort;
+    mce::UUID const             mUuid;
+    std::string const           mServerAuthXuid;
+    std::string const           mClientAuthXuid;
+    std::string const           mRealName;
+    std::string const           mIpAndPort;
 
 public:
     constexpr explicit PlayerLoginAfterEvent(
         ServerNetworkHandler const& serverNetworkHandler,
         NetworkIdentifier const&    networkIdentifier,
         mce::UUID const&            uuid,
-        std::string const&          serverAuthXuid,
-        std::string const&          clientAuthXuid,
-        std::string const&          realName,
-        std::string const&          ipAndPort
+        std::string const           serverAuthXuid,
+        std::string const           clientAuthXuid,
+        std::string const           realName,
+        std::string const           ipAndPort
     )
     : mServerNetworkHandler(serverNetworkHandler),
       mNetworkIdentifier(networkIdentifier),
@@ -54,14 +54,14 @@ public:
 
     GMLIB_API ServerNetworkHandler const& getServerNetworkHandler() const;
     GMLIB_API NetworkIdentifier const&    getNetworkIdentifier() const;
-    GMLIB_API mce::UUID const& getUuid() const;
-    GMLIB_API std::string const& getServerAuthXuid() const;
-    GMLIB_API std::string const& getClientAuthXuid() const;
-    GMLIB_API std::string const& getRealName() const;
-    GMLIB_API std::string const& getIpAndPort() const;
-    GMLIB_API std::string const& getIp() const;
-    GMLIB_API std::string const& getPort() const;
-    GMLIB_API void               disConnectClient(std::string reason = "") const;
+    GMLIB_API mce::UUID const getUuid() const;
+    GMLIB_API std::string const getServerAuthXuid() const;
+    GMLIB_API std::string const getClientAuthXuid() const;
+    GMLIB_API std::string const getRealName() const;
+    GMLIB_API std::string const getIpAndPort() const;
+    GMLIB_API std::string const getIp() const;
+    GMLIB_API std::string const getPort() const;
+    GMLIB_API void              disConnectClient(std::string reason = "") const;
 };
 
 } // namespace GMLIB::Event::PlayerEvent

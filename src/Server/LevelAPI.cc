@@ -26,6 +26,118 @@ std::list<ushort>             mTickList                 = {};
 
 } // namespace GMLIB::LevelAPI
 
+LL_INSTANCE_HOOK(
+    ForceAchievementHook1,
+    ll::memory::HookPriority::Normal,
+    "?achievementsWillBeDisabledOnLoad@LevelData@@QEBA_NXZ",
+    bool
+) {
+    return false;
+}
+
+LL_INSTANCE_HOOK(
+    ForceAchievementHook2,
+    ll::memory::HookPriority::Normal,
+    "?hasAchievementsDisabled@LevelData@@QEBA_NXZ",
+    bool
+) {
+    return false;
+}
+
+LL_INSTANCE_HOOK(
+    AllowCheatsSettingHook,
+    ll::memory::HookPriority::Normal,
+    "?allowCheats@PropertiesSettings@@QEBA_NXZ",
+    bool
+) {
+    return false;
+}
+
+void initExperiments(LevelData* leveldat) {
+    if (GMLIB::LevelAPI::mExperimentsRequireList.size() >= 1) {
+        for (auto exp : GMLIB::LevelAPI::mExperimentsRequireList) {
+            leveldat->getExperiments().setExperimentEnabled(exp, true);
+        }
+    }
+}
+
+LL_INSTANCE_HOOK(TrustSkinHook, ll::memory::HookPriority::Normal, "?isTrustedSkin@SerializedSkin@@QEBA_NXZ", bool) {
+    return true;
+}
+
+LL_TYPE_INSTANCE_HOOK(
+    ResourcePacksInfoPacketWrite,
+    ll::memory::HookPriority::Normal,
+    ResourcePacksInfoPacket,
+    "?write@ResourcePacksInfoPacket@@UEBAXAEAVBinaryStream@@@Z",
+    void,
+    class BinaryStream& stream
+) {
+    this->mData.mResourcePackRequired    = true;
+    this->mData.mForceServerPacksEnabled = false;
+    return origin(stream);
+}
+
+LL_AUTO_TYPE_INSTANCE_HOOK(
+    StartGamePacketWrite,
+    ll::memory::HookPriority::Normal,
+    StartGamePacket,
+    "?write@StartGamePacket@@UEBAXAEAVBinaryStream@@@Z",
+    void,
+    class BinaryStream& stream
+) {
+    if (GMLIB::LevelAPI::mFakeSeedEnabled) {
+        this->mSettings.mSeed.mValue = GMLIB::LevelAPI::mFakeSeed;
+    }
+    if (GMLIB::LevelAPI::mFakeLevelNameEnabled) {
+        this->mLevelName = GMLIB::LevelAPI::mFakeLevelName;
+    }
+    return origin(stream);
+}
+
+LL_AUTO_TYPE_INSTANCE_HOOK(
+    EduInit,
+    ll::memory::HookPriority::Normal,
+    LevelData,
+    "?educationFeaturesEnabled@LevelData@@QEBA_NXZ",
+    bool
+) {
+    auto res = origin();
+    if (GMLIB::LevelAPI::mEducationEditionEnabled) {
+        this->setEducationFeaturesEnabled(true);
+        return true;
+    }
+    GMLIB::LevelAPI::mEducationEditionEnabled = res;
+    return res;
+}
+
+LL_AUTO_TYPE_INSTANCE_HOOK(
+    RegAbility,
+    ll::memory::HookPriority::Normal,
+    ChangeSettingCommand,
+    "?setup@ChangeSettingCommand@@SAXAEAVCommandRegistry@@@Z",
+    void,
+    class CommandRegistry& registry
+) {
+    if (GMLIB::LevelAPI::mEducationEditionEnabled == false && GMLIB::LevelAPI::mRegAbilityCommand == true) {
+        AbilityCommand::setup(registry);
+    }
+    return origin(registry);
+}
+
+bool culculate_mspt = false;
+LL_AUTO_TYPE_INSTANCE_HOOK(LevelTickHook, ll::memory::HookPriority::Normal, Level, "?tick@Level@@UEAAXXZ", void) {
+    GMLIB::LevelAPI::mTicks++;
+    TIMER_START
+    origin();
+    TIMER_END
+    culculate_mspt = true;
+    if (culculate_mspt) {
+        GMLIB::LevelAPI::mMspt = (double)timeReslut / 1000;
+        culculate_mspt         = false;
+    }
+}
+
 GMLIB_Level* GMLIB_Level::getLevel() { return (GMLIB_Level*)ll::service::getLevel().as_ptr(); }
 
 BlockSource* GMLIB_Level::getBlockSource(DimensionType dimid) {
@@ -61,9 +173,27 @@ void GMLIB_Level::setFakeSeed(int64_t fakeSeed) {
     GMLIB::LevelAPI::mFakeSeed        = fakeSeed;
 }
 
-void GMLIB_Level::setCoResourcePack(bool enabled) { GMLIB::LevelAPI::mCoResourcePack = enabled; }
+void GMLIB_Level::setCoResourcePack(bool enabled) {
+    if (!GMLIB::LevelAPI::mCoResourcePack && enabled) {
+        ll::memory::HookRegistrar<ResourcePacksInfoPacketWrite>().hook();
+        GMLIB::LevelAPI::mCoResourcePack = true;
+    }
+    if (GMLIB::LevelAPI::mCoResourcePack && !enabled) {
+        ll::memory::HookRegistrar<ResourcePacksInfoPacketWrite>().unhook();
+        GMLIB::LevelAPI::mCoResourcePack = false;
+    }
+}
 
-void GMLIB_Level::setForceTrustSkin(bool enabled) { GMLIB::LevelAPI::mForceTrustSkin = enabled; }
+void GMLIB_Level::setForceTrustSkin(bool enabled) {
+    if (!GMLIB::LevelAPI::mForceTrustSkin && enabled) {
+        ll::memory::HookRegistrar<TrustSkinHook>().hook();
+        GMLIB::LevelAPI::mForceTrustSkin = true;
+    }
+    if (GMLIB::LevelAPI::mForceTrustSkin && !enabled) {
+        ll::memory::HookRegistrar<TrustSkinHook>().unhook();
+        GMLIB::LevelAPI::mForceTrustSkin = false;
+    }
+}
 
 bool GMLIB_Level::getExperimentEnabled(::AllExperiments experiment) {
     return getLevelData().getExperiments().isExperimentEnabled(experiment);
@@ -84,7 +214,14 @@ void GMLIB_Level::addExperimentsRequire(::AllExperiments experiment) {
     }
 }
 
-void GMLIB_Level::setForceAchievementsEnabled() { GMLIB::LevelAPI::mForceAchievementsEnabled = true; }
+void GMLIB_Level::setForceAchievementsEnabled() {
+    if (!GMLIB::LevelAPI::mForceAchievementsEnabled) {
+        ll::memory::HookRegistrar<ForceAchievementHook1>().hook();
+        ll::memory::HookRegistrar<ForceAchievementHook2>().hook();
+        ll::memory::HookRegistrar<AllowCheatsSettingHook>().hook();
+        GMLIB::LevelAPI::mForceAchievementsEnabled = true;
+    }
+}
 
 void GMLIB_Level::forceEnableAbilityCommand() { GMLIB::LevelAPI::mRegAbilityCommand = true; }
 
@@ -389,132 +526,6 @@ void GMLIB_Level::setFreezeTick(bool freeze) { ll::service::getMinecraft()->setS
 void GMLIB_Level::setTickScale(float scale) { ll::service::getMinecraft()->setSimTimeScale(scale); }
 
 bool GMLIB_Level::isTickFreezed() { return ll::service::getMinecraft()->getSimPaused(); }
-
-LL_AUTO_INSTANCE_HOOK(
-    Achieve1,
-    ll::memory::HookPriority::Normal,
-    "?achievementsWillBeDisabledOnLoad@LevelData@@QEBA_NXZ",
-    bool
-) {
-    if (GMLIB::LevelAPI::mForceAchievementsEnabled) {
-        return false;
-    }
-    return origin();
-}
-
-LL_AUTO_INSTANCE_HOOK(
-    Achieve2,
-    ll::memory::HookPriority::Normal,
-    "?hasAchievementsDisabled@LevelData@@QEBA_NXZ",
-    bool
-) {
-    if (GMLIB::LevelAPI::mForceAchievementsEnabled) {
-        return false;
-    }
-    return origin();
-}
-
-LL_AUTO_INSTANCE_HOOK(
-    AllowCheatsSetting,
-    ll::memory::HookPriority::Normal,
-    "?allowCheats@PropertiesSettings@@QEBA_NXZ",
-    bool
-) {
-    if (GMLIB::LevelAPI::mForceAchievementsEnabled) {
-        return false;
-    }
-    return origin();
-}
-
-void initExperiments(LevelData* leveldat) {
-    if (GMLIB::LevelAPI::mExperimentsRequireList.size() >= 1) {
-        for (auto exp : GMLIB::LevelAPI::mExperimentsRequireList) {
-            leveldat->getExperiments().setExperimentEnabled(exp, true);
-        }
-    }
-}
-
-LL_AUTO_INSTANCE_HOOK(isTrustSkin, ll::memory::HookPriority::Normal, "?isTrustedSkin@SerializedSkin@@QEBA_NXZ", bool) {
-    if (GMLIB::LevelAPI::mForceTrustSkin) {
-        return true;
-    }
-    return origin();
-}
-
-LL_AUTO_TYPE_INSTANCE_HOOK(
-    ResourcePacksInfoPacketWrite,
-    ll::memory::HookPriority::Normal,
-    ResourcePacksInfoPacket,
-    "?write@ResourcePacksInfoPacket@@UEBAXAEAVBinaryStream@@@Z",
-    void,
-    class BinaryStream& stream
-) {
-    if (GMLIB::LevelAPI::mCoResourcePack) {
-        this->mData.mResourcePackRequired    = true;
-        this->mData.mForceServerPacksEnabled = false;
-    }
-    return origin(stream);
-}
-
-LL_AUTO_TYPE_INSTANCE_HOOK(
-    StartGamePacketWrite,
-    ll::memory::HookPriority::Normal,
-    StartGamePacket,
-    "?write@StartGamePacket@@UEBAXAEAVBinaryStream@@@Z",
-    void,
-    class BinaryStream& stream
-) {
-    if (GMLIB::LevelAPI::mFakeSeedEnabled) {
-        this->mSettings.mSeed.mValue = GMLIB::LevelAPI::mFakeSeed;
-    }
-    if (GMLIB::LevelAPI::mFakeLevelNameEnabled) {
-        this->mLevelName = GMLIB::LevelAPI::mFakeLevelName;
-    }
-    return origin(stream);
-}
-
-LL_AUTO_TYPE_INSTANCE_HOOK(
-    EduInit,
-    ll::memory::HookPriority::Normal,
-    LevelData,
-    "?educationFeaturesEnabled@LevelData@@QEBA_NXZ",
-    bool
-) {
-    auto res = origin();
-    if (GMLIB::LevelAPI::mEducationEditionEnabled) {
-        this->setEducationFeaturesEnabled(true);
-        return true;
-    }
-    GMLIB::LevelAPI::mEducationEditionEnabled = res;
-    return res;
-}
-
-LL_AUTO_TYPE_INSTANCE_HOOK(
-    RegAbility,
-    ll::memory::HookPriority::Normal,
-    ChangeSettingCommand,
-    "?setup@ChangeSettingCommand@@SAXAEAVCommandRegistry@@@Z",
-    void,
-    class CommandRegistry& registry
-) {
-    if (GMLIB::LevelAPI::mEducationEditionEnabled == false && GMLIB::LevelAPI::mRegAbilityCommand == true) {
-        AbilityCommand::setup(registry);
-    }
-    return origin(registry);
-}
-
-bool culculate_mspt = false;
-LL_AUTO_TYPE_INSTANCE_HOOK(LevelTickHook, ll::memory::HookPriority::Normal, Level, "?tick@Level@@UEAAXXZ", void) {
-    GMLIB::LevelAPI::mTicks++;
-    TIMER_START
-    origin();
-    TIMER_END
-    culculate_mspt = true;
-    if (culculate_mspt) {
-        GMLIB::LevelAPI::mMspt = (double)timeReslut / 1000;
-        culculate_mspt         = false;
-    }
-}
 
 void CaculateTPS() {
     std::thread([] {

@@ -1,18 +1,13 @@
 #include "Global.h"
 #include <GMLIB/Mod/CustomBiome.h>
 #include <GMLIB/Server/LevelAPI.h>
+#include <utility>
 
 namespace GMLIB::Mod {
 
-std::unordered_map<std::string, BiomeData> mClimates;
-std::vector<std::string>                   mNewBiomes;
-bool                                       mCustomBiomeEnabled = false;
-
-void CustomBiome::registerBiomeClimates(std::string id, BiomeData data) {
-    mClimates[id]       = data;
-    mCustomBiomeEnabled = true;
-    GMLIB_Level::addExperimentsRequire((AllExperiments)7);
-}
+std::unordered_map<std::string, std::vector<BiomeData>> mClimates;
+std::vector<std::string>                                mNewBiomes;
+bool                                                    mCustomBiomeEnabled = false;
 
 // 6 | ExperimentalHoliday
 // 7 | ExperimentalBiomes
@@ -28,7 +23,7 @@ void CustomBiome::registerEmptyBiome(std::string id, BiomeData data) {
     CustomBiome::registerBiomeClimates(id, data);
 }
 
-LL_AUTO_TYPE_INSTANCE_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     OverworldBiomeBuilderHook,
     HookPriority::Highest,
     OverworldBiomeBuilder,
@@ -39,8 +34,8 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     BiomeRegistry*                 a2
 ) {
     origin(a1, a2);
-    if (mCustomBiomeEnabled) {
-        for (auto& [name, data] : mClimates) {
+    for (auto& [name, climates] : mClimates) {
+        for (auto& data : climates) {
             if (data.mType == BiomeType::Surface) {
                 this->_addSurfaceBiome(
                     *a1,
@@ -63,15 +58,14 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
                     data.mOffset,
                     a2->lookupByName(name)
                 );
-            } else {
-                __assume(false);
             }
+            std::unreachable();
         }
-        mClimates.clear();
     }
+    mClimates.clear();
 }
 
-LL_AUTO_STATIC_HOOK(
+LL_STATIC_HOOK(
     BiomeRegistryHook,
     HookPriority::Highest,
     "?initBiomes@VanillaBiomes@@SAXAEAVBiomeRegistry@@AEBUSpawnSettings@"
@@ -82,19 +76,25 @@ LL_AUTO_STATIC_HOOK(
     void*          a3,
     void*          a4
 ) {
-    if (mCustomBiomeEnabled) {
-        for (auto& name : mNewBiomes) {
-            a1->registerBiome(name);
-        }
+    for (auto& name : mNewBiomes) {
+        a1->registerBiome(name);
     }
     return origin(a1, a2, a3, a4);
 }
 
-LL_AUTO_INSTANCE_HOOK(ClientGen, HookPriority::Highest, "?isClientSideGenEnabled@PropertiesSettings@@QEBA_NXZ", bool) {
-    if (mCustomBiomeEnabled) {
-        return false;
-    }
-    return origin();
+LL_INSTANCE_HOOK(ClientGenHook, HookPriority::Highest, "?isClientSideGenEnabled@PropertiesSettings@@QEBA_NXZ", bool) {
+    return false;
 }
 
+void CustomBiome::registerBiomeClimates(std::string id, BiomeData data) {
+    mClimates[id].push_back(data);
+    GMLIB_Level::addExperimentsRequire((AllExperiments)7);
+    if (!mCustomBiomeEnabled) {
+        ll::memory::HookRegistrar<OverworldBiomeBuilderHook>().hook();
+        ll::memory::HookRegistrar<BiomeRegistryHook>().hook();
+        ll::memory::HookRegistrar<ClientGenHook>().hook();
+        mCustomBiomeEnabled = true;
+    }
 }
+
+} // namespace GMLIB::Mod
