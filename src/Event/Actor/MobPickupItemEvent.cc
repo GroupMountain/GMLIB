@@ -7,7 +7,7 @@ ItemActor const& MobPickupItemBeforeEvent::getItemActor() const { return mItemAc
 
 ItemActor const& MobPickupItemAfterEvent::getItemActor() const { return mItemActor; }
 
-LL_AUTO_TYPE_INSTANCE_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     MobPickupItemEventHook,
     ll::memory::HookPriority::Normal,
     PickupItemsGoal,
@@ -24,6 +24,24 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     origin(item);
     auto afterEvent = MobPickupItemAfterEvent(*mob, item);
     ll::event::EventBus::getInstance().publish(afterEvent);
+}
+
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory1(ll::event::ListenerBase&);
+class MobPickupItemBeforeEventEmitter : public ll::event::Emitter<emitterFactory1, MobPickupItemBeforeEvent> {
+    ll::memory::HookRegistrar<MobPickupItemEventHook> hook;
+};
+
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory1(ll::event::ListenerBase&) {
+    return std::make_unique<MobPickupItemBeforeEventEmitter>();
+}
+
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::ListenerBase&);
+class MobPickupItemAfterEventEmitter : public ll::event::Emitter<emitterFactory2, MobPickupItemAfterEvent> {
+    ll::memory::HookRegistrar<MobPickupItemEventHook> hook;
+};
+
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::ListenerBase&) {
+    return std::make_unique<MobPickupItemAfterEventEmitter>();
 }
 
 } // namespace GMLIB::Event::EntityEvent
