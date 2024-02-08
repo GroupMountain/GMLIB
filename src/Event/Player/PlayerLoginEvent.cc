@@ -8,19 +8,19 @@ NetworkIdentifier const&    PlayerLoginBeforeEvent::getNetworkIdentifier() const
 
 ServerNetworkHandler const& PlayerLoginAfterEvent::getServerNetworkHandler() const { return mServerNetworkHandler; }
 NetworkIdentifier const&    PlayerLoginAfterEvent::getNetworkIdentifier() const { return mNetworkIdentifier; }
-mce::UUID const&            PlayerLoginAfterEvent::getUuid() const { return mUuid; }
-std::string const&          PlayerLoginAfterEvent::getServerAuthXuid() const { return mServerAuthXuid; }
-std::string const&          PlayerLoginAfterEvent::getClientAuthXuid() const { return mClientAuthXuid; }
-std::string const&          PlayerLoginAfterEvent::getRealName() const { return mRealName; }
-std::string const&          PlayerLoginAfterEvent::getIpAndPort() const { return mIpAndPort; }
+mce::UUID const             PlayerLoginAfterEvent::getUuid() const { return mUuid; }
+std::string const           PlayerLoginAfterEvent::getServerAuthXuid() const { return mServerAuthXuid; }
+std::string const           PlayerLoginAfterEvent::getClientAuthXuid() const { return mClientAuthXuid; }
+std::string const           PlayerLoginAfterEvent::getRealName() const { return mRealName; }
+std::string const           PlayerLoginAfterEvent::getIpAndPort() const { return mIpAndPort; }
 
-std::string const& PlayerLoginAfterEvent::getIp() const {
+std::string const PlayerLoginAfterEvent::getIp() const {
     auto ipAndPort = getIpAndPort();
     auto pos       = ipAndPort.find(":");
     return ipAndPort.substr(0, pos);
 }
 
-std::string const& PlayerLoginAfterEvent::getPort() const {
+std::string const PlayerLoginAfterEvent::getPort() const {
     auto ipAndPort = getIpAndPort();
     auto pos       = ipAndPort.find(":");
     return ipAndPort.substr(pos + 1);

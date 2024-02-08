@@ -7,13 +7,13 @@ BlockSource const& ItemActorSpawnBeforeEvent::getBlockSource() const { return mB
 Vec3 const&        ItemActorSpawnBeforeEvent::getPosition() const { return mPosition; }
 ItemStack const&   ItemActorSpawnBeforeEvent::getItem() const { return mItem; }
 Actor* const       ItemActorSpawnBeforeEvent::getSpawner() const { return mSpawner; }
-int const&         ItemActorSpawnBeforeEvent::getThrowTime() const { return mThrowTime; }
+int const          ItemActorSpawnBeforeEvent::getThrowTime() const { return mThrowTime; }
 
 BlockSource const& ItemActorSpawnAfterEvent::getBlockSource() const { return mBlockSource; }
 Vec3 const&        ItemActorSpawnAfterEvent::getPosition() const { return mPosition; }
 ItemStack const&   ItemActorSpawnAfterEvent::getItem() const { return mItem; }
 Actor* const       ItemActorSpawnAfterEvent::getSpawner() const { return mSpawner; }
-int const&         ItemActorSpawnAfterEvent::getThrowTime() const { return mThrowTime; }
+int const          ItemActorSpawnAfterEvent::getThrowTime() const { return mThrowTime; }
 
 LL_TYPE_INSTANCE_HOOK(
     ItemActorSpawnEventHook,

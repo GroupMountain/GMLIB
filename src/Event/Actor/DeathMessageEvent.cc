@@ -8,7 +8,7 @@ using DEATH_MESSAGE = std::pair<std::string, std::vector<std::string>>;
 ActorDamageSource const& DeathMessageBeforeEvent::getDamageSource() const { return mDamageSource; }
 
 ActorDamageSource const& DeathMessageAfterEvent::getDamageSource() const { return mDamageSource; }
-DEATH_MESSAGE const&     DeathMessageAfterEvent::getDeathMessage() const { return mDeathMessage; }
+DEATH_MESSAGE const      DeathMessageAfterEvent::getDeathMessage() const { return mDeathMessage; }
 
 LL_TYPE_INSTANCE_HOOK(
     DeathMessageEvent1,

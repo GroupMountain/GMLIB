@@ -3,15 +3,15 @@
 
 namespace GMLIB::Event::LevelEvent {
 
-int const& WeatherUpdateBeforeEvent::getRainingLastTick() const { return mRainingLastTick; }
-int const& WeatherUpdateBeforeEvent::getLightningLastTick() const { return mLightningLastTick; }
-int const& WeatherUpdateBeforeEvent::getRainLevel() const { return mRainLevel; }
-int const& WeatherUpdateBeforeEvent::getLightningLevel() const { return mLightningLevel; }
+int const WeatherUpdateBeforeEvent::getRainingLastTick() const { return mRainingLastTick; }
+int const WeatherUpdateBeforeEvent::getLightningLastTick() const { return mLightningLastTick; }
+int const WeatherUpdateBeforeEvent::getRainLevel() const { return mRainLevel; }
+int const WeatherUpdateBeforeEvent::getLightningLevel() const { return mLightningLevel; }
 
-int const& WeatherUpdateAfterEvent::getRainingLastTick() const { return mRainingLastTick; }
-int const& WeatherUpdateAfterEvent::getLightningLastTick() const { return mLightningLastTick; }
-int const& WeatherUpdateAfterEvent::getRainLevel() const { return mRainLevel; }
-int const& WeatherUpdateAfterEvent::getLightningLevel() const { return mLightningLevel; }
+int const WeatherUpdateAfterEvent::getRainingLastTick() const { return mRainingLastTick; }
+int const WeatherUpdateAfterEvent::getLightningLastTick() const { return mLightningLastTick; }
+int const WeatherUpdateAfterEvent::getRainLevel() const { return mRainLevel; }
+int const WeatherUpdateAfterEvent::getLightningLevel() const { return mLightningLevel; }
 
 LL_TYPE_INSTANCE_HOOK(
     WeatherUpdateEventHook,
