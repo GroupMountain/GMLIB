@@ -8,7 +8,7 @@ LangLanguage::LangLanguage(std::string filePath, std::string defaultLanguage) : 
     merge_patch(data);
 }
 
-void LangLanguage::init() {
+bool LangLanguage::init() {
     auto dirPath = std::filesystem::path(mFilePath).parent_path();
     if (!std::filesystem::exists(dirPath)) {
         std::filesystem::create_directories(dirPath);
@@ -17,7 +17,7 @@ void LangLanguage::init() {
         auto oldData = McLang::prase_file(mFilePath);
         merge_patch(oldData);
     }
-    write_to_file(mFilePath);
+    return write_to_file(mFilePath);
 }
 
 } // namespace GMLIB::Files

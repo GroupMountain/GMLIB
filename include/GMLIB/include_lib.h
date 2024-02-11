@@ -17,6 +17,8 @@
 #include "GMLIB/Files/Language/LangLanguage.h"
 #include "GMLIB/Files/Language/McLang.h"
 #include "GMLIB/Files/Language/ResourceLanguage.h"
+#include "GMLIB/Files/Language/I18n/JsonI18n.h"
+#include "GMLIB/Files/Language/I18n/LangI18n.h"
 #include "GMLIB/Mod/CustomBiome.h"
 #include "GMLIB/Mod/CustomDamageCause.h"
 #include "GMLIB/Mod/CustomPacks.h"

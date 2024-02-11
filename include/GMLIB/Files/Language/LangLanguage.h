@@ -12,7 +12,7 @@ public:
     GMLIB_API LangLanguage(std::string filePath, std::string defaultLanguage);
 
 public:
-    GMLIB_API void init();
+    GMLIB_API bool init();
 };
 
 } // namespace GMLIB::Files
