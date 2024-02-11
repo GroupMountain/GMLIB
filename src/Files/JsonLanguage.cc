@@ -35,7 +35,7 @@ bool JsonLanguage::deleteKey(std::string key, std::string path) {
 }
 
 bool JsonLanguage::deleteKeys(std::vector<std::string> keys, std::string path) {
-    JsonLanguageFile::deleteKeys(mValue, keys, mFilePath);
+    return JsonLanguageFile::deleteKeys(mValue, keys, mFilePath);
 }
 
 std::string
