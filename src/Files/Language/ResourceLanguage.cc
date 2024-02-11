@@ -1,7 +1,7 @@
 #include "Global.h"
 #include <GMLIB/Files/JsonFile.h>
-#include <GMLIB/Files/McLang.h>
-#include <GMLIB/Files/ResourceLanguage.h>
+#include <GMLIB/Files/Language/McLang.h>
+#include <GMLIB/Files/Language/ResourceLanguage.h>
 #include <GMLIB/Mod/CustomPacks.h>
 
 namespace GMLIB::Files {

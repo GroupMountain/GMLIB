@@ -1,5 +1,5 @@
 #include "Global.h"
-#include <GMLIB/Files/LangLanguage.h>
+#include <GMLIB/Files/Language/LangLanguage.h>
 
 namespace GMLIB::Files {
 

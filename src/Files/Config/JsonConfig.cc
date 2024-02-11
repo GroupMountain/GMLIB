@@ -1,5 +1,5 @@
 #include "Global.h"
-#include <GMLIB/Files/JsonConfig.h>
+#include <GMLIB/Files/Config/JsonConfig.h>
 
 
 namespace GMLIB::Files {

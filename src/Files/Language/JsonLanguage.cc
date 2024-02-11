@@ -1,6 +1,6 @@
 #include "Global.h"
 #include <GMLIB/Files/JsonFile.h>
-#include <GMLIB/Files/JsonLanguage.h>
+#include <GMLIB/Files/Language/JsonLanguage.h>
 
 namespace GMLIB::Files {
 
