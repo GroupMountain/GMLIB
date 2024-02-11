@@ -18,7 +18,7 @@ JsonConfig::~JsonConfig() {
     mValue.clear();
 }
 
-bool JsonConfig::initConfig() {
+bool JsonConfig::init() {
     try {
         auto dirPath = std::filesystem::path(mFilePath).parent_path();
         if (!std::filesystem::exists(dirPath)) {

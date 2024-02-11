@@ -19,7 +19,7 @@ public:
     GMLIB_API virtual ~JsonConfig();
 
 public:
-    GMLIB_API bool initConfig();
+    GMLIB_API bool init();
 
     template <typename T>
     inline std::optional<T> getValue(std::vector<std::string> keyPath) {

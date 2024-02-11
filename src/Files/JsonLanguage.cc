@@ -2,7 +2,52 @@
 #include <GMLIB/Files/JsonFile.h>
 #include <GMLIB/Files/JsonLanguage.h>
 
-namespace GMLIB::Files::JsonLanguage {
+namespace GMLIB::Files {
+
+JsonLanguage::JsonLanguage(std::string filePath, std::string& defaultJson) : mFilePath(filePath) {
+    auto json_value = nlohmann::json::parse(defaultJson, nullptr, true, true);
+    mValue          = json_value;
+}
+
+JsonLanguage::JsonLanguage(std::string filePath, nlohmann::json& defaultJson)
+: mValue(defaultJson),
+  mFilePath(filePath) {}
+
+JsonLanguage::~JsonLanguage() {
+    writeFile();
+    mValue.clear();
+}
+
+bool JsonLanguage::init() { return JsonLanguageFile::initLanguage(mFilePath, mValue); }
+
+std::string JsonLanguage::getValue(std::string key) { return JsonLanguageFile::getValue(mValue, key); }
+
+std::string JsonLanguage::getValue(std::string key, std::string defaultValue) {
+    return JsonLanguageFile::getValue(mValue, key, defaultValue);
+}
+
+bool JsonLanguage::setValue(std::string key, std::string value, std::string path) {
+    return JsonLanguageFile::setValue(mValue, key, value, mFilePath);
+}
+
+bool JsonLanguage::deleteKey(std::string key, std::string path) {
+    return JsonLanguageFile::deleteKey(mValue, key, mFilePath);
+}
+
+bool JsonLanguage::deleteKeys(std::vector<std::string> keys, std::string path) {
+    JsonLanguageFile::deleteKeys(mValue, keys, mFilePath);
+}
+
+std::string
+JsonLanguage::translate(std::string key, std::vector<std::string> data, std::string translateKey) {
+    return JsonLanguageFile::translate(mValue, key, data, translateKey);
+}
+
+nlohmann::json JsonLanguage::getSelf() { return mValue; }
+
+bool JsonLanguage::writeFile() { return JsonFile::writeFile(mFilePath, mValue); }
+
+namespace JsonLanguageFile {
 
 nlohmann::json initLanguage(std::string path, nlohmann::json& defaultFile) {
     return JsonFile::initJson(path, defaultFile);
@@ -59,4 +104,6 @@ std::string translate(nlohmann::json& json, std::string key, std::vector<std::st
     return lang;
 }
 
-} // namespace GMLIB::Files::JsonLanguage
+} // namespace JsonLanguageFile
+
+} // namespace GMLIB::Files
