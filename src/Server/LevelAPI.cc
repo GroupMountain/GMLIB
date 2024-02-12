@@ -203,12 +203,29 @@ void GMLIB_Level::setExperimentEnabled(::AllExperiments experiment, bool enabled
     getLevelData().getExperiments().setExperimentEnabled(experiment, enabled);
 }
 
-std::map<int, std::string> GMLIB_Level::getAllExperiments() {
-    auto&                      experiments = getLevelData().getExperiments();
+std::map<int, std::string> GMLIB_Level::getAllExperimentsTranslateKeys() {
     std::map<int, std::string> result;
-    for (int i = 0; i <= 20; i++) {
-        auto text = experiments.getExperimentTextID((AllExperiments)i);
+    for (int i = 6; i <= 16; i++) {
+        std::string text;
+        try {
+            text = Experiments::getExperimentTextID((AllExperiments)i);
+        } catch (...) {}
         if (!text.empty()) {
+            result[i] = I18n::get(text, {});
+        }
+    }
+    return result;
+}
+
+std::map<int, std::string> GMLIB_Level::getAllExperiments() {
+    std::map<int, std::string> result;
+    for (int i = 6; i <= 16; i++) {
+        std::string text;
+        try {
+            text = Experiments::getExperimentTextID((AllExperiments)i);
+        } catch (...) {}
+        if (!text.empty()) {
+            ll::utils::string_utils::replaceAll(text, "createWorldScreen.e", "E");
             result[i] = text;
         }
     }

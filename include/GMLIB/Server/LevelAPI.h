@@ -40,6 +40,10 @@ public:
 
     GMLIB_API static void setFakeLevelName(std::string fakeName);
 
+    GMLIB_API static std::map<int, std::string> getAllExperiments();
+
+    GMLIB_API static std::map<int, std::string> getAllExperimentsTranslateKeys();
+
 public:
     GMLIB_API BlockSource* getBlockSource(DimensionType dimid);
 
@@ -58,8 +62,6 @@ public:
     GMLIB_API bool getExperimentEnabled(::AllExperiments experiment);
 
     GMLIB_API void setExperimentEnabled(::AllExperiments experiment, bool enabled = true);
-
-    GMLIB_API std::map<int, std::string> getAllExperiments();
 
     GMLIB_API void setTime(int time);
 
