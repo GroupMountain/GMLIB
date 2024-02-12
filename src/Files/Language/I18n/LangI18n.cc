@@ -38,9 +38,7 @@ bool LangI18n::chooseLanguage(std::string languageCode) {
 
 std::string LangI18n::translate(std::string key, std::vector<std::string> data, std::string translateKey) {
     if (!mLocalization) {
-        if (mAllLanguages.count("en_US")) {
-            mLocalization = mAllLanguages["en_US"];
-        }
+        chooseLanguage("en_US");
     }
     if (mLocalization) {
         if (mLocalization->has_value(key)) {
@@ -49,7 +47,7 @@ std::string LangI18n::translate(std::string key, std::vector<std::string> data, 
         if (mAllLanguages.count("en_US")) {
             auto temp = mAllLanguages["en_US"];
             if (temp) {
-                temp->translate(key, data, translateKey);
+                return temp->translate(key, data, translateKey);
             }
         }
     }
