@@ -36,7 +36,7 @@ public:
 
     GMLIB_API std::string dump();
 
-    GMLIB_API void write_to_file(std::string filePath);
+    GMLIB_API bool write_to_file(std::string filePath);
 };
 
 } // namespace GMLIB::Files

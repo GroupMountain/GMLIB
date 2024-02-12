@@ -1,6 +1,6 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
-#include "GMLIB/Files/McLang.h"
+#include "GMLIB/Files/Language/McLang.h"
 
 namespace GMLIB::Files {
 
@@ -12,7 +12,7 @@ public:
     GMLIB_API LangLanguage(std::string filePath, std::string defaultLanguage);
 
 public:
-    GMLIB_API void init();
+    GMLIB_API bool init();
 };
 
 } // namespace GMLIB::Files

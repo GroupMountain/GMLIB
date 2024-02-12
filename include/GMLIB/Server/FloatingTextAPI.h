@@ -2,8 +2,10 @@
 #include "GMLIB/GMLIB.h"
 #include "mc/world/actor/player/Player.h"
 
+namespace GMLIB::Server {
+
 class FloatingText {
-public:
+private:
     std::string   mText;
     int64         mRuntimeId;
     Vec3          mPosition;
@@ -20,7 +22,7 @@ public:
     GMLIB_API static bool deleteFloatingText(int64 runtimeId);
 
 public:
-    virtual ~FloatingText();
+    GMLIB_API virtual ~FloatingText();
 
 public:
     GMLIB_API int64_t getFloatingTextRuntimeId();
@@ -33,5 +35,15 @@ public:
 
     GMLIB_API void removeFromAllClients();
 
-    GMLIB_API void updateText(std::string newText);
+    GMLIB_API void setText(std::string newText);
+
+    GMLIB_API int64 getRuntimeID();
+
+    GMLIB_API std::string getText();
+
+    GMLIB_API Vec3 getPos();
+
+    GMLIB_API DimensionType getDimensionId();
 };
+
+}

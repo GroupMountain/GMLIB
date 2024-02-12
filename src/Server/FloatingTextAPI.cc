@@ -5,19 +5,21 @@
 #include <GMLIB/Server/FloatingTextAPI.h>
 #include <GMLIB/Server/NetworkPacketAPI.h>
 
-std::unordered_map<int64, FloatingText*> RuntimeFloatingTextList;
+namespace GMLIB::Server {
+
+std::unordered_map<int64, FloatingText*> mRuntimeFloatingTextList;
 
 FloatingText::FloatingText(std::string text, Vec3 position, DimensionType dimensionId)
 : mText(text),
   mPosition(position),
   mDimensionId(dimensionId) {
     mRuntimeId = GMLIB_Actor::getNextActorUniqueID();
-    RuntimeFloatingTextList.insert({mRuntimeId, this});
+    mRuntimeFloatingTextList.insert({mRuntimeId, this});
 }
 
 FloatingText::~FloatingText() {
     removeFromAllClients();
-    RuntimeFloatingTextList.erase(mRuntimeId);
+    mRuntimeFloatingTextList.erase(mRuntimeId);
 }
 
 int64_t FloatingText::getFloatingTextRuntimeId() { return mRuntimeId; }
@@ -26,16 +28,16 @@ GMLIB::Server::NetworkPacket<15> createFloatingTextPacket(FloatingText* ft) {
     auto               item = std::make_unique<ItemStack>(ItemStack{"minecraft:air"});
     auto               nisd = NetworkItemStackDescriptor(*item);
     GMLIB_BinaryStream bs;
-    bs.writeVarInt64(ft->mRuntimeId);
-    bs.writeUnsignedVarInt64(ft->mRuntimeId);
+    bs.writeVarInt64(ft->getRuntimeID());
+    bs.writeUnsignedVarInt64(ft->getRuntimeID());
     bs.writeType(nisd);
-    bs.writeVec3(ft->mPosition);
+    bs.writeVec3(ft->getPos());
     bs.writeVec3(Vec3{0, 0, 0});
     // DataItem
     bs.writeUnsignedVarInt(2);
     bs.writeUnsignedVarInt((uint)0x4);
     bs.writeUnsignedVarInt((uint)0x4);
-    bs.writeString(ft->mText);
+    bs.writeString(ft->getText());
     bs.writeUnsignedVarInt((uint)0x51);
     bs.writeUnsignedVarInt((uint)0x0);
     bs.writeBool(true);
@@ -69,11 +71,11 @@ void FloatingText::removeFromClient(Player* pl) {
     }
 }
 
-void FloatingText::updateText(std::string newText) { mText = newText; }
+void FloatingText::setText(std::string newText) { mText = newText; }
 
 FloatingText* FloatingText::getFloatingText(int64 runtimeId) {
-    if (RuntimeFloatingTextList.count(runtimeId)) {
-        return RuntimeFloatingTextList[runtimeId];
+    if (mRuntimeFloatingTextList.count(runtimeId)) {
+        return mRuntimeFloatingTextList[runtimeId];
     }
     return nullptr;
 }
@@ -86,3 +88,13 @@ bool FloatingText::deleteFloatingText(int64 runtimeId) {
     }
     return false;
 }
+
+int64 FloatingText::getRuntimeID() { return mRuntimeId; }
+
+std::string FloatingText::getText() { return mText; }
+
+Vec3 FloatingText::getPos() { return mPosition; }
+
+DimensionType FloatingText::getDimensionId() { return mDimensionId; }
+
+} // namespace GMLIB::Server

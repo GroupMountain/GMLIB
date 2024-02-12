@@ -1,5 +1,5 @@
-#include <GMLIB/Files/McLang.h>
-#include <Global.h>
+#include "Global.h"
+#include <GMLIB/Files/Language/McLang.h>
 
 namespace GMLIB::Files {
 
@@ -77,10 +77,14 @@ std::string McLang::dump() {
     return result;
 }
 
-void McLang::write_to_file(std::string filePath) {
+bool McLang::write_to_file(std::string filePath) {
     std::ofstream newFile(filePath);
-    newFile << dump();
-    newFile.close();
+    if (newFile.is_open()) {
+        newFile << dump();
+        newFile.close();
+        return true;
+    }
+    return false;
 }
 
 bool McLang::has_value(std::string key) { return (bool)mData.count(key); }
