@@ -203,6 +203,18 @@ void GMLIB_Level::setExperimentEnabled(::AllExperiments experiment, bool enabled
     getLevelData().getExperiments().setExperimentEnabled(experiment, enabled);
 }
 
+std::map<int, std::string> GMLIB_Level::getAllExperiments() {
+    auto                       experiments = getLevelData().getExperiments();
+    std::map<int, std::string> result;
+    for (int i = 0; i <= 20; i++) {
+        auto text = experiments.getExperimentTextID((AllExperiments)i);
+        if (!text.empty()) {
+            result[i] = text;
+        }
+    }
+    return result;
+}
+
 void GMLIB_Level::addExperimentsRequire(::AllExperiments experiment) {
     if (std::find(
             GMLIB::LevelAPI::mExperimentsRequireList.begin(),

@@ -59,6 +59,8 @@ public:
 
     GMLIB_API void setExperimentEnabled(::AllExperiments experiment, bool enabled = true);
 
+    GMLIB_API std::map<int, std::string> getAllExperiments();
+
     GMLIB_API void setTime(int time);
 
     GMLIB_API WeatherType getWeather();
