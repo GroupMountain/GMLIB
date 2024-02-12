@@ -8,6 +8,9 @@ LangI18n::LangI18n(std::string languageDirectory, std::string languageCode)
   mLanguageCode(languageCode) {}
 
 LangI18n::~LangI18n() {
+    for (auto lang : mAllLanguages) {
+        delete lang.second;
+    }
     mAllLanguages.clear();
     delete mLocalization;
 }
@@ -25,7 +28,7 @@ bool LangI18n::loadLanguage(std::string languageCode, std::string& language) {
     }
     path      = path + languageCode + ".lang";
     auto lang = new LangLanguage(path, language);
-    loadLanguage(languageCode, lang);
+    return loadLanguage(languageCode, lang);
 }
 
 bool LangI18n::chooseLanguage(std::string languageCode) {

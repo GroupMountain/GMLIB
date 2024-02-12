@@ -18,7 +18,13 @@ JsonLanguage::~JsonLanguage() {
     mValue.clear();
 }
 
-bool JsonLanguage::init() { return JsonLanguageFile::initLanguage(mFilePath, mValue); }
+bool JsonLanguage::init() {
+    if (!mFilePath.empty()) {
+        mValue = JsonLanguageFile::initLanguage(mFilePath, mValue);
+        return true;
+    }
+    return false;
+}
 
 bool JsonLanguage::hasValue(std::string key) { return mValue.contains(key); }
 

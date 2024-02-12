@@ -8,6 +8,9 @@ JsonI18n::JsonI18n(std::string languageDirectory, std::string languageCode)
   mLanguageCode(mLanguageCode) {}
 
 JsonI18n::~JsonI18n() {
+    for (auto lang : mAllLanguages) {
+        delete lang.second;
+    }
     mAllLanguages.clear();
     delete mLocalization;
 }
@@ -25,7 +28,7 @@ bool JsonI18n::loadLanguage(std::string languageCode, nlohmann::json& language) 
     }
     path      = path + languageCode + ".json";
     auto lang = new JsonLanguage(path, language);
-    loadLanguage(languageCode, lang);
+    return loadLanguage(languageCode, lang);
 }
 
 bool JsonI18n::loadLanguage(std::string languageCode, std::string& language) {
@@ -35,7 +38,7 @@ bool JsonI18n::loadLanguage(std::string languageCode, std::string& language) {
     }
     path      = path + languageCode + ".json";
     auto lang = new JsonLanguage(path, language);
-    loadLanguage(languageCode, lang);
+    return loadLanguage(languageCode, lang);
 }
 
 bool JsonI18n::chooseLanguage(std::string languageCode) {

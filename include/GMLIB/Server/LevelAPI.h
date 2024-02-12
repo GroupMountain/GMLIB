@@ -40,6 +40,10 @@ public:
 
     GMLIB_API static void setFakeLevelName(std::string fakeName);
 
+    GMLIB_API static std::map<int, std::string> getAllExperiments();
+
+    GMLIB_API static std::map<int, std::string> getAllExperimentsTranslateKeys();
+
 public:
     GMLIB_API BlockSource* getBlockSource(DimensionType dimid);
 
