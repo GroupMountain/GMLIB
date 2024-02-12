@@ -47,8 +47,21 @@ bool JsonI18n::chooseLanguage(std::string languageCode) {
 }
 
 std::string JsonI18n::translate(std::string key, std::vector<std::string> data, std::string translateKey) {
+    if (!mLocalization) {
+        if (mAllLanguages.count("en_US")) {
+            mLocalization = mAllLanguages["en_US"];
+        }
+    }
     if (mLocalization) {
-        return mLocalization->translate(key, data, translateKey);
+        if (mLocalization->hasValue(key)) {
+            return mLocalization->translate(key, data, translateKey);
+        }
+        if (mAllLanguages.count("en_US")) {
+            auto temp = mAllLanguages["en_US"];
+            if (temp) {
+                temp->translate(key, data, translateKey);
+            }
+        }
     }
     return key;
 }

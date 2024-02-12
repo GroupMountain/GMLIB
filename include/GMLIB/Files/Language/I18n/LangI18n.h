@@ -19,9 +19,9 @@ public:
     GMLIB_API virtual ~LangI18n();
 
 public:
-    GMLIB_API bool loadLanguage(std::string languageCode, LangLanguage* language);
-
     GMLIB_API bool loadLanguage(std::string languageCode, std::string& language);
+
+    GMLIB_API bool loadLanguage(std::string languageCode, LangLanguage* language);
 
     GMLIB_API bool chooseLanguage(std::string languageCode);
 

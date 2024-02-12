@@ -20,6 +20,8 @@ JsonLanguage::~JsonLanguage() {
 
 bool JsonLanguage::init() { return JsonLanguageFile::initLanguage(mFilePath, mValue); }
 
+bool JsonLanguage::hasValue(std::string key) { return mValue.contains(key); }
+
 std::string JsonLanguage::getValue(std::string key) { return JsonLanguageFile::getValue(mValue, key); }
 
 std::string JsonLanguage::getValue(std::string key, std::string defaultValue) {
@@ -38,8 +40,7 @@ bool JsonLanguage::deleteKeys(std::vector<std::string> keys, std::string path) {
     return JsonLanguageFile::deleteKeys(mValue, keys, mFilePath);
 }
 
-std::string
-JsonLanguage::translate(std::string key, std::vector<std::string> data, std::string translateKey) {
+std::string JsonLanguage::translate(std::string key, std::vector<std::string> data, std::string translateKey) {
     return JsonLanguageFile::translate(mValue, key, data, translateKey);
 }
 

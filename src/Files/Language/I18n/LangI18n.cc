@@ -5,7 +5,7 @@ namespace GMLIB::Files::I18n {
 
 LangI18n::LangI18n(std::string languageDirectory, std::string languageCode)
 : mLanguageDirectory(languageDirectory),
-  mLanguageCode(mLanguageCode) {}
+  mLanguageCode(languageCode) {}
 
 LangI18n::~LangI18n() {
     mAllLanguages.clear();
@@ -37,8 +37,21 @@ bool LangI18n::chooseLanguage(std::string languageCode) {
 }
 
 std::string LangI18n::translate(std::string key, std::vector<std::string> data, std::string translateKey) {
+    if (!mLocalization) {
+        if (mAllLanguages.count("en_US")) {
+            mLocalization = mAllLanguages["en_US"];
+        }
+    }
     if (mLocalization) {
-        return mLocalization->translate(key, data, translateKey);
+        if (mLocalization->has_value(key)) {
+            return mLocalization->translate(key, data, translateKey);
+        }
+        if (mAllLanguages.count("en_US")) {
+            auto temp = mAllLanguages["en_US"];
+            if (temp) {
+                temp->translate(key, data, translateKey);
+            }
+        }
     }
     return key;
 }
