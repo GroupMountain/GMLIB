@@ -204,7 +204,7 @@ void GMLIB_Level::setExperimentEnabled(::AllExperiments experiment, bool enabled
 }
 
 std::map<int, std::string> GMLIB_Level::getAllExperiments() {
-    auto                       experiments = getLevelData().getExperiments();
+    auto&                      experiments = getLevelData().getExperiments();
     std::map<int, std::string> result;
     for (int i = 0; i <= 20; i++) {
         auto text = experiments.getExperimentTextID((AllExperiments)i);
