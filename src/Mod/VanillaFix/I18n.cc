@@ -42,9 +42,9 @@ LL_TYPE_INSTANCE_HOOK(
     I18nFix3,
     HookPriority::Normal,
     ServerInstance,
-    "?setLevelCorruptionCallback@ServerInstance@@QEAAXV?$function@$$A6AXXZ@std@@@Z",
+    "?setUnrecoverableErrorCallback@ServerInstance@@QEAAXV?$function@$$A6AXPEBD0@Z@std@@@Z",
     void,
-    std::function<void(void)> func
+    std::function<void(char const*, char const*)> func
 ) {
     origin(func);
     isResourcesLoaded = true;

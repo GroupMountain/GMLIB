@@ -8,7 +8,7 @@ std::vector<std::string> mPackListCache;
 bool                     mCustomPackEnabled = false;
 
 void addResourcePackPath(ResourcePackRepository* repo, PackType type) {
-    auto  CompositePack     = ll::memory::dAccess<CompositePackSource*>(repo, 96);
+    auto  CompositePack     = (CompositePackSource*)repo->getWorldPackSource();
     auto& PackSourceFactory = repo->getPackSourceFactory();
     for (auto& path : mAllResourcePath) {
         auto& DirectoryPackSource =
