@@ -11,6 +11,7 @@
 #include "GMLIB/Event/Level/WeatherUpdateEvent.h"
 #include "GMLIB/Event/Player/PlayerLoginEvent.h"
 #include "GMLIB/Event/Player/PlayerSleepEvent.h"
+#include "GMLIB/Files/FileUtils.h"
 #include "GMLIB/Files/JsonFile.h"
 #include "GMLIB/Files/Config/JsonConfig.h"
 #include "GMLIB/Files/Language/JsonLanguage.h"
