@@ -1,7 +1,7 @@
 {
     "format_version": 2,
     "tooth": "github.com/GroupMountain/GMLIB",
-    "version": "0.7.5",
+    "version": "0.8.0",
     "info": {
         "name": "GMLIB",
         "description": "Group Mountain Library",

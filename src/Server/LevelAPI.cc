@@ -87,7 +87,8 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     class BinaryStream& stream
 ) {
     if (GMLIB::LevelAPI::mFakeSeedEnabled) {
-        this->mSettings.mSeed.mValue = GMLIB::LevelAPI::mFakeSeed;
+        this->mSettings.setRandomSeed(LevelSeed64(GMLIB::LevelAPI::mFakeSeed));
+        // ll::memory::dAccess<int64>(this, 48) = GMLIB::LevelAPI::mFakeSeed;
     }
     if (GMLIB::LevelAPI::mFakeLevelNameEnabled) {
         this->mLevelName = GMLIB::LevelAPI::mFakeLevelName;

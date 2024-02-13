@@ -106,7 +106,7 @@ void NpcDialogueForm::sendTo(
     bs2.writeString(mSceneName);            // SceneName
     bs2.writeString(mNpcName);              // NpcName
     bs2.writeString(actionJson);            // ActionJSON
-    GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::NpcDialoguePacket> pkt2(bs2.getAndReleaseData());
+    GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::NpcDialogue> pkt2(bs2.getAndReleaseData());
     pkt2.sendTo(*pl);
     mRuntimeNpcFormList[mFormRuntimeId] = this;
     mCallback                           = callback;
