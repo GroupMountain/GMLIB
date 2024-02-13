@@ -423,3 +423,19 @@ GMLIB_Actor* GMLIB_Player::shootProjectile(std::string typeName, float speed, fl
 }
 
 void GMLIB_Player::setFreezing(float percentage) { getEntityData().set<float>(0x78, percentage); }
+
+InventoryTransactionManager* GMLIB_Player::getInventoryTransactionManager() {
+    return ll::memory::dAccess<InventoryTransactionManager*>(this, 3808); // IDA: ClearCommand::execute()  Line 392
+}
+
+FullPlayerInventoryWrapper GMLIB_Player::getFullPlayerInventoryWrapper() {
+    return FullPlayerInventoryWrapper(
+        getSupplies(),
+        getArmorContainer(),
+        getHandContainer(),
+        getInventoryTransactionManager(),
+        this
+    );
+}
+
+GMLIB_API int GMLIB_Player::clearAllItems() { return getFullPlayerInventoryWrapper().clearAllItems(); }

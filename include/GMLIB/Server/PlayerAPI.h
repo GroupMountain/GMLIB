@@ -166,14 +166,20 @@ public:
 
     GMLIB_API void setFreezing(float percentage = 1.0f);
 
+    GMLIB_API InventoryTransactionManager* getInventoryTransactionManager();
+
+    GMLIB_API FullPlayerInventoryWrapper getFullPlayerInventoryWrapper();
+
+    GMLIB_API int clearAllItems();
+
     // ToDo API
     // If you need any API, please open an issue on https://github.com/GroupMountain/GMLIB/issues
 
     // GMLIB_API bool giveItem(ItemStack& item, bool drop = false);
 
-    // GMLIB_API bool giveItem(std::string name, int count = 1, short aux = 0, bool drop = false);
+    // GMLIB_API bool giveItem(std::string name, int count = -1, short aux = 0, bool drop = false);
 
-    // GMLIB_API int clearItem(std::string name, int count = 1, short aux = -1);
+    // GMLIB_API int clearItem(std::string name, int count = -1, short aux = -1);
 
     // GMLIB_API int hasItem(std::string name, short aux = -1);
 };
