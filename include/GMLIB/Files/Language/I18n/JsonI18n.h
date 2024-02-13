@@ -20,16 +20,19 @@ public:
     GMLIB_API virtual ~JsonI18n();
 
 public:
-    GMLIB_API bool loadLanguage(std::string languageCode, nlohmann::json& language);
+    GMLIB_API bool updateOrCreateLanguage(std::string languageCode, nlohmann::json& language);
 
-    GMLIB_API bool loadLanguage(std::string languageCode, std::string& language);
+    GMLIB_API bool updateOrCreateLanguage(std::string languageCode, std::string& language);
 
-    GMLIB_API bool loadLanguage(std::string languageCode, JsonLanguage* language);
+    GMLIB_API bool loadAllLanguages();
 
     GMLIB_API bool chooseLanguage(std::string languageCode);
 
     GMLIB_API std::string
               translate(std::string key, std::vector<std::string> data = {}, std::string translateKey = "%0$s");
+
+private:
+    bool loadOrCreateLanguage(std::string languageCode, JsonLanguage* language);
 };
 
 } // namespace GMLIB::Files::I18n
