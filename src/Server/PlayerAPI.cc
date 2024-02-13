@@ -315,6 +315,8 @@ void GMLIB_Player::updateClientBossbar(
     setClientBossbar(bossbarId, name, percentage, color, overlay);
 }
 
+void GMLIB_Player::setClientWeather(WeatherType weather) { return GMLIB_Level::setClientWeather(weather, this); }
+
 void GMLIB_Player::addEffect(
     MobEffect::EffectType effectType,
     int                   duration,

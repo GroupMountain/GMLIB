@@ -1,6 +1,7 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
 #include "GMLIB/Server/ActorAPI.h"
+#include "GMLIB/Server/LevelAPI.h"
 #include "mc/enums/BossBarColor.h"
 #include "mc/enums/ObjectiveSortOrder.h"
 #include "mc/world/actor/player/Player.h"
@@ -139,6 +140,8 @@ public:
         ::BossBarColor color      = BossBarColor::Purple,
         int            overlay    = 1
     );
+
+    GMLIB_API void setClientWeather(WeatherType weather);
 
     GMLIB_API void addEffect(
         MobEffect::EffectType effectType,

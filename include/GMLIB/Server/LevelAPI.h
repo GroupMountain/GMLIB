@@ -24,6 +24,8 @@ public:
 
     GMLIB_API static void setClientWeather(WeatherType weather, Player* pl);
 
+    GMLIB_API static void setClientWeather(WeatherType weather);
+
     GMLIB_API static void setFakeSeed(int64_t fakeSeed);
 
     GMLIB_API static void setCoResourcePack(bool enabled = true);

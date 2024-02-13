@@ -316,6 +316,27 @@ void GMLIB_Level::setClientWeather(WeatherType weather, Player* pl) {
     }
 }
 
+void GMLIB_Level::setClientWeather(WeatherType weather) {
+    Vec3 pos = {0, 0, 0};
+    switch (weather) {
+    case WeatherType::Thunder: {
+        LevelEventPacket(LevelEvent::StartThunderstorm, pos, 65565).sendToClients();
+        LevelEventPacket(LevelEvent::StartRaining, pos, 65565).sendToClients();
+        break;
+    }
+    case WeatherType::Rain: {
+        LevelEventPacket(LevelEvent::StopThunderstorm, pos, 0).sendToClients();
+        LevelEventPacket(LevelEvent::StartRaining, pos, 65565).sendToClients();
+        break;
+    }
+    default: {
+        LevelEventPacket(LevelEvent::StopThunderstorm, pos, 0).sendToClients();
+        LevelEventPacket(LevelEvent::StopRaining, pos, 0).sendToClients();
+        break;
+    }
+    }
+}
+
 std::optional<bool> GMLIB_Level::getGameruleBool(GameRuleId id) {
     auto rule = ll::service::bedrock::getLevel()->getGameRules().getRule(id);
     if (rule) {
