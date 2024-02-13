@@ -52,6 +52,14 @@ std::string getCustomCause(::ActorDamageCause cause) {
     return "none";
 }
 
+::ActorDamageCause DamageCause::getCauseFromName(std::string& causeName) {
+    auto cause = ActorDamageSource::lookupCause(causeName);
+    if (cause != ActorDamageCause::None) {
+        return cause;
+    }
+    return getCustomCause(causeName);
+}
+
 Actor* getDamagingEntity(ActorDamageSource* ads) {
     auto id = ads->getDamagingEntityUniqueID();
     return ll::service::getLevel()->fetchEntity(id);
@@ -81,11 +89,7 @@ DEATH_MESSAGE makeDeathMessage(
     // 自定义类型构造
     if (cause >= 35 || isHardCodedMessage) {
         std::string msg = "death.attack.damageCause.item";
-        ll::utils::string_utils::replaceAll(
-            msg,
-            "damageCause",
-            getCustomCause(ActorDamageCause(cause))
-        );
+        ll::utils::string_utils::replaceAll(msg, "damageCause", getCustomCause(ActorDamageCause(cause)));
         if (isHardCodedMessage) {
             msg = deathMessage.first;
         }

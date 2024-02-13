@@ -1,4 +1,5 @@
 #include "Global.h"
+#include <GMLIB/Mod/CustomDamageCause.h>
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/NetworkPacketAPI.h>
@@ -423,6 +424,11 @@ GMLIB_Actor* GMLIB_Player::shootProjectile(std::string typeName, float speed, fl
 }
 
 void GMLIB_Player::setFreezing(float percentage) { getEntityData().set<float>(0x78, percentage); }
+
+void GMLIB_Player::hurtPlayer(float damage, std::string causeName, Actor* source) {
+    auto cause = GMLIB::Mod::DamageCause::getCauseFromName(causeName);
+    this->hurtByCause(damage, cause, source);
+}
 
 InventoryTransactionManager* GMLIB_Player::getInventoryTransactionManager() {
     return ll::memory::dAccess<InventoryTransactionManager*>(this, 3808); // IDA: ClearCommand::execute()  Line 392

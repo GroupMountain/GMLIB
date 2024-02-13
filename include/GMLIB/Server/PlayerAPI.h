@@ -170,6 +170,8 @@ public:
 
     GMLIB_API FullPlayerInventoryWrapper getFullPlayerInventoryWrapper();
 
+    GMLIB_API void hurtPlayer(float damage, std::string causeName = "override", Actor* source = nullptr);
+
     GMLIB_API int clearAllItems();
 
     // ToDo API

@@ -69,4 +69,6 @@ public:
     GMLIB_API ItemStack* getOffHandSlot();
 
     GMLIB_API void setOffHandSlot(ItemStack& itemStack);
+
+    GMLIB_API void hurtEntity(float damage, std::string causeName = "override", Actor* source = nullptr);
 };
