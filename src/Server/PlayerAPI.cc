@@ -1,6 +1,4 @@
 #include "Global.h"
-#include <GMLIB/include_ll.h>
-#include <GMLIB/include_mc.h>
 #include <GMLIB/Mod/CustomDamageCause.h>
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
@@ -8,6 +6,18 @@
 #include <GMLIB/Server/PlayerAPI.h>
 #include <GMLIB/Server/ScoreboardAPI.h>
 #include <GMLIB/Server/SpawnerAPI.h>
+#include <mc/network/MinecraftPackets.h>
+#include <mc/network/packet/AddActorPacket.h>
+#include <mc/network/packet/BossEventPacket.h>
+#include <mc/network/packet/ScorePacketInfo.h>
+#include <mc/network/packet/SetDisplayObjectivePacket.h>
+#include <mc/network/packet/SetScorePacket.h>
+#include <mc/network/packet/UpdatePlayerGameTypePacket.h>
+#include <mc/world/attribute/AttributeInstance.h>
+#include <mc/world/attribute/SharedAttributes.h>
+#include <mc/world/effect/MobEffect.h>
+#include <mc/world/effect/MobEffectInstance.h>
+#include <mc/world/level/storage/DBStorage.h>
 
 void forEachUuid(bool includeOfflineSignedId, std::function<void(std::string_view const& uuid)> callback) {
     GMLIB::Global<DBStorage>->forEachKeyWithPrefix(

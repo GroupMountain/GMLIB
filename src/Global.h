@@ -16,6 +16,7 @@
 #include <mc/certificates/ExtendedCertificate.h>
 #include <mc/deps/core/mce/UUID.h>
 #include <mc/deps/core/string/HashedString.h>
+#include <mc/deps/core/utility/BinaryStream.h>
 #include <mc/math/Vec3.h>
 #include <mc/nbt/CompoundTag.h>
 #include <mc/network/NetworkIdentifier.h>

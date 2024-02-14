@@ -1,7 +1,8 @@
 #include "Global.h"
-#include <GMLIB/include_ll.h>
-#include <GMLIB/include_mc.h>
 #include <GMLIB/Server/FakeListAPI.h>
+#include <mc/network/MinecraftPackets.h>
+#include <mc/network/packet/PlayerListEntry.h>
+#include <mc/network/packet/PlayerListPacket.h>
 
 namespace GMLIB::Server {
 

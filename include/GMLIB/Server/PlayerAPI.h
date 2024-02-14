@@ -4,8 +4,10 @@
 #include "GMLIB/Server/LevelAPI.h"
 #include "mc/enums/BossBarColor.h"
 #include "mc/enums/ObjectiveSortOrder.h"
+#include "mc/world/actor/player/FullPlayerInventoryWrapper.h"
 #include "mc/world/actor/player/Player.h"
 #include "mc/world/actor/player/PlayerScoreSetFunction.h"
+#include "mc/world/inventory/transaction/InventoryTransactionManager.h"
 
 class GMLIB_Player : public Player {
 public:

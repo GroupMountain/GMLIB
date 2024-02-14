@@ -1,7 +1,15 @@
 #include "GMLIB/Server/LevelAPI.h"
 #include "Global.h"
-#include <GMLIB/include_ll.h>
-#include <GMLIB/include_mc.h>
+#include <mc/locale/I18n.h>
+#include <mc/network/packet/GameRulesChangedPacket.h>
+#include <mc/network/packet/LevelEventPacket.h>
+#include <mc/network/packet/ResourcePacksInfoPacket.h>
+#include <mc/network/packet/SetTimePacket.h>
+#include <mc/network/packet/StartGamePacket.h>
+#include <mc/server/commands/edu/AbilityCommand.h>
+#include <mc/server/common/commands/ChangeSettingCommand.h>
+#include <mc/util/Random.h>
+#include <mc/world/level/storage/Experiments.h>
 
 typedef std::chrono::high_resolution_clock timer_clock;
 #define TIMER_START auto start = timer_clock::now();
