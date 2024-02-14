@@ -1,5 +1,9 @@
-#include "GMLIB/Mod/VanillaFix.h"
 #include "Global.h"
+#include <GMLIB/Mod/VanillaFix.h>
+#include <mc/locale/I18n.h>
+#include <mc/resources/ResourcePackManager.h>
+#include <mc/server/ServerInstance.h>
+#include <mc/server/common/PropertiesSettings.h>
 
 namespace GMLIB::Mod {
 

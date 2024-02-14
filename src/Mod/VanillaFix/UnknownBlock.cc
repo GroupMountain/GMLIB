@@ -1,6 +1,7 @@
 #include "Global.h"
 #include <GMLIB/Mod/VanillaFix.h>
 #include <GMLIB/Server/LevelAPI.h>
+#include <mc/world/level/block/UnknownBlock.h>
 
 namespace GMLIB::Mod {
 

@@ -1,5 +1,6 @@
-#include "GMLIB/Mod/CustomRecipe.h"
 #include "Global.h"
+#include <GMLIB/Mod/CustomRecipe.h>
+#include <mc/deps/json/Reader.h>
 
 Json::Reader reader;
 

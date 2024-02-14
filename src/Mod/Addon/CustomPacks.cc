@@ -1,5 +1,17 @@
 #include "Global.h"
 #include <GMLIB/Mod/CustomPacks.h>
+#include <mc/deps/core/Path.h>
+#include <mc/resources/CompositePackSource.h>
+#include <mc/resources/PackManifest.h>
+#include <mc/resources/PackOrigin.h>
+#include <mc/resources/PackSetting.h>
+#include <mc/resources/PackSettings.h>
+#include <mc/resources/PackSettingsFactory.h>
+#include <mc/resources/PackSource.h>
+#include <mc/resources/PackSourceFactory.h>
+#include <mc/resources/ResourcePack.h>
+#include <mc/resources/ResourcePackRepository.h>
+#include <mc/resources/ResourcePackStack.h>
 
 namespace GMLIB::Mod {
 

@@ -1,5 +1,6 @@
 #include "Global.h"
 #include <GMLIB/Server/CompoundTagAPI.h>
+#include <mc/world/level/block/actor/BlockActor.h>
 
 DataLoadHelper* GMLIB_CompoundTag::getDataLoadHelper() {
     return (DataLoadHelper*)ll::memory::resolveSymbol("??_7DefaultDataLoadHelper@@6B@");

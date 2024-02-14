@@ -1,5 +1,9 @@
 #include "Global.h"
 #include <GMLIB/Mod/CustomDamageCause.h>
+#include <mc/world/actor/ActorDamageByActorSource.h>
+#include <mc/world/actor/ActorDamageByBlockSource.h>
+#include <mc/world/actor/ActorDamageByChildActorSource.h>
+#include <mc/world/actor/EnderCrystal.h>
 
 ll::schedule::GameTickScheduler scheduler;
 

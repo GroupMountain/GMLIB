@@ -1,7 +1,6 @@
 #include "Global.h"
 #include <GMLIB/Files/Config/JsonConfig.h>
 
-
 namespace GMLIB::Files {
 
 JsonConfig::JsonConfig(std::string filePath, std::string& defaultJson) : mFilePath(filePath) {

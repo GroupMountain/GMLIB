@@ -1,5 +1,6 @@
 #include "Global.h"
 #include <GMLIB/Event/Player/PlayerLoginEvent.h>
+#include <mc/network/packet/LoginPacket.h>
 
 namespace GMLIB::Event::PlayerEvent {
 

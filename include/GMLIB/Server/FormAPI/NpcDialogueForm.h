@@ -2,6 +2,7 @@
 #include "GMLIB/GMLIB.h"
 #include "mc/network/packet/NpcRequestPacket.h"
 #include "mc/world/actor/player/Player.h"
+#include "nlohmann/json.hpp"
 
 namespace GMLIB::Server::Form {
 

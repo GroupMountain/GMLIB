@@ -1,5 +1,8 @@
-#include "GMLIB/Server/BinaryStreamAPI.h"
+#include <GMLIB/Server/BinaryStreamAPI.h>
 #include "Global.h"
+#include <mc/math/Vec2.h>
+#include <GMLIB/include_ll.h>
+#include <GMLIB/include_mc.h>
 
 inline std::string GMLIB_BinaryStream::getRaw() { return *ll::memory::dAccess<std::string*>(this, 96); }
 

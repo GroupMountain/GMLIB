@@ -1,4 +1,6 @@
 #include "Global.h"
+#include <GMLIB/include_ll.h>
+#include <GMLIB/include_mc.h>
 #include <GMLIB/Mod/CustomDamageCause.h>
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>

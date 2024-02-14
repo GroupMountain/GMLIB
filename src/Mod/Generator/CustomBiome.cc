@@ -1,7 +1,8 @@
 #include "Global.h"
 #include <GMLIB/Mod/CustomBiome.h>
 #include <GMLIB/Server/LevelAPI.h>
-#include <utility>
+#include <mc/world/level/biome/registry/BiomeRegistry.h>
+#include <mc/world/level/levelgen/v1/OverworldBiomeBuilder.h>
 
 namespace GMLIB::Mod {
 

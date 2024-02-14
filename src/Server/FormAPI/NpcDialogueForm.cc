@@ -3,6 +3,10 @@
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/FormAPI/NpcDialogueForm.h>
 #include <GMLIB/Server/NetworkPacketAPI.h>
+#include <mc/network/packet/AddActorPacket.h>
+#include <mc/network/packet/NpcDialoguePacket.h>
+#include <mc/network/packet/NpcRequestPacket.h>
+#include <mc/network/packet/RemoveActorPacket.h>
 
 namespace GMLIB::Server::Form {
 
@@ -139,4 +143,4 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     return origin(source, packet);
 }
 
-}
+} // namespace GMLIB::Server::Form

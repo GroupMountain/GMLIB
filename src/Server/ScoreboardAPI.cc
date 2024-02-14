@@ -1,4 +1,6 @@
 #include "Global.h"
+#include <GMLIB/include_ll.h>
+#include <GMLIB/include_mc.h>
 #include <GMLIB/Server/PlayerAPI.h>
 #include <GMLIB/Server/ScoreboardAPI.h>
 

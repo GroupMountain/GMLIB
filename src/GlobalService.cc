@@ -1,4 +1,6 @@
 #include "Global.h"
+#include <GMLIB/include_ll.h>
+#include <GMLIB/include_mc.h>
 
 LL_AUTO_TYPE_INSTANCE_HOOK(
     DBStorageInitEvent,
