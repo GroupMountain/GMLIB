@@ -1,5 +1,8 @@
 #include "Global.h"
 #include <GMLIB/Server/FakeListAPI.h>
+#include <mc/network/MinecraftPackets.h>
+#include <mc/network/packet/PlayerListEntry.h>
+#include <mc/network/packet/PlayerListPacket.h>
 
 namespace GMLIB::Server {
 
@@ -32,7 +35,7 @@ LL_TYPE_INSTANCE_HOOK(
     bs.writeUnsignedChar((uchar)1, 0, 0);
     bs.writeUnsignedChar((uchar)CommandPermissionLevel::Any, 0, 0);
     bs.writeUnsignedVarInt(0, 0, 0);
-    auto ablitiespkt = MinecraftPackets::createPacket(MinecraftPacketIds::UpdateAbilitiesPacket);
+    auto ablitiespkt = MinecraftPackets::createPacket(MinecraftPacketIds::UpdateAbilities);
     ablitiespkt->read(bs);
     pkt.sendToClients();
     ablitiespkt->sendToClients();

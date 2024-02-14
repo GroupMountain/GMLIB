@@ -1,5 +1,11 @@
-#include "GMLIB/Server/BinaryStreamAPI.h"
 #include "Global.h"
+#include <GMLIB/Server/BinaryStreamAPI.h>
+#include <mc/math/Vec2.h>
+#include <mc/network/packet/ActorLink.h>
+#include <mc/network/packet/SerializedAbilitiesData.h>
+#include <mc/world/actor/DataItem.h>
+#include <mc/world/actor/player/SerializedSkin.h>
+#include <mc/world/actor/state/PropertySyncData.h>
 
 inline std::string GMLIB_BinaryStream::getRaw() { return *ll::memory::dAccess<std::string*>(this, 96); }
 

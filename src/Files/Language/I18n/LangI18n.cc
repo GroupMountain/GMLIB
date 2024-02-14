@@ -1,11 +1,16 @@
 #include "Global.h"
+#include <GMLIB/Files/FileUtils.h>
 #include <GMLIB/Files/Language/I18n/LangI18n.h>
 
 namespace GMLIB::Files::I18n {
 
 LangI18n::LangI18n(std::string languageDirectory, std::string languageCode)
 : mLanguageDirectory(languageDirectory),
-  mLanguageCode(languageCode) {}
+  mLanguageCode(languageCode) {
+    if (!mLanguageDirectory.ends_with("/") && !mLanguageDirectory.ends_with("\\")) {
+        mLanguageDirectory = mLanguageDirectory + "/";
+    }
+}
 
 LangI18n::~LangI18n() {
     for (auto lang : mAllLanguages) {
@@ -15,20 +20,35 @@ LangI18n::~LangI18n() {
     delete mLocalization;
 }
 
-bool LangI18n::loadLanguage(std::string languageCode, LangLanguage* language) {
+bool LangI18n::loadOrCreateLanguage(std::string languageCode, LangLanguage* language) {
     auto result                 = language->init();
     mAllLanguages[languageCode] = language;
     return result;
 }
 
-bool LangI18n::loadLanguage(std::string languageCode, std::string& language) {
+bool LangI18n::updateOrCreateLanguage(std::string languageCode, std::string& language) {
     auto path = mLanguageDirectory;
-    if (!path.ends_with("/") && !path.ends_with("\\")) {
-        path = path + "/";
-    }
     path      = path + languageCode + ".lang";
     auto lang = new LangLanguage(path, language);
-    return loadLanguage(languageCode, lang);
+    return loadOrCreateLanguage(languageCode, lang);
+}
+
+bool LangI18n::loadAllLanguages() {
+    auto parentPath = mLanguageDirectory;
+    auto files      = GMLIB::Files::FileUtils::getAllFileFullNameInDirectory(mLanguageDirectory);
+    for (auto& file : files) {
+        if (file.ends_with(".lang")) {
+            auto code = file;
+            ll::string_utils::replaceAll(code, ".lang", "");
+            if (!mAllLanguages.count(code)) {
+                auto        path = parentPath + file;
+                std::string emptyLang;
+                auto        language = new GMLIB::Files::LangLanguage(path, emptyLang);
+                language->init();
+                mAllLanguages[code] = language;
+            }
+        }
+    }
 }
 
 bool LangI18n::chooseLanguage(std::string languageCode) {

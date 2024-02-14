@@ -3,6 +3,10 @@
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/FormAPI/NpcDialogueForm.h>
 #include <GMLIB/Server/NetworkPacketAPI.h>
+#include <mc/network/packet/AddActorPacket.h>
+#include <mc/network/packet/NpcDialoguePacket.h>
+#include <mc/network/packet/NpcRequestPacket.h>
+#include <mc/network/packet/RemoveActorPacket.h>
 
 namespace GMLIB::Server::Form {
 
@@ -106,7 +110,7 @@ void NpcDialogueForm::sendTo(
     bs2.writeString(mSceneName);            // SceneName
     bs2.writeString(mNpcName);              // NpcName
     bs2.writeString(actionJson);            // ActionJSON
-    GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::NpcDialoguePacket> pkt2(bs2.getAndReleaseData());
+    GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::NpcDialogue> pkt2(bs2.getAndReleaseData());
     pkt2.sendTo(*pl);
     mRuntimeNpcFormList[mFormRuntimeId] = this;
     mCallback                           = callback;
@@ -139,4 +143,4 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     return origin(source, packet);
 }
 
-}
+} // namespace GMLIB::Server::Form

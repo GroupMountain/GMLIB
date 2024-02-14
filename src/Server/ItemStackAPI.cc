@@ -1,5 +1,6 @@
 #include "Global.h"
 #include <GMLIB/Server/ItemStackAPI.h>
+#include <mc/world/item/components/ItemContext.h>
 
 void GMLIB_ItemStack::setCount(int value) { this->mCount = value; }
 

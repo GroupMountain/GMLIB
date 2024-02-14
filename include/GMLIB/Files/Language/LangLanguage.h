@@ -9,7 +9,7 @@ private:
     std::string mFilePath;
 
 public:
-    GMLIB_API LangLanguage(std::string filePath, std::string defaultLanguage);
+    GMLIB_API LangLanguage(std::string& filePath, std::string& defaultLanguage);
 
 public:
     GMLIB_API bool init();

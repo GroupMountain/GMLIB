@@ -1,10 +1,23 @@
 #include "Global.h"
+#include <GMLIB/Mod/CustomDamageCause.h>
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/NetworkPacketAPI.h>
 #include <GMLIB/Server/PlayerAPI.h>
 #include <GMLIB/Server/ScoreboardAPI.h>
 #include <GMLIB/Server/SpawnerAPI.h>
+#include <mc/network/MinecraftPackets.h>
+#include <mc/network/packet/AddActorPacket.h>
+#include <mc/network/packet/BossEventPacket.h>
+#include <mc/network/packet/ScorePacketInfo.h>
+#include <mc/network/packet/SetDisplayObjectivePacket.h>
+#include <mc/network/packet/SetScorePacket.h>
+#include <mc/network/packet/UpdatePlayerGameTypePacket.h>
+#include <mc/world/attribute/AttributeInstance.h>
+#include <mc/world/attribute/SharedAttributes.h>
+#include <mc/world/effect/MobEffect.h>
+#include <mc/world/effect/MobEffectInstance.h>
+#include <mc/world/level/storage/DBStorage.h>
 
 void forEachUuid(bool includeOfflineSignedId, std::function<void(std::string_view const& uuid)> callback) {
     GMLIB::Global<DBStorage>->forEachKeyWithPrefix(
@@ -315,6 +328,8 @@ void GMLIB_Player::updateClientBossbar(
     setClientBossbar(bossbarId, name, percentage, color, overlay);
 }
 
+void GMLIB_Player::setClientWeather(WeatherType weather) { return GMLIB_Level::setClientWeather(weather, this); }
+
 void GMLIB_Player::addEffect(
     MobEffect::EffectType effectType,
     int                   duration,
@@ -421,3 +436,24 @@ GMLIB_Actor* GMLIB_Player::shootProjectile(std::string typeName, float speed, fl
 }
 
 void GMLIB_Player::setFreezing(float percentage) { getEntityData().set<float>(0x78, percentage); }
+
+void GMLIB_Player::hurtPlayer(float damage, std::string causeName, Actor* source) {
+    auto cause = GMLIB::Mod::DamageCause::getCauseFromName(causeName);
+    this->hurtByCause(damage, cause, source);
+}
+
+InventoryTransactionManager* GMLIB_Player::getInventoryTransactionManager() {
+    return ll::memory::dAccess<InventoryTransactionManager*>(this, 3816); // IDA: ClearCommand::execute()  Line 392
+}
+
+FullPlayerInventoryWrapper GMLIB_Player::getFullPlayerInventoryWrapper() {
+    return FullPlayerInventoryWrapper(
+        getSupplies(),
+        getArmorContainer(),
+        getHandContainer(),
+        getInventoryTransactionManager(),
+        this
+    );
+}
+
+GMLIB_API int GMLIB_Player::clearAllItems() { return getFullPlayerInventoryWrapper().clearAllItems(); }

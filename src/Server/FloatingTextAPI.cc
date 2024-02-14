@@ -4,6 +4,8 @@
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/FloatingTextAPI.h>
 #include <GMLIB/Server/NetworkPacketAPI.h>
+#include <mc/network/packet/AddItemActorPacket.h>
+#include <mc/network/packet/RemoveActorPacket.h>
 
 namespace GMLIB::Server {
 

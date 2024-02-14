@@ -1,5 +1,15 @@
 #include "GMLIB/Server/LevelAPI.h"
 #include "Global.h"
+#include <mc/locale/I18n.h>
+#include <mc/network/packet/GameRulesChangedPacket.h>
+#include <mc/network/packet/LevelEventPacket.h>
+#include <mc/network/packet/ResourcePacksInfoPacket.h>
+#include <mc/network/packet/SetTimePacket.h>
+#include <mc/network/packet/StartGamePacket.h>
+#include <mc/server/commands/edu/AbilityCommand.h>
+#include <mc/server/common/commands/ChangeSettingCommand.h>
+#include <mc/util/Random.h>
+#include <mc/world/level/storage/Experiments.h>
 
 typedef std::chrono::high_resolution_clock timer_clock;
 #define TIMER_START auto start = timer_clock::now();
@@ -87,7 +97,8 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     class BinaryStream& stream
 ) {
     if (GMLIB::LevelAPI::mFakeSeedEnabled) {
-        this->mSettings.mSeed.mValue = GMLIB::LevelAPI::mFakeSeed;
+        this->mSettings.setRandomSeed(LevelSeed64(GMLIB::LevelAPI::mFakeSeed));
+        // ll::memory::dAccess<int64>(this, 48) = GMLIB::LevelAPI::mFakeSeed;
     }
     if (GMLIB::LevelAPI::mFakeLevelNameEnabled) {
         this->mLevelName = GMLIB::LevelAPI::mFakeLevelName;
@@ -311,6 +322,27 @@ void GMLIB_Level::setClientWeather(WeatherType weather, Player* pl) {
     default: {
         LevelEventPacket(LevelEvent::StopThunderstorm, pos, 0).sendTo(*pl);
         LevelEventPacket(LevelEvent::StopRaining, pos, 0).sendTo(*pl);
+        break;
+    }
+    }
+}
+
+void GMLIB_Level::setClientWeather(WeatherType weather) {
+    Vec3 pos = {0, 0, 0};
+    switch (weather) {
+    case WeatherType::Thunder: {
+        LevelEventPacket(LevelEvent::StartThunderstorm, pos, 65565).sendToClients();
+        LevelEventPacket(LevelEvent::StartRaining, pos, 65565).sendToClients();
+        break;
+    }
+    case WeatherType::Rain: {
+        LevelEventPacket(LevelEvent::StopThunderstorm, pos, 0).sendToClients();
+        LevelEventPacket(LevelEvent::StartRaining, pos, 65565).sendToClients();
+        break;
+    }
+    default: {
+        LevelEventPacket(LevelEvent::StopThunderstorm, pos, 0).sendToClients();
+        LevelEventPacket(LevelEvent::StopRaining, pos, 0).sendToClients();
         break;
     }
     }

@@ -1,5 +1,6 @@
-#include "GMLIB/Mod/CustomRecipe.h"
 #include "Global.h"
+#include <GMLIB/Mod/CustomRecipe.h>
+#include <mc/network/packet/CraftingDataPacket.h>
 
 using RecipesMap = std::map<
     class HashedString,

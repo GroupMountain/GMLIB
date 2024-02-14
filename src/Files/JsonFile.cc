@@ -166,5 +166,4 @@ bool deleteKeyAndSave(nlohmann::json& json, std::string& filePath, std::vector<s
     return false;
 }
 
-
 }

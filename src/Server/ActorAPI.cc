@@ -1,8 +1,15 @@
 #include "Global.h"
+#include <GMLIB/Mod/CustomDamageCause.h>
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/CompoundTagAPI.h>
 #include <GMLIB/Server/SpawnerAPI.h>
 #include <corecrt_math_defines.h>
+#include <mc/math/Vec2.h>
+#include <mc/util/Random.h>
+#include <mc/world/attribute/AttributeInstance.h>
+#include <mc/world/attribute/SharedAttributes.h>
+#include <mc/world/effect/MobEffect.h>
+#include <mc/world/effect/MobEffectInstance.h>
 
 bool GMLIB_Actor::isPlayer() const { return hasCategory(ActorCategory::Player); }
 
@@ -140,4 +147,9 @@ int64_t GMLIB_Actor::getNextActorUniqueID() {
         res = ll::service::getLevel()->getRandom().nextLong();
     }
     return res;
+}
+
+void GMLIB_Actor::hurtEntity(float damage, std::string causeName, Actor* source) {
+    auto cause = GMLIB::Mod::DamageCause::getCauseFromName(causeName);
+    this->hurtByCause(damage, cause, source);
 }

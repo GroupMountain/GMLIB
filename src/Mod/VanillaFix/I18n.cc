@@ -1,5 +1,9 @@
-#include "GMLIB/Mod/VanillaFix.h"
 #include "Global.h"
+#include <GMLIB/Mod/VanillaFix.h>
+#include <mc/locale/I18n.h>
+#include <mc/resources/ResourcePackManager.h>
+#include <mc/server/ServerInstance.h>
+#include <mc/server/common/PropertiesSettings.h>
 
 namespace GMLIB::Mod {
 
@@ -42,9 +46,9 @@ LL_TYPE_INSTANCE_HOOK(
     I18nFix3,
     HookPriority::Normal,
     ServerInstance,
-    "?setLevelCorruptionCallback@ServerInstance@@QEAAXV?$function@$$A6AXXZ@std@@@Z",
+    "?setUnrecoverableErrorCallback@ServerInstance@@QEAAXV?$function@$$A6AXPEBD0@Z@std@@@Z",
     void,
-    std::function<void(void)> func
+    std::function<void(char const*, char const*)> func
 ) {
     origin(func);
     isResourcesLoaded = true;

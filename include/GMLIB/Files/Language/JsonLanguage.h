@@ -1,5 +1,6 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
+#include "nlohmann/json.hpp"
 
 namespace GMLIB::Files {
 

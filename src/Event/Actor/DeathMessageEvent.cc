@@ -1,5 +1,8 @@
 #include "Global.h"
 #include <GMLIB/Event/Entity/DeathMessageEvent.h>
+#include <mc/world/actor/ActorDamageByActorSource.h>
+#include <mc/world/actor/ActorDamageByBlockSource.h>
+#include <mc/world/actor/ActorDamageByChildActorSource.h>
 
 namespace GMLIB::Event::EntityEvent {
 

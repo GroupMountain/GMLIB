@@ -2,6 +2,7 @@
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/LevelAPI.h>
 #include <GMLIB/Server/SpawnerAPI.h>
+#include <mc/world/actor/ActorDefinitionIdentifier.h>
 
 GMLIB_Actor* GMLIB_Spawner::spawnEntity(Vec3 pos, int dimid, std::string name, GMLIB_Actor* owner) {
     try {

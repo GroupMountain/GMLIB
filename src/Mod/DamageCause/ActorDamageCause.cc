@@ -1,5 +1,9 @@
 #include "Global.h"
 #include <GMLIB/Mod/CustomDamageCause.h>
+#include <mc/world/actor/ActorDamageByActorSource.h>
+#include <mc/world/actor/ActorDamageByBlockSource.h>
+#include <mc/world/actor/ActorDamageByChildActorSource.h>
+#include <mc/world/actor/EnderCrystal.h>
 
 ll::schedule::GameTickScheduler scheduler;
 
@@ -8,12 +12,57 @@ namespace GMLIB::Mod {
 using DEATH_MESSAGE = std::pair<std::string, std::vector<std::string>>;
 using namespace ll::chrono_literals;
 
-std::unordered_map<int, std::string>     mDamageCauseDefinition;
 std::unordered_map<int64, int>           mFallHeightMap;
 std::unordered_map<int64, ActorUniqueID> mHurtByEntityMap;
 bool                                     mDamageCauseDefinitionEnabled = false;
+int                                      mMaxCauseId                   = 34;
+std::vector<std::pair<std::string, int>> mCustomCauseMap;
 
 bool isCrystal = false;
+
+bool isCustomCauseExist(std::string& causeName) {
+    for (auto& key : mCustomCauseMap) {
+        if (key.first == causeName) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool isCustomCauseExist(int cause) {
+    for (auto& key : mCustomCauseMap) {
+        if (key.second == cause) {
+            return true;
+        }
+    }
+    return false;
+}
+
+::ActorDamageCause getCustomCause(std::string& causeName) {
+    for (auto& key : mCustomCauseMap) {
+        if (key.first == causeName) {
+            return (ActorDamageCause)key.second;
+        }
+    }
+    return ActorDamageCause::None;
+}
+
+std::string getCustomCause(::ActorDamageCause cause) {
+    for (auto& key : mCustomCauseMap) {
+        if ((ActorDamageCause)key.second == cause) {
+            return key.first;
+        }
+    }
+    return "none";
+}
+
+::ActorDamageCause DamageCause::getCauseFromName(std::string& causeName) {
+    auto cause = ActorDamageSource::lookupCause(causeName);
+    if (cause != ActorDamageCause::None) {
+        return cause;
+    }
+    return getCustomCause(causeName);
+}
 
 Actor* getDamagingEntity(ActorDamageSource* ads) {
     auto id = ads->getDamagingEntityUniqueID();
@@ -42,9 +91,9 @@ DEATH_MESSAGE makeDeathMessage(
     bool           isHardCodedMessage = false
 ) {
     // 自定义类型构造
-    if (mDamageCauseDefinition.count(cause) || isHardCodedMessage) {
+    if (cause >= 35 || isHardCodedMessage) {
         std::string msg = "death.attack.damageCause.item";
-        ll::utils::string_utils::replaceAll(msg, "damageCause", mDamageCauseDefinition[cause]);
+        ll::utils::string_utils::replaceAll(msg, "damageCause", getCustomCause(ActorDamageCause(cause)));
         if (isHardCodedMessage) {
             msg = deathMessage.first;
         }
@@ -402,14 +451,21 @@ void DamageCause::setCustomDamageCauseEnabled() {
         ll::memory::HookRegistrar<DeathMessageHook3>().hook();
         ll::memory::HookRegistrar<DeathMessageHook4>().hook();
         ll::memory::HookRegistrar<MobDieHook>().hook();
-        ll::memory::HookRegistrar<MobDieHook>().hook();
+        ll::memory::HookRegistrar<CryatslHurtHook>().hook();
         mDamageCauseDefinitionEnabled = true;
     }
 }
 
-bool DamageCause::registerDamageCause(int causeId, std::string causeName) {
-    if (mDamageCauseDefinition.count(causeId)) {
-        mDamageCauseDefinition[causeId] = causeName;
+int getNextCauseId() {
+    mMaxCauseId++;
+    return mMaxCauseId;
+}
+
+bool DamageCause::registerDamageCause(std::string causeName) {
+    if (!isCustomCauseExist(causeName)) {
+        setCustomDamageCauseEnabled();
+        auto id = getNextCauseId();
+        mCustomCauseMap.push_back({causeName, id});
         return true;
     }
     return false;

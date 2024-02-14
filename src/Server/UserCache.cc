@@ -1,6 +1,7 @@
 #include "Global.h"
 #include <GMLIB/Files/JsonFile.h>
 #include <GMLIB/Server/UserCache.h>
+#include <mc/network/packet/LoginPacket.h>
 
 namespace GMLIB::Server::UserCache {
 

@@ -14,7 +14,7 @@ public:
     template <class T>
         requires std::is_base_of<CustomShapedRecipe, T>::value
     inline static void registerShapedRecipe() {
-        SharedPtr<T> ShapedRecipe = SharedPtr<T>::makeShared();
+        SharedPtr<T> ShapedRecipe = SharedPtr<T>::make();
         return ll::service::bedrock::getLevel()->getRecipes().addShapedRecipe(
             ShapedRecipe->getRecipeId(),
             ShapedRecipe->getResult(),
@@ -31,7 +31,7 @@ public:
     template <class T>
         requires std::is_base_of<CustomShapelessRecipe, T>::value
     inline static void registerShapelessRecipe() {
-        SharedPtr<T> ShapelessRecipe = SharedPtr<T>::makeShared();
+        SharedPtr<T> ShapelessRecipe = SharedPtr<T>::make();
         return ll::service::bedrock::getLevel()->getRecipes().addShapelessRecipe(
             ShapelessRecipe->getRecipeId(),
             ShapelessRecipe->getResult(),
@@ -47,7 +47,7 @@ public:
     template <class T>
         requires std::is_base_of<CustomFurnaceRecipe, T>::value
     inline static void registerFurnaceRecipe() {
-        SharedPtr<T> FurnaceRecipe = SharedPtr<T>::makeShared();
+        SharedPtr<T> FurnaceRecipe = SharedPtr<T>::make();
         return ll::service::bedrock::getLevel()->getRecipes().addFurnaceRecipeAuxData(
             FurnaceRecipe->getInput(),
             FurnaceRecipe->getResult(),
@@ -58,7 +58,7 @@ public:
     template <class T>
         requires std::is_base_of<CustomShulkerBoxRecipe, T>::value
     inline static void registerShulkerBoxRecipe() {
-        SharedPtr<T> ShulkerBoxRecipe = SharedPtr<T>::makeShared();
+        SharedPtr<T> ShulkerBoxRecipe = SharedPtr<T>::make();
         return ll::service::bedrock::getLevel()->getRecipes().addShulkerBoxRecipe(
             ShulkerBoxRecipe->getRecipeId(),
             ShulkerBoxRecipe->getResult(),

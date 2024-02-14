@@ -6,6 +6,5 @@ std::optional<ll::form::CustomForm> mSeverSettingForm;
 
 void test() {
     auto fm = ll::form::CustomForm("sv");
-    
 }
 */

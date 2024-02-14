@@ -1,5 +1,6 @@
 #include "Global.h"
 #include <GMLIB/Event/entity/MobPickupItemEvent.h>
+#include <mc/world/actor/ai/goal/PickupItemsGoal.h>
 
 namespace GMLIB::Event::EntityEvent {
 

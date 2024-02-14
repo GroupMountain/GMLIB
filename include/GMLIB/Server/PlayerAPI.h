@@ -1,10 +1,13 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
 #include "GMLIB/Server/ActorAPI.h"
+#include "GMLIB/Server/LevelAPI.h"
 #include "mc/enums/BossBarColor.h"
 #include "mc/enums/ObjectiveSortOrder.h"
+#include "mc/world/actor/player/FullPlayerInventoryWrapper.h"
 #include "mc/world/actor/player/Player.h"
 #include "mc/world/actor/player/PlayerScoreSetFunction.h"
+#include "mc/world/inventory/transaction/InventoryTransactionManager.h"
 
 class GMLIB_Player : public Player {
 public:
@@ -140,6 +143,8 @@ public:
         int            overlay    = 1
     );
 
+    GMLIB_API void setClientWeather(WeatherType weather);
+
     GMLIB_API void addEffect(
         MobEffect::EffectType effectType,
         int                   duration      = 600,
@@ -163,14 +168,22 @@ public:
 
     GMLIB_API void setFreezing(float percentage = 1.0f);
 
+    GMLIB_API InventoryTransactionManager* getInventoryTransactionManager();
+
+    GMLIB_API FullPlayerInventoryWrapper getFullPlayerInventoryWrapper();
+
+    GMLIB_API void hurtPlayer(float damage, std::string causeName = "override", Actor* source = nullptr);
+
+    GMLIB_API int clearAllItems();
+
     // ToDo API
     // If you need any API, please open an issue on https://github.com/GroupMountain/GMLIB/issues
 
     // GMLIB_API bool giveItem(ItemStack& item, bool drop = false);
 
-    // GMLIB_API bool giveItem(std::string name, int count = 1, short aux = 0, bool drop = false);
+    // GMLIB_API bool giveItem(std::string name, int count = -1, short aux = 0, bool drop = false);
 
-    // GMLIB_API int clearItem(std::string name, int count = 1, short aux = -1);
+    // GMLIB_API int clearItem(std::string name, int count = -1, short aux = -1);
 
     // GMLIB_API int hasItem(std::string name, short aux = -1);
 };

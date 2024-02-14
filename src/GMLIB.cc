@@ -1,7 +1,7 @@
 #include "Global.h"
 #include "Version.h"
 #include <GMLIB/GMLIB.h>
-#include <include_all.h>
+#include <mc/deps/core/sem_ver/SemVersion.h>
 
 ll::Logger logger(LIB_NAME);
 
