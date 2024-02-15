@@ -6,10 +6,10 @@
         "name": "GMLIB",
         "description": "Group Mountain Library",
         "author": "GroupMountain",
-        "source": "github.com/GroupMountain/GMLIB",
         "tags": [
             "LeviLamina",
-            "GMLIB"
+            "GMLIB",
+            "Library"
         ]
     },
     "asset_url": "https://github.com/GroupMountain/GMLIB/releases/download/v0.8.0/GMLIB-windows-x64.zip",
