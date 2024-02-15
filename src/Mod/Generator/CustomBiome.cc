@@ -10,14 +10,15 @@ std::unordered_map<std::string, std::vector<BiomeData>> mClimates;
 std::vector<std::string>                                mNewBiomes;
 bool                                                    mCustomBiomeEnabled = false;
 
-// 6 | ExperimentalHoliday
-// 7 | ExperimentalBiomes
+// 6 | Experimentalholiday
+// 7 | Experimentalbiomes
 // 8 | ExperimentalCreatorFeatures
 // 9 | ExperimentalGameTest
 // 10 | ExperimentalMolangFeatures
-// 12 | ExperimentalCameras
-// 15 | ExperimentalVillagerTradesRebalance
-// 16 | ExperimentalUpdateAnnounced2023
+// 13 | ExperimentalCameras
+// 16 | ExperimentalVillagerTradesRebalance
+// 17 | ExperimentalUpdateAnnounced2023
+// 18 | ExperimentalArmadillo
 
 void CustomBiome::registerEmptyBiome(std::string id, BiomeData data) {
     mNewBiomes.push_back(id);

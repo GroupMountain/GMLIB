@@ -216,7 +216,7 @@ void GMLIB_Level::setExperimentEnabled(::AllExperiments experiment, bool enabled
 
 std::map<int, std::string> GMLIB_Level::getAllExperimentsTranslateKeys() {
     std::map<int, std::string> result;
-    for (int i = 6; i <= 16; i++) {
+    for (int i = 6; i <= 18; i++) {
         std::string text;
         try {
             text = Experiments::getExperimentTextID((AllExperiments)i);
@@ -230,7 +230,7 @@ std::map<int, std::string> GMLIB_Level::getAllExperimentsTranslateKeys() {
 
 std::map<int, std::string> GMLIB_Level::getAllExperiments() {
     std::map<int, std::string> result;
-    for (int i = 6; i <= 16; i++) {
+    for (int i = 6; i <= 18; i++) {
         std::string text;
         try {
             text = Experiments::getExperimentTextID((AllExperiments)i);
