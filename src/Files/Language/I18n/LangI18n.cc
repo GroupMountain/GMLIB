@@ -34,6 +34,7 @@ bool LangI18n::updateOrCreateLanguage(std::string languageCode, std::string& lan
 }
 
 bool LangI18n::loadAllLanguages() {
+    bool result     = true;
     auto parentPath = mLanguageDirectory;
     auto files      = GMLIB::Files::FileUtils::getAllFileFullNameInDirectory(mLanguageDirectory);
     for (auto& file : files) {
@@ -44,11 +45,13 @@ bool LangI18n::loadAllLanguages() {
                 auto        path = parentPath + file;
                 std::string emptyLang;
                 auto        language = new GMLIB::Files::LangLanguage(path, emptyLang);
-                language->init();
-                mAllLanguages[code] = language;
+                auto        temp     = language->init();
+                result               = result && temp;
+                mAllLanguages[code]  = language;
             }
         }
     }
+    return result;
 }
 
 bool LangI18n::chooseLanguage(std::string languageCode) {

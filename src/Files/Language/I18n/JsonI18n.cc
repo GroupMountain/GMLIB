@@ -44,6 +44,7 @@ bool JsonI18n::updateOrCreateLanguage(std::string languageCode, std::string& lan
 }
 
 bool JsonI18n::loadAllLanguages() {
+    bool result     = true;
     auto parentPath = mLanguageDirectory;
     auto files      = GMLIB::Files::FileUtils::getAllFileFullNameInDirectory(mLanguageDirectory);
     for (auto& file : files) {
@@ -51,14 +52,16 @@ bool JsonI18n::loadAllLanguages() {
             auto code = file;
             ll::string_utils::replaceAll(code, ".json", "");
             if (!mAllLanguages.count(code)) {
-                auto path      = parentPath + file;
-                auto emptyJson = nlohmann::json::object();
-                auto language  = new GMLIB::Files::JsonLanguage(path, emptyJson);
-                language->init();
+                auto path           = parentPath + file;
+                auto emptyJson      = nlohmann::json::object();
+                auto language       = new GMLIB::Files::JsonLanguage(path, emptyJson);
+                auto temp           = language->init();
+                result              = result && temp;
                 mAllLanguages[code] = language;
             }
         }
     }
+    return result;
 }
 
 bool JsonI18n::chooseLanguage(std::string languageCode) {
