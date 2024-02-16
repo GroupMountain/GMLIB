@@ -15,7 +15,6 @@ JsonLanguage::JsonLanguage(std::string filePath, nlohmann::json& defaultJson)
 
 JsonLanguage::~JsonLanguage() {
     writeFile();
-    mValue.clear();
 }
 
 bool JsonLanguage::init() {

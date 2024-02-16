@@ -14,7 +14,6 @@ JsonConfig::JsonConfig(std::string filePath, nlohmann::ordered_json& defaultJson
 
 JsonConfig::~JsonConfig() {
     writeFile();
-    mValue.clear();
 }
 
 bool JsonConfig::init() {
