@@ -1,7 +1,7 @@
 {
     "format_version": 2,
     "tooth": "github.com/GroupMountain/GMLIB",
-    "version": "0.8.1",
+    "version": "0.8.2",
     "info": {
         "name": "GMLIB",
         "description": "Group Mountain Library",
@@ -12,7 +12,7 @@
             "Library"
         ]
     },
-    "asset_url": "https://github.com/GroupMountain/GMLIB/releases/download/v0.8.1/GMLIB-windows-x64.zip",
+    "asset_url": "https://github.com/GroupMountain/GMLIB/releases/download/v0.8.2/GMLIB-windows-x64.zip",
     "files": {
         "place": [
             {
