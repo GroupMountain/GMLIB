@@ -12,13 +12,24 @@ namespace GMLIB::Mod {
 using DEATH_MESSAGE = std::pair<std::string, std::vector<std::string>>;
 using namespace ll::chrono_literals;
 
-std::unordered_map<int64, int>           mFallHeightMap;
-std::unordered_map<int64, ActorUniqueID> mHurtByEntityMap;
-bool                                     mDamageCauseDefinitionEnabled = false;
-int                                      mMaxCauseId                   = 34;
-std::vector<std::pair<std::string, int>> mCustomCauseMap;
+std::unordered_map<int64, int>            mFallHeightMap;
+std::unordered_map<int64, ActorUniqueID>  mHurtByEntityMap;
+bool                                      mDamageCauseDefinitionEnabled = false;
+int                                       mMaxCauseId                   = 34;
+std::vector<std::pair<std::string, int>>  mCustomCauseMap;
+std::unordered_map<int, std::string_view> mVanillaCauseMessage;
 
 bool isCrystal = false;
+
+bool isCustomDefinition(int cause) {
+    if (cause >= 35) {
+        return true;
+    }
+    if (mVanillaCauseMessage.count(cause)) {
+        return true;
+    }
+    return false;
+}
 
 bool isCustomCauseExist(std::string& causeName) {
     for (auto& key : mCustomCauseMap) {
@@ -56,6 +67,17 @@ std::string getCustomCause(::ActorDamageCause cause) {
     return "none";
 }
 
+std::string getCause(::ActorDamageCause cause) {
+    auto id = (int)cause;
+    if (isCustomCauseExist(id)) {
+        return getCustomCause(cause);
+    }
+    if (mVanillaCauseMessage.count(id)) {
+        return std::string(mVanillaCauseMessage[id]);
+    }
+    return "";
+}
+
 ::ActorDamageCause DamageCause::getCauseFromName(std::string& causeName) {
     auto cause = ActorDamageSource::lookupCause(causeName);
     if (cause != ActorDamageCause::None) {
@@ -91,9 +113,9 @@ DEATH_MESSAGE makeDeathMessage(
     bool           isHardCodedMessage = false
 ) {
     // 自定义类型构造
-    if (cause >= 35 || isHardCodedMessage) {
+    if (isCustomDefinition(cause) || isHardCodedMessage) {
         std::string msg = "death.attack.damageCause.item";
-        ll::utils::string_utils::replaceAll(msg, "damageCause", getCustomCause(ActorDamageCause(cause)));
+        ll::utils::string_utils::replaceAll(msg, "damageCause", getCause(ActorDamageCause(cause)));
         if (isHardCodedMessage) {
             msg = deathMessage.first;
         }
@@ -466,6 +488,15 @@ bool DamageCause::registerDamageCause(std::string causeName) {
         setCustomDamageCauseEnabled();
         auto id = getNextCauseId();
         mCustomCauseMap.push_back({causeName, id});
+        return true;
+    }
+    return false;
+}
+
+bool DamageCause::setVanillaCauseMessage(ActorDamageCause cause, std::string_view msg) {
+    auto id = (int)cause;
+    if (!mVanillaCauseMessage.count(id)) {
+        mVanillaCauseMessage[id] = msg;
         return true;
     }
     return false;

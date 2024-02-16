@@ -32,6 +32,7 @@ public:
 
     GMLIB_API ActorDamageSource const& getDamageSource() const;
     GMLIB_API std::pair<std::string, std::vector<std::string>> const getDeathMessage() const;
+    GMLIB_API void setDeathMessage(std::pair<std::string, std::vector<std::string>> msg);
 };
 
 } // namespace GMLIB::Event::EntityEvent

@@ -1,5 +1,6 @@
 #include "Global.h"
 #include <GMLIB/Files/Config/JsonConfig.h>
+#include <GMLIB/Files/JsonFile.h>
 
 namespace GMLIB::Files {
 
@@ -12,10 +13,7 @@ JsonConfig::JsonConfig(std::string filePath, nlohmann::ordered_json& defaultJson
 : mFilePath(filePath),
   mValue(defaultJson) {}
 
-JsonConfig::~JsonConfig() {
-    writeFile();
-    mValue.clear();
-}
+JsonConfig::~JsonConfig() { writeFile(); }
 
 bool JsonConfig::init() {
     try {
@@ -33,6 +31,12 @@ bool JsonConfig::init() {
     } catch (...) {
         return false;
     }
+}
+
+bool JsonConfig::reload() {
+    auto newFile = JsonFile::readFromOrderedFile(mFilePath);
+    mValue.merge_patch(newFile);
+    return this->writeFile();
 }
 
 bool JsonConfig::writeFile() {

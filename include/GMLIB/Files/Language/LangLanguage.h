@@ -1,6 +1,6 @@
 #pragma once
-#include "GMLIB/GMLIB.h"
 #include "GMLIB/Files/Language/McLang.h"
+#include "GMLIB/GMLIB.h"
 
 namespace GMLIB::Files {
 
@@ -13,6 +13,10 @@ public:
 
 public:
     GMLIB_API bool init();
+
+    GMLIB_API bool reload();
+
+    GMLIB_API bool save_file();
 };
 
 } // namespace GMLIB::Files

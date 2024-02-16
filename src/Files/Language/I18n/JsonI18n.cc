@@ -16,8 +16,6 @@ JsonI18n::~JsonI18n() {
     for (auto lang : mAllLanguages) {
         delete lang.second;
     }
-    mAllLanguages.clear();
-    delete mLocalization;
 }
 
 bool JsonI18n::loadOrCreateLanguage(std::string languageCode, JsonLanguage* language) {
@@ -62,6 +60,12 @@ bool JsonI18n::loadAllLanguages() {
         }
     }
     return result;
+}
+
+void JsonI18n::reloadAllLanguages() {
+    for (auto& lang : mAllLanguages) {
+        lang.second->reload();
+    }
 }
 
 bool JsonI18n::chooseLanguage(std::string languageCode) {

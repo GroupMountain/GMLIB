@@ -13,10 +13,7 @@ JsonLanguage::JsonLanguage(std::string filePath, nlohmann::json& defaultJson)
 : mValue(defaultJson),
   mFilePath(filePath) {}
 
-JsonLanguage::~JsonLanguage() {
-    writeFile();
-    mValue.clear();
-}
+JsonLanguage::~JsonLanguage() { writeFile(); }
 
 bool JsonLanguage::init() {
     if (!mFilePath.empty()) {
@@ -24,6 +21,12 @@ bool JsonLanguage::init() {
         return true;
     }
     return false;
+}
+
+bool JsonLanguage::reload() {
+    auto newFile = JsonFile::readFromFile(mFilePath);
+    mValue.merge_patch(newFile);
+    return this->writeFile();
 }
 
 bool JsonLanguage::hasValue(std::string key) { return mValue.contains(key); }
@@ -102,6 +105,9 @@ std::string translate(nlohmann::json& json, std::string key, std::vector<std::st
     auto lang = getValue(json, key);
     if (data.empty()) {
         return lang;
+    }
+    if (translateKey == "%0$s" && data.size() == 1) {
+        ll::utils::string_utils::replaceAll(lang, "%s", data[0]);
     }
     for (int i = 0; i <= data.size() - 1; i++) {
         auto oldValue = translateKey;

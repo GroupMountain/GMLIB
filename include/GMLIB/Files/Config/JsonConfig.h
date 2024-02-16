@@ -21,6 +21,8 @@ public:
 public:
     GMLIB_API bool init();
 
+    GMLIB_API bool reload();
+
     template <typename T>
     inline std::optional<T> getValue(std::vector<std::string> keyPath) {
         try {

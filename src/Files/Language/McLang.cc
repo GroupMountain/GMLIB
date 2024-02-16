@@ -92,13 +92,9 @@ bool McLang::has_value(std::string key) { return (bool)mData.count(key); }
 void McLang::set(std::string key, std::string value) { mData[key] = value; }
 
 void McLang::merge_patch(McLang newData) {
-    auto result = newData;
-    for (auto info : mData) {
-        if (!newData.has_value(info.first)) {
-            result.set(info.first, info.second);
-        }
+    for (auto& key : newData.mData) {
+        mData[key.first] = key.second;
     }
-    mData = result.mData;
 }
 
 std::optional<std::string> McLang::get(std::string key) {
@@ -121,6 +117,9 @@ std::string McLang::translate(std::string key, std::vector<std::string> data, st
         ll::utils::string_utils::replaceAll(result, "\\n", "\n");
         if (data.empty()) {
             return result;
+        }
+        if (translateKeys == "%0$s" && data.size() == 1) {
+            ll::utils::string_utils::replaceAll(result, "%s", data[0]);
         }
         for (int i = 0; i <= data.size() - 1; i++) {
             auto oldValue = translateKeys;

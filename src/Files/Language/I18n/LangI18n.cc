@@ -16,8 +16,6 @@ LangI18n::~LangI18n() {
     for (auto lang : mAllLanguages) {
         delete lang.second;
     }
-    mAllLanguages.clear();
-    delete mLocalization;
 }
 
 bool LangI18n::loadOrCreateLanguage(std::string languageCode, LangLanguage* language) {
@@ -52,6 +50,12 @@ bool LangI18n::loadAllLanguages() {
         }
     }
     return result;
+}
+
+void LangI18n::reloadAllLanguages() {
+    for (auto& lang : mAllLanguages) {
+        lang.second->reload();
+    }
 }
 
 bool LangI18n::chooseLanguage(std::string languageCode) {
