@@ -13,6 +13,10 @@ ActorDamageSource const& DeathMessageBeforeEvent::getDamageSource() const { retu
 ActorDamageSource const& DeathMessageAfterEvent::getDamageSource() const { return mDamageSource; }
 DEATH_MESSAGE const      DeathMessageAfterEvent::getDeathMessage() const { return mDeathMessage; }
 
+void DeathMessageAfterEvent::setDeathMessage(std::pair<std::string, std::vector<std::string>> msg) {
+    mDeathMessage = msg;
+}
+
 LL_TYPE_INSTANCE_HOOK(
     DeathMessageEvent1,
     HookPriority::Normal,
