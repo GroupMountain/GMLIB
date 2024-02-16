@@ -52,6 +52,12 @@ bool LangI18n::loadAllLanguages() {
     return result;
 }
 
+void LangI18n::reloadAllLanguages() {
+    for (auto& lang : mAllLanguages) {
+        lang.second->reload();
+    }
+}
+
 bool LangI18n::chooseLanguage(std::string languageCode) {
     if (mAllLanguages.count(languageCode)) {
         mLocalization = mAllLanguages[languageCode];

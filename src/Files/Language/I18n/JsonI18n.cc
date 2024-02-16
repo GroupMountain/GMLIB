@@ -62,6 +62,12 @@ bool JsonI18n::loadAllLanguages() {
     return result;
 }
 
+void JsonI18n::reloadAllLanguages() {
+    for (auto& lang : mAllLanguages) {
+        lang.second->reload();
+    }
+}
+
 bool JsonI18n::chooseLanguage(std::string languageCode) {
     if (mAllLanguages.count(languageCode)) {
         mLocalization = mAllLanguages[languageCode];

@@ -92,13 +92,9 @@ bool McLang::has_value(std::string key) { return (bool)mData.count(key); }
 void McLang::set(std::string key, std::string value) { mData[key] = value; }
 
 void McLang::merge_patch(McLang newData) {
-    auto result = newData;
-    for (auto info : mData) {
-        if (!newData.has_value(info.first)) {
-            result.set(info.first, info.second);
-        }
+    for (auto& key : newData.mData) {
+        mData[key.first] = key.second;
     }
-    mData = result.mData;
 }
 
 std::optional<std::string> McLang::get(std::string key) {

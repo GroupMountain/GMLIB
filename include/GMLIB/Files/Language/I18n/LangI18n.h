@@ -25,6 +25,8 @@ public:
 
     GMLIB_API bool loadAllLanguages();
 
+    GMLIB_API void reloadAllLanguages();
+
     GMLIB_API bool chooseLanguage(std::string languageCode);
 
     GMLIB_API std::string

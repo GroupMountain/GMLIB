@@ -22,6 +22,8 @@ public:
 public:
     GMLIB_API bool init();
 
+    GMLIB_API bool reload();
+
     GMLIB_API bool hasValue(std::string key);
 
     GMLIB_API std::string getValue(std::string key);

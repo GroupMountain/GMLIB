@@ -1,5 +1,6 @@
 #include "Global.h"
 #include <GMLIB/Files/Language/LangLanguage.h>
+#include <ll/api/io/FileUtils.h>
 
 namespace GMLIB::Files {
 
@@ -19,5 +20,17 @@ bool LangLanguage::init() {
     }
     return write_to_file(mFilePath);
 }
+
+bool LangLanguage::reload() {
+    auto file = ll::utils::file_utils::readFile(mFilePath);
+    if (file.has_value()) {
+        auto newData = McLang::prase(file.value());
+        merge_patch(newData);
+        return save_file();
+    }
+    return false;
+}
+
+GMLIB_API bool LangLanguage::save_file() { return write_to_file(mFilePath); }
 
 } // namespace GMLIB::Files

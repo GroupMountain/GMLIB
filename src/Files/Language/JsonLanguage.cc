@@ -13,9 +13,7 @@ JsonLanguage::JsonLanguage(std::string filePath, nlohmann::json& defaultJson)
 : mValue(defaultJson),
   mFilePath(filePath) {}
 
-JsonLanguage::~JsonLanguage() {
-    writeFile();
-}
+JsonLanguage::~JsonLanguage() { writeFile(); }
 
 bool JsonLanguage::init() {
     if (!mFilePath.empty()) {
@@ -23,6 +21,12 @@ bool JsonLanguage::init() {
         return true;
     }
     return false;
+}
+
+bool JsonLanguage::reload() {
+    auto newFile = JsonFile::readFromFile(mFilePath);
+    mValue.merge_patch(newFile);
+    return this->writeFile();
 }
 
 bool JsonLanguage::hasValue(std::string key) { return mValue.contains(key); }
