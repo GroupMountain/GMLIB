@@ -145,6 +145,8 @@ public:
 
     GMLIB_API void setClientWeather(WeatherType weather);
 
+    GMLIB_API void sendToast(std::string_view title, std::string_view message);
+
     GMLIB_API void addEffect(
         MobEffect::EffectType effectType,
         int                   duration      = 600,

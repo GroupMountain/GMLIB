@@ -6,6 +6,8 @@
 #include <mc/network/packet/ResourcePacksInfoPacket.h>
 #include <mc/network/packet/SetTimePacket.h>
 #include <mc/network/packet/StartGamePacket.h>
+#include <mc/network/packet/TextPacket.h>
+#include <mc/network/packet/ToastRequestPacket.h>
 #include <mc/server/commands/edu/AbilityCommand.h>
 #include <mc/server/common/commands/ChangeSettingCommand.h>
 #include <mc/util/Random.h>
@@ -346,6 +348,13 @@ void GMLIB_Level::setClientWeather(WeatherType weather) {
         break;
     }
     }
+}
+
+void GMLIB_Level::broadcast(std::string_view message) { TextPacket::createRawMessage(message).sendToClients(); }
+
+void GMLIB_Level::broadcastToast(std::string_view title, std::string_view message) {
+    auto pkt = ToastRequestPacket(std::string(title), std::string(message));
+    pkt.sendToClients();
 }
 
 std::optional<bool> GMLIB_Level::getGameruleBool(GameRuleId id) {

@@ -33,10 +33,6 @@ public:
 
     GMLIB_API void removeFromAllClients();
 
-    GMLIB_API void updateAllClients();
-
-    GMLIB_API void updateClient(Player* pl);
-
     GMLIB_API void setText(std::string newText);
 
     GMLIB_API void setPosition(Vec3& pos, DimensionType dimid);

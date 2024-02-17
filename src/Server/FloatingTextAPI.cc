@@ -104,39 +104,6 @@ bool FloatingText::deleteFloatingText(int64 runtimeId) {
     return false;
 }
 
-GMLIB::Server::NetworkPacket<39> createUpdateFloatingTextPacket(FloatingText* ft) {
-    GMLIB_BinaryStream bs;
-    bs.writeUnsignedVarInt64(ft->getRuntimeID());
-    bs.writeUnsignedVarInt(2);
-    bs.writeUnsignedVarInt((uint)0x4);
-    bs.writeUnsignedVarInt((uint)0x4);
-    bs.writeString(ft->getText());
-    bs.writeUnsignedVarInt((uint)0x51);
-    bs.writeUnsignedVarInt((uint)0x0);
-    bs.writeUnsignedVarInt(0);
-    bs.writeUnsignedVarInt(0);
-    bs.writeUnsignedVarInt64(0);
-    GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::SetActorData> pkt(bs.getAndReleaseData());
-    return pkt;
-}
-
-void FloatingText::updateAllClients() {
-    auto pkt = createUpdateFloatingTextPacket(this);
-    ll::service::getLevel()->forEachPlayer([&](Player& pl) -> bool {
-        if (!pl.isSimulatedPlayer() && pl.getDimensionId() == mDimensionId) {
-            pkt.sendTo(pl);
-        }
-        return true;
-    });
-}
-
-void FloatingText::updateClient(Player* pl) {
-    if (!pl->isSimulatedPlayer() && pl->getDimensionId() == mDimensionId) {
-        auto pkt = createUpdateFloatingTextPacket(this);
-        pkt.sendTo(*pl);
-    }
-}
-
 int64 FloatingText::getRuntimeID() { return mRuntimeId; }
 
 std::string FloatingText::getText() { return mText; }
