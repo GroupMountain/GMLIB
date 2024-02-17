@@ -12,6 +12,7 @@
 #include <mc/network/packet/ScorePacketInfo.h>
 #include <mc/network/packet/SetDisplayObjectivePacket.h>
 #include <mc/network/packet/SetScorePacket.h>
+#include <mc/network/packet/ToastRequestPacket.h>
 #include <mc/network/packet/UpdatePlayerGameTypePacket.h>
 #include <mc/world/attribute/AttributeInstance.h>
 #include <mc/world/attribute/SharedAttributes.h>
@@ -329,6 +330,11 @@ void GMLIB_Player::updateClientBossbar(
 }
 
 void GMLIB_Player::setClientWeather(WeatherType weather) { return GMLIB_Level::setClientWeather(weather, this); }
+
+void GMLIB_Player::sendToast(std::string_view title, std::string_view message) {
+    auto pkt = ToastRequestPacket(std::string(title), std::string(message));
+    pkt.sendTo(*this);
+}
 
 void GMLIB_Player::addEffect(
     MobEffect::EffectType effectType,

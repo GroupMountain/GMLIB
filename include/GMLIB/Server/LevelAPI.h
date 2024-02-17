@@ -46,6 +46,10 @@ public:
 
     GMLIB_API static std::map<int, std::string> getAllExperimentsTranslateKeys();
 
+    GMLIB_API static void broadcast(std::string_view message);
+
+    GMLIB_API static void broadcastToast(std::string_view title, std::string_view message);
+
 public:
     GMLIB_API BlockSource* getBlockSource(DimensionType dimid);
 

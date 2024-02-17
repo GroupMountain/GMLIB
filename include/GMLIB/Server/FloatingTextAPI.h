@@ -25,8 +25,6 @@ public:
     GMLIB_API virtual ~FloatingText();
 
 public:
-    GMLIB_API int64_t getFloatingTextRuntimeId();
-
     GMLIB_API void sendToClient(Player* pl);
 
     GMLIB_API void sendToAllClients();
@@ -37,7 +35,9 @@ public:
 
     GMLIB_API void setText(std::string newText);
 
-    GMLIB_API int64 getRuntimeID();
+    GMLIB_API void setPosition(Vec3& pos, DimensionType dimid);
+
+    GMLIB_API int64_t getRuntimeID();
 
     GMLIB_API std::string getText();
 
@@ -46,4 +46,4 @@ public:
     GMLIB_API DimensionType getDimensionId();
 };
 
-}
+} // namespace GMLIB::Server
