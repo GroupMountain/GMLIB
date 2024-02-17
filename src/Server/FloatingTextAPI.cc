@@ -1,21 +1,31 @@
 #include "Global.h"
 #include "mc/world/item/NetworkItemStackDescriptor.h"
-#include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/FloatingTextAPI.h>
+#include <GMLIB/Server/LevelAPI.h>
 #include <GMLIB/Server/NetworkPacketAPI.h>
 #include <mc/network/packet/AddItemActorPacket.h>
 #include <mc/network/packet/RemoveActorPacket.h>
+#include <mc/network/packet/SetActorDataPacket.h>
+#include <mc/util/Random.h>
 
 namespace GMLIB::Server {
 
 std::unordered_map<int64, FloatingText*> mRuntimeFloatingTextList;
 
+int getNextFloatingTextId() {
+    auto id = Random::getThreadLocal().nextInt(0, 2147473647);
+    while (ll::service::getLevel()->fetchEntity(ActorUniqueID(id))) {
+        id = Random::getThreadLocal().nextInt(0, 2147473647);
+    }
+    return id;
+}
+
 FloatingText::FloatingText(std::string text, Vec3 position, DimensionType dimensionId)
 : mText(text),
   mPosition(position),
   mDimensionId(dimensionId) {
-    mRuntimeId = GMLIB_Actor::getNextActorUniqueID();
+    mRuntimeId = getNextFloatingTextId();
     mRuntimeFloatingTextList.insert({mRuntimeId, this});
 }
 
@@ -24,9 +34,12 @@ FloatingText::~FloatingText() {
     mRuntimeFloatingTextList.erase(mRuntimeId);
 }
 
-int64_t FloatingText::getFloatingTextRuntimeId() { return mRuntimeId; }
+void FloatingText::setPosition(Vec3& pos, DimensionType dimid) {
+    mPosition    = pos;
+    mDimensionId = dimid;
+}
 
-GMLIB::Server::NetworkPacket<15> createFloatingTextPacket(FloatingText* ft) {
+GMLIB::Server::NetworkPacket<15> createAddFloatingTextPacket(FloatingText* ft) {
     auto               item = std::make_unique<ItemStack>(ItemStack{"minecraft:air"});
     auto               nisd = NetworkItemStackDescriptor(*item);
     GMLIB_BinaryStream bs;
@@ -50,13 +63,13 @@ GMLIB::Server::NetworkPacket<15> createFloatingTextPacket(FloatingText* ft) {
 
 void FloatingText::sendToClient(Player* pl) {
     if (!pl->isSimulatedPlayer() && pl->getDimensionId() == mDimensionId) {
-        auto pkt = createFloatingTextPacket(this);
+        auto pkt = createAddFloatingTextPacket(this);
         pkt.sendTo(*pl);
     }
 }
 
 void FloatingText::sendToAllClients() {
-    auto pkt = createFloatingTextPacket(this);
+    auto pkt = createAddFloatingTextPacket(this);
     ll::service::getLevel()->forEachPlayer([&](Player& pl) -> bool {
         if (!pl.isSimulatedPlayer() && pl.getDimensionId() == mDimensionId) {
             pkt.sendTo(pl);
@@ -89,6 +102,39 @@ bool FloatingText::deleteFloatingText(int64 runtimeId) {
         return true;
     }
     return false;
+}
+
+GMLIB::Server::NetworkPacket<39> createUpdateFloatingTextPacket(FloatingText* ft) {
+    GMLIB_BinaryStream bs;
+    bs.writeUnsignedVarInt64(ft->getRuntimeID());
+    bs.writeUnsignedVarInt(2);
+    bs.writeUnsignedVarInt((uint)0x4);
+    bs.writeUnsignedVarInt((uint)0x4);
+    bs.writeString(ft->getText());
+    bs.writeUnsignedVarInt((uint)0x51);
+    bs.writeUnsignedVarInt((uint)0x0);
+    bs.writeUnsignedVarInt(0);
+    bs.writeUnsignedVarInt(0);
+    bs.writeUnsignedVarInt64(0);
+    GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::SetActorData> pkt(bs.getAndReleaseData());
+    return pkt;
+}
+
+void FloatingText::updateAllClients() {
+    auto pkt = createUpdateFloatingTextPacket(this);
+    ll::service::getLevel()->forEachPlayer([&](Player& pl) -> bool {
+        if (!pl.isSimulatedPlayer() && pl.getDimensionId() == mDimensionId) {
+            pkt.sendTo(pl);
+        }
+        return true;
+    });
+}
+
+void FloatingText::updateClient(Player* pl) {
+    if (!pl->isSimulatedPlayer() && pl->getDimensionId() == mDimensionId) {
+        auto pkt = createUpdateFloatingTextPacket(this);
+        pkt.sendTo(*pl);
+    }
 }
 
 int64 FloatingText::getRuntimeID() { return mRuntimeId; }

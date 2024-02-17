@@ -142,9 +142,9 @@ GMLIB_Actor* GMLIB_Actor::shootProjectile(std::string typeName, float speed, flo
 }
 
 int64_t GMLIB_Actor::getNextActorUniqueID() {
-    auto res = ll::service::getLevel()->getRandom().nextLong();
+    auto res = Random::getThreadLocal().nextLong();
     while (ll::service::getLevel()->fetchEntity(ActorUniqueID(res)) != nullptr) {
-        res = ll::service::getLevel()->getRandom().nextLong();
+        res = Random::getThreadLocal().nextLong();
     }
     return res;
 }
