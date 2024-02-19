@@ -4,6 +4,7 @@
 #include <GMLIB/Server/FloatingTextAPI.h>
 #include <GMLIB/Server/LevelAPI.h>
 #include <GMLIB/Server/NetworkPacketAPI.h>
+#include <ll/api/event/player/PlayerJoinEvent.h>
 #include <mc/network/packet/AddItemActorPacket.h>
 #include <mc/network/packet/RemoveActorPacket.h>
 #include <mc/network/packet/SetActorDataPacket.h>
@@ -12,6 +13,7 @@
 namespace GMLIB::Server {
 
 std::unordered_map<int64, FloatingText*> mRuntimeFloatingTextList;
+ll::schedule::ServerTimeScheduler        mScheduler;
 
 int getNextFloatingTextId() {
     auto id = Random::getThreadLocal().nextInt(0, 2147473647);
@@ -25,8 +27,8 @@ FloatingText::FloatingText(std::string text, Vec3 position, DimensionType dimens
 : mText(text),
   mPosition(position),
   mDimensionId(dimensionId) {
-    mRuntimeId = getNextFloatingTextId();
-    mRuntimeFloatingTextList.insert({mRuntimeId, this});
+    mRuntimeId                           = getNextFloatingTextId();
+    mRuntimeFloatingTextList[mRuntimeId] = this;
 }
 
 FloatingText::~FloatingText() {
@@ -39,7 +41,7 @@ void FloatingText::setPosition(Vec3& pos, DimensionType dimid) {
     mDimensionId = dimid;
 }
 
-GMLIB::Server::NetworkPacket<15> createAddFloatingTextPacket(FloatingText* ft) {
+GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::AddItemActor> createAddFloatingTextPacket(FloatingText* ft) {
     auto               item = std::make_unique<ItemStack>(ItemStack{"minecraft:air"});
     auto               nisd = NetworkItemStackDescriptor(*item);
     GMLIB_BinaryStream bs;
@@ -104,12 +106,91 @@ bool FloatingText::deleteFloatingText(int64 runtimeId) {
     return false;
 }
 
-int64 FloatingText::getRuntimeID() { return mRuntimeId; }
+int64 FloatingText::getRuntimeID() const { return mRuntimeId; }
 
-std::string FloatingText::getText() { return mText; }
+std::string FloatingText::getText() const { return mText; }
 
-Vec3 FloatingText::getPos() { return mPosition; }
+Vec3 FloatingText::getPos() const { return mPosition; }
 
-DimensionType FloatingText::getDimensionId() { return mDimensionId; }
+DimensionType FloatingText::getDimensionId() const { return mDimensionId; }
+
+bool FloatingText::isDynamic() const { return false; }
+
+StaticFloatingText::StaticFloatingText(std::string text, Vec3 position, DimensionType dimensionId)
+: FloatingText(text, position, dimensionId) {
+    sendToAllClients();
+    auto& eventBus = ll::event::EventBus::getInstance();
+    eventBus.emplaceListener<ll::event::player::PlayerJoinEvent>([&](ll::event::player::PlayerJoinEvent& ev) {
+        this->sendToClient(&ev.self());
+    });
+}
+
+DynamicFloatingText::DynamicFloatingText(std::string text, Vec3 position, DimensionType dimensionId, uint updateRate)
+: FloatingText(text, position, dimensionId) {
+    sendToAllClients();
+    auto& eventBus = ll::event::EventBus::getInstance();
+    eventBus.emplaceListener<ll::event::player::PlayerJoinEvent>([&](ll::event::player::PlayerJoinEvent& ev) {
+        this->sendToClient(&ev.self());
+    });
+    mUpdateRate = updateRate;
+    mTask       = mScheduler.add<ll::schedule::task::RepeatTask>(std::chrono::seconds::duration(mUpdateRate), [this] {
+        this->sendToAllClients();
+    });
+}
+
+DynamicFloatingText::~DynamicFloatingText() {
+    mTask->cancel();
+    mScheduler.remove(mTask);
+}
+
+bool DynamicFloatingText::isDynamic() const { return true; }
+
+bool DynamicFloatingText::stopUpdate() {
+    if (!mTask->isCancelled()) {
+        mTask->cancel();
+        mScheduler.remove(mTask);
+        return true;
+    }
+    return false;
+}
+
+bool DynamicFloatingText::startUpdate() {
+    if (mTask->isCancelled()) {
+        mTask = mScheduler.add<ll::schedule::task::RepeatTask>(std::chrono::seconds::duration(mUpdateRate), [this] {
+            this->sendToAllClients();
+        });
+        return true;
+    }
+    return false;
+}
+
+uint DynamicFloatingText::getUpdateRate() { return mUpdateRate; }
+
+void DynamicFloatingText::setUpdateRate(uint seconds) {
+    stopUpdate();
+    mUpdateRate = seconds;
+    startUpdate();
+}
+
+void StaticFloatingText::updateText(std::string newText) {
+    setText(newText);
+    sendToAllClients();
+}
+
+void DynamicFloatingText::updateText(std::string newText) {
+    setText(newText);
+    sendToAllClients();
+}
+
+void StaticFloatingText::updatePosition(Vec3& pos, DimensionType dimid) {
+    setPosition(pos, dimid);
+    sendToAllClients();
+}
+
+void DynamicFloatingText::updatePosition(Vec3& pos, DimensionType dimid) {
+    setPosition(pos, dimid);
+    sendToAllClients();
+}
+
 
 } // namespace GMLIB::Server

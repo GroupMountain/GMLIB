@@ -24,6 +24,8 @@ public:
 public:
     GMLIB_API virtual ~FloatingText();
 
+    GMLIB_API virtual bool isDynamic() const;
+
 public:
     GMLIB_API void sendToClient(Player* pl);
 
@@ -37,13 +39,55 @@ public:
 
     GMLIB_API void setPosition(Vec3& pos, DimensionType dimid);
 
-    GMLIB_API int64_t getRuntimeID();
+    GMLIB_API int64 getRuntimeID() const;
 
-    GMLIB_API std::string getText();
+    GMLIB_API std::string getText() const;
 
-    GMLIB_API Vec3 getPos();
+    GMLIB_API Vec3 getPos() const;
 
-    GMLIB_API DimensionType getDimensionId();
+    GMLIB_API DimensionType getDimensionId() const;
+};
+
+class StaticFloatingText : public FloatingText {
+public:
+    GMLIB_API StaticFloatingText(std::string text, Vec3 position, DimensionType dimensionId);
+
+    StaticFloatingText() = delete;
+
+public:
+    GMLIB_API void updateText(std::string newText);
+
+    GMLIB_API void updatePosition(Vec3& pos, DimensionType dimid);
+};
+
+class DynamicFloatingText : public FloatingText {
+private:
+    uint                                                               mUpdateRate;
+    std::shared_ptr<ll::schedule::task::Task<ll::chrono::ServerClock>> mTask;
+
+public:
+    GMLIB_API
+    DynamicFloatingText(std::string text, Vec3 position, DimensionType dimensionId, uint seconds);
+
+    DynamicFloatingText() = delete;
+
+public:
+    GMLIB_API virtual ~DynamicFloatingText();
+
+    GMLIB_API virtual bool isDynamic() const;
+
+public:
+    GMLIB_API void updateText(std::string newText);
+
+    GMLIB_API void updatePosition(Vec3& pos, DimensionType dimid);
+
+    GMLIB_API bool stopUpdate();
+
+    GMLIB_API bool startUpdate();
+
+    GMLIB_API uint getUpdateRate();
+
+    GMLIB_API void setUpdateRate(uint seconds);
 };
 
 } // namespace GMLIB::Server
