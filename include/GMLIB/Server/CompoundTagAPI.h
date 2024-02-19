@@ -1,5 +1,10 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
+#include <mc/dataloadhelper/DataLoadHelper.h>
+#include <mc/nbt/CompoundTag.h>
+#include <mc/world/actor/Actor.h>
+#include <mc/world/actor/player/Player.h>
+
 
 class GMLIB_CompoundTag : public CompoundTag {
 public:

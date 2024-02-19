@@ -1,5 +1,7 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
+#include <mc/world/item/ItemInstance.h>
+#include <mc/world/item/crafting/Recipes.h>
 
 namespace GMLIB::Mod {
 
@@ -26,4 +28,4 @@ public:
     virtual SemVersion getSemVersion() { return SemVersion(1, 20, 50, "", ""); }
 };
 
-}
+} // namespace GMLIB::Mod
