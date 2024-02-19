@@ -22,4 +22,4 @@ GMLIB_API std::optional<std::string> getXuidByName(std::string& name);
 
 GMLIB_API std::optional<std::string> getUuidByName(std::string& name);
 
-} // namespace GMLIB::Server
+} // namespace GMLIB::Server::UserCache
