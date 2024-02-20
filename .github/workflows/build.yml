@@ -15,16 +15,12 @@ jobs:
       - run: |
           xmake repo -u
     
-    steps:
-      - name: Build GMLIB
         run: |
           xmake f -a x64 -m release -p windows -v -y
 
       - run: |
           xmake -w -y
 
-      steps:
-      - name: Upload Files
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ github.event.repository.name }}-windows-x64-${{ github.sha }}
