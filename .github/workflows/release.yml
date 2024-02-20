@@ -23,10 +23,15 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.event.repository.name }}-windows-x64-${{ github.sha }}
+          name: GMLIB
           path: |
-            bin/${{ github.event.repository.name }}
-            bin/*.pdb
+            bin/DLL/
+            
+      - uses: actions/upload-artifact@v3
+        with:
+          name: PBD
+          path: |
+            bin/PDB/
 
   upload-to-release:
     needs:
@@ -39,35 +44,34 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: ${{ github.event.repository.name }}-windows-x64-${{ github.sha }}
-          path: release/plugin/
+          name: GMLIB
+          path: release/GMLIB/
 
       - uses: actions/download-artifact@v3
         with:
-          name: ${{ github.event.repository.name }}-windows-x64-${{ github.sha }}.pdb
-          path: release/pdb/
+          name: PDB
+          path: release/PDB/
 
       - run: |
-          cp LICENSE README.md release/plugin/
+          cp LICENSE README.md release/GMLIB/
 
       - name: Archive release
         run: |
-          cd release/plugin
-          zip -r ../${{ github.event.repository.name }}-windows-x64.zip *
+          cd release/GMLIB
+          zip -r ../GMLIB.zip *
           cd ..
 
       - uses: softprops/action-gh-release@v1
         with:
           append_body: true
           files: |
-            ${{ github.event.repository.name }}-windows-x64.zip
+            GMLIB.zip
 
       - run: |
           cd release/pdb
-          cd ..
 
       - uses: softprops/action-gh-release@v1
         with:
           append_body: true
           files: |
-            ${{ github.event.repository.name }}-windows-x64.pdb
+            GMLIB.pdb
