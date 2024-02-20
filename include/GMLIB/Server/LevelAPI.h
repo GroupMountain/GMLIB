@@ -40,11 +40,11 @@ public:
 
     GMLIB_API static void forceEnableAbilityCommand();
 
-    GMLIB_API static void setFakeLevelName(std::string fakeName);
+    GMLIB_API static void setFakeLevelName(std::string_view fakeName);
 
-    GMLIB_API static std::map<int, std::string> getAllExperiments();
+    GMLIB_API static std::map<int, std::string_view> getAllExperiments();
 
-    GMLIB_API static std::map<int, std::string> getAllExperimentsTranslateKeys();
+    GMLIB_API static std::map<int, std::string_view> getAllExperimentsTranslateKeys();
 
     GMLIB_API static void broadcast(std::string_view message);
 
@@ -61,7 +61,7 @@ public:
 
     GMLIB_API std::string getLevelName();
 
-    GMLIB_API void setLevelName(std::string newName);
+    GMLIB_API void setLevelName(std::string_view newName);
 
     GMLIB_API int64_t getSeed();
 
@@ -79,27 +79,27 @@ public:
 
     GMLIB_API std::optional<bool> getGameruleBool(GameRuleId id);
 
-    GMLIB_API std::optional<bool> getGameruleBool(std::string name);
+    GMLIB_API std::optional<bool> getGameruleBool(std::string_view name);
 
     GMLIB_API std::optional<float> getGameruleFloat(GameRuleId id);
 
-    GMLIB_API std::optional<float> getGameruleFloat(std::string name);
+    GMLIB_API std::optional<float> getGameruleFloat(std::string_view name);
 
     GMLIB_API std::optional<int> getGameruleInt(GameRuleId id);
 
-    GMLIB_API std::optional<int> getGameruleInt(std::string name);
+    GMLIB_API std::optional<int> getGameruleInt(std::string_view name);
 
     GMLIB_API void setGamerule(GameRuleId id, bool value);
 
-    GMLIB_API void setGamerule(std::string name, bool value);
+    GMLIB_API void setGamerule(std::string_view name, bool value);
 
     GMLIB_API void setGamerule(GameRuleId id, float value);
 
-    GMLIB_API void setGamerule(std::string name, float value);
+    GMLIB_API void setGamerule(std::string_view name, float value);
 
     GMLIB_API void setGamerule(GameRuleId id, int value);
 
-    GMLIB_API void setGamerule(std::string name, int value);
+    GMLIB_API void setGamerule(std::string_view name, int value);
 
     GMLIB_API void createExplosion(
         const Vec3&   pos,
@@ -114,9 +114,9 @@ public:
 
     GMLIB_API Block* getBlock(BlockPos& pos, DimensionType dimId);
 
-    GMLIB_API bool setBlock(Block* block, BlockPos& pos, DimensionType dimId);
+    GMLIB_API bool setBlock(BlockPos& pos, DimensionType dimId, Block* block);
 
-    GMLIB_API bool setBlock(std::string name, short aux, BlockPos& pos, DimensionType dimId);
+    GMLIB_API bool setBlock(BlockPos& pos, DimensionType dimId, std::string_view name, short aux = 0);
 
     GMLIB_API int fillBlocks(
         BlockPos      startpos,
@@ -127,24 +127,24 @@ public:
     );
 
     GMLIB_API int fillBlocks(
-        BlockPos       startpos,
-        BlockPos       endpos,
-        DimensionType  dimId,
-        std::string    name,
-        unsigned short tileData = 0,
-        FillMode       mode     = FillMode::Replace
+        BlockPos         startpos,
+        BlockPos         endpos,
+        DimensionType    dimId,
+        std::string_view name,
+        ushort           tileData = 0,
+        FillMode         mode     = FillMode::Replace
     );
 
     GMLIB_API int fillBlocks(BlockPos startpos, BlockPos endpos, DimensionType dimId, Block* oldBlock, Block* newBlock);
 
     GMLIB_API int fillBlocks(
-        BlockPos       startpos,
-        BlockPos       endpos,
-        DimensionType  dimId,
-        std::string    oldName,
-        unsigned short oldTileData,
-        std::string    newName,
-        unsigned short newTileData
+        BlockPos         startpos,
+        BlockPos         endpos,
+        DimensionType    dimId,
+        std::string_view oldName,
+        ushort           oldTileData,
+        std::string_view newName,
+        ushort           newTileData
     );
 
     GMLIB_API double getServerMspt();

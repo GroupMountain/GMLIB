@@ -22,7 +22,7 @@ typedef std::chrono::high_resolution_clock timer_clock;
 namespace GMLIB::LevelAPI {
 
 bool                          mFakeLevelNameEnabled     = false;
-std::string                   mFakeLevelName            = "";
+std::string_view              mFakeLevelName            = "";
 bool                          mFakeSeedEnabled          = false;
 int64_t                       mFakeSeed                 = 0;
 bool                          mForceTrustSkin           = false;
@@ -172,9 +172,9 @@ std::vector<Player*> GMLIB_Level::getAllPlayers() {
 
 std::string GMLIB_Level::getLevelName() { return getLevelData().getLevelName(); }
 
-void GMLIB_Level::setLevelName(std::string newName) { getLevelData().setLevelName(newName); }
+void GMLIB_Level::setLevelName(std::string_view newName) { getLevelData().setLevelName(std::string(newName)); }
 
-void GMLIB_Level::setFakeLevelName(std::string fakeName) {
+void GMLIB_Level::setFakeLevelName(std::string_view fakeName) {
     GMLIB::LevelAPI::mFakeLevelNameEnabled = true;
     GMLIB::LevelAPI::mFakeLevelName        = fakeName;
 }
@@ -216,10 +216,10 @@ void GMLIB_Level::setExperimentEnabled(::AllExperiments experiment, bool enabled
     getLevelData().getExperiments().setExperimentEnabled(experiment, enabled);
 }
 
-std::map<int, std::string> GMLIB_Level::getAllExperimentsTranslateKeys() {
+std::map<int, std::string_view> GMLIB_Level::getAllExperimentsTranslateKeys() {
     auto result = getAllExperiments();
     for (auto& key : result) {
-        auto name = key.second;
+        auto name = std::string(key.second);
         name.erase(0, 1);
         name       = "createWorldScreen.e" + name;
         name       = I18n::get(name, {});
@@ -228,9 +228,9 @@ std::map<int, std::string> GMLIB_Level::getAllExperimentsTranslateKeys() {
     return result;
 }
 
-std::map<int, std::string> GMLIB_Level::getAllExperiments() {
+std::map<int, std::string_view> GMLIB_Level::getAllExperiments() {
     std::unordered_set<std::string_view> explist;
-    std::map<int, std::string>           result;
+    std::map<int, std::string_view>      result;
     for (int i = 6; i <= 30; i++) {
         std::string text;
         try {
@@ -370,8 +370,8 @@ std::optional<bool> GMLIB_Level::getGameruleBool(GameRuleId id) {
     return {};
 }
 
-std::optional<bool> GMLIB_Level::getGameruleBool(std::string name) {
-    auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(name);
+std::optional<bool> GMLIB_Level::getGameruleBool(std::string_view name) {
+    auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(std::string(name));
     return getGameruleBool(id);
 }
 
@@ -385,8 +385,8 @@ std::optional<float> GMLIB_Level::getGameruleFloat(GameRuleId id) {
     return {};
 }
 
-std::optional<float> GMLIB_Level::getGameruleFloat(std::string name) {
-    auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(name);
+std::optional<float> GMLIB_Level::getGameruleFloat(std::string_view name) {
+    auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(std::string(name));
     return getGameruleFloat(id);
 }
 
@@ -400,8 +400,8 @@ std::optional<int> GMLIB_Level::getGameruleInt(GameRuleId id) {
     return {};
 }
 
-std::optional<int> GMLIB_Level::getGameruleInt(std::string name) {
-    auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(name);
+std::optional<int> GMLIB_Level::getGameruleInt(std::string_view name) {
+    auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(std::string(name));
     return getGameruleInt(id);
 }
 
@@ -410,8 +410,8 @@ void GMLIB_Level::setGamerule(GameRuleId id, bool value) {
     pkt->sendToClients();
 }
 
-void GMLIB_Level::setGamerule(std::string name, bool value) {
-    auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(name);
+void GMLIB_Level::setGamerule(std::string_view name, bool value) {
+    auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(std::string(name));
     return setGamerule(id, value);
 }
 
@@ -420,8 +420,8 @@ void GMLIB_Level::setGamerule(GameRuleId id, float value) {
     pkt->sendToClients();
 }
 
-void GMLIB_Level::setGamerule(std::string name, float value) {
-    auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(name);
+void GMLIB_Level::setGamerule(std::string_view name, float value) {
+    auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(std::string(name));
     return setGamerule(id, value);
 }
 
@@ -431,8 +431,8 @@ void GMLIB_Level::setGamerule(GameRuleId id, int value) {
     pkt->sendToClients();
 }
 
-void GMLIB_Level::setGamerule(std::string name, int value) {
-    auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(name);
+void GMLIB_Level::setGamerule(std::string_view name, int value) {
+    auto id = ll::service::bedrock::getLevel()->getGameRules().nameToGameRuleIndex(std::string(name));
     return setGamerule(id, value);
 }
 
@@ -453,11 +453,11 @@ Block* GMLIB_Level::getBlock(BlockPos& pos, DimensionType dimid) {
     return (Block*)&getBlockSource(dimid)->getBlock(pos);
 }
 
-bool GMLIB_Level::setBlock(Block* block, BlockPos& pos, DimensionType dimid) {
+bool GMLIB_Level::setBlock(BlockPos& pos, DimensionType dimid, Block* block) {
     return getBlockSource(dimid)->setBlock(pos, *block, 3, nullptr, nullptr);
 }
 
-bool GMLIB_Level::setBlock(std::string name, short aux, BlockPos& pos, DimensionType dimid) {
+bool GMLIB_Level::setBlock(BlockPos& pos, DimensionType dimid, std::string_view name, short aux) {
     auto block = Block::tryGetFromRegistry(name, aux);
     return getBlockSource(dimid)->setBlock(pos, block, 3, nullptr, nullptr);
 }
@@ -532,12 +532,12 @@ int GMLIB_Level::fillBlocks(
 }
 
 int GMLIB_Level::fillBlocks(
-    BlockPos       startpos,
-    BlockPos       endpos,
-    DimensionType  dimId,
-    std::string    name,
-    unsigned short tileData,
-    FillMode       mode
+    BlockPos         startpos,
+    BlockPos         endpos,
+    DimensionType    dimId,
+    std::string_view name,
+    unsigned short   tileData,
+    FillMode         mode
 ) {
     Block* block = (Block*)Block::tryGetFromRegistry(name, tileData).as_ptr();
     if (block) {
@@ -570,13 +570,13 @@ int GMLIB_Level::fillBlocks(BlockPos startpos, BlockPos endpos, DimensionType di
 }
 
 int GMLIB_Level::fillBlocks(
-    BlockPos       startpos,
-    BlockPos       endpos,
-    DimensionType  dimId,
-    std::string    oldName,
-    unsigned short oldTileData,
-    std::string    newName,
-    unsigned short newTileData
+    BlockPos         startpos,
+    BlockPos         endpos,
+    DimensionType    dimId,
+    std::string_view oldName,
+    unsigned short   oldTileData,
+    std::string_view newName,
+    unsigned short   newTileData
 ) {
     Block* newblock = (Block*)Block::tryGetFromRegistry(newName, newTileData).as_ptr();
     Block* oldblock = (Block*)Block::tryGetFromRegistry(oldName, oldTileData).as_ptr();
