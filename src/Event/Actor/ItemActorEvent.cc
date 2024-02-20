@@ -1,5 +1,5 @@
 #include "Global.h"
-#include <GMLIB/Event/entity/ItemActorEvent.h>
+#include <GMLIB/Event/Entity/ItemActorEvent.h>
 
 namespace GMLIB::Event::EntityEvent {
 

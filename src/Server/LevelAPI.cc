@@ -616,7 +616,7 @@ void CaculateTPS() {
                 ticks_minute = ticks_minute + i;
             }
             float res                    = (float)ticks_minute / ((float)GMLIB::LevelAPI::mTickList.size());
-            GMLIB::LevelAPI::mAverageTps = res >= 20 ? 20 : res;
+            GMLIB::LevelAPI::mAverageTps = res >= 20.0f ? 20.0f : res;
         }
     }).detach();
 }
