@@ -31,13 +31,13 @@ public:
     );
     ~PlaceholderAPI(){};
 
-    GMLIB_API static void registerPlaceholder(PlaceholderAPI a0);
+    GMLIB_API static void registerPlaceholder(PlaceholderAPI papi);
 
     GMLIB_API static std::string getValue(std::string name, Player* sp);
 
     GMLIB_API static std::string getValue(std::string name);
 
-    GMLIB_API static void translateString(std::string& a0, Player* sp = nullptr);
+    GMLIB_API static void translateString(std::string& papi, Player* sp = nullptr);
 
     GMLIB_API static void registerStaticPlaceholder(std::string name, std::string value, std::string PluginName = "");
 

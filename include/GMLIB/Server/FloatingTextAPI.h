@@ -10,9 +10,10 @@ private:
     int64         mRuntimeId;
     Vec3          mPosition;
     DimensionType mDimensionId;
+    bool          mUsePapi;
 
 public:
-    GMLIB_API FloatingText(std::string text, Vec3 position, DimensionType dimensionId);
+    GMLIB_API FloatingText(std::string text, Vec3 position, DimensionType dimensionId, bool usePapi = false);
 
     FloatingText() = delete;
 
@@ -39,6 +40,8 @@ public:
 
     GMLIB_API void setPosition(Vec3& pos, DimensionType dimid);
 
+    GMLIB_API void setUsePapi(bool value);
+
     GMLIB_API int64 getRuntimeID() const;
 
     GMLIB_API std::string getText() const;
@@ -46,11 +49,13 @@ public:
     GMLIB_API Vec3 getPos() const;
 
     GMLIB_API DimensionType getDimensionId() const;
+
+    GMLIB_API bool shouldUsePapi() const;
 };
 
 class StaticFloatingText : public FloatingText {
 public:
-    GMLIB_API StaticFloatingText(std::string text, Vec3 position, DimensionType dimensionId);
+    GMLIB_API StaticFloatingText(std::string text, Vec3 position, DimensionType dimensionId, bool usePapi = false);
 
     StaticFloatingText() = delete;
 
@@ -67,7 +72,7 @@ private:
 
 public:
     GMLIB_API
-    DynamicFloatingText(std::string text, Vec3 position, DimensionType dimensionId, uint seconds);
+    DynamicFloatingText(std::string text, Vec3 position, DimensionType dimensionId, uint seconds, bool usePapi = true);
 
     DynamicFloatingText() = delete;
 

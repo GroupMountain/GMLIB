@@ -4,6 +4,7 @@
 #include <GMLIB/Server/FloatingTextAPI.h>
 #include <GMLIB/Server/LevelAPI.h>
 #include <GMLIB/Server/NetworkPacketAPI.h>
+#include <GMLIB/Server/PlaceholderAPI.h>
 #include <ll/api/event/player/PlayerJoinEvent.h>
 #include <mc/network/packet/AddItemActorPacket.h>
 #include <mc/network/packet/RemoveActorPacket.h>
@@ -23,10 +24,11 @@ int getNextFloatingTextId() {
     return id;
 }
 
-FloatingText::FloatingText(std::string text, Vec3 position, DimensionType dimensionId)
+FloatingText::FloatingText(std::string text, Vec3 position, DimensionType dimensionId, bool usePapi)
 : mText(text),
   mPosition(position),
-  mDimensionId(dimensionId) {
+  mDimensionId(dimensionId),
+  mUsePapi(usePapi) {
     mRuntimeId                           = getNextFloatingTextId();
     mRuntimeFloatingTextList[mRuntimeId] = this;
 }
@@ -41,9 +43,18 @@ void FloatingText::setPosition(Vec3& pos, DimensionType dimid) {
     mDimensionId = dimid;
 }
 
-GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::AddItemActor> createAddFloatingTextPacket(FloatingText* ft) {
-    auto               item = std::make_unique<ItemStack>(ItemStack{"minecraft:air"});
-    auto               nisd = NetworkItemStackDescriptor(*item);
+void FloatingText::setUsePapi(bool value) { mUsePapi = value; }
+
+bool FloatingText::shouldUsePapi() const { return mUsePapi; }
+
+GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::AddItemActor>
+createAddFloatingTextPacket(FloatingText* ft, Player* pl) {
+    auto item = std::make_unique<ItemStack>(ItemStack{"minecraft:air"});
+    auto nisd = NetworkItemStackDescriptor(*item);
+    auto text = ft->getText();
+    if (ft->shouldUsePapi()) {
+        PlaceholderAPI::translateString(text, pl);
+    }
     GMLIB_BinaryStream bs;
     bs.writeVarInt64(ft->getRuntimeID());
     bs.writeUnsignedVarInt64(ft->getRuntimeID());
@@ -54,7 +65,7 @@ GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::AddItemActor> createAddFlo
     bs.writeUnsignedVarInt(2);
     bs.writeUnsignedVarInt((uint)0x4);
     bs.writeUnsignedVarInt((uint)0x4);
-    bs.writeString(ft->getText());
+    bs.writeString(text);
     bs.writeUnsignedVarInt((uint)0x51);
     bs.writeUnsignedVarInt((uint)0x0);
     bs.writeBool(true);
@@ -64,16 +75,16 @@ GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::AddItemActor> createAddFlo
 }
 
 void FloatingText::sendToClient(Player* pl) {
-    if (!pl->isSimulatedPlayer() && pl->getDimensionId() == mDimensionId) {
-        auto pkt = createAddFloatingTextPacket(this);
+    if (!pl->isSimulatedPlayer() && pl->getDimensionId() == getDimensionId()) {
+        auto pkt = createAddFloatingTextPacket(this, pl);
         pkt.sendTo(*pl);
     }
 }
 
 void FloatingText::sendToAllClients() {
-    auto pkt = createAddFloatingTextPacket(this);
-    ll::service::getLevel()->forEachPlayer([&](Player& pl) -> bool {
-        if (!pl.isSimulatedPlayer() && pl.getDimensionId() == mDimensionId) {
+    ll::service::getLevel()->forEachPlayer([this](Player& pl) -> bool {
+        if (!pl.isSimulatedPlayer() && pl.getDimensionId() == getDimensionId()) {
+            auto pkt = createAddFloatingTextPacket(this, &pl);
             pkt.sendTo(pl);
         }
         return true;
@@ -116,8 +127,8 @@ DimensionType FloatingText::getDimensionId() const { return mDimensionId; }
 
 bool FloatingText::isDynamic() const { return false; }
 
-StaticFloatingText::StaticFloatingText(std::string text, Vec3 position, DimensionType dimensionId)
-: FloatingText(text, position, dimensionId) {
+StaticFloatingText::StaticFloatingText(std::string text, Vec3 position, DimensionType dimensionId, bool usePapi)
+: FloatingText(text, position, dimensionId, usePapi) {
     sendToAllClients();
     auto& eventBus = ll::event::EventBus::getInstance();
     eventBus.emplaceListener<ll::event::player::PlayerJoinEvent>([&](ll::event::player::PlayerJoinEvent& ev) {
@@ -125,8 +136,14 @@ StaticFloatingText::StaticFloatingText(std::string text, Vec3 position, Dimensio
     });
 }
 
-DynamicFloatingText::DynamicFloatingText(std::string text, Vec3 position, DimensionType dimensionId, uint updateRate)
-: FloatingText(text, position, dimensionId) {
+DynamicFloatingText::DynamicFloatingText(
+    std::string   text,
+    Vec3          position,
+    DimensionType dimensionId,
+    uint          updateRate,
+    bool          usePapi
+)
+: FloatingText(text, position, dimensionId, usePapi) {
     sendToAllClients();
     auto& eventBus = ll::event::EventBus::getInstance();
     eventBus.emplaceListener<ll::event::player::PlayerJoinEvent>([&](ll::event::player::PlayerJoinEvent& ev) {

@@ -37,6 +37,7 @@
 #include "GMLIB/Server/ItemStackAPI.h"
 #include "GMLIB/Server/LevelAPI.h"
 #include "GMLIB/Server/NetworkPacketAPI.h"
+#include "GMLIB/Server/PlaceholderAPI.h"
 #include "GMLIB/Server/PlayerAPI.h"
 #include "GMLIB/Server/ScoreboardAPI.h"
 #include "GMLIB/Server/SpawnerAPI.h"
