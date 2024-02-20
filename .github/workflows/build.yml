@@ -15,7 +15,7 @@ jobs:
       - run: |
           xmake repo -u
     
-        run: |
+      - run: |
           xmake f -a x64 -m release -p windows -v -y
 
       - run: |
