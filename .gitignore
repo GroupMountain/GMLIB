@@ -16,3 +16,4 @@ build/
 /CMakeLists.txt
 /bin
 .cache/clangd/index
+*.cpp

@@ -23,12 +23,12 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.event.repository.name }}-windows-x64-${{ github.sha }}
+          name: ${{ github.event.repository.name }}-windows-x64
           path: |
-            bin/${{ github.event.repository.name }}
+            bin/DLL/
             
       - uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.event.repository.name }}-windows-x64-${{ github.sha }}.pdb
+          name: PBD
           path: |
-            bin/*.pdb
+            bin/PDB/
