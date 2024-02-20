@@ -26,4 +26,9 @@ jobs:
           name: ${{ github.event.repository.name }}-windows-x64-${{ github.sha }}
           path: |
             bin/${{ github.event.repository.name }}
+            
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.event.repository.name }}-windows-x64-${{ github.sha }}.pdb
+          path: |
             bin/*.pdb
