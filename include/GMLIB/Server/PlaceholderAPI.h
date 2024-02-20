@@ -1,6 +1,8 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
 
+namespace GMLIB::Server {
+
 class PlaceholderAPI {
 public:
     std::string mValue;
@@ -87,3 +89,5 @@ public:
 
     GMLIB_API inline std::string getPluginName() { return mPluginName; }
 };
+
+} // namespace GMLIB::Server
