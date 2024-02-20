@@ -7,15 +7,15 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - name: Init Repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - uses: xmake-io/github-action-setup-xmake@v1
       
-      - name: Fetch xmake-repo
       - run: |
           xmake repo -u
-
+    
+    steps:
       - name: Build GMLIB
         run: |
           xmake f -a x64 -m release -p windows -v -y
@@ -23,6 +23,7 @@ jobs:
       - run: |
           xmake -w -y
 
+      steps:
       - name: Upload Files
       - uses: actions/upload-artifact@v3
         with:
