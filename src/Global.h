@@ -60,5 +60,8 @@ inline T* Global = nullptr;
 extern void loadLib();
 extern void enableLib();
 extern void disableLib();
+extern void updatePlaceholder();
+extern void regServerPAPI();
+extern void regPlayerPAPI();
 
 } // namespace GMLIB

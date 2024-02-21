@@ -7,8 +7,6 @@ ll::Logger logger(LIB_NAME);
 
 namespace GMLIB {
 
-extern void updatePlaceholder();
-
 void printLogo() {
     std::cout << R"(                                                                        )" << std::endl;
     std::cout << R"(         ________  _____ ______   ___       ___  ________               )" << std::endl;
@@ -40,6 +38,8 @@ void loadLib() {
 void enableLib() {
     initExperiments(&ll::service::bedrock::getLevel()->getLevelData());
     CaculateTPS();
+    regServerPAPI();
+    regPlayerPAPI();
     updatePlaceholder();
 }
 
