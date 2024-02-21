@@ -68,7 +68,7 @@ jobs:
             GMLIB.zip
 
       - run: |
-          cd release/pdb
+          cd PDB
 
       - uses: softprops/action-gh-release@v1
         with:
