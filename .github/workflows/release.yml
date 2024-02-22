@@ -71,9 +71,4 @@ jobs:
         with:
           files: |
             release/GMLIB.zip
-
-      - name: Upload PDB file
-        uses: actions/upload-artifact@v2
-        with:
-          files: |
-            release/PDB/GMLIB.pdb
+            release/PDB/GMLIB.pdb  
