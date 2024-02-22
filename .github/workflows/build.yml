@@ -23,7 +23,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: GMLIB
+          name: GMLIB-windows-x64
           path: |
             bin/DLL/
             

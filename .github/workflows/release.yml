@@ -23,7 +23,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: GMLIB
+          name: GMLIB-windows-x64
           path: |
             bin/DLL/
             
@@ -46,7 +46,7 @@ jobs:
       - name: Download GMLIB artifact
         uses: actions/download-artifact@v3
         with:
-          name: GMLIB
+          name: GMLIB-windows-x64
           path: release/GMLIB/
 
       - name: Download PDB artifact
@@ -62,7 +62,7 @@ jobs:
       - name: Archive GMLIB directory
         run: |
           cd release/GMLIB
-          zip -r ../GMLIB.zip *
+          zip -r ../GMLIB-windows-x64.zip *
           cd ..
 
       - name: Create GitHub Release
@@ -70,5 +70,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            release/GMLIB.zip
+            release/GMLIB-windows-x64.zip
             release/PDB/GMLIB.pdb  
