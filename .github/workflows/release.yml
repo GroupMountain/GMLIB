@@ -70,10 +70,10 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            GMLIB.zip
+            release/GMLIB.zip
 
       - name: Upload PDB file
         uses: actions/upload-artifact@v2
         with:
-          name: PDB
-          path: release/PDB/
+          files: |
+            release/PDB/GMLIB.pdb
