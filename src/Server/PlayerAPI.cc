@@ -6,6 +6,9 @@
 #include <GMLIB/Server/PlayerAPI.h>
 #include <GMLIB/Server/ScoreboardAPI.h>
 #include <GMLIB/Server/SpawnerAPI.h>
+#include <mc/locale/I18n.h>
+#include <mc/locale/Localization.h>
+#include <mc/network/ConnectionRequest.h>
 #include <mc/network/MinecraftPackets.h>
 #include <mc/network/packet/AddActorPacket.h>
 #include <mc/network/packet/BossEventPacket.h>
@@ -462,4 +465,49 @@ FullPlayerInventoryWrapper GMLIB_Player::getFullPlayerInventoryWrapper() {
     );
 }
 
-GMLIB_API int GMLIB_Player::clearAllItems() { return getFullPlayerInventoryWrapper().clearAllItems(); }
+int GMLIB_Player::clearAllItems() { return getFullPlayerInventoryWrapper().clearAllItems(); }
+
+std::string_view GMLIB_Player::getIP() {
+    auto ipAndPort = getNetworkIdentifier().getIPAndPort();
+    auto pos       = ipAndPort.find(":");
+    return ipAndPort.substr(0, pos);
+}
+
+ushort GMLIB_Player::getPort() {
+    auto ipAndPort = getNetworkIdentifier().getIPAndPort();
+    auto pos       = ipAndPort.find(":");
+    auto strPort   = ipAndPort.substr(pos + 1);
+    return std::stoi(strPort);
+}
+
+int GMLIB_Player::getAvgPing() {
+    if (isSimulatedPlayer()) {
+        return -1;
+    }
+    return getNetworkStatus()->mAveragePing;
+}
+
+int GMLIB_Player::getLastPing() {
+    if (isSimulatedPlayer()) {
+        return -1;
+    }
+    return getNetworkStatus()->mCurrentPing;
+}
+
+std::string_view GMLIB_Player::getLanguageCode() {
+    if (isSimulatedPlayer()) {
+        return I18n::getCurrentLanguage()->getFullLanguageCode();
+    }
+    auto map = ll::service::getServerNetworkHandler()
+                   ->fetchConnectionRequest(getNetworkIdentifier())
+                   .mRawToken.get()
+                   ->mDataInfo.value_.map_;
+    for (auto& iter : *map) {
+        std::string s(iter.first.c_str());
+        if (s.find("LanguageCode") != std::string::npos) {
+            auto langCode = iter.second.value_.string_;
+            return langCode;
+        }
+    }
+    return "unknown";
+}
