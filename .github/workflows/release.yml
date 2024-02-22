@@ -40,38 +40,40 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v3
+      - name: Download GMLIB artifact
+        uses: actions/download-artifact@v3
         with:
           name: GMLIB
           path: release/GMLIB/
 
-      - uses: actions/download-artifact@v3
+      - name: Download PDB artifact
+        uses: actions/download-artifact@v3
         with:
           name: PDB
           path: release/PDB/
 
-      - run: |
+      - name: Copy additional files
+        run: |
           cp LICENSE README.md release/GMLIB/
 
-      - name: Archive release
+      - name: Archive GMLIB directory
         run: |
           cd release/GMLIB
           zip -r ../GMLIB.zip *
           cd ..
 
-      - uses: softprops/action-gh-release@v1
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
         with:
-          append_body: true
           files: |
             GMLIB.zip
 
-      - run: |
-          cd release/pdb
-
-      - uses: softprops/action-gh-release@v1
+      - name: Upload PDB file
+        uses: actions/upload-artifact@v2
         with:
-          append_body: true
-          files: |
-            GMLIB.pdb
+          name: PDB
+          path: release/PDB/
