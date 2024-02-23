@@ -3,7 +3,6 @@
 #include <GMLIB/Server/LevelAPI.h>
 #include <GMLIB/Server/PlaceholderAPI.h>
 #include <GMLIB/Server/PlayerAPI.h>
-#include <magic_enum.hpp>
 #include <mc/server/common/PropertiesSettings.h>
 #include <mc/world/attribute/Attribute.h>
 #include <mc/world/attribute/AttributeInstance.h>
