@@ -12,6 +12,7 @@
 #include <ll/api/service/Service.h>
 #include <ll/api/utils/HashUtils.h>
 #include <ll/api/utils/StringUtils.h>
+#include <magic_enum.hpp>
 #include <mc/certificates/Certificate.h>
 #include <mc/certificates/ExtendedCertificate.h>
 #include <mc/deps/core/mce/UUID.h>
@@ -38,6 +39,7 @@
 #include <mc/world/level/block/BlockLegacy.h>
 #include <mc/world/scores/Objective.h>
 #include <mc/world/scores/Scoreboard.h>
+#include <nlohmann/json.hpp>
 
 #define S(x) std::to_string(x)
 

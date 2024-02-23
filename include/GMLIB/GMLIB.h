@@ -12,12 +12,17 @@ namespace GMLIB::Version {
 GMLIB_API SemVersion getLibVersion();
 
 GMLIB_API bool isReleaseVersion();
+
 GMLIB_API bool isPreReleaseVersion();
 
 GMLIB_API std::string getLibVersionString();
+
 GMLIB_API std::string getPreReleaseInfo();
 
 GMLIB_API bool checkLibVersionMatch(SemVersion minVersion);
-GMLIB_API bool checkLibVersionMatch(SemVersion minVersion, SemVersion maxVersion);
+
+GMLIB_API int getProtocolVersion();
+
+GMLIB_API std::string getBdsVersion();
 
 } // namespace GMLIB::Version

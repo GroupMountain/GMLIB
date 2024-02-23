@@ -77,6 +77,16 @@ public:
 
     GMLIB_API std::optional<int> getScore(std::string objective);
 
+    GMLIB_API std::string_view getIP();
+
+    GMLIB_API ushort getPort();
+
+    GMLIB_API int getAvgPing();
+
+    GMLIB_API int getLastPing();
+
+    GMLIB_API std::string_view getLanguageCode();
+
     GMLIB_API std::optional<int>
               setScore(std::string objective, int value, PlayerScoreSetFunction action = PlayerScoreSetFunction::Set);
 

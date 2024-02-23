@@ -10,60 +10,53 @@ std::unordered_map<std::string, PlaceholderAPI> mGlobalPAPI;
 std::unordered_map<std::string, PlaceholderAPI> mUpdatePlaceholders;
 
 PlaceholderAPI::PlaceholderAPI(
-    std::string                                                                             Name,
-    int                                                                                     UpdateInterval,
-    bool                                                                                    AutoUpdate,
-    bool                                                                                    ProcessPlayer,
-    bool                                                                                    ProcessParameters,
-    std::string                                                                             PluginName,
+    std::string                                                                             placeholder,
+    int                                                                                     updateInterval,
+    bool                                                                                    autoUpdate,
+    bool                                                                                    processPlayer,
+    bool                                                                                    processParameters,
+    std::string                                                                             pluginName,
     std::function<std::string(class Player*)>                                               callback,
-    std::function<std::string(class Player*, std::unordered_map<std::string, std::string>)> CallbackWithParameters
-) {
-    mName                   = "%" + Name + "%";
-    mUpdateInterval         = UpdateInterval;
-    mAutoUpdate             = AutoUpdate;
-    mProcessParameters      = ProcessParameters;
-    mProcessPlayer          = ProcessPlayer;
-    mCallback               = callback;
-    mCallbackWithParameters = CallbackWithParameters;
-    if (PluginName.empty()) {
-        mPluginName = "UNKNOWN";
-    } else {
-        mPluginName = PluginName;
-    }
+    std::function<std::string(class Player*, std::unordered_map<std::string, std::string>)> callbackWithParameters
+)
+: mUpdateInterval(updateInterval),
+  mAutoUpdate(autoUpdate),
+  mProcessPlayer(processPlayer),
+  mProcessParameters(processParameters),
+  mCallback(callback),
+  mCallbackWithParameters(callbackWithParameters) {
+    mPlaceholder = "%" + placeholder + "%";
+    mPluginName  = pluginName.empty() ? "unknown" : pluginName;
 }
 
-void PlaceholderAPI::Update(PlaceholderAPI a1) {
+void PlaceholderAPI::update(PlaceholderAPI papi) {
     ll::schedule::GameTickScheduler Scheduler;
     using namespace ll::chrono_literals;
-
-    Scheduler.add<ll::schedule::DelayTask>(ll::chrono::ticks{a1.mUpdateInterval}, [a1] {
-        if (mGlobalPAPI.find(a1.mName) != mGlobalPAPI.end()) {
-            if (!a1.mProcessParameters) {
-                mGlobalPAPI.at(a1.mName).mValue = a1.mCallback(NULL);
+    Scheduler.add<ll::schedule::DelayTask>(ll::chrono::ticks{papi.mUpdateInterval}, [papi] {
+        if (mGlobalPAPI.count(papi.mPlaceholder)) {
+            if (!papi.mProcessParameters) {
+                mGlobalPAPI[papi.mPlaceholder].mValue = papi.mCallback(NULL);
             }
         }
     });
 }
 
-void PlaceholderAPI::registerPlaceholder(PlaceholderAPI a1) {
-    for (auto& i : mGlobalPAPI) {
-        if (i.second.mName == a1.mName) {
-            // logger.warn("Placeholder {} tried to register which is already used", i.second.mName);
-            return;
-        }
+bool PlaceholderAPI::registerPlaceholder(PlaceholderAPI placeholderapi) {
+    if (mGlobalPAPI.count(placeholderapi.getName())) {
+        return false;
     }
-    mGlobalPAPI.emplace(std::pair{a1.mName, a1});
-    if (a1.mUpdateInterval > 0 && a1.mAutoUpdate) {
-        mUpdatePlaceholders.emplace(std::pair{a1.mName, a1});
+    mGlobalPAPI[placeholderapi.getName()] = placeholderapi;
+    if (placeholderapi.mUpdateInterval > 0 && placeholderapi.mAutoUpdate) {
+        mUpdatePlaceholders[placeholderapi.getName()] = placeholderapi;
     }
+    return true;
 }
 
 ////---------------------------------------Static------------------------------------------
 
-void PlaceholderAPI::registerStaticPlaceholder(std::string name, std::string value, std::string PluginName) {
-    PlaceholderAPI a1(
-        name,
+bool PlaceholderAPI::registerStaticPlaceholder(std::string placeholder, std::string value, std::string PluginName) {
+    PlaceholderAPI placeholderapi(
+        placeholder,
         -1,
         false,
         false,
@@ -72,15 +65,15 @@ void PlaceholderAPI::registerStaticPlaceholder(std::string name, std::string val
         [value](Player* sp) { return value; },
         nullptr
     );
-    registerPlaceholder(a1);
+    return registerPlaceholder(placeholderapi);
 }
 
-void PlaceholderAPI::registerStaticPlaceholder(
+bool PlaceholderAPI::registerStaticPlaceholder(
     std::string                  name,
     std::function<std::string()> callback,
     std::string                  PluginName
 ) {
-    PlaceholderAPI a1(
+    PlaceholderAPI placeholderapi(
         name,
         -1,
         false,
@@ -90,11 +83,11 @@ void PlaceholderAPI::registerStaticPlaceholder(
         [callback](Player* sp) { return callback(); },
         nullptr
     );
-    registerPlaceholder(a1);
+    return registerPlaceholder(placeholderapi);
 }
-void PlaceholderAPI::registerStaticPlaceholder(std::string name, std::string (*Func)(), std::string PluginName) {
-    PlaceholderAPI a1(
-        name,
+bool PlaceholderAPI::registerStaticPlaceholder(std::string placeholder, std::string (*Func)(), std::string PluginName) {
+    PlaceholderAPI placeholderapi(
+        placeholder,
         -1,
         false,
         false,
@@ -103,17 +96,17 @@ void PlaceholderAPI::registerStaticPlaceholder(std::string name, std::string (*F
         [Func](Player* sp) { return Func(); },
         nullptr
     );
-    registerPlaceholder(a1);
+    return registerPlaceholder(placeholderapi);
 }
 
-void PlaceholderAPI::registerStaticPlaceholder(
-    std::string name,
+bool PlaceholderAPI::registerStaticPlaceholder(
+    std::string placeholder,
     int         UpdateInterval,
     std::string (*Func)(),
     std::string PluginName
 ) {
-    PlaceholderAPI a1(
-        name,
+    PlaceholderAPI placeholderapi(
+        placeholder,
         UpdateInterval,
         true,
         false,
@@ -122,16 +115,16 @@ void PlaceholderAPI::registerStaticPlaceholder(
         [Func](Player* sp) { return Func(); },
         nullptr
     );
-    registerPlaceholder(a1);
+    return registerPlaceholder(placeholderapi);
 }
 
-void PlaceholderAPI::registerStaticPlaceholder(
+bool PlaceholderAPI::registerStaticPlaceholder(
     std::string                  name,
     int                          UpdateInterval,
     std::function<std::string()> callback,
     std::string                  PluginName
 ) {
-    PlaceholderAPI a1(
+    PlaceholderAPI placeholderapi(
         name,
         UpdateInterval,
         true,
@@ -141,17 +134,17 @@ void PlaceholderAPI::registerStaticPlaceholder(
         [callback](Player* sp) { return callback(); },
         nullptr
     );
-    registerPlaceholder(a1);
+    return registerPlaceholder(placeholderapi);
 }
 
 
 //---------------------------------------Server------------------------------------------
-void PlaceholderAPI::registerServerPlaceholder(
+bool PlaceholderAPI::registerServerPlaceholder(
     std::string                  name,
     std::function<std::string()> callback,
     std::string                  PluginName
 ) {
-    PlaceholderAPI a1(
+    PlaceholderAPI placeholderapi(
         name,
         -1,
         false,
@@ -161,15 +154,15 @@ void PlaceholderAPI::registerServerPlaceholder(
         [callback](Player* sp) { return callback(); },
         nullptr
     );
-    registerPlaceholder(a1);
+    return registerPlaceholder(placeholderapi);
 }
 
-void PlaceholderAPI::registerServerPlaceholder(
+bool PlaceholderAPI::registerServerPlaceholder(
     std::string                                                              name,
     std::function<std::string(std::unordered_map<std::string, std::string>)> callback,
     std::string                                                              PluginName
 ) {
-    PlaceholderAPI a1(
+    PlaceholderAPI placeholderapi(
         name,
         -1,
         false,
@@ -179,39 +172,39 @@ void PlaceholderAPI::registerServerPlaceholder(
         nullptr,
         [callback](Player* sp, std::unordered_map<std::string, std::string> map) { return callback(map); }
     );
-    registerPlaceholder(a1);
+    return registerPlaceholder(placeholderapi);
 }
 
 
 //---------------------------------------Player------------------------------------------
-void PlaceholderAPI::registerPlayerPlaceholder(
+bool PlaceholderAPI::registerPlayerPlaceholder(
     std::string                               name,
     std::function<std::string(class Player*)> callback,
     std::string                               PluginName
 ) {
-    PlaceholderAPI a1(name, -1, false, true, false, PluginName, callback, nullptr);
-    registerPlaceholder(a1);
+    PlaceholderAPI placeholderapi(name, -1, false, true, false, PluginName, callback, nullptr);
+    return registerPlaceholder(placeholderapi);
 }
 
-void PlaceholderAPI::registerPlayerPlaceholder(
+bool PlaceholderAPI::registerPlayerPlaceholder(
     std::string                                                                             name,
     std::function<std::string(class Player*, std::unordered_map<std::string, std::string>)> callback,
     std::string                                                                             PluginName
 ) {
-    PlaceholderAPI a1(name, -1, false, true, true, PluginName, nullptr, callback);
-    registerPlaceholder(a1);
+    PlaceholderAPI placeholderapi(name, -1, false, true, true, PluginName, nullptr, callback);
+    return registerPlaceholder(placeholderapi);
 }
 
-bool PlaceholderAPI::unRegisterPlaceholder(std::string name) {
-    std::string a1       = Helper::checkPAPIName(name);
-    bool        isremove = false;
-    a1                   = Helper::checkPAPIName(a1);
-    if (mGlobalPAPI.find(a1) != mGlobalPAPI.end()) {
-        mGlobalPAPI.erase(a1);
+bool PlaceholderAPI::unRegisterPlaceholder(std::string placeholder) {
+    std::string placeholderapi = Helper::checkPAPIName(placeholder);
+    bool        isremove       = false;
+    placeholderapi             = Helper::checkPAPIName(placeholderapi);
+    if (mGlobalPAPI.count(placeholderapi)) {
+        mGlobalPAPI.erase(placeholderapi);
         return true;
     } else {
         for (auto& i : mGlobalPAPI) {
-            if (i.second.getPluginName() == name) {
+            if (i.second.getPluginName() == placeholder) {
                 mGlobalPAPI.erase(Helper::checkPAPIName(i.first));
                 isremove = true;
             }
@@ -221,13 +214,13 @@ bool PlaceholderAPI::unRegisterPlaceholder(std::string name) {
     return false;
 }
 
-std::string PlaceholderAPI::getValue(std::string a1, Player* sp) {
-    a1 = Helper::checkPAPIName(a1);
-    if (mGlobalPAPI.find(a1) != mGlobalPAPI.end()) {
-        auto& papi = mGlobalPAPI.at(a1);
+std::string PlaceholderAPI::getValue(std::string placeholderapi, Player* sp) {
+    placeholderapi = Helper::checkPAPIName(placeholderapi);
+    if (mGlobalPAPI.count(placeholderapi)) {
+        auto& papi = mGlobalPAPI[placeholderapi];
         if (!papi.mProcessParameters) {
             if (papi.mProcessPlayer) {
-                return mGlobalPAPI.at(a1).mCallback(sp);
+                return mGlobalPAPI[placeholderapi].mCallback(sp);
             } else {
                 if (papi.mAutoUpdate) {
                     return papi.mValue;
@@ -239,20 +232,20 @@ std::string PlaceholderAPI::getValue(std::string a1, Player* sp) {
     } else {
         for (auto& i : mGlobalPAPI) {
             if (i.second.mProcessParameters) {
-                auto [out, map] = Helper::FindPlaceholder(i.first, a1);
+                auto [out, map] = Helper::FindPlaceholder(i.first, placeholderapi);
                 if (out) {
                     return i.second.mCallbackWithParameters(sp, map);
                 }
             }
         }
     }
-    return a1;
+    return placeholderapi;
 }
 
-std::string PlaceholderAPI::getValue(std::string a1) {
-    a1 = Helper::checkPAPIName(a1);
-    if (mGlobalPAPI.find(a1) != mGlobalPAPI.end()) {
-        auto& papi = mGlobalPAPI.at(a1);
+std::string PlaceholderAPI::getValue(std::string placeholderapi) {
+    placeholderapi = Helper::checkPAPIName(placeholderapi);
+    if (mGlobalPAPI.count(placeholderapi)) {
+        auto& papi = mGlobalPAPI[placeholderapi];
         if (!papi.mProcessParameters) {
             if (!papi.mProcessPlayer) {
                 if (papi.mAutoUpdate) {
@@ -260,28 +253,38 @@ std::string PlaceholderAPI::getValue(std::string a1) {
                 } else {
                     return papi.mCallback(nullptr);
                 }
-            } else return "Unknown Player";
+            } else {
+                return "Unknown Player";
+            }
         }
     } else {
         for (auto& i : mGlobalPAPI) {
             if (i.second.mProcessParameters) {
-                auto [out, map] = Helper::FindPlaceholder(i.first, a1);
+                auto [out, map] = Helper::FindPlaceholder(i.first, placeholderapi);
                 if (out) {
                     return i.second.mCallbackWithParameters(nullptr, map);
                 }
             }
         }
     }
-    return a1;
+    return placeholderapi;
 }
 
-void PlaceholderAPI::translateString(std::string& a0, Player* sp) {
-    auto list = Helper::getPercentage(a0);
+void PlaceholderAPI::translate(std::string& value, Player* sp) {
+    auto list = Helper::getPercentage(value);
     for (auto& i : list) {
-        ll::string_utils::replaceAll(a0, i, getValue(i, sp));
+        ll::string_utils::replaceAll(value, i, getValue(i, sp));
     }
 }
 
+std::string PlaceholderAPI::translate(std::string_view value, Player* sp) {
+    auto key  = std::string(value);
+    auto list = Helper::getPercentage(key);
+    for (auto& i : list) {
+        ll::string_utils::replaceAll(key, i, getValue(i, sp));
+    }
+    return key;
+}
 
 std::unordered_set<std::string> PlaceholderAPI::getPAPIPluginsList() {
     std::unordered_set<std::string> list;
@@ -299,117 +302,31 @@ std::vector<PlaceholderAPI> PlaceholderAPI::getPAPIInfoList() {
     return list;
 }
 
+std::vector<std::string> PlaceholderAPI::getAllPAPI() {
+    std::vector<std::string> list;
+    for (auto& i : mGlobalPAPI) {
+        list.push_back(i.second.getName());
+    }
+    return list;
+}
+
+std::string PlaceholderAPI::getName() { return mPlaceholder; }
+
+std::string PlaceholderAPI::getValue() { return mValue; }
+
+std::string PlaceholderAPI::getPluginName() { return mPluginName; }
+
 } // namespace Server
 
 void updatePlaceholder() {
     ll::schedule::GameTickScheduler Scheduler;
     using namespace ll::chrono_literals;
-
     Scheduler.add<ll::schedule::DelayTask>(20_tick, [] {
         for (auto& i : Server::mUpdatePlaceholders) {
-            Server::PlaceholderAPI::Update(i.second);
+            Server::PlaceholderAPI::update(i.second);
         }
         Server::mUpdatePlaceholders.clear();
     });
 }
 
 } // namespace GMLIB
-  //---------------------------------------RemoteCall------------------------------------------
-  /*
-  namespace RemoteCall {
-  std::std::string GetValue(std::std::string const& from)
-  {
-  
-      return	PlaceholderAPI::getValue(from);
-  }
-  std::std::string GetValueWithPlayer(std::std::string const& a1, std::std::string const& a2)
-  {
-      return	PlaceholderAPI::getValue(a1, ll::service::bedrock::getLevel()->getPlayer(a2));
-  }
-  
-  std::std::string registerPlayerPlaceholder(std::std::string const& PluginName, std::std::string const& FuncName,
-  std::std::string const&   PAPIName)
-  {
-      if (RemoteCall::hasFunc(PluginName, FuncName)) {
-          if (Helper::isParameters(PAPIName)) {
-              auto Call = RemoteCall::importAs<std::string(std::std::string const& arg, std::unordered_map<std::string,
-  std::string>)>(PluginName, FuncName); PlaceholderAPI::registerPlayerPlaceholder(PAPIName, [Call](Player* sp,
-  std::unordered_map<std::string, std::string> map) { return Call(sp->getXuid(), map);
-                  }, PluginName);
-          }
-          else {
-              auto Call = RemoteCall::importAs<std::string(std::std::string const& arg)>(PluginName, FuncName);
-              PlaceholderAPI::registerPlayerPlaceholder(PAPIName, [Call](Player* sp) {
-                      return Call(sp->getXuid());
-                  }, PluginName);
-          }
-      }
-      else {
-          //logger.error("Function no find({}:{})", PluginName, FuncName);
-          return "Function no find";
-      }
-      return "Register Success";
-  }
-  
-  std::std::string registerServerPlaceholder(std::std::string const& PluginName, std::std::string const& FuncName,
-  std::std::string const&   PAPIName)
-  {
-      if (RemoteCall::hasFunc(PluginName, FuncName)) {
-          if (Helper::isParameters(PAPIName)) {
-              auto Call = RemoteCall::importAs<std::string(std::unordered_map<std::string, std::string>)>(PluginName,
-  FuncName);   PlaceholderAPI::registerServerPlaceholder(PAPIName, [Call](std::unordered_map<std::string, std::string>
-  map)   {   return Call(map);
-                  }, PluginName);
-          }
-          else {
-              auto Call = RemoteCall::importAs<std::string()>(PluginName, FuncName);
-              PlaceholderAPI::registerServerPlaceholder(PAPIName, [Call]() {
-                      return Call();
-                  }, PluginName);
-          }
-      }
-      else {
-          //logger.error("Function no find({}:{})", PluginName, FuncName);
-          return "Function no find";
-      }
-      return "Register Success";
-  }
-  
-  std::std::string registerStaticPlaceholder(std::std::string const& PluginName, std::std::string const& FuncName,
-  std::std::string const&   PAPIName,int num)
-  {
-      if (RemoteCall::hasFunc(PluginName, FuncName)) {
-          if (Helper::isParameters(PAPIName)) {
-              auto Call = RemoteCall::importAs<std::string()>(PluginName, FuncName);
-              if (num == -1) {
-                  PlaceholderAPI::registerStaticPlaceholder(PAPIName, [Call] {
-                          return Call();
-                      }, PluginName);
-              }
-              else {
-                  PlaceholderAPI::registerStaticPlaceholder(PAPIName, num, [Call] {
-                          return Call();
-                      }, PluginName);
-              }
-          }
-      }
-      else{
-          //logger.error("Function no find({}:{})", PluginName, FuncName);
-          return "Function no find";
-      }
-      return "Register Success";
-  }
-  
-  std::std::string translatestd::String(std::std::string const& str, std::std::string const& xuid)
-  {
-      std::string _str = str;
-      PlaceholderAPI::translatestd::String(_str,ll::service::bedrock::getLevel()->getPlayerByXuid(xuid));
-      return _str;
-  }
-  
-  bool unRegisterPlaceholder(std::std::string const& str)
-  {
-      return PlaceholderAPI::unRegisterPlaceholder(str);
-  }
-  }
-  */

@@ -15,7 +15,6 @@ typedef std::chrono::high_resolution_clock timer_clock;
     auto      elapsed    = timer_clock::now() - start;                                                                 \
     long long timeReslut = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
 
-
 class ChunkPos2 {
     int x, z;
 
@@ -129,23 +128,14 @@ inline std::vector<std::string> getPAPIInfoList() {
 
     auto list = PlaceholderAPI::getPAPIInfoList();
     for (auto& i : list) {
-        v.push_back(removeAllBrackets(i.mName));
+        v.push_back(removeAllBrackets(i.getName()));
     }
     return v;
 }
 
-
 inline std::string checkPAPIName(std::string x) {
     if (x.find('%') != x.npos && x.find('%') != x.npos) return x;
     else return '%' + x + '%';
-}
-
-inline std::string ReplaceStr(std::string str, const std::string& old_value, const std::string& new_value) {
-    for (std::string::size_type pos(0); pos != std::string::npos; pos += new_value.length()) {
-        if ((pos = str.find(old_value, pos)) != std::string::npos) str.replace(pos, old_value.length(), new_value);
-        else break;
-    }
-    return str;
 }
 
 inline std::vector<std::string> split(std::string str, std::string pattern) {
@@ -188,8 +178,8 @@ inline std::vector<std::string> getPercentage(std::string str) {
 }
 
 inline void Backets2Percentage(std::string& str) {
-    ReplaceStr(str, "{", "%");
-    ReplaceStr(str, "}", "%");
+    ll::utils::string_utils::replaceAll(str, "{", "%");
+    ll::utils::string_utils::replaceAll(str, "}", "%");
 }
 
 inline bool isSame(std::vector<std::string> a1, std::vector<std::string> a2, int a3) {

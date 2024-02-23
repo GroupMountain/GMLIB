@@ -53,7 +53,7 @@ createAddFloatingTextPacket(FloatingText* ft, Player* pl) {
     auto nisd = NetworkItemStackDescriptor(*item);
     auto text = ft->getText();
     if (ft->shouldUsePapi()) {
-        PlaceholderAPI::translateString(text, pl);
+        PlaceholderAPI::translate(text, pl);
     }
     GMLIB_BinaryStream bs;
     bs.writeVarInt64(ft->getRuntimeID());
