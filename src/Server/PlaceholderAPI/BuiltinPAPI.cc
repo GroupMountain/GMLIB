@@ -21,6 +21,8 @@ void regPlayerPAPI() {
 
     PlaceholderAPI::registerPlayerPlaceholder("player_realname", [](Player* sp) { return sp->getRealName(); });
 
+    PlaceholderAPI::registerPlayerPlaceholder("player_name", [](Player* sp) { return sp->getName(); });
+
     PlaceholderAPI::registerPlayerPlaceholder("player_uuid", [](Player* sp) { return sp->getUuid().asString(); });
 
     PlaceholderAPI::registerPlayerPlaceholder("player_ping", [](Player* sp) {
@@ -41,6 +43,10 @@ void regPlayerPAPI() {
     PlaceholderAPI::registerPlayerPlaceholder("player_y", [](Player* sp) { return S(sp->getPosition().y); });
 
     PlaceholderAPI::registerPlayerPlaceholder("player_z", [](Player* sp) { return S(sp->getPosition().z); });
+
+    PlaceholderAPI::registerPlayerPlaceholder("player_pos", [](Player* sp) { return sp->getPosition().toString(); });
+
+    PlaceholderAPI::registerPlayerPlaceholder("player_dimid", [](Player* sp) { return S(sp->getDimensionId()); });
 
     PlaceholderAPI::registerPlayerPlaceholder("player_direction", [](Player* sp) { return S(sp->getDirection()); });
 
@@ -64,8 +70,7 @@ void regPlayerPAPI() {
     PlaceholderAPI::registerPlayerPlaceholder("player_is_op", [](Player* sp) { return S(sp->isOperator()); });
 
     PlaceholderAPI::registerPlayerPlaceholder("player_item_in_hand", [](Player* sp) {
-        auto        item = sp->getCarriedItem();
-        std::string str;
+        auto item = sp->getCarriedItem();
         return item.getName();
     });
 
@@ -88,6 +93,10 @@ void regPlayerPAPI() {
     PlaceholderAPI::registerPlayerPlaceholder("player_bed_y", [](Player* sp) { return S(sp->getSpawnPosition().y); });
 
     PlaceholderAPI::registerPlayerPlaceholder("player_bed_z", [](Player* sp) { return S(sp->getSpawnPosition().z); });
+
+    PlaceholderAPI::registerPlayerPlaceholder("player_bed_pos", [](Player* sp) {
+        return sp->getSpawnPosition().toString();
+    });
 
     PlaceholderAPI::registerPlayerPlaceholder("player_hunger", [](Player* sp) {
         return S((int)sp->getAttribute(Player::HUNGER).getCurrentValue());
@@ -174,7 +183,6 @@ void regServerPAPI() {
             if (map.find("<format>") != map.end()) {
                 if ("<format>" != map["<format>"]) return Helper::getTime(map["<format>"], startTime);
             }
-
             return Helper::getTime("H:M:S", startTime);
         }
     );

@@ -129,7 +129,7 @@ inline std::vector<std::string> getPAPIInfoList() {
 
     auto list = PlaceholderAPI::getPAPIInfoList();
     for (auto& i : list) {
-        v.push_back(removeAllBrackets(i.mName));
+        v.push_back(removeAllBrackets(i.getName()));
     }
     return v;
 }
