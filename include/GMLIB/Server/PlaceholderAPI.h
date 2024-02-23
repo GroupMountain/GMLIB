@@ -1,5 +1,6 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
+#include "mc/world/actor/player/Player.h"
 
 namespace GMLIB::Server {
 
@@ -102,11 +103,11 @@ public:
     GMLIB_API static std::vector<std::string> getAllPAPI();
 
 public:
-    GMLIB_API inline std::string getName() { return mPlaceholder; }
+    GMLIB_API std::string getName();
 
-    GMLIB_API inline std::string getValue() { return mValue; }
+    GMLIB_API std::string getValue();
 
-    GMLIB_API inline std::string getPluginName() { return mPluginName; }
+    GMLIB_API std::string getPluginName();
 
 private:
     static bool registerPlaceholder(PlaceholderAPI papi);

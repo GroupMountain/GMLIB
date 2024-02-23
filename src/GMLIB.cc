@@ -1,6 +1,9 @@
+#include "Entry.h"
 #include "Global.h"
 #include "Version.h"
 #include <GMLIB/GMLIB.h>
+#include <mc/common/Common.h>
+#include <mc/common/SharedConstants.h>
 #include <mc/deps/core/sem_ver/SemVersion.h>
 
 ll::Logger logger(LIB_NAME);
@@ -30,24 +33,33 @@ void printLibInfo() {
 }
 
 void loadLib() {
+    if (Version::getProtocolVersion() != TARGET_PROTOCOL_VERSION) {
+        logger.warn("GMLIB is running on an unsupported BDS protocol version! ");
+        logger.warn(
+            "Target protocol version {}, current protocol version {}.",
+            TARGET_PROTOCOL_VERSION,
+            Version::getProtocolVersion()
+        );
+        logger.warn("This may result in crash! Please switch to the version matching the BDS version!");
+    }
     printLogo();
     printLibInfo();
     GMLIB::Server::UserCache::initUserCache();
+    updatePlaceholder();
+    regServerPAPI();
+    regPlayerPAPI();
 }
 
 void enableLib() {
     initExperiments(&ll::service::bedrock::getLevel()->getLevelData());
     CaculateTPS();
-    regServerPAPI();
-    regPlayerPAPI();
-    updatePlaceholder();
 }
 
 void disableLib() {}
 
 namespace Version {
 
-GMLIB_API SemVersion getLibVersion() {
+SemVersion getLibVersion() {
     return SemVersion(
         LIB_VERSION_MAJOR,
         LIB_VERSION_MINOR,
@@ -57,56 +69,22 @@ GMLIB_API SemVersion getLibVersion() {
     );
 }
 
-GMLIB_API std::string getLibVersionString() { return getLibVersion().asString(); }
+std::string getLibVersionString() { return getLibVersion().asString(); }
 
-GMLIB_API bool isReleaseVersion() { return getLibVersion().getPreRelease().empty(); }
+bool isReleaseVersion() { return getLibVersion().getPreRelease().empty(); }
 
-GMLIB_API bool isPreReleaseVersion() { return !getLibVersion().getPreRelease().empty(); }
+bool isPreReleaseVersion() { return !getLibVersion().getPreRelease().empty(); }
 
-GMLIB_API std::string getPreReleaseInfo() { return getLibVersion().getPreRelease(); }
+std::string getPreReleaseInfo() { return getLibVersion().getPreRelease(); }
 
-GMLIB_API bool checkLibVersionMatch(SemVersion minVersion) {
+bool checkLibVersionMatch(SemVersion minVersion) {
     auto currentVer = getLibVersion();
-    if (currentVer.mMajor >= minVersion.mMajor) {
-        if (currentVer.mMajor == minVersion.mMajor) {
-            if (currentVer.mMinor >= minVersion.mMinor) {
-                if (currentVer.mMinor == minVersion.mMinor) {
-                    if (currentVer.mPatch >= minVersion.mPatch) {
-                        return true;
-                    }
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-        return true;
-    }
-    return false;
+    return currentVer.satisfies(minVersion);
 }
 
-GMLIB_API bool checkLibVersionMatch(SemVersion minVersion, SemVersion maxVersion) {
-    auto currentVer = getLibVersion();
-    if (checkLibVersionMatch(minVersion)) {
-        if (currentVer.mMajor <= minVersion.mMajor) {
-            if (currentVer.mMajor == minVersion.mMajor) {
-                if (currentVer.mMinor <= minVersion.mMinor) {
-                    if (currentVer.mMinor == minVersion.mMinor) {
-                        if (currentVer.mPatch <= minVersion.mPatch) {
-                            return true;
-                        }
-                        return false;
-                    }
-                    return true;
-                }
-                return false;
-            }
-            return true;
-        }
-        return false;
-    }
-    return false;
-}
+int getProtocolVersion() { return SharedConstants::NetworkProtocolVersion; }
+
+std::string getBdsVersion() { return Common::getGameVersionString(); }
 
 } // namespace Version
 

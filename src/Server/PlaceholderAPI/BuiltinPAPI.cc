@@ -4,8 +4,6 @@
 #include <GMLIB/Server/PlaceholderAPI.h>
 #include <GMLIB/Server/PlayerAPI.h>
 #include <magic_enum.hpp>
-#include <mc/common/Common.h>
-#include <mc/common/SharedConstants.h>
 #include <mc/server/common/PropertiesSettings.h>
 #include <mc/world/attribute/Attribute.h>
 #include <mc/world/attribute/AttributeInstance.h>
@@ -35,7 +33,8 @@ void regPlayerPAPI() {
     PlaceholderAPI::registerPlayerPlaceholder("player_max_health", [](Player* sp) { return S(sp->getMaxHealth()); });
 
     PlaceholderAPI::registerPlayerPlaceholder("player_gamemode", [](Player* sp) {
-        return S((int)sp->getPlayerGameType());
+        auto type = magic_enum::enum_name(sp->getPlayerGameType());
+        return std::string(type);
     });
 
     PlaceholderAPI::registerPlayerPlaceholder("player_x", [](Player* sp) { return S(sp->getPosition().x); });
@@ -138,10 +137,10 @@ void regServerPAPI() {
         return S(*((int*)ll::service::getServerNetworkHandler().as_ptr() + 192));
     });
 
-    PlaceholderAPI::registerServerPlaceholder("server_version", []() { return Common::getGameVersionString(); });
+    PlaceholderAPI::registerServerPlaceholder("server_version", []() { return GMLIB::Version::getBdsVersion(); });
 
     PlaceholderAPI::registerServerPlaceholder("server_protocol_version", []() {
-        return S(SharedConstants::NetworkProtocolVersion);
+        return S(GMLIB::Version::getProtocolVersion());
     });
 
     PlaceholderAPI::registerServerPlaceholder("server_total_entities", []() {
@@ -152,7 +151,8 @@ void regServerPAPI() {
         return ll::service::getLevel()->getLevelData().getLevelName();
     });
     PlaceholderAPI::registerServerPlaceholder("server_difficulty", []() {
-        return S((int)ll::service::getPropertiesSettings()->getDifficulty());
+        auto res = magic_enum::enum_name(ll::service::getPropertiesSettings()->getDifficulty());
+        return std::string(res);
     });
     PlaceholderAPI::registerServerPlaceholder("server_on_allowlist", []() {
         return S(ll::service::getPropertiesSettings()->useAllowList());
@@ -172,7 +172,6 @@ void regServerPAPI() {
             if (map.find("<format>") != map.end()) {
                 if ("<format>" != map["<format>"]) return Helper::getTime(map["<format>"], startTime);
             }
-
             return Helper::getTime("H:M:S", startTime);
         }
     );

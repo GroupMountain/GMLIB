@@ -310,6 +310,12 @@ std::vector<std::string> PlaceholderAPI::getAllPAPI() {
     return list;
 }
 
+std::string PlaceholderAPI::getName() { return mPlaceholder; }
+
+std::string PlaceholderAPI::getValue() { return mValue; }
+
+std::string PlaceholderAPI::getPluginName() { return mPluginName; }
+
 } // namespace Server
 
 void updatePlaceholder() {
