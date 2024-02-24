@@ -8,8 +8,10 @@ namespace {
 std::unique_ptr<std::reference_wrapper<ll::plugin::NativePlugin>> selfPluginInstance;
 
 auto disable(ll::plugin::NativePlugin& self) -> bool {
-    // Todo
-    return true;
+    logger.error("Do NOT use \"ll disable\" or \"ll unload\" to disable or unload GMLIB!");
+    logger.error("Disabling or unloading GMLIB may cause problems with other plugins, or even result in crash!");
+    logger.error("If you no longer need this library, please close your server and uninstall it!");
+    return false;
 }
 
 auto enable(ll::plugin::NativePlugin& self) -> bool {
@@ -24,9 +26,10 @@ auto load(ll::plugin::NativePlugin& self) -> bool {
 }
 
 auto unload(ll::plugin::NativePlugin& self) -> bool {
-    // Todo
-    selfPluginInstance.reset();
-    return true;
+    logger.error("Do NOT use \"ll disable\" or \"ll unload\" to disable or unload GMLIB!");
+    logger.error("Disabling or unloading GMLIB may cause problems with other plugins, or even result in crash!");
+    logger.error("If you no longer need this library, please close your server and uninstall it!");
+    return false;
 }
 
 } // namespace
