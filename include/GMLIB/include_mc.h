@@ -601,6 +601,7 @@
 #include "mc/deps/core/data/InternalHelpers.h"
 #include "mc/deps/core/data/InterpolationPair.h"
 #include "mc/deps/core/data/LocklessQueue.h"
+#include "mc/deps/core/data/MovePriorityQueue.h"
 #include "mc/deps/core/data/MPMCQueue.h"
 #include "mc/deps/core/data/OperationNode.h"
 #include "mc/deps/core/data/ProcessGlobals.h"

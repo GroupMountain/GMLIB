@@ -73,6 +73,7 @@
 #include "ll/api/event/world/WorldEvent.h"
 #include "ll/api/form/CustomForm.h"
 #include "ll/api/form/FormBase.h"
+#include "ll/api/form/FormIdManager.h"
 #include "ll/api/form/ModalForm.h"
 #include "ll/api/form/SimpleForm.h"
 #include "ll/api/i18n/I18n.h"

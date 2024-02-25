@@ -1,33 +1,33 @@
 #include "Global.h"
-#include <GMLIB/Event/Player/PlayerLoginEvent.h>
+#include <GMLIB/Event/Packet/ClientLoginEvent.h>
 #include <mc/network/packet/LoginPacket.h>
 
 namespace GMLIB::Event::PlayerEvent {
 
-ServerNetworkHandler const& PlayerLoginBeforeEvent::getServerNetworkHandler() const { return mServerNetworkHandler; }
-NetworkIdentifier const&    PlayerLoginBeforeEvent::getNetworkIdentifier() const { return mNetworkIdentifier; }
+ServerNetworkHandler const& ClientLoginBeforeEvent::getServerNetworkHandler() const { return mServerNetworkHandler; }
+NetworkIdentifier const&    ClientLoginBeforeEvent::getNetworkIdentifier() const { return mNetworkIdentifier; }
 
-ServerNetworkHandler const& PlayerLoginAfterEvent::getServerNetworkHandler() const { return mServerNetworkHandler; }
-NetworkIdentifier const&    PlayerLoginAfterEvent::getNetworkIdentifier() const { return mNetworkIdentifier; }
-mce::UUID const             PlayerLoginAfterEvent::getUuid() const { return mUuid; }
-std::string const           PlayerLoginAfterEvent::getServerAuthXuid() const { return mServerAuthXuid; }
-std::string const           PlayerLoginAfterEvent::getClientAuthXuid() const { return mClientAuthXuid; }
-std::string const           PlayerLoginAfterEvent::getRealName() const { return mRealName; }
-std::string const           PlayerLoginAfterEvent::getIpAndPort() const { return mIpAndPort; }
+ServerNetworkHandler const& ClientLoginAfterEvent::getServerNetworkHandler() const { return mServerNetworkHandler; }
+NetworkIdentifier const&    ClientLoginAfterEvent::getNetworkIdentifier() const { return mNetworkIdentifier; }
+mce::UUID const             ClientLoginAfterEvent::getUuid() const { return mUuid; }
+std::string const           ClientLoginAfterEvent::getServerAuthXuid() const { return mServerAuthXuid; }
+std::string const           ClientLoginAfterEvent::getClientAuthXuid() const { return mClientAuthXuid; }
+std::string const           ClientLoginAfterEvent::getRealName() const { return mRealName; }
+std::string const           ClientLoginAfterEvent::getIpAndPort() const { return mIpAndPort; }
 
-std::string const PlayerLoginAfterEvent::getIp() const {
+std::string const ClientLoginAfterEvent::getIp() const {
     auto ipAndPort = getIpAndPort();
     auto pos       = ipAndPort.find(":");
     return ipAndPort.substr(0, pos);
 }
 
-std::string const PlayerLoginAfterEvent::getPort() const {
+std::string const ClientLoginAfterEvent::getPort() const {
     auto ipAndPort = getIpAndPort();
     auto pos       = ipAndPort.find(":");
     return ipAndPort.substr(pos + 1);
 }
 
-void PlayerLoginAfterEvent::disConnectClient(std::string reason) const {
+void ClientLoginAfterEvent::disConnectClient(std::string reason) const {
     ll::service::getServerNetworkHandler()
         ->disconnectClient(getNetworkIdentifier(), Connection::DisconnectFailReason::Kicked, reason, false);
 }
@@ -41,7 +41,7 @@ LL_TYPE_INSTANCE_HOOK(
     class NetworkIdentifier const& source,
     class LoginPacket const&       packet
 ) {
-    auto beforeEvent = PlayerLoginBeforeEvent(*this, source);
+    auto beforeEvent = ClientLoginBeforeEvent(*this, source);
     ll::event::EventBus::getInstance().publish(beforeEvent);
     if (beforeEvent.isCancelled()) {
         return;
@@ -53,26 +53,26 @@ LL_TYPE_INSTANCE_HOOK(
     auto clientAuthXuid = ExtendedCertificate::getXuid(*cert, true);
     auto realName       = ExtendedCertificate::getIdentityName(*cert);
     auto ipAndPort      = source.getIPAndPort();
-    auto afterEvent = PlayerLoginAfterEvent(*this, source, uuid, serverAuthXuid, clientAuthXuid, realName, ipAndPort);
+    auto afterEvent = ClientLoginAfterEvent(*this, source, uuid, serverAuthXuid, clientAuthXuid, realName, ipAndPort);
     ll::event::EventBus::getInstance().publish(afterEvent);
 }
 
 static std::unique_ptr<ll::event::EmitterBase> emitterFactory1(ll::event::ListenerBase&);
-class PlayerLoginBeforeEventEmitter : public ll::event::Emitter<emitterFactory1, PlayerLoginBeforeEvent> {
+class ClientLoginBeforeEventEmitter : public ll::event::Emitter<emitterFactory1, ClientLoginBeforeEvent> {
     ll::memory::HookRegistrar<PlayerLoginEventHook> hook;
 };
 
 static std::unique_ptr<ll::event::EmitterBase> emitterFactory1(ll::event::ListenerBase&) {
-    return std::make_unique<PlayerLoginBeforeEventEmitter>();
+    return std::make_unique<ClientLoginBeforeEventEmitter>();
 }
 
 static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::ListenerBase&);
-class PlayerLoginAfterEventEmitter : public ll::event::Emitter<emitterFactory2, PlayerLoginAfterEvent> {
+class ClientLoginAfterEventEmitter : public ll::event::Emitter<emitterFactory2, ClientLoginAfterEvent> {
     ll::memory::HookRegistrar<PlayerLoginEventHook> hook;
 };
 
 static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::ListenerBase&) {
-    return std::make_unique<PlayerLoginAfterEventEmitter>();
+    return std::make_unique<ClientLoginAfterEventEmitter>();
 }
 
 } // namespace GMLIB::Event::PlayerEvent
