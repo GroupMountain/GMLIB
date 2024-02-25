@@ -5,10 +5,10 @@ namespace GMLIB::Files {
 
 class McLang {
 private:
-    std::map<std::string, std::string> mData;
+    std::unordered_map<std::string, std::string> mData;
 
 public:
-    GMLIB_API McLang(std::map<std::string, std::string> data);
+    GMLIB_API McLang(std::unordered_map<std::string, std::string> data);
 
     GMLIB_API McLang() = default;
 

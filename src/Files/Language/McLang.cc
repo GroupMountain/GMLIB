@@ -3,7 +3,7 @@
 
 namespace GMLIB::Files {
 
-McLang::McLang(std::map<std::string, std::string> data) : mData(data) {}
+McLang::McLang(std::unordered_map<std::string, std::string> data) : mData(data) {}
 
 McLang McLang::prase_file(std::string filePath) {
     std::vector<std::string> lines;
@@ -70,8 +70,12 @@ McLang McLang::prase(std::string data) {
 }
 
 std::string McLang::dump() {
+    std::map<std::string, std::string> map;
+    for (auto& lang : mData) {
+        map[lang.first] = lang.second;
+    }
     std::string result;
-    for (auto& key : mData) {
+    for (auto& key : map) {
         result = result + key.first + "=" + key.second + "\n";
     }
     return result;
