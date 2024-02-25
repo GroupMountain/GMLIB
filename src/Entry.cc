@@ -7,9 +7,7 @@ namespace {
 
 std::unique_ptr<std::reference_wrapper<ll::plugin::NativePlugin>> selfPluginInstance;
 
-auto disable(ll::plugin::NativePlugin& self) -> bool {
-    return false;
-}
+auto disable(ll::plugin::NativePlugin& self) -> bool { return false; }
 
 auto enable(ll::plugin::NativePlugin& self) -> bool {
     enableLib();

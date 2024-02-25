@@ -42,9 +42,9 @@ public:
 
     GMLIB_API static void setFakeLevelName(std::string_view fakeName);
 
-    GMLIB_API static std::map<int, std::string_view> getAllExperiments();
+    GMLIB_API static std::map<int, std::string> getAllExperiments();
 
-    GMLIB_API static std::map<int, std::string_view> getAllExperimentsTranslateKeys();
+    GMLIB_API static std::map<int, std::string> getAllExperimentsTranslateKeys();
 
     GMLIB_API static void broadcast(std::string_view message);
 

@@ -216,32 +216,30 @@ void GMLIB_Level::setExperimentEnabled(::AllExperiments experiment, bool enabled
     getLevelData().getExperiments().setExperimentEnabled(experiment, enabled);
 }
 
-std::map<int, std::string_view> GMLIB_Level::getAllExperimentsTranslateKeys() {
+std::map<int, std::string> GMLIB_Level::getAllExperimentsTranslateKeys() {
     auto result = getAllExperiments();
-    for (auto& key : result) {
-        auto name = std::string(key.second);
+    for (auto& [id, name] : result) {
         name.erase(0, 1);
-        name       = "createWorldScreen.e" + name;
-        name       = I18n::get(name, {});
-        key.second = name;
+        name = "createWorldScreen.e" + name;
+        name = I18n::get(name, {});
     }
     return result;
 }
 
-std::map<int, std::string_view> GMLIB_Level::getAllExperiments() {
-    std::unordered_set<std::string_view> explist;
-    std::map<int, std::string_view>      result;
-    for (int i = 6; i <= 30; i++) {
+std::map<int, std::string> GMLIB_Level::getAllExperiments() {
+    std::map<int, std::string>      result;
+    std::unordered_set<std::string> exist;
+    for (int i = 4; i <= 24; i++) {
         std::string text;
         try {
             text = Experiments::getExperimentTextID((AllExperiments)i);
         } catch (...) {}
         if (!text.empty()) {
-            if (explist.count(text)) {
+            ll::utils::string_utils::replaceAll(text, "createWorldScreen.e", "E");
+            if (exist.count(text)) {
                 return result;
             }
-            explist.insert(text);
-            ll::utils::string_utils::replaceAll(text, "createWorldScreen.e", "E");
+            exist.insert(text);
             result[i] = text;
         }
     }
