@@ -189,6 +189,48 @@ bool GMLIB_Player::deletePlayerNbt(mce::UUID& uuid) {
     return deletePlayerNbt(serverId);
 }
 
+std::optional<std::pair<Vec3, int>> GMLIB_Player::getPlayerPosition(std::string& serverId) {
+    auto pl = ll::service::getLevel()->getPlayerFromServerId(serverId);
+    if (pl) {
+        return {
+            {pl->getPosition(), pl->getDimensionId()}
+        };
+    }
+    auto nbt = getPlayerNbt(serverId);
+    if (nbt) {
+        auto  tag   = nbt->getList("Pos");
+        float x     = tag->at(0)->as<FloatTag>().data;
+        float y     = tag->at(1)->as<FloatTag>().data;
+        float z     = tag->at(2)->as<FloatTag>().data;
+        int   dimId = nbt->getInt("DimensionId");
+        return {
+            {{x, y, z}, dimId}
+        };
+    }
+    return {};
+}
+
+std::optional<std::pair<Vec3, int>> GMLIB_Player::getPlayerPosition(mce::UUID& uuid) {
+    auto pl = ll::service::getLevel()->getPlayer(uuid);
+    if (pl) {
+        return {
+            {pl->getPosition(), pl->getDimensionId()}
+        };
+    }
+    auto nbt = getPlayerNbt(uuid);
+    if (nbt) {
+        auto  tag   = nbt->getList("Pos");
+        float x     = tag->at(0)->as<FloatTag>().data;
+        float y     = tag->at(1)->as<FloatTag>().data;
+        float z     = tag->at(2)->as<FloatTag>().data;
+        int   dimId = nbt->getInt("DimensionId");
+        return {
+            {{x, y, z}, dimId}
+        };
+    }
+    return {};
+}
+
 bool GMLIB_Player::setPlayerPosition(std::string& serverId, Vec3 pos, DimensionType dimId) {
     auto pl = ll::service::getLevel()->getPlayerFromServerId(serverId);
     if (pl) {
