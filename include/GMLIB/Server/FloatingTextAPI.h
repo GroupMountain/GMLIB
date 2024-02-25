@@ -34,6 +34,10 @@ public:
 
     GMLIB_API void sendToAllClients();
 
+    GMLIB_API void updateClient(Player* pl);
+
+    GMLIB_API void updateAllClients();
+
     GMLIB_API void removeFromClient(Player* pl);
 
     GMLIB_API void removeFromAllClients();

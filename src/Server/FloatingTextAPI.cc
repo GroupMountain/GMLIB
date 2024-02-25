@@ -74,6 +74,30 @@ createAddFloatingTextPacket(FloatingText* ft, Player* pl) {
     return pkt;
 }
 
+GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::SetActorData>
+createUpdateFloatingTextPacket(FloatingText* ft, Player* pl) {
+    auto text = ft->getText();
+    if (ft->shouldUsePapi()) {
+        PlaceholderAPI::translate(text, pl);
+    }
+    GMLIB_BinaryStream bs;
+    bs.writeUnsignedVarInt64(ft->getRuntimeID());
+    // DataItem
+    bs.writeUnsignedVarInt(2);
+    bs.writeUnsignedVarInt((uint)0x4);
+    bs.writeUnsignedVarInt((uint)0x4);
+    bs.writeString(text);
+    bs.writeUnsignedVarInt((uint)0x51);
+    bs.writeUnsignedVarInt((uint)0x0);
+    bs.writeBool(true);
+    // Other
+    bs.writeUnsignedVarInt(0);
+    bs.writeUnsignedVarInt(0);
+    bs.writeUnsignedVarInt64(0);
+    GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::SetActorData> pkt(bs.getAndReleaseData());
+    return pkt;
+}
+
 void FloatingText::sendToClient(Player* pl) {
     if (!pl->isSimulatedPlayer() && pl->getDimensionId() == getDimensionId()) {
         auto pkt = createAddFloatingTextPacket(this, pl);
@@ -85,6 +109,23 @@ void FloatingText::sendToAllClients() {
     ll::service::getLevel()->forEachPlayer([this](Player& pl) -> bool {
         if (!pl.isSimulatedPlayer() && pl.getDimensionId() == getDimensionId()) {
             auto pkt = createAddFloatingTextPacket(this, &pl);
+            pkt.sendTo(pl);
+        }
+        return true;
+    });
+}
+
+GMLIB_API void FloatingText::updateClient(Player* pl) {
+    if (!pl->isSimulatedPlayer() && pl->getDimensionId() == getDimensionId()) {
+        auto pkt = createUpdateFloatingTextPacket(this, pl);
+        pkt.sendTo(*pl);
+    }
+}
+
+GMLIB_API void FloatingText::updateAllClients() {
+    ll::service::getLevel()->forEachPlayer([this](Player& pl) -> bool {
+        if (!pl.isSimulatedPlayer() && pl.getDimensionId() == getDimensionId()) {
+            auto pkt = createUpdateFloatingTextPacket(this, &pl);
             pkt.sendTo(pl);
         }
         return true;
@@ -151,7 +192,7 @@ DynamicFloatingText::DynamicFloatingText(
     });
     mUpdateRate = updateRate;
     mTask       = mScheduler.add<ll::schedule::task::RepeatTask>(std::chrono::seconds::duration(mUpdateRate), [this] {
-        this->sendToAllClients();
+        this->updateAllClients();
     });
 }
 
@@ -173,8 +214,9 @@ bool DynamicFloatingText::stopUpdate() {
 
 bool DynamicFloatingText::startUpdate() {
     if (mTask->isCancelled()) {
+        this->sendToAllClients();
         mTask = mScheduler.add<ll::schedule::task::RepeatTask>(std::chrono::seconds::duration(mUpdateRate), [this] {
-            this->sendToAllClients();
+            this->updateAllClients();
         });
         return true;
     }
@@ -191,12 +233,12 @@ void DynamicFloatingText::setUpdateRate(uint seconds) {
 
 void StaticFloatingText::updateText(std::string newText) {
     setText(newText);
-    sendToAllClients();
+    updateAllClients();
 }
 
 void DynamicFloatingText::updateText(std::string newText) {
     setText(newText);
-    sendToAllClients();
+    updateAllClients();
 }
 
 void StaticFloatingText::updatePosition(Vec3& pos, DimensionType dimid) {
