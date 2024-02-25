@@ -6,20 +6,11 @@
 namespace GMLIB::Server::UserCache {
 
 nlohmann::json mUserCache;
+bool           mEnableUserCache = false;
 
 void saveUserCacheFile() {
     std::string path = "./usercache.json";
     GMLIB::Files::JsonFile::writeFile(path, mUserCache);
-}
-
-void initUserCache() {
-    auto emptyFile = nlohmann::json::array();
-    try {
-        mUserCache = GMLIB::Files::JsonFile::initJson("./usercache.json", emptyFile);
-    } catch (...) {
-        mUserCache = emptyFile;
-        saveUserCacheFile();
-    }
 }
 
 void updateUserCache(mce::UUID& uuid, std::string& xuid, std::string& realName) {
@@ -115,9 +106,7 @@ std::optional<std::string> getUuidByName(std::string& name) {
     return {};
 }
 
-} // namespace GMLIB::Server::UserCache
-
-LL_AUTO_TYPE_INSTANCE_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     PlayerLoginHook,
     ll::memory::HookPriority::Lowest,
     ServerNetworkHandler,
@@ -133,3 +122,20 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     auto realName = ExtendedCertificate::getIdentityName(*cert);
     GMLIB::Server::UserCache::updateUserCache(uuid, xuid, realName);
 }
+
+void initUserCache() {
+    if (mEnableUserCache) {
+        ll::memory::HookRegistrar<PlayerLoginHook>().hook();
+        auto emptyFile = nlohmann::json::array();
+        try {
+            mUserCache = GMLIB::Files::JsonFile::initJson("./usercache.json", emptyFile);
+        } catch (...) {
+            mUserCache = emptyFile;
+            saveUserCacheFile();
+        }
+    }
+}
+
+void enableUserCache() { mEnableUserCache = true; }
+
+} // namespace GMLIB::Server::UserCache

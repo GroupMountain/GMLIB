@@ -4,6 +4,8 @@
 
 namespace GMLIB::Server::UserCache {
 
+GMLIB_API void enableUserCache();
+
 GMLIB_API std::optional<nlohmann::json> tryFindCahceInfoFromUuid(std::string& uuid);
 
 GMLIB_API std::optional<nlohmann::json> tryFindCahceInfoFromXuid(std::string& xuid);
