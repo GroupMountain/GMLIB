@@ -189,6 +189,42 @@ bool GMLIB_Player::deletePlayerNbt(mce::UUID& uuid) {
     return deletePlayerNbt(serverId);
 }
 
+bool GMLIB_Player::setPlayerPosition(std::string& serverId, Vec3 pos, DimensionType dimId) {
+    auto pl = ll::service::getLevel()->getPlayerFromServerId(serverId);
+    if (pl) {
+        pl->teleport(pos, dimId);
+        return true;
+    }
+    auto nbt = getPlayerNbt(serverId);
+    if (nbt) {
+        auto tag                        = nbt->getList("Pos");
+        tag->at(0)->as<FloatTag>().data = pos.x;
+        tag->at(1)->as<FloatTag>().data = pos.y;
+        tag->at(2)->as<FloatTag>().data = pos.z;
+        nbt->putInt("DimensionId", dimId.id);
+        return setPlayerNbt(serverId, *nbt);
+    }
+    return false;
+}
+
+bool GMLIB_Player::setPlayerPosition(mce::UUID& uuid, Vec3 pos, DimensionType dimId) {
+    auto pl = ll::service::getLevel()->getPlayer(uuid);
+    if (pl) {
+        pl->teleport(pos, dimId);
+        return true;
+    }
+    auto nbt = getPlayerNbt(uuid);
+    if (nbt) {
+        auto tag                        = nbt->getList("Pos");
+        tag->at(0)->as<FloatTag>().data = pos.x;
+        tag->at(1)->as<FloatTag>().data = pos.y;
+        tag->at(2)->as<FloatTag>().data = pos.z;
+        nbt->putInt("DimensionId", dimId.id);
+        return setPlayerNbt(uuid, *nbt);
+    }
+    return false;
+}
+
 void GMLIB_Player::setClientSidebar(
     const std::string                               title,
     const std::vector<std::pair<std::string, int>>& data,

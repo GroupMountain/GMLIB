@@ -70,6 +70,10 @@ public:
 
     GMLIB_API static bool resetPlayerScore(mce::UUID& uuid);
 
+    GMLIB_API static bool setPlayerPosition(std::string& serverId, Vec3 pos, DimensionType dimId);
+
+    GMLIB_API static bool setPlayerPosition(mce::UUID& uuid, Vec3 pos, DimensionType dimId);
+
 public:
     GMLIB_API std::unique_ptr<CompoundTag> getNbt();
 
