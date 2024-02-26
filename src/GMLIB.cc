@@ -2,6 +2,7 @@
 #include "Global.h"
 #include "Version.h"
 #include <GMLIB/GMLIB.h>
+#include <ll/api/service/ServerInfo.h>
 #include <mc/common/Common.h>
 #include <mc/common/SharedConstants.h>
 #include <mc/deps/core/sem_ver/SemVersion.h>
@@ -10,23 +11,28 @@ ll::Logger logger(LIB_NAME);
 
 namespace GMLIB {
 
+#define LOGO(x) std::cout << fmt::format(fg(fmt::color::pink), x) << std::endl;
+
 void printLogo() {
-    std::cout << R"(                                                                        )" << std::endl;
-    std::cout << R"(         ________  _____ ______   ___       ___  ________               )" << std::endl;
-    std::cout << R"(        |\   ____\|\   _ \  _   \|\  \     |\  \|\   __  \              )" << std::endl;
-    std::cout << R"(        \ \  \___|\ \  \\\__\ \  \ \  \    \ \  \ \  \|\ /_             )" << std::endl;
-    std::cout << R"(         \ \  \  __\ \  \\|__| \  \ \  \    \ \  \ \   __  \            )" << std::endl;
-    std::cout << R"(          \ \  \|\  \ \  \    \ \  \ \  \____\ \  \ \  \|\  \           )" << std::endl;
-    std::cout << R"(           \ \_______\ \__\    \ \__\ \_______\ \__\ \_______\          )" << std::endl;
-    std::cout << R"(            \|_______|\|__|     \|__|\|_______|\|__|\|_______|          )" << std::endl;
-    std::cout << R"(                                                                        )" << std::endl;
-    std::cout << R"(           ------------  Group Mountain Library  ------------           )" << std::endl;
-    std::cout << R"(                                                                        )" << std::endl;
+    LOGO(R"(                                                                         )")
+    LOGO(R"(         ________  _____ ______   ___       ___  ________                )")
+    LOGO(R"(        |\   ____\|\   _ \  _   \|\  \     |\  \|\   __  \               )")
+    LOGO(R"(        \ \  \___|\ \  \\\__\ \  \ \  \    \ \  \ \  \|\ /_              )")
+    LOGO(R"(         \ \  \  __\ \  \\|__| \  \ \  \    \ \  \ \   __  \             )")
+    LOGO(R"(          \ \  \|\  \ \  \    \ \  \ \  \____\ \  \ \  \|\  \            )")
+    LOGO(R"(           \ \_______\ \__\    \ \__\ \_______\ \__\ \_______\           )")
+    LOGO(R"(            \|_______|\|__|     \|__|\|_______|\|__|\|_______|           )")
+    LOGO(R"(                                                                         )")
+    LOGO(R"(           ------------  Group Mountain Library  ------------            )")
+    LOGO(R"(                                                                         )")
 }
 
 void printLibInfo() {
-    logger.info("GMLIB Loaded!");
-    logger.info("Version: {}", Version::getLibVersionString());
+    logger.info(
+        "{} with {}",
+        fmt::format(fg(fmt::color::light_sky_blue), "LeviLamina-" + ll::getLoaderVersion().to_string()),
+        fmt::format(fg(fmt::color::pink), "GMLIB-" + Version::getLibVersionString())
+    );
     logger.info("GMLIB is a free library for LeviLamina licensed under LGPLv3");
     logger.info("Author: {}", LIB_AUTHOR);
     logger.info("Repository: {}", LIB_REPOSITORT);

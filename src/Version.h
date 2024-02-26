@@ -1,6 +1,6 @@
 #pragma once
 
-#define LIB_NAME "GMLIB"
+#define LIB_NAME fmt::format(fg(fmt::color::light_pink), "GMLIB")
 
 #define LIB_VERSION_MAJOR      0
 #define LIB_VERSION_MINOR      9
