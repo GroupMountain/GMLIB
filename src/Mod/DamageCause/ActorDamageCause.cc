@@ -269,7 +269,7 @@ std::optional<DEATH_MESSAGE> tryTranslateHardCodedDeathMessage(
     // 硬编码爆炸信息
     case ActorDamageCause::BlockExplosion: {
         if (!isCrystal) {
-            deathMessage.first = "death.attack.badRespawnPoint";
+            deathMessage.first = "death.attack.badRespawnPoint.message";
         } else {
             deathMessage.first = "death.attack.explosion.item";
         }
