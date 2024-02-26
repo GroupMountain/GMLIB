@@ -6,11 +6,11 @@ namespace GMLIB::Server::UserCache {
 
 GMLIB_API void enableUserCache();
 
-GMLIB_API std::optional<nlohmann::json> tryFindCahceInfoFromUuid(std::string& uuid);
+GMLIB_API std::optional<nlohmann::json> tryFindCacheInfoFromUuid(std::string& uuid);
 
-GMLIB_API std::optional<nlohmann::json> tryFindCahceInfoFromXuid(std::string& xuid);
+GMLIB_API std::optional<nlohmann::json> tryFindCacheInfoFromXuid(std::string& xuid);
 
-GMLIB_API std::optional<nlohmann::json> tryFindCahceInfoFromName(std::string& name);
+GMLIB_API std::optional<nlohmann::json> tryFindCacheInfoFromName(std::string& name);
 
 GMLIB_API std::optional<std::string> getXuidByUuid(std::string& uuid);
 
