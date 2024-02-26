@@ -589,3 +589,58 @@ std::string_view GMLIB_Player::getLanguageCode() {
     }
     return "unknown";
 }
+
+void GMLIB_Player::updateClientBlock(
+    BlockPos const&               pos,
+    uint                          runtimeId,
+    BlockUpdateFlag               flag,
+    UpdateBlockPacket::BlockLayer layer
+) {
+    UpdateBlockPacket(pos, (uint)layer, runtimeId, (uchar)flag).sendTo(*this);
+}
+
+bool GMLIB_Player::updateClientBlock(
+    BlockPos const&               pos,
+    Block*                        block,
+    BlockUpdateFlag               flag,
+    UpdateBlockPacket::BlockLayer layer
+) {
+    if (block) {
+        auto runtimeId = block->getRuntimeId();
+        updateClientBlock(pos, runtimeId, flag, layer);
+        return true;
+    }
+    return false;
+}
+
+bool GMLIB_Player::updateClientBlock(
+    BlockPos const&               pos,
+    std::string_view              blockName,
+    ushort                        auxValue,
+    BlockUpdateFlag               flag,
+    UpdateBlockPacket::BlockLayer layer
+) {
+    auto block = Block::tryGetFromRegistry(blockName, auxValue);
+    if (block.has_value()) {
+        auto runtimeId = block->getRuntimeId();
+        updateClientBlock(pos, runtimeId, flag, layer);
+        return true;
+    }
+    return false;
+}
+
+bool GMLIB_Player::updateClientBlock(
+    BlockPos const&               pos,
+    std::string_view              blockName,
+    Block::BlockStatesType        blockState,
+    BlockUpdateFlag               flag,
+    UpdateBlockPacket::BlockLayer layer
+) {
+    auto block = Block::tryGetFromRegistry(blockName, blockState);
+    if (block.has_value()) {
+        auto runtimeId = block->getRuntimeId();
+        updateClientBlock(pos, runtimeId, flag, layer);
+        return true;
+    }
+    return false;
+}

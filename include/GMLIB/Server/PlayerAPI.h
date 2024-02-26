@@ -4,10 +4,12 @@
 #include "GMLIB/Server/LevelAPI.h"
 #include "mc/enums/BossBarColor.h"
 #include "mc/enums/ObjectiveSortOrder.h"
+#include "mc/network/packet/UpdateBlockPacket.h"
 #include "mc/world/actor/player/FullPlayerInventoryWrapper.h"
 #include "mc/world/actor/player/Player.h"
 #include "mc/world/actor/player/PlayerScoreSetFunction.h"
 #include "mc/world/inventory/transaction/InventoryTransactionManager.h"
+#include "mc/world/level/block/Block.h"
 
 class GMLIB_Player : public Player {
 public:
@@ -195,6 +197,36 @@ public:
     GMLIB_API void hurtPlayer(float damage, std::string causeName = "override", Actor* source = nullptr);
 
     GMLIB_API int clearAllItems();
+
+    GMLIB_API void updateClientBlock(
+        BlockPos const&               pos,
+        uint                          runtimeId,
+        BlockUpdateFlag               flag  = BlockUpdateFlag::All,
+        UpdateBlockPacket::BlockLayer layer = UpdateBlockPacket::BlockLayer::Standard
+    );
+
+    GMLIB_API bool updateClientBlock(
+        BlockPos const&               pos,
+        Block*                        block,
+        BlockUpdateFlag               flag  = BlockUpdateFlag::All,
+        UpdateBlockPacket::BlockLayer layer = UpdateBlockPacket::BlockLayer::Standard
+    );
+
+    GMLIB_API bool updateClientBlock(
+        BlockPos const&               pos,
+        std::string_view              blockName,
+        Block::BlockStatesType        blockState,
+        BlockUpdateFlag               flag  = BlockUpdateFlag::All,
+        UpdateBlockPacket::BlockLayer layer = UpdateBlockPacket::BlockLayer::Standard
+    );
+
+    GMLIB_API bool updateClientBlock(
+        BlockPos const&               pos,
+        std::string_view              blockName,
+        ushort                        auxValue = 0,
+        BlockUpdateFlag               flag     = BlockUpdateFlag::All,
+        UpdateBlockPacket::BlockLayer layer    = UpdateBlockPacket::BlockLayer::Standard
+    );
 
     // ToDo API
     // If you need any API, please open an issue on https://github.com/GroupMountain/GMLIB/issues
