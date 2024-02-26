@@ -6,7 +6,7 @@
 #include "mc/network/NetworkIdentifier.h"
 #include "mc/network/ServerNetworkHandler.h"
 
-namespace GMLIB::Event::PlayerEvent {
+namespace GMLIB::Event::PacketEvent {
 
 class ClientLoginBeforeEvent : public ll::event::Cancellable<ll::event::Event> {
     ServerNetworkHandler const& mServerNetworkHandler;
@@ -64,4 +64,4 @@ public:
     GMLIB_API void              disConnectClient(std::string reason = "") const;
 };
 
-} // namespace GMLIB::Event::PlayerEvent
+} // namespace GMLIB::Event::PacketEvent

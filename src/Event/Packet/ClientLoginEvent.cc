@@ -2,7 +2,7 @@
 #include <GMLIB/Event/Packet/ClientLoginEvent.h>
 #include <mc/network/packet/LoginPacket.h>
 
-namespace GMLIB::Event::PlayerEvent {
+namespace GMLIB::Event::PacketEvent {
 
 ServerNetworkHandler const& ClientLoginBeforeEvent::getServerNetworkHandler() const { return mServerNetworkHandler; }
 NetworkIdentifier const&    ClientLoginBeforeEvent::getNetworkIdentifier() const { return mNetworkIdentifier; }
@@ -75,4 +75,4 @@ static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::Listen
     return std::make_unique<ClientLoginAfterEventEmitter>();
 }
 
-} // namespace GMLIB::Event::PlayerEvent
+} // namespace GMLIB::Event::PacketEvent
