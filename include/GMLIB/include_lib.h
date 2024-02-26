@@ -10,6 +10,7 @@
 #include "GMLIB/Event/Entity/MobPickupItemEvent.h"
 #include "GMLIB/Event/Level/WeatherUpdateEvent.h"
 #include "GMLIB/Event/Packet/ClientLoginEvent.h"
+#include "GMLIB/Event/Packet/TextPacketEvent.h"
 #include "GMLIB/Event/Player/PlayerSleepEvent.h"
 #include "GMLIB/Files/FileUtils.h"
 #include "GMLIB/Files/JsonFile.h"
