@@ -16,9 +16,9 @@ public:
     virtual ~McLang() = default;
 
 public:
-    GMLIB_API static McLang prase(std::string data);
+    GMLIB_API static McLang parse(std::string data);
 
-    GMLIB_API static McLang prase_file(std::string filePath);
+    GMLIB_API static McLang parse_file(std::string filePath);
 
 public:
     GMLIB_API std::optional<std::string> get(std::string key);

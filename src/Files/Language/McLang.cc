@@ -5,7 +5,7 @@ namespace GMLIB::Files {
 
 McLang::McLang(std::unordered_map<std::string, std::string> data) : mData(data) {}
 
-McLang McLang::prase_file(std::string filePath) {
+McLang McLang::parse_file(std::string filePath) {
     std::vector<std::string> lines;
     std::ifstream            file(filePath);
     auto                     result = McLang();
@@ -47,7 +47,7 @@ std::vector<std::string> splitStringByNewline(const std::string& input) {
     return lines;
 }
 
-McLang McLang::prase(std::string data) {
+McLang McLang::parse(std::string data) {
     auto lines  = splitStringByNewline(data);
     auto result = McLang();
     for (auto& line : lines) {

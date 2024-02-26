@@ -73,9 +73,9 @@ void ResourceLanguage::initLanguage() {
     for (auto& lang : mLanguages) {
         langJson.push_back(lang.first);
         auto langPath    = path + pathLangDir + lang.first + ".lang";
-        auto newLangData = McLang::prase(lang.second);
+        auto newLangData = McLang::parse(lang.second);
         if (std::filesystem::exists(langPath)) {
-            auto oldLangData = McLang::prase_file(langPath);
+            auto oldLangData = McLang::parse_file(langPath);
             newLangData.merge_patch(oldLangData);
         }
         newLangData.write_to_file(langPath);

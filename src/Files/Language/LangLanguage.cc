@@ -5,7 +5,7 @@
 namespace GMLIB::Files {
 
 LangLanguage::LangLanguage(std::string& filePath, std::string& defaultLanguage) : mFilePath(filePath) {
-    auto data = McLang::prase(defaultLanguage);
+    auto data = McLang::parse(defaultLanguage);
     merge_patch(data);
 }
 
@@ -15,7 +15,7 @@ bool LangLanguage::init() {
         std::filesystem::create_directories(dirPath);
     }
     if (std::filesystem::exists(mFilePath)) {
-        auto oldData = McLang::prase_file(mFilePath);
+        auto oldData = McLang::parse_file(mFilePath);
         merge_patch(oldData);
     }
     return write_to_file(mFilePath);
@@ -24,7 +24,7 @@ bool LangLanguage::init() {
 bool LangLanguage::reload() {
     auto file = ll::utils::file_utils::readFile(mFilePath);
     if (file.has_value()) {
-        auto newData = McLang::prase(file.value());
+        auto newData = McLang::parse(file.value());
         merge_patch(newData);
         return save_file();
     }
