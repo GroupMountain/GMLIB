@@ -123,7 +123,9 @@ bool GMLIB_Player::setPlayerNbt(std::string& serverId, CompoundTag& nbt) {
     }
     auto player = ll::service::bedrock::getLevel()->getPlayerFromServerId(serverId);
     if (player) {
-        return player->load(nbt);
+        auto res = player->load(nbt);
+        player->refreshInventory();
+        return res;
     }
     return setOfflineNbt(serverId, nbt);
 }
@@ -145,17 +147,22 @@ void setNbtTags(CompoundTag& originNbt, CompoundTag& dataNbt, const std::vector<
 
 bool GMLIB_Player::setPlayerNbtTags(std::string& serverId, CompoundTag& nbt, const std::vector<std::string>& tags) {
     if (serverId.empty()) {
+        logger.error("{}", false);
         return false;
     }
     auto player = (GMLIB_Player*)ll::service::bedrock::getLevel()->getPlayerFromServerId(serverId);
     if (player) {
-        auto data = player->getNbt();
-        setNbtTags(*data, nbt, tags);
-        return player->load(nbt);
+        auto data = *player->getNbt();
+        setNbtTags(data, nbt, tags);
+        auto res = player->load(data);
+        logger.error("{}", data.toSnbt());
+        player->refreshInventory();
+        return res;
     }
-    auto data = getOfflineNbt(serverId);
-    setNbtTags(*data, nbt, tags);
-    return setOfflineNbt(serverId, *data);
+    auto data = *getOfflineNbt(serverId);
+    setNbtTags(data, nbt, tags);
+    logger.error("{}", "offline");
+    return setOfflineNbt(serverId, data);
 }
 
 bool GMLIB_Player::setPlayerNbtTags(mce::UUID const& uuid, CompoundTag& nbt, const std::vector<std::string>& tags) {
