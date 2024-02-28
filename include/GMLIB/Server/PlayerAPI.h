@@ -30,7 +30,7 @@ public:
 
     GMLIB_API static std::unique_ptr<CompoundTag> getPlayerNbt(std::string& serverId); //
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getPlayerNbt(mce::UUID uuid);
+    GMLIB_API static std::unique_ptr<CompoundTag> getPlayerNbt(mce::UUID const& uuid);
 
     GMLIB_API static bool setPlayerNbt(std::string& serverId, CompoundTag& nbt);
 
@@ -44,7 +44,7 @@ public:
 
     GMLIB_API static bool deletePlayerNbt(std::string& serverId);
 
-    GMLIB_API static bool deletePlayerNbt(mce::UUID& uuid);
+    GMLIB_API static bool deletePlayerNbt(mce::UUID const& uuid);
 
     GMLIB_API static std::optional<int> getPlayerScore(std::string& serverId, std::string objective);
 
@@ -84,6 +84,8 @@ public:
     GMLIB_API std::unique_ptr<CompoundTag> getNbt();
 
     GMLIB_API bool setNbt(CompoundTag& nbt);
+
+    GMLIB_API bool setNbtTags(CompoundTag& nbt, const std::vector<std::string>& tags);
 
     GMLIB_API std::optional<int> getScore(std::string objective);
 

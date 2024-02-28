@@ -106,7 +106,7 @@ std::unique_ptr<CompoundTag> GMLIB_Player::getPlayerNbt(std::string& serverId) {
     }
 }
 
-std::unique_ptr<CompoundTag> GMLIB_Player::getPlayerNbt(mce::UUID uuid) {
+std::unique_ptr<CompoundTag> GMLIB_Player::getPlayerNbt(mce::UUID const& uuid) {
     auto serverId = getServerIdFromUuid(uuid);
     return getPlayerNbt(serverId);
 }
@@ -137,7 +137,7 @@ bool GMLIB_Player::setPlayerNbt(mce::UUID const& uuid, CompoundTag& nbt) {
 
 bool GMLIB_Player::setNbt(CompoundTag& nbt) { return load(nbt); }
 
-void setNbtTags(CompoundTag& originNbt, CompoundTag& dataNbt, const std::vector<std::string>& tags) {
+void writeNbtTags(CompoundTag& originNbt, CompoundTag& dataNbt, const std::vector<std::string>& tags) {
     for (auto tag : tags) {
         if (dataNbt.get(tag)) {
             originNbt.put(tag, dataNbt.get(tag)->copy());
@@ -151,20 +151,24 @@ bool GMLIB_Player::setPlayerNbtTags(std::string& serverId, CompoundTag& nbt, con
     }
     auto player = (GMLIB_Player*)ll::service::bedrock::getLevel()->getPlayerFromServerId(serverId);
     if (player) {
-        auto data = *player->getNbt();
-        setNbtTags(data, nbt, tags);
-        auto res = player->load(data);
-        player->refreshInventory();
-        return res;
+        return player->setNbtTags(nbt, tags);
     }
     auto data = *getOfflineNbt(serverId);
-    setNbtTags(data, nbt, tags);
+    writeNbtTags(data, nbt, tags);
     return setOfflineNbt(serverId, data);
 }
 
 bool GMLIB_Player::setPlayerNbtTags(mce::UUID const& uuid, CompoundTag& nbt, const std::vector<std::string>& tags) {
     auto serverId = getServerIdFromUuid(uuid);
     return setPlayerNbtTags(serverId, nbt, tags);
+}
+
+bool GMLIB_Player::setNbtTags(CompoundTag& nbt, const std::vector<std::string>& tags) {
+    auto data = *getNbt();
+    writeNbtTags(data, nbt, tags);
+    auto res = load(data);
+    refreshInventory();
+    return res;
 }
 
 bool GMLIB_Player::deletePlayerNbt(std::string& serverId) {
@@ -183,7 +187,7 @@ bool GMLIB_Player::deletePlayerNbt(std::string& serverId) {
     return false;
 }
 
-bool GMLIB_Player::deletePlayerNbt(mce::UUID& uuid) {
+bool GMLIB_Player::deletePlayerNbt(mce::UUID const& uuid) {
     auto pl = ll::service::getLevel()->getPlayer(uuid);
     if (pl) {
         auto serverId = pl->getServerId();
