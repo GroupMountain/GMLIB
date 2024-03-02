@@ -270,7 +270,7 @@ void GMLIB_Level::forceEnableAbilityCommand() { GMLIB::LevelAPI::mRegAbilityComm
 
 void GMLIB_Level::addEducationEditionRequired() { GMLIB::LevelAPI::mEducationEditionEnabled = true; }
 
-void GMLIB_Level::setTime(int time) {
+void GMLIB_Level::setAndUpdateTime(int time) {
     setTime(time);
     try {
         SetTimePacket(time).sendToClients();

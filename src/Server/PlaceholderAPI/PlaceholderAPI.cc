@@ -220,7 +220,9 @@ std::string PlaceholderAPI::getValue(std::string placeholderapi, Player* sp) {
         auto& papi = mGlobalPAPI[placeholderapi];
         if (!papi.mProcessParameters) {
             if (papi.mProcessPlayer) {
-                return mGlobalPAPI[placeholderapi].mCallback(sp);
+                if (sp) {
+                    return mGlobalPAPI[placeholderapi].mCallback(sp);
+                }
             } else {
                 if (papi.mAutoUpdate) {
                     return papi.mValue;
@@ -270,7 +272,7 @@ std::string PlaceholderAPI::getValue(std::string placeholderapi) {
     return placeholderapi;
 }
 
-void PlaceholderAPI::translate(std::string& value, Player* sp) {
+void PlaceholderAPI::translateString(std::string& value, Player* sp) {
     auto list = Helper::getPercentage(value);
     for (auto& i : list) {
         ll::string_utils::replaceAll(value, i, getValue(i, sp));

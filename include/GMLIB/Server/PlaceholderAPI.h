@@ -23,8 +23,8 @@ public:
         std::string                                                                       Name,
         int                                                                               UpdateInterval,
         bool                                                                              AutoUpdate,
-        bool                                                                              mProcessPlayer,
-        bool                                                                              mProcessParameters,
+        bool                                                                              ProcessPlayer,
+        bool                                                                              ProcessParameters,
         std::string                                                                       PluginName,
         std::function<std::string(Player*)>                                               callback,
         std::function<std::string(Player*, std::unordered_map<std::string, std::string>)> CallbackWithParameters
@@ -38,7 +38,7 @@ public:
 
     GMLIB_API static std::string getValue(std::string placeholder);
 
-    GMLIB_API static void translate(std::string& value, Player* sp = nullptr);
+    GMLIB_API static void translateString(std::string& value, Player* sp = nullptr);
 
     GMLIB_API static std::string translate(std::string_view value, Player* sp = nullptr);
 

@@ -17,9 +17,9 @@ std::unordered_map<int64, FloatingText*> mRuntimeFloatingTextList;
 ll::schedule::ServerTimeScheduler        mScheduler;
 
 int getNextFloatingTextId() {
-    auto id = Random::getThreadLocal().nextInt(0, 2147473647);
+    auto id = Random::getThreadLocal().nextInt(0, 2147483647);
     while (ll::service::getLevel()->fetchEntity(ActorUniqueID(id))) {
-        id = Random::getThreadLocal().nextInt(0, 2147473647);
+        id = Random::getThreadLocal().nextInt(0, 2147483647);
     }
     return id;
 }

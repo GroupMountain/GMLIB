@@ -69,7 +69,7 @@ public:
 
     GMLIB_API void setExperimentEnabled(::AllExperiments experiment, bool enabled = true);
 
-    GMLIB_API void setTime(int time);
+    GMLIB_API void setAndUpdateTime(int time);
 
     GMLIB_API WeatherType getWeather();
 
