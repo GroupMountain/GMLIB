@@ -108,7 +108,7 @@ std::optional<std::string> getUuidByName(std::string& name) {
 
 LL_TYPE_INSTANCE_HOOK(
     PlayerLoginHook,
-    ll::memory::HookPriority::Lowest,
+    ll::memory::HookPriority::Highest,
     ServerNetworkHandler,
     "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVLoginPacket@@@Z",
     void,
@@ -138,8 +138,8 @@ void initUserCache() {
 
 void enableUserCache() {
     if (!mEnableUserCache) {
-        initUserCache();
         mEnableUserCache = true;
+        initUserCache();
     }
 }
 
