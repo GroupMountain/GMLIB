@@ -29,8 +29,8 @@ void printLogo() {
 
 void printLibInfo() {
     logger.info(
-        "{} with {}",
-        fmt::format(fg(fmt::color::light_sky_blue), "LeviLamina-" + ll::getLoaderVersion().to_string()),
+        "Loaded Version: {} with {}",
+        fmt::format(fg(fmt::color::light_sky_blue), "LeviLamina-" + Version::getLeviLaminaVersionString()),
         fmt::format(fg(fmt::color::pink), "GMLIB-" + Version::getLibVersionString())
     );
     logger.info("GMLIB is a free library for LeviLamina licensed under LGPLv3");
@@ -90,7 +90,19 @@ bool checkLibVersionMatch(SemVersion minVersion) {
 
 int getProtocolVersion() { return SharedConstants::NetworkProtocolVersion; }
 
-std::string getBdsVersion() { return Common::getGameVersionString(); }
+SemVersion getBdsVersion() {
+    auto version = ll::getBdsVersion();
+    return SemVersion(version.major, version.minor, version.patch, "", "");
+}
+
+std::string getBdsVersionString() { return Common::getGameVersionString(); }
+
+SemVersion getLeviLaminaVersion() {
+    auto version = ll::getLoaderVersion();
+    return SemVersion(version.major, version.minor, version.patch, "", "");
+}
+
+std::string getLeviLaminaVersionString() { return getLeviLaminaVersion().asString(); }
 
 } // namespace Version
 

@@ -136,7 +136,7 @@ void regServerPAPI() {
         return S(*((int*)ll::service::getServerNetworkHandler().as_ptr() + 192));
     });
 
-    PlaceholderAPI::registerServerPlaceholder("server_version", []() { return GMLIB::Version::getBdsVersion(); });
+    PlaceholderAPI::registerServerPlaceholder("server_version", []() { return GMLIB::Version::getBdsVersionString(); });
 
     PlaceholderAPI::registerServerPlaceholder("server_protocol_version", []() {
         return S(GMLIB::Version::getProtocolVersion());

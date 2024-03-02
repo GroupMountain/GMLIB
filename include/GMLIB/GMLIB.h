@@ -23,6 +23,12 @@ GMLIB_API bool checkLibVersionMatch(SemVersion minVersion);
 
 GMLIB_API int getProtocolVersion();
 
-GMLIB_API std::string getBdsVersion();
+GMLIB_API SemVersion getBdsVersion();
+
+GMLIB_API std::string getBdsVersionString();
+
+GMLIB_API SemVersion getLeviLaminaVersion();
+
+GMLIB_API std::string getLeviLaminaVersionString();
 
 } // namespace GMLIB::Version
