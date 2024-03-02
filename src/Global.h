@@ -50,10 +50,6 @@ extern void CaculateTPS();
 
 class DBStorage;
 
-namespace GMLIB::Server::UserCache {
-extern void initUserCache();
-} // namespace GMLIB::Server::UserCache
-
 namespace GMLIB {
 
 template <typename T>

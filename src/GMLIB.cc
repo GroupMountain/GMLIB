@@ -50,7 +50,6 @@ void loadLib() {
     }
     printLogo();
     printLibInfo();
-    GMLIB::Server::UserCache::initUserCache();
     updatePlaceholder();
     regServerPAPI();
     regPlayerPAPI();

@@ -136,6 +136,11 @@ void initUserCache() {
     }
 }
 
-void enableUserCache() { mEnableUserCache = true; }
+void enableUserCache() {
+    if (!mEnableUserCache) {
+        initUserCache();
+        mEnableUserCache = true;
+    }
+}
 
 } // namespace GMLIB::Server::UserCache
