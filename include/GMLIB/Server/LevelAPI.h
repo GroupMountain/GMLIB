@@ -1,8 +1,9 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
-#include <mc/enums/AllExperiments.h>
-#include <mc/world/level/Level.h>
-#include <mc/world/level/storage/GameRuleId.h>
+#include "mc/enums/AllExperiments.h"
+#include "mc/network/packet/SetTitlePacket.h"
+#include "mc/world/level/Level.h"
+#include "mc/world/level/storage/GameRuleId.h"
 
 enum class WeatherType : int {
     Clear   = 0, // Sunny
@@ -49,6 +50,17 @@ public:
     GMLIB_API static void broadcast(std::string_view message);
 
     GMLIB_API static void broadcastToast(std::string_view title, std::string_view message);
+
+    GMLIB_API static void
+    broadcastTitle(std::string_view title, SetTitlePacket::TitleType type = SetTitlePacket::TitleType::Title);
+
+    GMLIB_API static void broadcastTitle(
+        std::string_view          title,
+        SetTitlePacket::TitleType type,
+        int                       fadeInDuration,
+        int                       remainDuration,
+        int                       fadeOutDuration
+    );
 
 public:
     GMLIB_API BlockSource* getBlockSource(DimensionType dimid);

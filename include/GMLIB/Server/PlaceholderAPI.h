@@ -38,9 +38,9 @@ public:
 
     GMLIB_API static std::string getValue(std::string placeholder);
 
-    GMLIB_API static void translateString(std::string& value, Player* sp = nullptr);
+    GMLIB_API static void translate(std::string& value, Player* sp = nullptr);
 
-    GMLIB_API static std::string translate(std::string_view value, Player* sp = nullptr);
+    GMLIB_API static std::string translateString(std::string_view value, Player* sp = nullptr);
 
     GMLIB_API static bool
     registerStaticPlaceholder(std::string placeholder, std::string value, std::string PluginName = "");

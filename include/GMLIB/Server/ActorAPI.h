@@ -2,6 +2,7 @@
 #include "GMLIB/GMLIB.h"
 #include "mc/world/actor/Actor.h"
 #include "mc/world/effect/MobEffect.h"
+#include "mc/world/level/biome/Biome.h"
 
 class GMLIB_Actor : public Actor {
 public:
@@ -71,4 +72,6 @@ public:
     GMLIB_API void setOffHandSlot(ItemStack& itemStack);
 
     GMLIB_API void hurtEntity(float damage, std::string causeName = "override", Actor* source = nullptr);
+
+    GMLIB_API Biome* getBiome();
 };

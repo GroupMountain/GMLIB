@@ -153,3 +153,8 @@ void GMLIB_Actor::hurtEntity(float damage, std::string causeName, Actor* source)
     auto cause = GMLIB::Mod::DamageCause::getCauseFromName(causeName);
     this->hurtByCause(damage, cause, source);
 }
+
+Biome* GMLIB_Actor::getBiome() {
+    auto& bs = getDimensionBlockSourceConst();
+    return const_cast<Biome*>(&bs.getConstBiome(getFeetBlockPos()));
+}

@@ -618,3 +618,21 @@ void CaculateTPS() {
         }
     }).detach();
 }
+
+void GMLIB_Level::broadcastTitle(std::string_view text, SetTitlePacket::TitleType type) {
+    SetTitlePacket(type, std::string(text)).sendToClients();
+}
+
+void GMLIB_Level::broadcastTitle(
+    std::string_view          text,
+    SetTitlePacket::TitleType type,
+    int                       fadeInDuration,
+    int                       remainDuration,
+    int                       fadeOutDuration
+) {
+    auto pkt         = SetTitlePacket(type, std::string(text));
+    pkt.mFadeInTime  = fadeInDuration;
+    pkt.mFadeOutTime = fadeOutDuration;
+    pkt.mStayTime    = remainDuration;
+    pkt.sendToClients();
+}

@@ -272,14 +272,14 @@ std::string PlaceholderAPI::getValue(std::string placeholderapi) {
     return placeholderapi;
 }
 
-void PlaceholderAPI::translateString(std::string& value, Player* sp) {
+void PlaceholderAPI::translate(std::string& value, Player* sp) {
     auto list = Helper::getPercentage(value);
     for (auto& i : list) {
         ll::string_utils::replaceAll(value, i, getValue(i, sp));
     }
 }
 
-std::string PlaceholderAPI::translate(std::string_view value, Player* sp) {
+std::string PlaceholderAPI::translateString(std::string_view value, Player* sp) {
     auto key  = std::string(value);
     auto list = Helper::getPercentage(key);
     for (auto& i : list) {
