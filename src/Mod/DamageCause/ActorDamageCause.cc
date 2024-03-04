@@ -79,11 +79,11 @@ std::string getCause(::ActorDamageCause cause) {
 }
 
 ::ActorDamageCause DamageCause::getCauseFromName(std::string& causeName) {
-    auto cause = ActorDamageSource::lookupCause(causeName);
+    auto cause = getCustomCause(causeName);
     if (cause != ActorDamageCause::None) {
         return cause;
     }
-    return getCustomCause(causeName);
+    return ActorDamageSource::lookupCause(causeName);
 }
 
 Actor* getDamagingEntity(ActorDamageSource* ads) {
