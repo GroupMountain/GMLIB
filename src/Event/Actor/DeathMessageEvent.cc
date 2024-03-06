@@ -115,10 +115,7 @@ LL_TYPE_INSTANCE_HOOK(
 
 static std::unique_ptr<ll::event::EmitterBase> emitterFactory1(ll::event::ListenerBase&);
 class DeathMessageBeforeEventEmitter : public ll::event::Emitter<emitterFactory1, DeathMessageBeforeEvent> {
-    ll::memory::HookRegistrar<DeathMessageEvent1> hook1;
-    ll::memory::HookRegistrar<DeathMessageEvent2> hook2;
-    ll::memory::HookRegistrar<DeathMessageEvent3> hook3;
-    ll::memory::HookRegistrar<DeathMessageEvent4> hook4;
+    ll::memory::HookRegistrar<DeathMessageEvent1, DeathMessageEvent2, DeathMessageEvent3, DeathMessageEvent4> hook;
 };
 
 static std::unique_ptr<ll::event::EmitterBase> emitterFactory1(ll::event::ListenerBase&) {
@@ -127,10 +124,7 @@ static std::unique_ptr<ll::event::EmitterBase> emitterFactory1(ll::event::Listen
 
 static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::ListenerBase&);
 class DeathMessageAfterEventEmitter : public ll::event::Emitter<emitterFactory2, DeathMessageAfterEvent> {
-    ll::memory::HookRegistrar<DeathMessageEvent1> hook1;
-    ll::memory::HookRegistrar<DeathMessageEvent2> hook2;
-    ll::memory::HookRegistrar<DeathMessageEvent3> hook3;
-    ll::memory::HookRegistrar<DeathMessageEvent4> hook4;
+    ll::memory::HookRegistrar<DeathMessageEvent1, DeathMessageEvent2, DeathMessageEvent3, DeathMessageEvent4> hook;
 };
 
 static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::ListenerBase&) {
