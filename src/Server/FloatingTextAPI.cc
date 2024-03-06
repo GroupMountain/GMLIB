@@ -1,5 +1,6 @@
 #include "Global.h"
 #include "mc/world/item/NetworkItemStackDescriptor.h"
+#include <GMLIB/Event/Player/PlayerChangeDimensionEvent.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/FloatingTextAPI.h>
 #include <GMLIB/Server/LevelAPI.h>
@@ -175,6 +176,9 @@ StaticFloatingText::StaticFloatingText(std::string text, Vec3 position, Dimensio
     eventBus.emplaceListener<ll::event::player::PlayerJoinEvent>([&](ll::event::player::PlayerJoinEvent& ev) {
         this->sendToClient(&ev.self());
     });
+    eventBus.emplaceListener<GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent>(
+        [&](GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent& ev) { this->sendToClient(&ev.self()); }
+    );
 }
 
 DynamicFloatingText::DynamicFloatingText(
@@ -190,6 +194,9 @@ DynamicFloatingText::DynamicFloatingText(
     eventBus.emplaceListener<ll::event::player::PlayerJoinEvent>([&](ll::event::player::PlayerJoinEvent& ev) {
         this->sendToClient(&ev.self());
     });
+    eventBus.emplaceListener<GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent>(
+        [&](GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent& ev) { this->sendToClient(&ev.self()); }
+    );
     mUpdateRate = updateRate;
     mTask       = mScheduler.add<ll::schedule::task::RepeatTask>(std::chrono::seconds::duration(mUpdateRate), [this] {
         this->updateAllClients();
