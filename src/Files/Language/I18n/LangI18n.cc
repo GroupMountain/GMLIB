@@ -16,6 +16,7 @@ LangI18n::~LangI18n() {
     for (auto lang : mAllLanguages) {
         delete lang.second;
     }
+    mAllLanguages.clear();
 }
 
 bool LangI18n::loadOrCreateLanguage(std::string languageCode, LangLanguage* language) {

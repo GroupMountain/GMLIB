@@ -173,12 +173,15 @@ StaticFloatingText::StaticFloatingText(std::string text, Vec3 position, Dimensio
 : FloatingText(text, position, dimensionId, usePapi) {
     sendToAllClients();
     auto& eventBus = ll::event::EventBus::getInstance();
-    eventBus.emplaceListener<ll::event::player::PlayerJoinEvent>([&](ll::event::player::PlayerJoinEvent& ev) {
-        this->sendToClient(&ev.self());
-    });
-    eventBus.emplaceListener<GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent>(
+    auto  event1 =
+        eventBus.emplaceListener<ll::event::player::PlayerJoinEvent>([&](ll::event::player::PlayerJoinEvent& ev) {
+            this->sendToClient(&ev.self());
+        });
+    mEventIds.push_back(event1->getId());
+    auto event2 = eventBus.emplaceListener<GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent>(
         [&](GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent& ev) { this->sendToClient(&ev.self()); }
     );
+    mEventIds.push_back(event2->getId());
 }
 
 DynamicFloatingText::DynamicFloatingText(
@@ -191,21 +194,35 @@ DynamicFloatingText::DynamicFloatingText(
 : FloatingText(text, position, dimensionId, usePapi) {
     sendToAllClients();
     auto& eventBus = ll::event::EventBus::getInstance();
-    eventBus.emplaceListener<ll::event::player::PlayerJoinEvent>([&](ll::event::player::PlayerJoinEvent& ev) {
-        this->sendToClient(&ev.self());
-    });
-    eventBus.emplaceListener<GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent>(
+    auto  event1 =
+        eventBus.emplaceListener<ll::event::player::PlayerJoinEvent>([&](ll::event::player::PlayerJoinEvent& ev) {
+            this->sendToClient(&ev.self());
+        });
+    mEventIds.push_back(event1->getId());
+    auto event2 = eventBus.emplaceListener<GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent>(
         [&](GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent& ev) { this->sendToClient(&ev.self()); }
     );
+    mEventIds.push_back(event2->getId());
     mUpdateRate = updateRate;
     mTask       = mScheduler.add<ll::schedule::task::RepeatTask>(std::chrono::seconds::duration(mUpdateRate), [this] {
         this->updateAllClients();
     });
 }
 
+StaticFloatingText::~StaticFloatingText() {
+    auto& eventBus = ll::event::EventBus::getInstance();
+    for (auto& id : mEventIds) {
+        eventBus.removeListener(id);
+    }
+}
+
 DynamicFloatingText::~DynamicFloatingText() {
     mTask->cancel();
     mScheduler.remove(mTask);
+    auto& eventBus = ll::event::EventBus::getInstance();
+    for (auto& id : mEventIds) {
+        eventBus.removeListener(id);
+    }
 }
 
 bool DynamicFloatingText::isDynamic() const { return true; }

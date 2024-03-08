@@ -60,10 +60,16 @@ public:
 };
 
 class StaticFloatingText : public FloatingText {
+private:
+    std::vector<ll::event::ListenerId> mEventIds;
+
 public:
     GMLIB_API StaticFloatingText(std::string text, Vec3 position, DimensionType dimensionId, bool usePapi = false);
 
     StaticFloatingText() = delete;
+
+public:
+    GMLIB_API virtual ~StaticFloatingText();
 
 public:
     GMLIB_API void updateText(std::string newText);
@@ -75,6 +81,7 @@ class DynamicFloatingText : public FloatingText {
 private:
     uint                                                               mUpdateRate;
     std::shared_ptr<ll::schedule::task::Task<ll::chrono::ServerClock>> mTask;
+    std::vector<ll::event::ListenerId>                                 mEventIds;
 
 public:
     GMLIB_API
