@@ -14,6 +14,12 @@ using namespace Server;
 
 std::time_t startTime = 0;
 
+std::string double2String(double num, int fixnum) {
+    std::stringstream sn;
+    sn << std::setiosflags(std::ios::fixed) << std::setprecision(fixnum) << num;
+    return sn.str();
+}
+
 void regPlayerPAPI() {
 
     PlaceholderAPI::registerPlayerPlaceholder(
@@ -394,7 +400,29 @@ void regServerPAPI() {
             if (GMLIB_Level::getLevel()) {
                 return S(GMLIB_Level::getLevel()->getServerCurrentTps());
             }
-            return S(0);
+            return S(0.0f);
+        },
+        "GMLIB"
+    );
+
+    PlaceholderAPI::registerServerPlaceholder(
+        "server_tps_fixed",
+        []() {
+            if (GMLIB_Level::getLevel()) {
+                return double2String(GMLIB_Level::getLevel()->getServerCurrentTps(), 2);
+            }
+            return double2String(0.0f, 2);
+        },
+        "GMLIB"
+    );
+
+    PlaceholderAPI::registerServerPlaceholder(
+        "server_tps_int",
+        []() {
+            if (GMLIB_Level::getLevel()) {
+                return double2String(GMLIB_Level::getLevel()->getServerCurrentTps(), 0);
+            }
+            return double2String(0.0f, 0);
         },
         "GMLIB"
     );
@@ -405,7 +433,18 @@ void regServerPAPI() {
             if (GMLIB_Level::getLevel()) {
                 return S(GMLIB_Level::getLevel()->getServerMspt());
             }
-            return S(0);
+            return S(0.0f);
+        },
+        "GMLIB"
+    );
+
+    PlaceholderAPI::registerServerPlaceholder(
+        "server_mspt_fixed",
+        []() {
+            if (GMLIB_Level::getLevel()) {
+                return double2String(GMLIB_Level::getLevel()->getServerMspt(), 2);
+            }
+            return double2String(0.0f, 2);
         },
         "GMLIB"
     );
