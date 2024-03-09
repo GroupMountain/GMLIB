@@ -42,54 +42,44 @@ public:
 
     GMLIB_API static std::string translateString(std::string_view value, Player* sp = nullptr);
 
-    GMLIB_API static bool
-    registerStaticPlaceholder(std::string placeholder, std::string value, std::string PluginName = "");
+    GMLIB_API static bool registerStaticPlaceholder(std::string placeholder, std::string value, std::string pluginName);
 
     GMLIB_API static bool
-    registerStaticPlaceholder(std::string placeholder, std::string (*Func)(), std::string PluginName = "");
+    registerStaticPlaceholder(std::string placeholder, std::string (*Func)(), std::string pluginName);
 
-    GMLIB_API static bool registerStaticPlaceholder(
-        std::string                  placeholder,
-        std::function<std::string()> callback,
-        std::string                  PluginName = ""
-    );
+    GMLIB_API static bool
+    registerStaticPlaceholder(std::string placeholder, std::function<std::string()> callback, std::string pluginName);
 
     GMLIB_API static bool registerStaticPlaceholder(
         std::string placeholder,
         int         UpdateInterval,
         std::string (*Func)(),
-        std::string PluginName
+        std::string pluginName
     );
 
     GMLIB_API static bool registerStaticPlaceholder(
         std::string                  name,
         int                          UpdateInterval,
         std::function<std::string()> callback,
-        std::string                  PluginName = ""
+        std::string                  pluginName
     );
 
-    GMLIB_API static bool registerPlayerPlaceholder(
-        std::string                         name,
-        std::function<std::string(Player*)> callback,
-        std::string                         PluginName = ""
-    );
+    GMLIB_API static bool
+    registerPlayerPlaceholder(std::string name, std::function<std::string(Player*)> callback, std::string pluginName);
 
     GMLIB_API static bool registerPlayerPlaceholder(
         std::string                                                                       name,
         std::function<std::string(Player*, std::unordered_map<std::string, std::string>)> callback,
-        std::string                                                                       PluginName = ""
+        std::string                                                                       PluginName
     );
 
-    GMLIB_API static bool registerServerPlaceholder(
-        std::string                  placeholder,
-        std::function<std::string()> callback,
-        std::string                  PluginName = ""
-    );
+    GMLIB_API static bool
+    registerServerPlaceholder(std::string placeholder, std::function<std::string()> callback, std::string pluginName);
 
     GMLIB_API static bool registerServerPlaceholder(
         std::string                                                              name,
         std::function<std::string(std::unordered_map<std::string, std::string>)> callback,
-        std::string                                                              PluginName = ""
+        std::string                                                              pluginName
     );
 
     GMLIB_API static bool unRegisterPlaceholder(std::string placeholder);

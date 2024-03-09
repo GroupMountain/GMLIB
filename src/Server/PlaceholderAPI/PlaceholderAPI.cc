@@ -26,7 +26,7 @@ PlaceholderAPI::PlaceholderAPI(
   mCallback(callback),
   mCallbackWithParameters(callbackWithParameters) {
     mPlaceholder = "%" + placeholder + "%";
-    mPluginName  = pluginName.empty() ? "unknown" : pluginName;
+    mPluginName  = pluginName.empty() ? "GMLIB" : pluginName;
 }
 
 void PlaceholderAPI::update(PlaceholderAPI papi) {
