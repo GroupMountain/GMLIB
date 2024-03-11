@@ -13,7 +13,7 @@ void saveUserCacheFile() {
     GMLIB::Files::JsonFile::writeFile(path, mUserCache);
 }
 
-void updateUserCache(mce::UUID& uuid, std::string& xuid, std::string& realName) {
+void updateUserCache(mce::UUID const& uuid, std::string& xuid, std::string& realName) {
     for (auto& key : mUserCache) {
         if (key["uuid"] == uuid.asString()) {
             key["uuid"]     = uuid.asString();

@@ -12,6 +12,7 @@
 #include <mc/network/MinecraftPackets.h>
 #include <mc/network/packet/AddActorPacket.h>
 #include <mc/network/packet/BossEventPacket.h>
+#include <mc/network/packet/RemoveActorPacket.h>
 #include <mc/network/packet/ScorePacketInfo.h>
 #include <mc/network/packet/SetDisplayObjectivePacket.h>
 #include <mc/network/packet/SetScorePacket.h>
@@ -218,7 +219,7 @@ std::optional<std::pair<Vec3, int>> GMLIB_Player::getPlayerPosition(std::string&
     return {};
 }
 
-std::optional<std::pair<Vec3, int>> GMLIB_Player::getPlayerPosition(mce::UUID& uuid) {
+std::optional<std::pair<Vec3, int>> GMLIB_Player::getPlayerPosition(mce::UUID const& uuid) {
     auto pl = ll::service::getLevel()->getPlayer(uuid);
     if (pl) {
         return {
@@ -257,7 +258,7 @@ bool GMLIB_Player::setPlayerPosition(std::string& serverId, Vec3 pos, DimensionT
     return false;
 }
 
-bool GMLIB_Player::setPlayerPosition(mce::UUID& uuid, Vec3 pos, DimensionType dimId) {
+bool GMLIB_Player::setPlayerPosition(mce::UUID const& uuid, Vec3 pos, DimensionType dimId) {
     auto pl = ll::service::getLevel()->getPlayer(uuid);
     if (pl) {
         pl->teleport(pos, dimId);
@@ -280,6 +281,7 @@ void GMLIB_Player::setClientSidebar(
     const std::vector<std::pair<std::string, int>>& data,
     ObjectiveSortOrder                              sortOrder
 ) {
+    // todo ???
     SetDisplayObjectivePacket("sidebar", "GMLIB_SIDEBAR_API", title, "dummy", ObjectiveSortOrder(sortOrder))
         .sendTo(*this);
 
@@ -304,6 +306,8 @@ void GMLIB_Player::setClientSidebar(
     SetDisplayObjectivePacket("sidebar", "GMLIB_SIDEBAR_API", title, "dummy", ObjectiveSortOrder(sortOrder))
         .sendTo(*this);
 }
+
+// Todo : Below Name | List
 
 void GMLIB_Player::removeClientSidebar() {
     SetDisplayObjectivePacket("sidebar", "", "", "dummy", ObjectiveSortOrder::Ascending).sendTo(*this);
@@ -354,68 +358,77 @@ void GMLIB_Player::setClientGamemode(GameType gamemode) {
 }
 
 void GMLIB_Player::setClientBossbar(
-    int64_t        bossbarId,
-    std::string    name,
-    float          percentage,
-    ::BossBarColor color,
-    int            overlay
+    int64_t          bossbarId,
+    std::string      name,
+    float            percentage,
+    ::BossBarColor   color,
+    ::BossBarOverlay overlay
 ) {
     // AddActorPacket
-    GMLIB_BinaryStream bs1;
-    bs1.writeVarInt64(bossbarId);
-    bs1.writeUnsignedVarInt64(bossbarId);
-    bs1.writeString("player");
-    bs1.writeVec3(Vec3{getPosition().x, -66.0f, getPosition().z});
-    bs1.writeVec3(Vec3{0, 0, 0});
-    bs1.writeVec2(Vec2{0, 0});
-    bs1.writeFloat(0.0f);
-    bs1.writeFloat(0.0f);
-    bs1.writeUnsignedVarInt(0);
-    bs1.writeUnsignedVarInt(0);
-    bs1.writeUnsignedVarInt(0);
-    bs1.writeUnsignedVarInt(0);
-    bs1.writeUnsignedVarInt(0);
-    GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::AddActor> pkt1(bs1.getAndReleaseData());
-    pkt1.sendTo(*this);
+    auto auid = ActorUniqueID(bossbarId);
+    if (!ll::service::getLevel()->fetchEntity(auid)) {
+        GMLIB_BinaryStream bs1;
+        bs1.writeVarInt64(bossbarId);
+        bs1.writeUnsignedVarInt64(bossbarId);
+        bs1.writeString("player");
+        bs1.writeVec3(Vec3{getPosition().x, -66.0f, getPosition().z});
+        bs1.writeVec3(Vec3{0, 0, 0});
+        bs1.writeVec2(Vec2{0, 0});
+        bs1.writeFloat(0.0f);
+        bs1.writeFloat(0.0f);
+        bs1.writeUnsignedVarInt(0);
+        bs1.writeUnsignedVarInt(0);
+        bs1.writeUnsignedVarInt(0);
+        bs1.writeUnsignedVarInt(0);
+        bs1.writeUnsignedVarInt(0);
+        GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::AddActor> pkt1(bs1.getAndReleaseData());
+        pkt1.sendTo(*this);
+    }
     // BossEventPacket
-    GMLIB_BinaryStream bs2;
-    bs2.mBuffer->reserve(8 + name.size());
-    bs2.writeVarInt64(bossbarId);
-    bs2.writeUnsignedVarInt(0);
-    bs2.writeString(name);
-    bs2.writeFloat(percentage);
-    bs2.writeUnsignedShort(1);
-    bs2.writeUnsignedVarInt((int)color);
-    bs2.writeUnsignedVarInt(overlay);
-    auto pkt2 = MinecraftPackets::createPacket(MinecraftPacketIds::BossEvent);
-    pkt2->read(bs2);
-    pkt2->sendTo(*this);
+    auto pkt2           = BossEventPacket();
+    pkt2.mBossID        = ActorUniqueID(bossbarId);
+    pkt2.mHealthPercent = percentage;
+    pkt2.mEventType     = BossEventUpdateType::Add;
+    pkt2.mColor         = color;
+    pkt2.mOverlay       = overlay;
+    pkt2.mName          = name;
+    pkt2.sendTo(*this);
 }
 
-int64_t GMLIB_Player::setClientBossbar(std::string name, float percentage, ::BossBarColor color, int overlay) {
+int64_t
+GMLIB_Player::setClientBossbar(std::string name, float percentage, ::BossBarColor color, ::BossBarOverlay overlay) {
     auto bossbarId = GMLIB_Actor::getNextActorUniqueID();
     setClientBossbar(bossbarId, name, percentage, color, overlay);
     return bossbarId;
 }
 
 void GMLIB_Player::removeClientBossbar(int64_t bossbarId) {
-    GMLIB_BinaryStream bs;
-    bs.writeVarInt64(bossbarId);
-    bs.writeUnsignedVarInt((int)2);
-    auto pkt = MinecraftPackets::createPacket(MinecraftPacketIds::BossEvent);
-    pkt->read(bs);
-    pkt->sendTo(*this);
+    auto auid = ActorUniqueID(bossbarId);
+    RemoveActorPacket(auid).sendTo(*this);
 }
 
-void GMLIB_Player::updateClientBossbar(
-    int64_t        bossbarId,
-    std::string    name,
-    float          percentage,
-    ::BossBarColor color,
-    int            overlay
-) {
-    removeClientBossbar(bossbarId);
-    setClientBossbar(bossbarId, name, percentage, color, overlay);
+void GMLIB_Player::updateClientBossbarPercentage(int64_t bossbarId, float percentage) {
+    auto pkt           = BossEventPacket();
+    pkt.mBossID        = ActorUniqueID(bossbarId);
+    pkt.mHealthPercent = percentage;
+    pkt.mEventType     = BossEventUpdateType::UpdatePercent;
+    pkt.sendTo(*this);
+}
+
+void GMLIB_Player::updateClientBossbarName(int64_t bossbarId, std::string name) {
+    auto pkt       = BossEventPacket();
+    pkt.mBossID    = ActorUniqueID(bossbarId);
+    pkt.mName      = name;
+    pkt.mEventType = BossEventUpdateType::UpdateName;
+    pkt.sendTo(*this);
+}
+
+void GMLIB_Player::updateClientBossbarColor(int64_t bossbarId, ::BossBarColor color) {
+    auto pkt       = BossEventPacket();
+    pkt.mBossID    = ActorUniqueID(bossbarId);
+    pkt.mColor     = color;
+    pkt.mEventType = BossEventUpdateType::UpdateStyle;
+    pkt.sendTo(*this);
 }
 
 void GMLIB_Player::setClientWeather(WeatherType weather) { return GMLIB_Level::setClientWeather(weather, this); }
@@ -475,7 +488,7 @@ std::optional<int> GMLIB_Player::getPlayerScore(std::string& serverId, std::stri
     return scoreboard->getPlayerScore(objective, serverId);
 }
 
-std::optional<int> GMLIB_Player::getPlayerScore(mce::UUID& uuid, std::string objective) {
+std::optional<int> GMLIB_Player::getPlayerScore(mce::UUID const& uuid, std::string objective) {
     auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
     return scoreboard->getPlayerScore(objective, uuid);
 }
@@ -487,7 +500,7 @@ GMLIB_Player::setPlayerScore(std::string& serverId, std::string objective, int v
 }
 
 std::optional<int>
-GMLIB_Player::setPlayerScore(mce::UUID& uuid, std::string objective, int value, PlayerScoreSetFunction action) {
+GMLIB_Player::setPlayerScore(mce::UUID const& uuid, std::string objective, int value, PlayerScoreSetFunction action) {
     auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
     return scoreboard->setPlayerScore(objective, uuid, value, action);
 }
@@ -497,7 +510,7 @@ bool GMLIB_Player::resetPlayerScore(std::string& serverId, std::string objective
     return scoreboard->resetPlayerScore(objective, serverId);
 }
 
-bool GMLIB_Player::resetPlayerScore(mce::UUID& uuid, std::string objective) {
+bool GMLIB_Player::resetPlayerScore(mce::UUID const& uuid, std::string objective) {
     auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
     return scoreboard->resetPlayerScore(objective, uuid);
 }
@@ -507,7 +520,7 @@ bool GMLIB_Player::resetPlayerScore(std::string& serverId) {
     return scoreboard->resetPlayerAllScores(serverId);
 }
 
-bool GMLIB_Player::resetPlayerScore(mce::UUID& uuid) {
+bool GMLIB_Player::resetPlayerScore(mce::UUID const& uuid) {
     auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
     return scoreboard->resetPlayerAllScores(uuid);
 }

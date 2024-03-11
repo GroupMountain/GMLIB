@@ -24,7 +24,7 @@ public:
 
     GMLIB_API ScoreboardId getPlayerScoreboardId(std::string serverid);
 
-    GMLIB_API ScoreboardId getPlayerScoreboardId(mce::UUID& uuid);
+    GMLIB_API ScoreboardId getPlayerScoreboardId(mce::UUID const& uuid);
 
     GMLIB_API std::optional<int> getScore(Objective* objective, ScoreboardId& scoreboardId);
 
@@ -36,7 +36,7 @@ public:
 
     GMLIB_API std::optional<int> getPlayerScore(std::string objective, std::string serverid);
 
-    GMLIB_API std::optional<int> getPlayerScore(std::string objective, mce::UUID& uuid);
+    GMLIB_API std::optional<int> getPlayerScore(std::string objective, mce::UUID const& uuid);
 
     GMLIB_API std::optional<int> getPlayerScore(std::string objective, Player* pl);
 
@@ -69,7 +69,7 @@ public:
 
     GMLIB_API std::optional<int> setPlayerScore(
         std::string            objective,
-        mce::UUID&             uuid,
+        mce::UUID const&             uuid,
         int                    value,
         PlayerScoreSetFunction action = PlayerScoreSetFunction::Set
     );
@@ -91,7 +91,7 @@ public:
 
     GMLIB_API bool resetPlayerScore(std::string objective, std::string serverid);
 
-    GMLIB_API bool resetPlayerScore(std::string objective, mce::UUID& uuid);
+    GMLIB_API bool resetPlayerScore(std::string objective, mce::UUID const& uuid);
 
     GMLIB_API bool resetPlayerScore(std::string objective, Player* pl);
 
@@ -105,7 +105,7 @@ public:
 
     GMLIB_API bool resetPlayerAllScores(std::string serverid);
 
-    GMLIB_API bool resetPlayerAllScores(mce::UUID& uuid);
+    GMLIB_API bool resetPlayerAllScores(mce::UUID const& uuid);
 
     GMLIB_API bool resetPlayerAllScores(Player* pl);
 

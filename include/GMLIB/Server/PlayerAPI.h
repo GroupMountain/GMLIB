@@ -3,6 +3,7 @@
 #include "GMLIB/Server/ActorAPI.h"
 #include "GMLIB/Server/LevelAPI.h"
 #include "mc/enums/BossBarColor.h"
+#include "mc/enums/BossBarOverlay.h"
 #include "mc/enums/ObjectiveSortOrder.h"
 #include "mc/network/packet/SetTitlePacket.h"
 #include "mc/network/packet/UpdateBlockPacket.h"
@@ -49,7 +50,7 @@ public:
 
     GMLIB_API static std::optional<int> getPlayerScore(std::string& serverId, std::string objective);
 
-    GMLIB_API static std::optional<int> getPlayerScore(mce::UUID& uuid, std::string objective);
+    GMLIB_API static std::optional<int> getPlayerScore(mce::UUID const& uuid, std::string objective);
 
     GMLIB_API static std::optional<int> setPlayerScore(
         std::string&           serverId,
@@ -59,7 +60,7 @@ public:
     );
 
     GMLIB_API static std::optional<int> setPlayerScore(
-        mce::UUID&             uuid,
+        mce::UUID const&       uuid,
         std::string            objective,
         int                    value,
         PlayerScoreSetFunction action = PlayerScoreSetFunction::Set
@@ -67,19 +68,19 @@ public:
 
     GMLIB_API static bool resetPlayerScore(std::string& serverId, std::string objective);
 
-    GMLIB_API static bool resetPlayerScore(mce::UUID& uuid, std::string objective);
+    GMLIB_API static bool resetPlayerScore(mce::UUID const& uuid, std::string objective);
 
     GMLIB_API static bool resetPlayerScore(std::string& serverId);
 
-    GMLIB_API static bool resetPlayerScore(mce::UUID& uuid);
+    GMLIB_API static bool resetPlayerScore(mce::UUID const& uuid);
 
     GMLIB_API static std::optional<std::pair<Vec3, int>> getPlayerPosition(std::string& serverId);
 
-    GMLIB_API static std::optional<std::pair<Vec3, int>> getPlayerPosition(mce::UUID& uuid);
+    GMLIB_API static std::optional<std::pair<Vec3, int>> getPlayerPosition(mce::UUID const& uuid);
 
     GMLIB_API static bool setPlayerPosition(std::string& serverId, Vec3 pos, DimensionType dimId);
 
-    GMLIB_API static bool setPlayerPosition(mce::UUID& uuid, Vec3 pos, DimensionType dimId);
+    GMLIB_API static bool setPlayerPosition(mce::UUID const& uuid, Vec3 pos, DimensionType dimId);
 
 public:
     GMLIB_API std::unique_ptr<CompoundTag> getNbt();
@@ -142,29 +143,27 @@ public:
     GMLIB_API void setClientGamemode(GameType gamemode);
 
     GMLIB_API void setClientBossbar(
-        int64_t        bossbarId,
-        std::string    name,
-        float          percentage,
-        ::BossBarColor color   = BossBarColor::Purple,
-        int            overlay = 1
+        int64_t          bossbarId,
+        std::string      name,
+        float            percentage,
+        ::BossBarColor   color   = BossBarColor::Purple,
+        ::BossBarOverlay overlay = BossBarOverlay::Progress
     );
 
     GMLIB_API int64_t setClientBossbar(
-        std::string    name,
-        float          percentage = 1.00f,
-        ::BossBarColor color      = BossBarColor::Purple,
-        int            overlay    = 1
+        std::string      name,
+        float            percentage = 1.00f,
+        ::BossBarColor   color      = BossBarColor::Purple,
+        ::BossBarOverlay overlay    = BossBarOverlay::Progress
     );
 
     GMLIB_API void removeClientBossbar(int64_t bossbarId);
 
-    GMLIB_API void updateClientBossbar(
-        int64_t        bossbarId,
-        std::string    name,
-        float          percentage = 1.00f,
-        ::BossBarColor color      = BossBarColor::Purple,
-        int            overlay    = 1
-    );
+    GMLIB_API void updateClientBossbarPercentage(int64_t bossbarId, float percentage);
+
+    GMLIB_API void updateClientBossbarName(int64_t bossbarId, std::string name);
+
+    GMLIB_API void updateClientBossbarColor(int64_t bossbarId, ::BossBarColor color);
 
     GMLIB_API void setClientWeather(WeatherType weather);
 

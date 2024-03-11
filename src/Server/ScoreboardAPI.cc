@@ -43,7 +43,7 @@ ScoreboardId GMLIB_Scoreboard::getPlayerScoreboardId(std::string serverid) {
     return ScoreboardId::INVALID;
 }
 
-ScoreboardId GMLIB_Scoreboard::getPlayerScoreboardId(mce::UUID& uuid) {
+ScoreboardId GMLIB_Scoreboard::getPlayerScoreboardId(mce::UUID const& uuid) {
     auto serverid = GMLIB_Player::getServerIdFromUuid(uuid);
     return getPlayerScoreboardId(serverid);
 }
@@ -72,7 +72,7 @@ std::optional<int> GMLIB_Scoreboard::getPlayerScore(std::string objective, std::
     return getScore(obj, id);
 }
 
-std::optional<int> GMLIB_Scoreboard::getPlayerScore(std::string objective, mce::UUID& uuid) {
+std::optional<int> GMLIB_Scoreboard::getPlayerScore(std::string objective, mce::UUID const& uuid) {
     auto id  = getPlayerScoreboardId(uuid);
     auto obj = getObjective(objective);
     return getScore(obj, id);
@@ -136,7 +136,7 @@ std::optional<int> GMLIB_Scoreboard::setPlayerScore(
 }
 
 std::optional<int>
-GMLIB_Scoreboard::setPlayerScore(std::string objective, mce::UUID& uuid, int value, PlayerScoreSetFunction action) {
+GMLIB_Scoreboard::setPlayerScore(std::string objective, mce::UUID const& uuid, int value, PlayerScoreSetFunction action) {
     auto id  = getPlayerScoreboardId(uuid);
     auto obj = getObjective(objective);
     if (!obj) {
@@ -181,7 +181,7 @@ bool GMLIB_Scoreboard::resetPlayerScore(std::string objective, std::string serve
     return resetScore(obj, id);
 }
 
-bool GMLIB_Scoreboard::resetPlayerScore(std::string objective, mce::UUID& uuid) {
+bool GMLIB_Scoreboard::resetPlayerScore(std::string objective, mce::UUID const& uuid) {
     auto id  = getPlayerScoreboardId(uuid);
     auto obj = getObjective(objective);
     return resetScore(obj, id);
@@ -217,7 +217,7 @@ bool GMLIB_Scoreboard::resetPlayerAllScores(std::string serverid) {
     return resetAllScores(id);
 }
 
-bool GMLIB_Scoreboard::resetPlayerAllScores(mce::UUID& uuid) {
+bool GMLIB_Scoreboard::resetPlayerAllScores(mce::UUID const& uuid) {
     auto id = getPlayerScoreboardId(uuid);
     return resetAllScores(id);
 }
