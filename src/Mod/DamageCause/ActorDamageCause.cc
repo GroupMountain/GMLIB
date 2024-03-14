@@ -214,20 +214,20 @@ std::optional<DEATH_MESSAGE> tryTranslateHardCodedDeathMessage(
     }
     // 硬编码弹射物信息
     case ActorDamageCause::Projectile: {
-        switch (ll::hash_utils::do_hash(directKiller)) {
-        case ll::hash_utils::do_hash("minecraft:small_fireball"):
+        switch (ll::hash_utils::doHash(directKiller)) {
+        case ll::hash_utils::doHash("minecraft:small_fireball"):
             deathMessage.first = "death.attack.fireball.item";
             break;
-        case ll::hash_utils::do_hash("minecraft:thrown_trident"):
+        case ll::hash_utils::doHash("minecraft:thrown_trident"):
             deathMessage.first = "death.attack.trident.item";
             break;
-        case ll::hash_utils::do_hash("minecraft:llama_spit"):
+        case ll::hash_utils::doHash("minecraft:llama_spit"):
             deathMessage.first = "death.attack.spit";
             break;
-        case ll::hash_utils::do_hash("minecraft:shulker_bullet"):
+        case ll::hash_utils::doHash("minecraft:shulker_bullet"):
             deathMessage.first = "death.attack.bullet";
             break;
-        case ll::hash_utils::do_hash("minecraft:arrow"):
+        case ll::hash_utils::doHash("minecraft:arrow"):
             deathMessage.first = "death.attack.arrow.item";
             break;
         default:
@@ -238,11 +238,11 @@ std::optional<DEATH_MESSAGE> tryTranslateHardCodedDeathMessage(
     }
     // 硬编码直接击杀信息
     case ActorDamageCause::EntityAttack: {
-        switch (ll::hash_utils::do_hash(directKiller)) {
-        case ll::hash_utils::do_hash("minecraft:player"):
+        switch (ll::hash_utils::doHash(directKiller)) {
+        case ll::hash_utils::doHash("minecraft:player"):
             deathMessage.first = "death.attack.player.item";
             break;
-        case ll::hash_utils::do_hash("minecraft:bee"):
+        case ll::hash_utils::doHash("minecraft:bee"):
             deathMessage.first = "death.attack.sting.item";
             break;
         default:
@@ -253,11 +253,11 @@ std::optional<DEATH_MESSAGE> tryTranslateHardCodedDeathMessage(
     }
     // 硬编码接触死亡信息
     case ActorDamageCause::Contact: {
-        switch (ll::hash_utils::do_hash(deathMessage.first)) {
-        case ll::hash_utils::do_hash("death.attack.cactus"):
+        switch (ll::hash_utils::doHash(deathMessage.first)) {
+        case ll::hash_utils::doHash("death.attack.cactus"):
             deathMessage.first = "death.attack.cactus.item";
             break;
-        case ll::hash_utils::do_hash("death.attack.sweetBerry"):
+        case ll::hash_utils::doHash("death.attack.sweetBerry"):
             deathMessage.first = "death.attack.sweetBerry.item";
             break;
         default:
@@ -276,9 +276,9 @@ std::optional<DEATH_MESSAGE> tryTranslateHardCodedDeathMessage(
         return makeDeathMessage((int)cause, deathMessage, name, killer, weaponName, isEscaping, true);
     }
     case ActorDamageCause::EntityExplosion: {
-        switch (ll::hash_utils::do_hash(directKiller)) {
-        case ll::hash_utils::do_hash("minecraft:wither_skull"):
-        case ll::hash_utils::do_hash("minecraft:wither_skull_dangerous"):
+        switch (ll::hash_utils::doHash(directKiller)) {
+        case ll::hash_utils::doHash("minecraft:wither_skull"):
+        case ll::hash_utils::doHash("minecraft:wither_skull_dangerous"):
             deathMessage.first = "death.attack.witherSkull.item";
             break;
         default: {
