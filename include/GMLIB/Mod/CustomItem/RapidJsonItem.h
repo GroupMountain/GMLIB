@@ -6,9 +6,9 @@ namespace GMLIB::Mod {
 
 class RapidJsonItem {
 public:
-    GMLIB_API static bool loadJsonItem(std::string json);
+    GMLIB_API static void loadJsonItem(std::string json);
 
-    GMLIB_API static bool loadJsonItem(nlohmann::json json);
+    GMLIB_API static void loadJsonItem(nlohmann::json json);
 };
 
 } // namespace GMLIB::Mod

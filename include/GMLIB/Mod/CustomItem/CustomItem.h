@@ -5,7 +5,7 @@ namespace GMLIB::Mod {
 
 class CustomItem {
 public:
-    // Todo
+    GMLIB_API static void unregisterItem(std::string id);
 };
 
 } // namespace GMLIB::Mod
