@@ -1,17 +1,15 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
-#include "mc/world/item/crafting/RecipeUnlockingRequirement.h"
-#include "mc/world/item/crafting/Recipes.h"
+#include <mc/world/item/ItemInstance.h>
+#include <mc/world/item/crafting/Recipes.h>
 
 namespace GMLIB::Mod {
 
-class CustomShapedRecipe {
+class CustomShapelessRecipe {
 public:
     virtual std::string getRecipeId() = 0;
 
     virtual ItemInstance getResult() = 0;
-
-    virtual std::vector<std::string> getShape() = 0;
 
     virtual std::vector<Recipes::Type> getIngredients() = 0;
 
@@ -20,14 +18,14 @@ public:
     virtual int getPriority() { return 50; }
 
     virtual std::function<std::unique_ptr<
-        ShapedRecipe>(std::string, int, int, std::vector<class RecipeIngredient> const&, std::vector<class ItemInstance> const&, class HashedString, int, class mce::UUID const*, std::optional<class RecipeUnlockingRequirement>, class SemVersion const&)>
+        ShapelessRecipe>(std::string, std::vector<class RecipeIngredient> const&, std::vector<class ItemInstance> const&, class HashedString, int, class mce::UUID const*, std::optional<class RecipeUnlockingRequirement>, class SemVersion const&)>
     getConstructor() {
         return nullptr;
     }
 
     virtual std::optional<class RecipeUnlockingRequirement> getRecipeUnlockingRequirement() { return {}; }
 
-    virtual SemVersion getSemVersion() { return SemVersion(1, 20, 50, "", ""); }
+    virtual SemVersion getSemVersion() { return SemVersion(1, 20, 60, "", ""); }
 };
 
 } // namespace GMLIB::Mod

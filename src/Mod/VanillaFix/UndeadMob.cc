@@ -1,5 +1,5 @@
 #include "Global.h"
-#include <GMLIB/Mod/VanillaFix.h>
+#include <GMLIB/Mod/Addons/VanillaFix.h>
 
 namespace GMLIB::Mod {
 

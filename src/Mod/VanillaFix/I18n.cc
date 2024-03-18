@@ -1,5 +1,5 @@
 #include "Global.h"
-#include <GMLIB/Mod/VanillaFix.h>
+#include <GMLIB/Mod/Addons/VanillaFix.h>
 #include <mc/locale/I18n.h>
 #include <mc/resources/ResourcePackManager.h>
 #include <mc/server/ServerInstance.h>

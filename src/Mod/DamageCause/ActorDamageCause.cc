@@ -1,5 +1,5 @@
 #include "Global.h"
-#include <GMLIB/Mod/CustomDamageCause.h>
+#include <GMLIB/Mod/Addons/CustomDamageCause.h>
 #include <mc/world/actor/ActorDamageByActorSource.h>
 #include <mc/world/actor/ActorDamageByBlockSource.h>
 #include <mc/world/actor/ActorDamageByChildActorSource.h>

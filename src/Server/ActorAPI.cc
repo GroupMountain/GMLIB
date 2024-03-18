@@ -1,5 +1,5 @@
 #include "Global.h"
-#include <GMLIB/Mod/CustomDamageCause.h>
+#include <GMLIB/Mod/Addons/CustomDamageCause.h>
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/CompoundTagAPI.h>
 #include <GMLIB/Server/SpawnerAPI.h>

@@ -1,5 +1,5 @@
 #include "Global.h"
-#include <GMLIB/Mod/CustomPacks.h>
+#include <GMLIB/Mod/Addons/CustomPacks.h>
 #include <mc/deps/core/Path.h>
 #include <mc/resources/CompositePackSource.h>
 #include <mc/resources/PackManifest.h>

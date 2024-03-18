@@ -1,5 +1,5 @@
 #include "Global.h"
-#include <GMLIB/Mod/CustomDamageCause.h>
+#include <GMLIB/Mod/Addons/CustomDamageCause.h>
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/NetworkPacketAPI.h>
