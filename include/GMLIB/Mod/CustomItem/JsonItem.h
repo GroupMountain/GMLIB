@@ -4,7 +4,7 @@
 
 namespace GMLIB::Mod {
 
-class RapidJsonItem {
+class JsonItem {
 public:
     GMLIB_API static void loadJsonItem(std::string json);
 

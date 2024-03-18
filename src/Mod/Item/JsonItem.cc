@@ -1,5 +1,5 @@
 #include "Global.h"
-#include <GMLIB/Mod/CustomItem/RapidJsonItem.h>
+#include <GMLIB/Mod/CustomItem/JsonItem.h>
 #include <mc/deps/cereal/ReflectionCtx.h>
 #include <mc/deps/core/Path.h>
 #include <mc/deps/json/Value.h>
@@ -12,9 +12,9 @@ namespace GMLIB::Mod {
 
 std::vector<std::string> mAllItemJson;
 
-void RapidJsonItem::loadJsonItem(std::string json) { mAllItemJson.push_back(json); }
+void JsonItem::loadJsonItem(std::string json) { mAllItemJson.push_back(json); }
 
-void RapidJsonItem::loadJsonItem(nlohmann::json json) {
+void JsonItem::loadJsonItem(nlohmann::json json) {
     auto value = json.dump();
     mAllItemJson.push_back(value);
 }
@@ -47,6 +47,5 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
         );
     }
 }
-
 
 } // namespace GMLIB::Mod

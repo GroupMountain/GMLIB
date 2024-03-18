@@ -1,5 +1,5 @@
 #include "Global.h"
-#include <GMLIB/Mod/CustomRecipe/RapidJsonRecipe.h>
+#include <GMLIB/Mod/CustomRecipe/JsonRecipe.h>
 #include <mc/deps/json/Reader.h>
 
 Json::Reader reader;
@@ -16,7 +16,7 @@ bool addRecipeJson(std::string ricipe_type, std::string json_string) {
 }
 
 // json形式构造
-bool RapidJsonRecipe::loadJsonRecipe(std::string json) {
+bool JsonRecipe::loadJsonRecipe(std::string json) {
     Json::Value value;
     reader.parse(json, value, true);
     auto info = ll::service::bedrock::getLevel()->getRecipes().extractRecipeObjInfo(value);
@@ -24,12 +24,12 @@ bool RapidJsonRecipe::loadJsonRecipe(std::string json) {
     return ll::service::bedrock::getLevel()->getRecipes().loadRecipe(info, ver, ver, true);
 }
 
-bool RapidJsonRecipe::loadJsonRecipe(nlohmann::json json) {
+bool JsonRecipe::loadJsonRecipe(nlohmann::json json) {
     auto json_string = json.dump(4);
     return loadJsonRecipe(json_string);
 }
 
-bool RapidJsonRecipe::registerFurnaceRecipe(
+bool JsonRecipe::registerFurnaceRecipe(
     std::string                                              recipe_id,
     RecipeIngredient                                         input,
     RecipeIngredient                                         output,
@@ -56,7 +56,7 @@ bool RapidJsonRecipe::registerFurnaceRecipe(
     return addRecipeJson("recipe_furnace", recipe_json.dump(4));
 }
 
-bool RapidJsonRecipe::registerBrewingMixRecipe(
+bool JsonRecipe::registerBrewingMixRecipe(
     std::string      recipe_id,
     std::string      input,
     std::string      output,
@@ -72,7 +72,7 @@ bool RapidJsonRecipe::registerBrewingMixRecipe(
     return addRecipeJson("recipe_brewing_mix", recipe_json.dump(4));
 }
 
-bool RapidJsonRecipe::registerBrewingContainerRecipe(
+bool JsonRecipe::registerBrewingContainerRecipe(
     std::string                                              recipe_id,
     RecipeIngredient                                         input,
     RecipeIngredient                                         output,
@@ -100,7 +100,7 @@ bool RapidJsonRecipe::registerBrewingContainerRecipe(
     return addRecipeJson("recipe_brewing_container", recipe_json.dump(4));
 }
 
-bool RapidJsonRecipe::registerSmithingTransformRecipe(
+bool JsonRecipe::registerSmithingTransformRecipe(
     std::string recipe_id,
     std::string smithing_template,
     std::string base,
@@ -118,7 +118,7 @@ bool RapidJsonRecipe::registerSmithingTransformRecipe(
     return addRecipeJson("recipe_smithing_transform", recipe_json.dump(4));
 }
 
-bool RapidJsonRecipe::registerSmithingTrimRecipe(
+bool JsonRecipe::registerSmithingTrimRecipe(
     std::string recipe_id,
     std::string smithing_template,
     std::string base,
@@ -134,7 +134,7 @@ bool RapidJsonRecipe::registerSmithingTrimRecipe(
     return addRecipeJson("recipe_smithing_trim", recipe_json.dump(4));
 }
 
-bool RapidJsonRecipe::registerStoneCutterRecipe(
+bool JsonRecipe::registerStoneCutterRecipe(
     std::string                                              recipe_id,
     RecipeIngredient                                         input,
     RecipeIngredient                                         output,
@@ -162,7 +162,7 @@ bool RapidJsonRecipe::registerStoneCutterRecipe(
     return addRecipeJson("recipe_shapeless", recipe_json.dump(4));
 }
 
-bool RapidJsonRecipe::registerCustomCraftingTagRecipe(
+bool JsonRecipe::registerCustomCraftingTagRecipe(
     std::string                                              recipe_id,
     std::vector<RecipeIngredient>                            ingredients,
     RecipeIngredient                                         result,
@@ -198,7 +198,7 @@ bool RapidJsonRecipe::registerCustomCraftingTagRecipe(
     return addRecipeJson("recipe_shapeless", recipe_json.dump(4));
 }
 
-bool RapidJsonRecipe::registerShapelessCraftingTableRecipe(
+bool JsonRecipe::registerShapelessCraftingTableRecipe(
     std::string                                              recipe_id,
     std::vector<RecipeIngredient>                            ingredients,
     RecipeIngredient                                         result,
@@ -208,7 +208,7 @@ bool RapidJsonRecipe::registerShapelessCraftingTableRecipe(
     return registerCustomCraftingTagRecipe(recipe_id, ingredients, result, {"crafting_table"}, unlock, priority);
 }
 
-bool RapidJsonRecipe::registerShapedCraftingTableRecipe(
+bool JsonRecipe::registerShapedCraftingTableRecipe(
     std::string                                              recipe_id,
     std::vector<std::string>                                 shape,
     std::vector<std::pair<std::string, RecipeIngredient>>    ingredients,
@@ -245,7 +245,7 @@ bool RapidJsonRecipe::registerShapedCraftingTableRecipe(
     return addRecipeJson("recipe_shaped", recipe_json.dump(4));
 }
 
-bool RapidJsonRecipe::registerShapedCraftingTableRecipe(
+bool JsonRecipe::registerShapedCraftingTableRecipe(
     std::string                                              recipe_id,
     std::vector<std::string>                                 shape,
     std::vector<RecipeIngredient>                            ingredients,

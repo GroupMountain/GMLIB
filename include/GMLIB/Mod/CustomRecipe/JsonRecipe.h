@@ -6,7 +6,7 @@
 
 namespace GMLIB::Mod {
 
-class RapidJsonRecipe {
+class JsonRecipe {
 public:
     GMLIB_API static bool loadJsonRecipe(std::string json);
 
