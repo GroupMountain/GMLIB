@@ -3,9 +3,11 @@
 #include <GMLIB/Server/ScoreboardAPI.h>
 #include <mc/world/scores/ScoreInfo.h>
 
-GMLIB_Scoreboard* GMLIB_Scoreboard::getServerScoreboard() {
+GMLIB_Scoreboard* GMLIB_Scoreboard::getInstance() {
     return (GMLIB_Scoreboard*)&ll::service::bedrock::getLevel()->getScoreboard();
 }
+
+GMLIB_Scoreboard* GMLIB_Scoreboard::getServerScoreboard() { return getInstance(); }
 
 Objective* GMLIB_Scoreboard::addObjective(std::string name, std::string displayName) {
     return addObjective(name, displayName, *getCriteria("dummy"));
@@ -307,7 +309,7 @@ std::vector<ScoreboardId> GMLIB_Scoreboard::getAllScoreboardIds(IdentityDefiniti
 }
 
 std::optional<std::string> GMLIB_Scoreboard::getObjectiveDisplayName(std::string objective) {
-    auto obj = getServerScoreboard()->getObjective(objective);
+    auto obj = getObjective(objective);
     if (obj) {
         return obj->getDisplayName();
     }
@@ -315,7 +317,7 @@ std::optional<std::string> GMLIB_Scoreboard::getObjectiveDisplayName(std::string
 }
 
 bool GMLIB_Scoreboard::setObjectiveDisplayName(std::string objective, std::string newName) {
-    auto obj = getServerScoreboard()->getObjective(objective);
+    auto obj = getObjective(objective);
     if (obj) {
         obj->mDisplayName = newName;
         return true;

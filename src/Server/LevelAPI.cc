@@ -153,7 +153,9 @@ LL_AUTO_TYPE_INSTANCE_HOOK(LevelTickHook, ll::memory::HookPriority::Normal, Leve
     }
 }
 
-GMLIB_Level* GMLIB_Level::getLevel() { return (GMLIB_Level*)ll::service::getLevel().as_ptr(); }
+GMLIB_Level* GMLIB_Level::getInstance() { return (GMLIB_Level*)ll::service::getLevel().as_ptr(); }
+
+GMLIB_Level* GMLIB_Level::getLevel() { return getInstance(); }
 
 BlockSource* GMLIB_Level::getBlockSource(DimensionType dimid) {
     return &getDimension(dimid)->getBlockSourceFromMainChunkSource();

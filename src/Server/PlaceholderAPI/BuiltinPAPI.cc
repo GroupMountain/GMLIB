@@ -279,7 +279,7 @@ void regServerPAPI() {
 
     PlaceholderAPI::registerServerPlaceholder(
         "server_total_entities",
-        []() { return S(GMLIB_Level::getLevel()->getAllEntities().size()); },
+        []() { return S(GMLIB_Level::getInstance()->getAllEntities().size()); },
         "GMLIB"
     );
 
@@ -397,8 +397,8 @@ void regServerPAPI() {
     PlaceholderAPI::registerServerPlaceholder(
         "server_tps",
         []() {
-            if (GMLIB_Level::getLevel()) {
-                return S(GMLIB_Level::getLevel()->getServerCurrentTps());
+            if (auto level = GMLIB_Level::getInstance()) {
+                return S(level->getServerCurrentTps());
             }
             return S(0.0f);
         },
@@ -408,8 +408,8 @@ void regServerPAPI() {
     PlaceholderAPI::registerServerPlaceholder(
         "server_tps_fixed",
         []() {
-            if (GMLIB_Level::getLevel()) {
-                return double2String(GMLIB_Level::getLevel()->getServerCurrentTps(), 2);
+            if (auto level = GMLIB_Level::getInstance()) {
+                return double2String(level->getServerCurrentTps(), 2);
             }
             return double2String(0.0f, 2);
         },
@@ -419,8 +419,8 @@ void regServerPAPI() {
     PlaceholderAPI::registerServerPlaceholder(
         "server_tps_int",
         []() {
-            if (GMLIB_Level::getLevel()) {
-                return double2String(GMLIB_Level::getLevel()->getServerCurrentTps(), 0);
+            if (auto level = GMLIB_Level::getInstance()) {
+                return double2String(level->getServerCurrentTps(), 0);
             }
             return double2String(0.0f, 0);
         },
@@ -430,8 +430,8 @@ void regServerPAPI() {
     PlaceholderAPI::registerServerPlaceholder(
         "server_mspt",
         []() {
-            if (GMLIB_Level::getLevel()) {
-                return S(GMLIB_Level::getLevel()->getServerMspt());
+            if (auto level = GMLIB_Level::getInstance()) {
+                return S(level->getServerMspt());
             }
             return S(0.0f);
         },
@@ -441,8 +441,8 @@ void regServerPAPI() {
     PlaceholderAPI::registerServerPlaceholder(
         "server_mspt_fixed",
         []() {
-            if (GMLIB_Level::getLevel()) {
-                return double2String(GMLIB_Level::getLevel()->getServerMspt(), 2);
+            if (auto level = GMLIB_Level::getInstance()) {
+                return double2String(level->getServerMspt(), 2);
             }
             return double2String(0.0f, 2);
         },

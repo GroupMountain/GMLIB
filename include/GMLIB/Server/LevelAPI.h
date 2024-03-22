@@ -21,6 +21,8 @@ enum class FillMode : int {
 
 class GMLIB_Level : public Level {
 public:
+    GMLIB_API static GMLIB_Level* getInstance();
+
     GMLIB_API static GMLIB_Level* getLevel();
 
     GMLIB_API static void setClientWeather(WeatherType weather, Player* pl);

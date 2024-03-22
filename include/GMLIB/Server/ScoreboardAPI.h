@@ -9,11 +9,9 @@ public:
     using Scoreboard::resetPlayerScore;
 
 public:
+    GMLIB_API static GMLIB_Scoreboard* getInstance();
+
     GMLIB_API static GMLIB_Scoreboard* getServerScoreboard();
-
-    GMLIB_API static std::optional<std::string> getObjectiveDisplayName(std::string objective);
-
-    GMLIB_API static bool setObjectiveDisplayName(std::string objective, std::string newName);
 
 public:
     GMLIB_API Objective* addObjective(std::string name);
@@ -163,4 +161,8 @@ public:
     );
 
     GMLIB_API void clearObjectiveDisplay(std::string displaySlot);
+
+    GMLIB_API std::optional<std::string> getObjectiveDisplayName(std::string objective);
+
+    GMLIB_API bool setObjectiveDisplayName(std::string objective, std::string newName);
 };
