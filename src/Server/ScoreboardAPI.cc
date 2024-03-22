@@ -184,12 +184,8 @@ std::optional<int> GMLIB_Scoreboard::setPlayerScore(
     return setScore(obj, id, value, action);
 }
 
-std::optional<int> GMLIB_Scoreboard::setPlayerScore(
-    std::string            objective,
-    ActorUniqueID          auid,
-    int                    value,
-    PlayerScoreSetFunction action = PlayerScoreSetFunction::Set
-) {
+std::optional<int>
+GMLIB_Scoreboard::setPlayerScore(std::string objective, ActorUniqueID auid, int value, PlayerScoreSetFunction action) {
     return setScore(objective, auid, value, action, true);
 }
 
