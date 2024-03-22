@@ -48,6 +48,10 @@ public:
 
     GMLIB_API static bool deletePlayerNbt(mce::UUID const& uuid);
 
+    GMLIB_API static ActorUniqueID getPlayerUniqueID(std::string& serverId);
+
+    GMLIB_API static ActorUniqueID getPlayerUniqueID(mce::UUID const& uuid);
+
     GMLIB_API static std::optional<int> getPlayerScore(std::string& serverId, std::string objective);
 
     GMLIB_API static std::optional<int> getPlayerScore(mce::UUID const& uuid, std::string objective);

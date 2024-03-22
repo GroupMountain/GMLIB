@@ -198,6 +198,23 @@ bool GMLIB_Player::deletePlayerNbt(mce::UUID const& uuid) {
     return deletePlayerNbt(serverId);
 }
 
+ActorUniqueID GMLIB_Player::getPlayerUniqueID(std::string& serverId) {
+    if (auto player = ll::service::bedrock::getLevel()->getPlayerFromServerId(serverId)) {
+        return player->getOrCreateUniqueID();
+    }
+    auto nbt = GMLIB_Player::getOfflineNbt(serverId);
+    if (nbt && nbt->contains("UniqueID")) {
+        auto auid = nbt->getInt64("UniqueID");
+        return ActorUniqueID(auid);
+    }
+    return ActorUniqueID::INVALID_ID;
+}
+
+ActorUniqueID GMLIB_Player::getPlayerUniqueID(mce::UUID const& uuid) {
+    auto serverId = getServerIdFromUuid(uuid);
+    return getPlayerUniqueID(serverId);
+}
+
 std::optional<std::pair<Vec3, int>> GMLIB_Player::getPlayerPosition(std::string& serverId) {
     auto pl = ll::service::getLevel()->getPlayerFromServerId(serverId);
     if (pl) {
