@@ -68,7 +68,7 @@ std::optional<int> GMLIB_Scoreboard::getScore(std::string objective, Actor* ac) 
     return getScore(obj, id);
 }
 
-GMLIB_API std::optional<int> GMLIB_Scoreboard::getScore(std::string objective, ActorUniqueID auid, bool isPlayer) {
+std::optional<int> GMLIB_Scoreboard::getScore(std::string objective, ActorUniqueID auid, bool isPlayer) {
     auto id = getScoreboardId(auid);
     if (isPlayer) {
         auto psid = PlayerScoreboardId(auid);
@@ -328,3 +328,59 @@ void GMLIB_Scoreboard::setObjectiveDisplay(Objective* objctive, std::string disp
 }
 
 void GMLIB_Scoreboard::clearObjectiveDisplay(std::string displaySlot) { clearDisplayObjective(displaySlot); }
+
+std::vector<ActorUniqueID> GMLIB_Scoreboard::getAllPlayers() {
+    std::vector<ScoreboardId>  sids = getAllScoreboardIds(IdentityDefinition::Type::Player);
+    std::vector<ActorUniqueID> result;
+    for (auto& sid : sids) {
+        auto auid = ActorUniqueID(sid.getIdentityDef().getPlayerId().mActorUniqueId);
+        result.push_back(auid);
+    }
+    return result;
+}
+
+std::vector<std::string> GMLIB_Scoreboard::getAllPlayerServerIds() {
+    std::vector<ScoreboardId>                      sids = getAllScoreboardIds(IdentityDefinition::Type::Player);
+    std::vector<std::string>                       result;
+    std::unordered_map<ActorUniqueID, std::string> map = GMLIB_Player::getUniqueIdToServerIdMap();
+    for (auto& sid : sids) {
+        auto auid = ActorUniqueID(sid.getIdentityDef().getPlayerId().mActorUniqueId);
+        if (map.count(auid)) {
+            result.push_back(map[auid]);
+        }
+    }
+    return result;
+}
+
+std::vector<mce::UUID> GMLIB_Scoreboard::getAllPlayerUuids() {
+    std::vector<ScoreboardId>                    sids = getAllScoreboardIds(IdentityDefinition::Type::Player);
+    std::vector<mce::UUID>                       result;
+    std::unordered_map<ActorUniqueID, mce::UUID> map = GMLIB_Player::getUniqueIdToUuidMap();
+    for (auto& sid : sids) {
+        auto auid = ActorUniqueID(sid.getIdentityDef().getPlayerId().mActorUniqueId);
+        if (map.count(auid)) {
+            result.push_back(map[auid]);
+        }
+    }
+    return result;
+}
+
+std::vector<ActorUniqueID> GMLIB_Scoreboard::getAllEntities() {
+    std::vector<ScoreboardId>  sids = getAllScoreboardIds(IdentityDefinition::Type::Entity);
+    std::vector<ActorUniqueID> result;
+    for (auto& sid : sids) {
+        auto auid = sid.getIdentityDef().getEntityId();
+        result.push_back(auid);
+    }
+    return result;
+}
+
+std::vector<std::string> GMLIB_Scoreboard::getAllFakePlayers() {
+    std::vector<ScoreboardId> sids = getAllScoreboardIds(IdentityDefinition::Type::FakePlayer);
+    std::vector<std::string>  result;
+    for (auto& sid : sids) {
+        auto name = sid.getIdentityDef().getFakePlayerName();
+        result.push_back(name);
+    }
+    return result;
+}

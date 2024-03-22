@@ -140,6 +140,16 @@ public:
 
     GMLIB_API std::vector<ScoreboardId> getAllScoreboardIds(IdentityDefinition::Type type);
 
+    GMLIB_API std::vector<ActorUniqueID> getAllPlayers();
+
+    GMLIB_API std::vector<std::string> getAllPlayerServerIds();
+
+    GMLIB_API std::vector<mce::UUID> getAllPlayerUuids();
+
+    GMLIB_API std::vector<ActorUniqueID> getAllEntities();
+
+    GMLIB_API std::vector<std::string> getAllFakePlayers();
+
     GMLIB_API void setObjectiveDisplay(
         Objective*         objctive,
         std::string        displaySlot = "sidebar",
