@@ -601,16 +601,9 @@ std::string_view GMLIB_Player::getLanguageCode() {
     if (isSimulatedPlayer()) {
         return I18n::getCurrentLanguage()->getFullLanguageCode();
     }
-    auto map = ll::service::getServerNetworkHandler()
-                   ->fetchConnectionRequest(getNetworkIdentifier())
-                   .mRawToken.get()
-                   ->mDataInfo.value_.map_;
-    for (auto& iter : *map) {
-        std::string s(iter.first.c_str());
-        if (s.find("LanguageCode") != std::string::npos) {
-            auto langCode = iter.second.value_.string_;
-            return langCode;
-        }
+    auto request = getConnectionRequest();
+    if (request) {
+        return request->mRawToken->mDataInfo["LanguageCode"].asString("unknown");
     }
     return "unknown";
 }
