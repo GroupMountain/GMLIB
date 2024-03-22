@@ -47,12 +47,14 @@ LL_INSTANCE_HOOK(
     return false;
 }
 
-LL_INSTANCE_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     ForceAchievementHook2,
     ll::memory::HookPriority::Normal,
+    LevelData,
     "?hasAchievementsDisabled@LevelData@@QEBA_NXZ",
     bool
 ) {
+    ll::memory::dAccess<bool>(this, 1148) = false;
     return false;
 }
 
@@ -100,7 +102,6 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
 ) {
     if (GMLIB::LevelAPI::mFakeSeedEnabled) {
         this->mSettings.setRandomSeed(LevelSeed64(GMLIB::LevelAPI::mFakeSeed));
-        // ll::memory::dAccess<int64>(this, 48) = GMLIB::LevelAPI::mFakeSeed;
     }
     if (GMLIB::LevelAPI::mFakeLevelNameEnabled) {
         this->mLevelName = GMLIB::LevelAPI::mFakeLevelName;
