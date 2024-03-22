@@ -40,7 +40,7 @@ ScoreboardId GMLIB_Scoreboard::getPlayerScoreboardId(std::string serverid) {
         return getScoreboardId(*player);
     }
     auto auid = GMLIB_Player::getPlayerUniqueID(serverid);
-    if (auid) {
+    if (auid != ActorUniqueID::INVALID_ID) {
         auto psid = PlayerScoreboardId(auid);
         return getScoreboardId(psid);
     }
