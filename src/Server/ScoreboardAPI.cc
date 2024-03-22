@@ -327,6 +327,11 @@ void GMLIB_Scoreboard::setObjectiveDisplay(Objective* objctive, std::string disp
     setDisplayObjective(displaySlot, *objctive, order);
 }
 
+void GMLIB_Scoreboard::setObjectiveDisplay(std::string objective, std::string displaySlot, ObjectiveSortOrder order) {
+    auto obj = getObjective(objective);
+    setDisplayObjective(displaySlot, *obj, order);
+}
+
 void GMLIB_Scoreboard::clearObjectiveDisplay(std::string displaySlot) { clearDisplayObjective(displaySlot); }
 
 std::vector<ActorUniqueID> GMLIB_Scoreboard::getAllPlayers() {

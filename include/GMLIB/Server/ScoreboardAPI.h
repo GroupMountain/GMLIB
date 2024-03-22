@@ -151,7 +151,13 @@ public:
     GMLIB_API std::vector<std::string> getAllFakePlayers();
 
     GMLIB_API void setObjectiveDisplay(
-        Objective*         objctive,
+        Objective*         objective,
+        std::string        displaySlot = "sidebar",
+        ObjectiveSortOrder order       = ObjectiveSortOrder::Ascending
+    );
+
+    GMLIB_API void setObjectiveDisplay(
+        std::string        objective,
         std::string        displaySlot = "sidebar",
         ObjectiveSortOrder order       = ObjectiveSortOrder::Ascending
     );
