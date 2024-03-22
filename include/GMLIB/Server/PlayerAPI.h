@@ -242,6 +242,14 @@ public:
 
     GMLIB_API Biome* getBiome();
 
+    GMLIB_API std::pair<BlockPos, DimensionType> getSpawnPoint();
+
+    GMLIB_API void setSpawnPoint(BlockPos pos, DimensionType dimId);
+
+    GMLIB_API void clearSpawnPoint();
+
+    GMLIB_API bool hasSpawnPoint();
+
     // ToDo API
     // If you need any API, please open an issue on https://github.com/GroupMountain/GMLIB/issues
 

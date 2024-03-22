@@ -685,3 +685,11 @@ void GMLIB_Player::sendTitle(
     pkt.mStayTime    = remainDuration;
     pkt.sendTo(*this);
 }
+
+std::pair<BlockPos, DimensionType> GMLIB_Player::getSpawnPoint() { return {getSpawnPosition(), getSpawnDimension()}; }
+
+void GMLIB_Player::setSpawnPoint(BlockPos pos, DimensionType dimId) { setRespawnPosition(pos, dimId); }
+
+void GMLIB_Player::clearSpawnPoint() { clearRespawnPosition(); }
+
+GMLIB_API bool GMLIB_Player::hasSpawnPoint() { return hasRespawnPosition(); }
