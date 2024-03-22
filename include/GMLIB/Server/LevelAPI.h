@@ -170,4 +170,8 @@ public:
     GMLIB_API bool isTickFreezed();
 
     GMLIB_API void setTickScale(float scale = 1.0f);
+
+    GMLIB_API BlockPos getWorldSpawn();
+
+    GMLIB_API void setWorldSpawn(BlockPos pos);
 };

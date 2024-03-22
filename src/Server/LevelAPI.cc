@@ -4,6 +4,7 @@
 #include <mc/network/packet/GameRulesChangedPacket.h>
 #include <mc/network/packet/LevelEventPacket.h>
 #include <mc/network/packet/ResourcePacksInfoPacket.h>
+#include <mc/network/packet/SetSpawnPositionPacket.h>
 #include <mc/network/packet/SetTimePacket.h>
 #include <mc/network/packet/StartGamePacket.h>
 #include <mc/network/packet/TextPacket.h>
@@ -636,4 +637,11 @@ void GMLIB_Level::broadcastTitle(
     pkt.mFadeOutTime = fadeOutDuration;
     pkt.mStayTime    = remainDuration;
     pkt.sendToClients();
+}
+
+BlockPos GMLIB_Level::getWorldSpawn() { return getLevelData().getSpawnPos(); }
+
+void GMLIB_Level::setWorldSpawn(BlockPos pos) {
+    getLevelData().setSpawnPos(pos);
+    SetSpawnPositionPacket((SpawnPositionType)1, 0, pos).sendToClients();
 }
