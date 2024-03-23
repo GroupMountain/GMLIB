@@ -91,15 +91,6 @@ std::unique_ptr<CompoundTag> GMLIB_Player::getOfflineNbt(std::string& serverId) 
     return GMLIB::Global<DBStorage>->getCompoundTag(serverId, DBHelpers::Category::Player);
 }
 
-/*
-player_58d6670c-f436-3faf-abac-a279e74d8b55
-{
-    MsaId: "58d6670c-f436-3faf-abac-a279e74d8b55",
-    SelfSignedId: "3bf5fb16-ccdf-3c53-bfa9-da236ff6c660",
-    ServerId: player_server_b258e969-901e-4968-afef-7a85cac8882c
-}
-*/
-
 bool createNewPlayerTag(mce::UUID const& uuid, std::string serverId) {
     auto keyId = "player_" + uuid.asString();
     if (!GMLIB::Global<DBStorage>->hasKey(keyId, DBHelpers::Category::Player)) {
