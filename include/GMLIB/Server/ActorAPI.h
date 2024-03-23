@@ -1,6 +1,7 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
 #include "mc/world/actor/Actor.h"
+#include "mc/world/actor/player/PlayerScoreSetFunction.h"
 #include "mc/world/effect/MobEffect.h"
 #include "mc/world/level/biome/Biome.h"
 
