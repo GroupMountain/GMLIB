@@ -4,7 +4,7 @@
 
 #define LIB_VERSION_MAJOR      0
 #define LIB_VERSION_MINOR      9
-#define LIB_VERSION_REVISION   6
+#define LIB_VERSION_REVISION   7
 #define LIB_VERSION_PRERELEASE ""
 #define LIB_VERSION_BUILD_META ""
 
