@@ -24,7 +24,9 @@ public:
 
     GMLIB_API static std::vector<mce::UUID> getAllUuids(bool includeOfflineSignedId = false);
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getOnlineUuidDBTag(mce::UUID const& uuid);
+    GMLIB_API static std::unique_ptr<CompoundTag> getUuidDBTag(mce::UUID const& uuid);
+
+    GMLIB_API static bool deleteUuidDBTag(mce::UUID const& uuid);
 
     GMLIB_API static std::string getServerIdFromUuid(mce::UUID const& uuid);
 
@@ -32,13 +34,15 @@ public:
 
     GMLIB_API static bool setOfflineNbt(std::string& serverId, CompoundTag& nbt);
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getPlayerNbt(std::string& serverId); //
+    GMLIB_API static bool createNewPlayerTag(mce::UUID const& uuid, std::string serverId);
+
+    GMLIB_API static std::unique_ptr<CompoundTag> getPlayerNbt(std::string& serverId);
 
     GMLIB_API static std::unique_ptr<CompoundTag> getPlayerNbt(mce::UUID const& uuid);
 
     GMLIB_API static bool setPlayerNbt(std::string& serverId, CompoundTag& nbt);
 
-    GMLIB_API static bool setPlayerNbt(mce::UUID const& uuid, CompoundTag& nbt);
+    GMLIB_API static bool setPlayerNbt(mce::UUID const& uuid, CompoundTag& nbt, bool forceCreate = true);
 
     GMLIB_API static bool
     setPlayerNbtTags(std::string& serverId, CompoundTag& nbt, const std::vector<std::string>& tags);

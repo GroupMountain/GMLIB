@@ -68,7 +68,7 @@ std::vector<mce::UUID> GMLIB_Player::getAllUuids(bool includeOfflineSignedId) {
     return uuids;
 }
 
-std::unique_ptr<CompoundTag> GMLIB_Player::getOnlineUuidDBTag(mce::UUID const& uuid) {
+std::unique_ptr<CompoundTag> GMLIB_Player::getUuidDBTag(mce::UUID const& uuid) {
     auto playerKey = "player_" + uuid.asString();
     if (GMLIB::Global<DBStorage>->hasKey(playerKey, DBHelpers::Category::Player)) {
         return GMLIB::Global<DBStorage>->getCompoundTag(playerKey, DBHelpers::Category::Player);
@@ -76,8 +76,17 @@ std::unique_ptr<CompoundTag> GMLIB_Player::getOnlineUuidDBTag(mce::UUID const& u
     return {};
 }
 
+bool GMLIB_Player::deleteUuidDBTag(mce::UUID const& uuid) {
+    auto playerKey = "player_" + uuid.asString();
+    if (GMLIB::Global<DBStorage>->hasKey(playerKey, DBHelpers::Category::Player)) {
+        GMLIB::Global<DBStorage>->deleteData(playerKey, DBHelpers::Category::Player);
+        return true;
+    }
+    return false;
+}
+
 std::string GMLIB_Player::getServerIdFromUuid(mce::UUID const& uuid) {
-    auto DBTag = getOnlineUuidDBTag(uuid);
+    auto DBTag = getUuidDBTag(uuid);
     if (!DBTag) {
         return "";
     }
@@ -91,7 +100,7 @@ std::unique_ptr<CompoundTag> GMLIB_Player::getOfflineNbt(std::string& serverId) 
     return GMLIB::Global<DBStorage>->getCompoundTag(serverId, DBHelpers::Category::Player);
 }
 
-bool createNewPlayerTag(mce::UUID const& uuid, std::string serverId) {
+bool GMLIB_Player::createNewPlayerTag(mce::UUID const& uuid, std::string serverId) {
     auto keyId = "player_" + uuid.asString();
     if (!GMLIB::Global<DBStorage>->hasKey(keyId, DBHelpers::Category::Player)) {
         auto keyData = CompoundTag{
@@ -153,9 +162,9 @@ bool GMLIB_Player::setPlayerNbt(std::string& serverId, CompoundTag& nbt) {
     return setOfflineNbt(serverId, nbt);
 }
 
-bool GMLIB_Player::setPlayerNbt(mce::UUID const& uuid, CompoundTag& nbt) {
+bool GMLIB_Player::setPlayerNbt(mce::UUID const& uuid, CompoundTag& nbt, bool forceCreate) {
     auto serverId = getServerIdFromUuid(uuid);
-    if (serverId.empty()) {
+    if (serverId.empty() && forceCreate) {
         serverId = "player_server_" + mce::UUID::random().asString();
         auto res = createNewPlayerTag(uuid, serverId);
         if (!res) {
@@ -240,11 +249,11 @@ ActorUniqueID GMLIB_Player::getPlayerUniqueID(std::string& serverId) {
 }
 
 std::unordered_map<ActorUniqueID, std::string> GMLIB_Player::getUniqueIdToServerIdMap() {
-    auto                                           uuidmap = getUniqueIdToUuidMap();
+    auto                                           serverIds = getAllServerIds();
     std::unordered_map<ActorUniqueID, std::string> result;
-    for (auto& [auid, uuid] : uuidmap) {
-        auto serverId = getServerIdFromUuid(uuid);
-        result[auid]  = serverId;
+    for (auto& serverId : serverIds) {
+        auto auid    = getPlayerUniqueID(serverId);
+        result[auid] = serverId;
     }
     return result;
 }
