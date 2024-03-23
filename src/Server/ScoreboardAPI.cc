@@ -249,7 +249,7 @@ bool GMLIB_Scoreboard::resetPlayerScore(std::string objective, ActorUniqueID aui
 
 bool GMLIB_Scoreboard::resetPlayerScore(std::string objective, Player* pl) { return resetScore(objective, pl); }
 
-bool GMLIB_Scoreboard::resetAllScores(ScoreboardId& scoreboardId) {
+bool GMLIB_Scoreboard::resetScore(ScoreboardId& scoreboardId) {
     if (scoreboardId.isValid()) {
         resetPlayerScore(scoreboardId);
         return true;
@@ -257,43 +257,43 @@ bool GMLIB_Scoreboard::resetAllScores(ScoreboardId& scoreboardId) {
     return false;
 }
 
-bool GMLIB_Scoreboard::resetAllScores(std::string name) {
+bool GMLIB_Scoreboard::resetScore(std::string name) {
     auto id = getScoreboardId(name);
-    return resetAllScores(id);
+    return resetScore(id);
 }
 
-bool GMLIB_Scoreboard::resetAllScores(Player* pl) {
+bool GMLIB_Scoreboard::resetScore(Player* pl) {
     auto id = getScoreboardId(*pl);
-    return resetAllScores(id);
+    return resetScore(id);
 }
 
-bool GMLIB_Scoreboard::resetAllScores(Actor* ac) {
+bool GMLIB_Scoreboard::resetScore(Actor* ac) {
     auto id = getScoreboardId(*ac);
-    return resetAllScores(id);
+    return resetScore(id);
 }
 
-bool GMLIB_Scoreboard::resetAllScores(ActorUniqueID auid, bool isPlayer) {
+bool GMLIB_Scoreboard::resetScore(ActorUniqueID auid, bool isPlayer) {
     auto id = getScoreboardId(auid);
     if (isPlayer) {
         auto psid = PlayerScoreboardId(auid);
         id        = getScoreboardId(psid);
     }
-    return resetAllScores(id);
+    return resetScore(id);
 }
 
-bool GMLIB_Scoreboard::resetPlayerAllScores(std::string serverid) {
+bool GMLIB_Scoreboard::resetPlayerScore(std::string serverid) {
     auto id = getPlayerScoreboardId(serverid);
-    return resetAllScores(id);
+    return resetScore(id);
 }
 
-bool GMLIB_Scoreboard::resetPlayerAllScores(mce::UUID const& uuid) {
+bool GMLIB_Scoreboard::resetPlayerScore(mce::UUID const& uuid) {
     auto id = getPlayerScoreboardId(uuid);
-    return resetAllScores(id);
+    return resetScore(id);
 }
 
-bool GMLIB_Scoreboard::resetPlayerAllScores(ActorUniqueID auid) { return resetAllScores(auid, true); }
+bool GMLIB_Scoreboard::resetPlayerScore(ActorUniqueID auid) { return resetScore(auid, true); }
 
-bool GMLIB_Scoreboard::resetPlayerAllScores(Player* pl) { return resetAllScores(pl); }
+bool GMLIB_Scoreboard::resetPlayerScore(Player* pl) { return resetScore(pl); }
 
 std::vector<ScoreboardId> GMLIB_Scoreboard::getAllScoreboardIds() { return getTrackedIds(); }
 

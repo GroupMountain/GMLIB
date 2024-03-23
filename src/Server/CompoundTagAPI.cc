@@ -47,3 +47,11 @@ void GMLIB_CompoundTag::setToBlock(Block* block) {
     auto ctag = (CompoundTag*)((uintptr_t)block + 160);
     ctag->deepCopy(*this);
 }
+
+void GMLIB_CompoundTag::writeNbtTags(CompoundTag& originNbt, CompoundTag& dataNbt, const std::vector<std::string>& tags) {
+    for (auto tag : tags) {
+        if (dataNbt.get(tag)) {
+            originNbt.put(tag, dataNbt.get(tag)->copy());
+        }
+    }
+}

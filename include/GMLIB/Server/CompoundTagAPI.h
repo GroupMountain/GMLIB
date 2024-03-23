@@ -22,6 +22,9 @@ public:
 
     GMLIB_API static std::unique_ptr<CompoundTag> getFromBlock(Block* block);
 
+    GMLIB_API static void
+    writeNbtTags(CompoundTag& originNbt, CompoundTag& dataNbt, const std::vector<std::string>& tags);
+
 public:
     GMLIB_API bool setToActor(Actor* ac);
 

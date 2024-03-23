@@ -2,6 +2,7 @@
 #include <GMLIB/Mod/Addons/CustomDamageCause.h>
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
+#include <GMLIB/Server/CompoundTagAPI.h>
 #include <GMLIB/Server/NetworkPacketAPI.h>
 #include <GMLIB/Server/PlayerAPI.h>
 #include <GMLIB/Server/ScoreboardAPI.h>
@@ -176,14 +177,6 @@ bool GMLIB_Player::setPlayerNbt(mce::UUID const& uuid, CompoundTag& nbt, bool fo
 
 bool GMLIB_Player::setNbt(CompoundTag& nbt) { return load(nbt); }
 
-void writeNbtTags(CompoundTag& originNbt, CompoundTag& dataNbt, const std::vector<std::string>& tags) {
-    for (auto tag : tags) {
-        if (dataNbt.get(tag)) {
-            originNbt.put(tag, dataNbt.get(tag)->copy());
-        }
-    }
-}
-
 bool GMLIB_Player::setPlayerNbtTags(std::string& serverId, CompoundTag& nbt, const std::vector<std::string>& tags) {
     if (serverId.empty()) {
         return false;
@@ -193,7 +186,7 @@ bool GMLIB_Player::setPlayerNbtTags(std::string& serverId, CompoundTag& nbt, con
         return player->setNbtTags(nbt, tags);
     }
     auto data = *getOfflineNbt(serverId);
-    writeNbtTags(data, nbt, tags);
+    GMLIB_CompoundTag::writeNbtTags(data, nbt, tags);
     return setOfflineNbt(serverId, data);
 }
 
@@ -204,7 +197,7 @@ bool GMLIB_Player::setPlayerNbtTags(mce::UUID const& uuid, CompoundTag& nbt, con
 
 bool GMLIB_Player::setNbtTags(CompoundTag& nbt, const std::vector<std::string>& tags) {
     auto data = *getNbt();
-    writeNbtTags(data, nbt, tags);
+    GMLIB_CompoundTag::writeNbtTags(data, nbt, tags);
     auto res = load(data);
     refreshInventory();
     return res;
@@ -216,8 +209,7 @@ bool GMLIB_Player::deletePlayerNbt(std::string& serverId) {
     }
     auto pl = ll::service::getLevel()->getPlayerFromServerId(serverId);
     if (pl) {
-        ll::service::getLevel()->getLevelStorage().deleteData(serverId, DBHelpers::Category::Player);
-        return true;
+        return false;
     }
     if (GMLIB::Global<DBStorage>->hasKey(serverId, DBHelpers::Category::Player)) {
         GMLIB::Global<DBStorage>->deleteData(serverId, DBHelpers::Category::Player);
@@ -229,8 +221,7 @@ bool GMLIB_Player::deletePlayerNbt(std::string& serverId) {
 bool GMLIB_Player::deletePlayerNbt(mce::UUID const& uuid) {
     auto pl = ll::service::getLevel()->getPlayer(uuid);
     if (pl) {
-        auto serverId = pl->getServerId();
-        return deletePlayerNbt(serverId);
+        return false;
     }
     auto serverId = getServerIdFromUuid(uuid);
     return deletePlayerNbt(serverId);
@@ -559,7 +550,7 @@ bool GMLIB_Player::resetScore(std::string objective) {
 
 bool GMLIB_Player::resetScore() {
     auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
-    return scoreboard->resetPlayerAllScores(this);
+    return scoreboard->resetPlayerScore(this);
 }
 
 std::optional<int> GMLIB_Player::getPlayerScore(std::string& serverId, std::string objective) {
@@ -596,12 +587,12 @@ bool GMLIB_Player::resetPlayerScore(mce::UUID const& uuid, std::string objective
 
 bool GMLIB_Player::resetPlayerScore(std::string& serverId) {
     auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
-    return scoreboard->resetPlayerAllScores(serverId);
+    return scoreboard->resetPlayerScore(serverId);
 }
 
 bool GMLIB_Player::resetPlayerScore(mce::UUID const& uuid) {
     auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
-    return scoreboard->resetPlayerAllScores(uuid);
+    return scoreboard->resetPlayerScore(uuid);
 }
 
 ItemStack* GMLIB_Player::getMainHandSlot() {

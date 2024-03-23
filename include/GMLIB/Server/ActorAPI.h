@@ -13,6 +13,59 @@ public:
 public:
     GMLIB_API static int64_t getNextActorUniqueID();
 
+    GMLIB_API static std::vector<ActorUniqueID> getAllEntities();
+
+    GMLIB_API static std::unordered_map<ActorUniqueID, std::string> getActorIdsKeyMap();
+
+    GMLIB_API static ActorUniqueID getActorUniqueID(std::string& actorKey);
+
+    GMLIB_API static std::string getActorTypeName(ActorUniqueID& auid);
+
+    GMLIB_API static std::string getActorTypeName(std::string& actorKey);
+
+    GMLIB_API static std::unique_ptr<CompoundTag> getActorNbt(ActorUniqueID& auid);
+
+    GMLIB_API static std::unique_ptr<CompoundTag> getActorNbt(std::string& actorKey);
+
+    GMLIB_API static bool setActorNbt(ActorUniqueID& auid, CompoundTag& nbt);
+
+    GMLIB_API static bool setActorNbt(std::string& actorKey, CompoundTag& nbt);
+
+    GMLIB_API static bool setActorNbtTags(ActorUniqueID& auid, CompoundTag& nbt, const std::vector<std::string>& tags);
+
+    GMLIB_API static bool
+    setActorNbtTags(std::string& actorKey, CompoundTag& nbt, const std::vector<std::string>& tags);
+
+    GMLIB_API static bool deleteActor(ActorUniqueID& auid);
+
+    GMLIB_API static bool deleteActor(std::string& actorKey);
+
+    GMLIB_API static std::optional<int> getActorScore(ActorUniqueID& auid, std::string objective);
+
+    GMLIB_API static std::optional<int> getActorScore(std::string& actorKey, std::string objective);
+
+    GMLIB_API static std::optional<int> setActorScore(
+        ActorUniqueID&         auid,
+        std::string            objective,
+        int                    value,
+        PlayerScoreSetFunction action = PlayerScoreSetFunction::Set
+    );
+
+    GMLIB_API static std::optional<int> setActorScore(
+        std::string&           actorKey,
+        std::string            objective,
+        int                    value,
+        PlayerScoreSetFunction action = PlayerScoreSetFunction::Set
+    );
+
+    GMLIB_API static bool resetActorScore(ActorUniqueID& auid, std::string objective);
+
+    GMLIB_API static bool resetActorScore(std::string& actorKey, std::string objective);
+
+    GMLIB_API static bool resetActorScore(ActorUniqueID& auid);
+
+    GMLIB_API static bool resetActorScore(std::string& actorKey);
+
 public:
     GMLIB_API bool isPlayer() const;
 
@@ -23,6 +76,17 @@ public:
     GMLIB_API std::unique_ptr<CompoundTag> getNbt();
 
     GMLIB_API bool setNbt(CompoundTag& nbt);
+
+    GMLIB_API bool setNbtTags(CompoundTag& nbt, const std::vector<std::string>& tags);
+
+    GMLIB_API std::optional<int> getScore(std::string objective);
+
+    GMLIB_API std::optional<int>
+              setScore(std::string objective, int value, PlayerScoreSetFunction action = PlayerScoreSetFunction::Set);
+
+    GMLIB_API bool resetScore(std::string objective);
+
+    GMLIB_API bool resetScore();
 
     GMLIB_API void addEffect(
         MobEffect::EffectType effectType,

@@ -116,23 +116,23 @@ public:
 
     GMLIB_API bool resetPlayerScore(std::string objective, Player* pl);
 
-    GMLIB_API bool resetAllScores(ScoreboardId& scoreboardId);
+    GMLIB_API bool resetScore(ScoreboardId& scoreboardId);
 
-    GMLIB_API bool resetAllScores(std::string name);
+    GMLIB_API bool resetScore(std::string name);
 
-    GMLIB_API bool resetAllScores(Player* pl);
+    GMLIB_API bool resetScore(Player* pl);
 
-    GMLIB_API bool resetAllScores(Actor* ac);
+    GMLIB_API bool resetScore(Actor* ac);
 
-    GMLIB_API bool resetAllScores(ActorUniqueID auid, bool isPlayer = false);
+    GMLIB_API bool resetScore(ActorUniqueID auid, bool isPlayer = false);
 
-    GMLIB_API bool resetPlayerAllScores(std::string serverid);
+    GMLIB_API bool resetPlayerScore(std::string serverid);
 
-    GMLIB_API bool resetPlayerAllScores(mce::UUID const& uuid);
+    GMLIB_API bool resetPlayerScore(mce::UUID const& uuid);
 
-    GMLIB_API bool resetPlayerAllScores(Player* pl);
+    GMLIB_API bool resetPlayerScore(Player* pl);
 
-    GMLIB_API bool resetPlayerAllScores(ActorUniqueID auid);
+    GMLIB_API bool resetPlayerScore(ActorUniqueID auid);
 
     GMLIB_API std::vector<ScoreboardId> getAllScoreboardIds();
 
