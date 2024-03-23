@@ -20,9 +20,11 @@ public:
     using Player::removeEffect;
 
 public:
-    GMLIB_API static std::vector<std::string> getAllUuids(bool includeOfflineSignedId = false);
+    GMLIB_API static std::vector<std::string> getAllServerIds();
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getUuidDBTag(mce::UUID const& uuid);
+    GMLIB_API static std::vector<mce::UUID> getAllUuids(bool includeOfflineSignedId = false);
+
+    GMLIB_API static std::unique_ptr<CompoundTag> getOnlineUuidDBTag(mce::UUID const& uuid);
 
     GMLIB_API static std::string getServerIdFromUuid(mce::UUID const& uuid);
 

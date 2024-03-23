@@ -24,52 +24,60 @@
 #include <mc/world/effect/MobEffectInstance.h>
 #include <mc/world/level/storage/DBStorage.h>
 
-void forEachUuid(bool includeOfflineSignedId, std::function<void(std::string_view const& uuid)> callback) {
+std::vector<std::string> GMLIB_Player::getAllServerIds() {
+    std::vector<std::string> serverIds;
+    GMLIB::Global<DBStorage>->forEachKeyWithPrefix(
+        "player_server_",
+        DBHelpers::Category::Player,
+        [&serverIds](std::string_view key_left, std::string_view data) {
+            if (key_left.size() == 36) {
+                auto serverId = "player_server_" + std::string(key_left);
+                serverIds.push_back(serverId);
+            }
+        }
+    );
+    return serverIds;
+}
+
+std::vector<mce::UUID> GMLIB_Player::getAllUuids(bool includeOfflineSignedId) {
+    std::vector<mce::UUID> uuids;
     GMLIB::Global<DBStorage>->forEachKeyWithPrefix(
         "player_",
         DBHelpers::Category::Player,
-        [&callback, includeOfflineSignedId](std::string_view key_left, std::string_view data) {
+        [&uuids, includeOfflineSignedId](std::string_view key_left, std::string_view data) {
             if (key_left.size() == 36) {
                 auto  tag   = CompoundTag::fromBinaryNbt(data);
                 auto& msaId = tag->getString("MsaId");
                 if (!msaId.empty()) {
                     if (msaId == key_left) {
-                        callback(msaId);
+                        auto uuid = mce::UUID::fromString(msaId);
+                        uuids.push_back(uuid);
                     }
-                    return;
-                }
-                if (!includeOfflineSignedId) {
-                    return;
-                }
-                auto& selfSignedId = tag->getString("SelfSignedId");
-                if (!selfSignedId.empty()) {
-                    if (selfSignedId == key_left) {
-                        callback(selfSignedId);
+                } else if (includeOfflineSignedId) {
+                    auto& selfSignedId = tag->getString("SelfSignedId");
+                    if (!selfSignedId.empty()) {
+                        if (selfSignedId == key_left) {
+                            auto uuid = mce::UUID::fromString(selfSignedId);
+                            uuids.push_back(uuid);
+                        }
                     }
-                    return;
                 }
             }
         }
     );
-}
-
-std::vector<std::string> GMLIB_Player::getAllUuids(bool includeOfflineSignedId) {
-    std::vector<std::string> uuids;
-    forEachUuid(includeOfflineSignedId, [&uuids](std::string_view uuid) { uuids.push_back(std::string(uuid)); });
     return uuids;
 }
 
-std::unique_ptr<CompoundTag> GMLIB_Player::getUuidDBTag(mce::UUID const& uuid) {
-    auto& dbStorage = *GMLIB::Global<DBStorage>;
-    auto  playerKey = "player_" + uuid.asString();
-    if (dbStorage.hasKey(playerKey, DBHelpers::Category::Player)) {
-        return dbStorage.getCompoundTag(playerKey, DBHelpers::Category::Player);
+std::unique_ptr<CompoundTag> GMLIB_Player::getOnlineUuidDBTag(mce::UUID const& uuid) {
+    auto playerKey = "player_" + uuid.asString();
+    if (GMLIB::Global<DBStorage>->hasKey(playerKey, DBHelpers::Category::Player)) {
+        return GMLIB::Global<DBStorage>->getCompoundTag(playerKey, DBHelpers::Category::Player);
     }
     return {};
 }
 
 std::string GMLIB_Player::getServerIdFromUuid(mce::UUID const& uuid) {
-    auto DBTag = getUuidDBTag(uuid);
+    auto DBTag = getOnlineUuidDBTag(uuid);
     if (!DBTag) {
         return "";
     }
@@ -81,6 +89,29 @@ std::unique_ptr<CompoundTag> GMLIB_Player::getOfflineNbt(std::string& serverId) 
         return nullptr;
     }
     return GMLIB::Global<DBStorage>->getCompoundTag(serverId, DBHelpers::Category::Player);
+}
+
+/*
+player_58d6670c-f436-3faf-abac-a279e74d8b55
+{
+    MsaId: "58d6670c-f436-3faf-abac-a279e74d8b55",
+    SelfSignedId: "3bf5fb16-ccdf-3c53-bfa9-da236ff6c660",
+    ServerId: player_server_b258e969-901e-4968-afef-7a85cac8882c
+}
+*/
+
+bool createNewPlayerTag(mce::UUID const& uuid, std::string serverId) {
+    auto keyId = "player_" + uuid.asString();
+    if (!GMLIB::Global<DBStorage>->hasKey(keyId, DBHelpers::Category::Player)) {
+        auto keyData = CompoundTag{
+            {"MsaId",        uuid.asString()               },
+            {"SelfSignedId", mce::UUID::random().asString()},
+            {"ServerId",     serverId                      }
+        };
+        GMLIB::Global<DBStorage>->saveData(keyId, keyData.toBinaryNbt(), DBHelpers::Category::Player);
+        return true;
+    }
+    return false;
 }
 
 bool GMLIB_Player::setOfflineNbt(std::string& serverId, CompoundTag& nbt) {
@@ -133,6 +164,13 @@ bool GMLIB_Player::setPlayerNbt(std::string& serverId, CompoundTag& nbt) {
 
 bool GMLIB_Player::setPlayerNbt(mce::UUID const& uuid, CompoundTag& nbt) {
     auto serverId = getServerIdFromUuid(uuid);
+    if (serverId.empty()) {
+        serverId = "player_server_" + mce::UUID::random().asString();
+        auto res = createNewPlayerTag(uuid, serverId);
+        if (!res) {
+            return false;
+        }
+    }
     return setPlayerNbt(serverId, nbt);
 }
 
@@ -223,8 +261,7 @@ std::unordered_map<ActorUniqueID, std::string> GMLIB_Player::getUniqueIdToServer
 std::unordered_map<ActorUniqueID, mce::UUID> GMLIB_Player::getUniqueIdToUuidMap() {
     auto                                         uuids = getAllUuids(true);
     std::unordered_map<ActorUniqueID, mce::UUID> result;
-    for (auto& uid : uuids) {
-        auto uuid    = mce::UUID::fromString(uid);
+    for (auto& uuid : uuids) {
         auto auid    = getPlayerUniqueID(uuid);
         result[auid] = uuid;
     }
