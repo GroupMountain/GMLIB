@@ -118,7 +118,7 @@ GMLIB_Scoreboard::setScore(Objective* objective, ScoreboardId& scoreboardId, int
 std::optional<int>
 GMLIB_Scoreboard::setScore(std::string objective, std::string name, int value, PlayerScoreSetFunction action) {
     auto id = getScoreboardId(name);
-    if (id.isValid()) {
+    if (!id.isValid()) {
         id = getServerScoreboard()->createScoreboardId(name);
     }
     auto obj = getObjective(objective);
@@ -131,7 +131,7 @@ GMLIB_Scoreboard::setScore(std::string objective, std::string name, int value, P
 std::optional<int>
 GMLIB_Scoreboard::setScore(std::string objective, Player* pl, int value, PlayerScoreSetFunction action) {
     auto id = getScoreboardId(*pl);
-    if (id.isValid()) {
+    if (!id.isValid()) {
         id = getServerScoreboard()->createScoreboardId(*pl);
     }
     auto obj = getObjective(objective);
@@ -144,7 +144,7 @@ GMLIB_Scoreboard::setScore(std::string objective, Player* pl, int value, PlayerS
 std::optional<int>
 GMLIB_Scoreboard::setScore(std::string objective, Actor* ac, int value, PlayerScoreSetFunction action) {
     auto id = getScoreboardId(*ac);
-    if (id.isValid()) {
+    if (!id.isValid()) {
         id = getServerScoreboard()->createScoreboardId(*ac);
     }
     auto obj = getObjective(objective);
