@@ -4,12 +4,12 @@
 
 namespace GMLIB {
 
-class GMLIB {
+class Entry {
 
 public:
-    static std::unique_ptr<GMLIB>& getInstance();
+    static std::unique_ptr<Entry>& getInstance();
 
-    GMLIB(ll::plugin::NativePlugin& self) : mSelf(self) {}
+    Entry(ll::plugin::NativePlugin& self) : mSelf(self) {}
 
     [[nodiscard]] ll::plugin::NativePlugin& getSelf() const { return mSelf; }
 

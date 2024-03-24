@@ -5,9 +5,13 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
 #include "GMLIB/Event/Entity/DeathMessageEvent.h"
+#include "GMLIB/Event/Entity/DragonRespawnEvent.h"
 #include "GMLIB/Event/Entity/ItemActorEvent.h"
 #include "GMLIB/Event/Entity/ItemActorSpawnEvent.h"
+#include "GMLIB/Event/Entity/MobHurtEvent.h"
 #include "GMLIB/Event/Entity/MobPickupItemEvent.h"
+#include "GMLIB/Event/Entity/ProjectileCreateEvent.h"
+#include "GMLIB/Event/Level/ExplodeEvent.h"
 #include "GMLIB/Event/Level/WeatherUpdateEvent.h"
 #include "GMLIB/Event/Packet/ClientLoginEvent.h"
 #include "GMLIB/Event/Packet/TextPacketEvent.h"
