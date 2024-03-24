@@ -10,8 +10,8 @@ class PlayerChangeDimensionBeforeEvent : public ll::event::Cancellable<ll::event
     DimensionType& mToDimensionId;
     Vec3&          mFromPosition;
     Vec3&          mToPosition;
-    bool           mUsePortal;
-    bool           mRespawn;
+    bool&          mUsePortal;
+    bool&          mRespawn;
 
 public:
     constexpr explicit PlayerChangeDimensionBeforeEvent(
@@ -20,8 +20,8 @@ public:
         DimensionType& toDimId,
         Vec3&          fromPosition,
         Vec3&          toPosition,
-        bool           usePortal,
-        bool           respawn
+        bool&          usePortal,
+        bool&          respawn
     )
     : Cancellable(player),
       mFromDimensionId(fromDimId),
@@ -31,14 +31,12 @@ public:
       mUsePortal(usePortal),
       mRespawn(respawn) {}
 
-    GMLIB_API DimensionType const& getFromDimensionId() const;
-    GMLIB_API DimensionType const& getToDimensionId() const;
-    GMLIB_API DimensionType&       getToDimensionId();
-    GMLIB_API Vec3 const&          getFromPosition() const;
-    GMLIB_API Vec3 const&          getToPosition() const;
-    GMLIB_API Vec3&                getToPosition();
-    GMLIB_API bool                 isUsingPortal() const;
-    GMLIB_API bool                 isRespawn() const;
+    GMLIB_API DimensionType& getFromDimensionId() const;
+    GMLIB_API DimensionType& getToDimensionId() const;
+    GMLIB_API Vec3&          getFromPosition() const;
+    GMLIB_API Vec3&          getToPosition() const;
+    GMLIB_API bool&          isUsingPortal() const;
+    GMLIB_API bool&          isRespawn() const;
 };
 
 class PlayerChangeDimensionAfterEvent : public ll::event::player::PlayerEvent {
@@ -46,8 +44,8 @@ class PlayerChangeDimensionAfterEvent : public ll::event::player::PlayerEvent {
     DimensionType& mToDimensionId;
     Vec3&          mFromPosition;
     Vec3&          mToPosition;
-    bool           mUsePortal;
-    bool           mRespawn;
+    bool&          mUsePortal;
+    bool&          mRespawn;
 
 public:
     constexpr explicit PlayerChangeDimensionAfterEvent(
@@ -56,8 +54,8 @@ public:
         DimensionType& toDimId,
         Vec3&          fromPosition,
         Vec3&          toPosition,
-        bool           usePortal,
-        bool           respawn
+        bool&          usePortal,
+        bool&          respawn
     )
     : PlayerEvent(player),
       mFromDimensionId(fromDimId),
@@ -67,12 +65,12 @@ public:
       mUsePortal(usePortal),
       mRespawn(respawn) {}
 
-    GMLIB_API DimensionType const& getFromDimensionId() const;
-    GMLIB_API DimensionType const& getToDimensionId() const;
-    GMLIB_API Vec3 const&          getFromPosition() const;
-    GMLIB_API Vec3 const&          getToPosition() const;
-    GMLIB_API bool                 isUsingPortal() const;
-    GMLIB_API bool                 isRespawn() const;
+    GMLIB_API DimensionType& getFromDimensionId() const;
+    GMLIB_API DimensionType& getToDimensionId() const;
+    GMLIB_API Vec3&          getFromPosition() const;
+    GMLIB_API Vec3&          getToPosition() const;
+    GMLIB_API bool&          isUsingPortal() const;
+    GMLIB_API bool&          isRespawn() const;
 };
 
 } // namespace GMLIB::Event::PlayerEvent

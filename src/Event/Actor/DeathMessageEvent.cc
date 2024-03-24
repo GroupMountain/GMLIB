@@ -8,14 +8,10 @@ namespace GMLIB::Event::EntityEvent {
 
 using DEATH_MESSAGE = std::pair<std::string, std::vector<std::string>>;
 
-ActorDamageSource const& DeathMessageBeforeEvent::getDamageSource() const { return mDamageSource; }
+ActorDamageSource& DeathMessageBeforeEvent::getDamageSource() const { return mDamageSource; }
 
-ActorDamageSource const& DeathMessageAfterEvent::getDamageSource() const { return mDamageSource; }
-DEATH_MESSAGE const      DeathMessageAfterEvent::getDeathMessage() const { return mDeathMessage; }
-
-void DeathMessageAfterEvent::setDeathMessage(std::pair<std::string, std::vector<std::string>> msg) {
-    mDeathMessage = msg;
-}
+ActorDamageSource& DeathMessageAfterEvent::getDamageSource() const { return mDamageSource; }
+DEATH_MESSAGE&     DeathMessageAfterEvent::getDeathMessage() const { return mDeathMessage; }
 
 LL_TYPE_INSTANCE_HOOK(
     DeathMessageEvent1,

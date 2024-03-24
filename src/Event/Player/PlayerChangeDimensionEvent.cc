@@ -4,22 +4,20 @@
 
 namespace GMLIB::Event::PlayerEvent {
 
-DimensionType const& PlayerChangeDimensionBeforeEvent::getFromDimensionId() const { return mFromDimensionId; }
-DimensionType const& PlayerChangeDimensionBeforeEvent::getToDimensionId() const { return mToDimensionId; }
-DimensionType&       PlayerChangeDimensionBeforeEvent::getToDimensionId() { return mToDimensionId; }
-Vec3 const&          PlayerChangeDimensionBeforeEvent::getFromPosition() const { return mFromPosition; }
-Vec3 const&          PlayerChangeDimensionBeforeEvent::getToPosition() const { return mToPosition; }
-Vec3&                PlayerChangeDimensionBeforeEvent::getToPosition() { return mToPosition; }
-bool                 PlayerChangeDimensionBeforeEvent::isUsingPortal() const { return mUsePortal; }
-bool                 PlayerChangeDimensionBeforeEvent::isRespawn() const { return mRespawn; }
+DimensionType& PlayerChangeDimensionBeforeEvent::getFromDimensionId() const { return mFromDimensionId; }
+DimensionType& PlayerChangeDimensionBeforeEvent::getToDimensionId() const { return mToDimensionId; }
+Vec3&          PlayerChangeDimensionBeforeEvent::getFromPosition() const { return mFromPosition; }
+Vec3&          PlayerChangeDimensionBeforeEvent::getToPosition() const { return mToPosition; }
+bool&          PlayerChangeDimensionBeforeEvent::isUsingPortal() const { return mUsePortal; }
+bool&          PlayerChangeDimensionBeforeEvent::isRespawn() const { return mRespawn; }
 
 
-DimensionType const& PlayerChangeDimensionAfterEvent::getFromDimensionId() const { return mFromDimensionId; }
-DimensionType const& PlayerChangeDimensionAfterEvent::getToDimensionId() const { return mToDimensionId; }
-Vec3 const&          PlayerChangeDimensionAfterEvent::getFromPosition() const { return mFromPosition; }
-Vec3 const&          PlayerChangeDimensionAfterEvent::getToPosition() const { return mToPosition; }
-bool                 PlayerChangeDimensionAfterEvent::isUsingPortal() const { return mUsePortal; }
-bool                 PlayerChangeDimensionAfterEvent::isRespawn() const { return mRespawn; }
+DimensionType& PlayerChangeDimensionAfterEvent::getFromDimensionId() const { return mFromDimensionId; }
+DimensionType& PlayerChangeDimensionAfterEvent::getToDimensionId() const { return mToDimensionId; }
+Vec3&          PlayerChangeDimensionAfterEvent::getFromPosition() const { return mFromPosition; }
+Vec3&          PlayerChangeDimensionAfterEvent::getToPosition() const { return mToPosition; }
+bool&          PlayerChangeDimensionAfterEvent::isUsingPortal() const { return mUsePortal; }
+bool&          PlayerChangeDimensionAfterEvent::isRespawn() const { return mRespawn; }
 
 LL_TYPE_INSTANCE_HOOK(
     PlayerChangeDimensionEventHook,

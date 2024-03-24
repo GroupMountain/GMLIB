@@ -3,16 +3,16 @@
 
 namespace GMLIB::Event::PlayerEvent {
 
-BlockPos const& PlayerStartSleepBeforeEvent::getPosition() const { return mBlockPos; }
+BlockPos& PlayerStartSleepBeforeEvent::getPosition() const { return mBlockPos; }
 
-BlockPos const& PlayerStartSleepAfterEvent::getPosition() const { return mBlockPos; }
-bool const      PlayerStartSleepAfterEvent::getResult() const { return mResult; }
+BlockPos& PlayerStartSleepAfterEvent::getPosition() const { return mBlockPos; }
+bool      PlayerStartSleepAfterEvent::getResult() const { return mResult; }
 
-bool const PlayerStopSleepBeforeEvent::isForcefulWakeUp() const { return mForcefulWakeUp; }
-bool const PlayerStopSleepBeforeEvent::isUpdateLevelList() const { return mUpdateLevelList; }
+bool& PlayerStopSleepBeforeEvent::isForcefulWakeUp() const { return mForcefulWakeUp; }
+bool& PlayerStopSleepBeforeEvent::isUpdateLevelList() const { return mUpdateLevelList; }
 
-bool const PlayerStopSleepAfterEvent::isForcefulWakeUp() const { return mForcefulWakeUp; }
-bool const PlayerStopSleepAfterEvent::isUpdateLevelList() const { return mUpdateLevelList; }
+bool& PlayerStopSleepAfterEvent::isForcefulWakeUp() const { return mForcefulWakeUp; }
+bool& PlayerStopSleepAfterEvent::isUpdateLevelList() const { return mUpdateLevelList; }
 
 LL_TYPE_INSTANCE_HOOK(
     PlayerStartSleepEventHook,

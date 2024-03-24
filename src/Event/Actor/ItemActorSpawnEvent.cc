@@ -3,17 +3,17 @@
 
 namespace GMLIB::Event::EntityEvent {
 
-BlockSource const& ItemActorSpawnBeforeEvent::getBlockSource() const { return mBlockSource; }
-Vec3 const&        ItemActorSpawnBeforeEvent::getPosition() const { return mPosition; }
-ItemStack const&   ItemActorSpawnBeforeEvent::getItem() const { return mItem; }
-Actor* const       ItemActorSpawnBeforeEvent::getSpawner() const { return mSpawner; }
-int const          ItemActorSpawnBeforeEvent::getThrowTime() const { return mThrowTime; }
+BlockSource& ItemActorSpawnBeforeEvent::getBlockSource() const { return mBlockSource; }
+Vec3&        ItemActorSpawnBeforeEvent::getPosition() const { return mPosition; }
+ItemStack&   ItemActorSpawnBeforeEvent::getItem() const { return mItem; }
+Actor*       ItemActorSpawnBeforeEvent::getSpawner() const { return mSpawner; }
+int&         ItemActorSpawnBeforeEvent::getThrowTime() const { return mThrowTime; }
 
-BlockSource const& ItemActorSpawnAfterEvent::getBlockSource() const { return mBlockSource; }
-Vec3 const&        ItemActorSpawnAfterEvent::getPosition() const { return mPosition; }
-ItemStack const&   ItemActorSpawnAfterEvent::getItem() const { return mItem; }
-Actor* const       ItemActorSpawnAfterEvent::getSpawner() const { return mSpawner; }
-int const          ItemActorSpawnAfterEvent::getThrowTime() const { return mThrowTime; }
+BlockSource& ItemActorSpawnAfterEvent::getBlockSource() const { return mBlockSource; }
+Vec3&        ItemActorSpawnAfterEvent::getPosition() const { return mPosition; }
+ItemStack&   ItemActorSpawnAfterEvent::getItem() const { return mItem; }
+Actor*       ItemActorSpawnAfterEvent::getSpawner() const { return mSpawner; }
+int&         ItemActorSpawnAfterEvent::getThrowTime() const { return mThrowTime; }
 
 LL_TYPE_INSTANCE_HOOK(
     ItemActorSpawnEventHook,

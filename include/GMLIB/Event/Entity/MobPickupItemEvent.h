@@ -14,7 +14,7 @@ public:
     : Cancellable(mob),
       mItemActor(itemActor) {}
 
-    GMLIB_API ItemActor const& getItemActor() const;
+    GMLIB_API ItemActor& getItemActor() const;
 };
 
 class MobPickupItemAfterEvent : public ll::event::entity::MobEvent {
@@ -23,7 +23,7 @@ class MobPickupItemAfterEvent : public ll::event::entity::MobEvent {
 public:
     constexpr explicit MobPickupItemAfterEvent(Mob& mob, ItemActor& itemActor) : MobEvent(mob), mItemActor(itemActor) {}
 
-    GMLIB_API ItemActor const& getItemActor() const;
+    GMLIB_API ItemActor& getItemActor() const;
 };
 
 } // namespace GMLIB::Event::EntityEvent

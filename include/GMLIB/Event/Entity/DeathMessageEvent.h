@@ -13,26 +13,25 @@ public:
     : Cancellable(actor),
       mDamageSource(damageSource) {}
 
-    GMLIB_API ActorDamageSource const& getDamageSource() const;
+    GMLIB_API ActorDamageSource& getDamageSource() const;
 };
 
 class DeathMessageAfterEvent : public ll::event::entity::ActorEvent {
-    ActorDamageSource&                               mDamageSource;
-    std::pair<std::string, std::vector<std::string>> mDeathMessage;
+    ActorDamageSource&                                mDamageSource;
+    std::pair<std::string, std::vector<std::string>>& mDeathMessage;
 
 public:
     constexpr explicit DeathMessageAfterEvent(
-        Actor&                                           actor,
-        ActorDamageSource&                               damageSource,
-        std::pair<std::string, std::vector<std::string>> deathMessage
+        Actor&                                            actor,
+        ActorDamageSource&                                damageSource,
+        std::pair<std::string, std::vector<std::string>>& deathMessage
     )
     : ActorEvent(actor),
       mDamageSource(damageSource),
       mDeathMessage(deathMessage) {}
 
-    GMLIB_API ActorDamageSource const& getDamageSource() const;
-    GMLIB_API std::pair<std::string, std::vector<std::string>> const getDeathMessage() const;
-    GMLIB_API void setDeathMessage(std::pair<std::string, std::vector<std::string>> msg);
+    GMLIB_API ActorDamageSource& getDamageSource() const;
+    GMLIB_API std::pair<std::string, std::vector<std::string>>& getDeathMessage() const;
 };
 
 } // namespace GMLIB::Event::EntityEvent

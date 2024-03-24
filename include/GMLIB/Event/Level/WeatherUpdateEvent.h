@@ -7,10 +7,10 @@
 namespace GMLIB::Event::LevelEvent {
 
 class WeatherUpdateBeforeEvent : public ll::event::Cancellable<ll::event::world::LevelEvent> {
-    int mRainingLastTick;
-    int mRainLevel;
-    int mLightningLastTick;
-    int mLightningLevel;
+    int& mRainingLastTick;
+    int& mRainLevel;
+    int& mLightningLastTick;
+    int& mLightningLevel;
 
 public:
     constexpr explicit WeatherUpdateBeforeEvent(
@@ -26,17 +26,17 @@ public:
       mLightningLastTick(lightningLastTick),
       mLightningLevel(lightningLevel) {}
 
-    GMLIB_API int const getRainingLastTick() const;
-    GMLIB_API int const getLightningLastTick() const;
-    GMLIB_API int const getRainLevel() const;
-    GMLIB_API int const getLightningLevel() const;
+    GMLIB_API int& getRainingLastTick() const;
+    GMLIB_API int& getLightningLastTick() const;
+    GMLIB_API int& getRainLevel() const;
+    GMLIB_API int& getLightningLevel() const;
 };
 
 class WeatherUpdateAfterEvent : public ll::event::world::LevelEvent {
-    int mRainingLastTick;
-    int mRainLevel;
-    int mLightningLastTick;
-    int mLightningLevel;
+    int& mRainingLastTick;
+    int& mRainLevel;
+    int& mLightningLastTick;
+    int& mLightningLevel;
 
 public:
     constexpr explicit WeatherUpdateAfterEvent(
@@ -52,10 +52,10 @@ public:
       mLightningLastTick(lightningLastTick),
       mLightningLevel(lightningLevel) {}
 
-    GMLIB_API int const getRainingLastTick() const;
-    GMLIB_API int const getLightningLastTick() const;
-    GMLIB_API int const getRainLevel() const;
-    GMLIB_API int const getLightningLevel() const;
+    GMLIB_API int& getRainingLastTick() const;
+    GMLIB_API int& getLightningLastTick() const;
+    GMLIB_API int& getRainLevel() const;
+    GMLIB_API int& getLightningLevel() const;
 };
 
 } // namespace GMLIB::Event::LevelEvent

@@ -3,14 +3,13 @@
 
 namespace GMLIB::Event::PacketEvent {
 
-ServerNetworkHandler const& TextPacketSendBeforeEvent::getServerNetworkHandler() const { return mServerNetworkHandler; }
-NetworkIdentifier const&    TextPacketSendBeforeEvent::getNetworkIdentifier() const { return mNetworkIdentifier; }
-TextPacket const&           TextPacketSendBeforeEvent::getPacket() const { return mPacket; }
-TextPacket&                 TextPacketSendBeforeEvent::getPacket() { return mPacket; }
+ServerNetworkHandler& TextPacketSendBeforeEvent::getServerNetworkHandler() const { return mServerNetworkHandler; }
+NetworkIdentifier&    TextPacketSendBeforeEvent::getNetworkIdentifier() const { return mNetworkIdentifier; }
+TextPacket&           TextPacketSendBeforeEvent::getPacket() const { return mPacket; }
 
-ServerNetworkHandler const& TextPacketSendAfterEvent::getServerNetworkHandler() const { return mServerNetworkHandler; }
-NetworkIdentifier const&    TextPacketSendAfterEvent::getNetworkIdentifier() const { return mNetworkIdentifier; }
-TextPacket const&           TextPacketSendAfterEvent::getPacket() const { return mPacket; }
+ServerNetworkHandler& TextPacketSendAfterEvent::getServerNetworkHandler() const { return mServerNetworkHandler; }
+NetworkIdentifier&    TextPacketSendAfterEvent::getNetworkIdentifier() const { return mNetworkIdentifier; }
+TextPacket&           TextPacketSendAfterEvent::getPacket() const { return mPacket; }
 
 LL_TYPE_INSTANCE_HOOK(
     TextPacketSendHook,
@@ -18,8 +17,8 @@ LL_TYPE_INSTANCE_HOOK(
     ServerNetworkHandler,
     "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVTextPacket@@@Z",
     void,
-    NetworkIdentifier const& identifier,
-    TextPacket&              packet
+    NetworkIdentifier& identifier,
+    TextPacket&        packet
 ) {
     auto beforeEvent = TextPacketSendBeforeEvent(*this, identifier, packet);
     ll::event::EventBus::getInstance().publish(beforeEvent);
@@ -49,10 +48,9 @@ static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::Listen
     return std::make_unique<TextPacketSendAfterEventEmitter>();
 }
 
-TextPacket const& TextPacketWriteBeforeEvent::getPacket() const { return mPacket; }
-TextPacket&       TextPacketWriteBeforeEvent::getPacket() { return mPacket; }
+TextPacket& TextPacketWriteBeforeEvent::getPacket() const { return mPacket; }
 
-TextPacket const& TextPacketWriteAfterEvent::getPacket() const { return mPacket; }
+TextPacket& TextPacketWriteAfterEvent::getPacket() const { return mPacket; }
 
 LL_TYPE_INSTANCE_HOOK(
     TextPacketWriteHook,

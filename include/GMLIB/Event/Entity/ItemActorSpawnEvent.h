@@ -8,11 +8,11 @@
 namespace GMLIB::Event::EntityEvent {
 
 class ItemActorSpawnBeforeEvent : public ll::event::Cancellable<ll::event::Event> {
-    BlockSource const& mBlockSource;
-    Vec3&              mPosition;
-    ItemStack&         mItem;
-    Actor*             mSpawner = nullptr;
-    int                mThrowTime;
+    BlockSource& mBlockSource;
+    Vec3&        mPosition;
+    ItemStack&   mItem;
+    Actor*       mSpawner = nullptr;
+    int&         mThrowTime;
 
 public:
     constexpr explicit ItemActorSpawnBeforeEvent(
@@ -29,19 +29,19 @@ public:
       mSpawner(spawner),
       mThrowTime(throwTime) {}
 
-    GMLIB_API BlockSource const& getBlockSource() const;
-    GMLIB_API Vec3 const&        getPosition() const;
-    GMLIB_API ItemStack const&   getItem() const;
-    GMLIB_API Actor* const       getSpawner() const;
-    GMLIB_API int const          getThrowTime() const;
+    GMLIB_API BlockSource& getBlockSource() const;
+    GMLIB_API Vec3&        getPosition() const;
+    GMLIB_API ItemStack&   getItem() const;
+    GMLIB_API Actor*       getSpawner() const;
+    GMLIB_API int&         getThrowTime() const;
 };
 
 class ItemActorSpawnAfterEvent : public ItemActorEvent {
-    BlockSource const& mBlockSource;
-    Vec3&              mPosition;
-    ItemStack&         mItem;
-    Actor*             mSpawner = nullptr;
-    int                mThrowTime;
+    BlockSource& mBlockSource;
+    Vec3&        mPosition;
+    ItemStack&   mItem;
+    Actor*       mSpawner = nullptr;
+    int&         mThrowTime;
 
 public:
     constexpr explicit ItemActorSpawnAfterEvent(
@@ -59,11 +59,11 @@ public:
       mSpawner(spawner),
       mThrowTime(throwTime) {}
 
-    GMLIB_API BlockSource const& getBlockSource() const;
-    GMLIB_API Vec3 const&        getPosition() const;
-    GMLIB_API ItemStack const&   getItem() const;
-    GMLIB_API Actor* const       getSpawner() const;
-    GMLIB_API int const          getThrowTime() const;
+    GMLIB_API BlockSource& getBlockSource() const;
+    GMLIB_API Vec3&        getPosition() const;
+    GMLIB_API ItemStack&   getItem() const;
+    GMLIB_API Actor*       getSpawner() const;
+    GMLIB_API int&         getThrowTime() const;
 };
 
 } // namespace GMLIB::Event::EntityEvent

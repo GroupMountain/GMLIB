@@ -4,9 +4,9 @@
 
 namespace GMLIB::Event::EntityEvent {
 
-ItemActor const& MobPickupItemBeforeEvent::getItemActor() const { return mItemActor; }
+ItemActor& MobPickupItemBeforeEvent::getItemActor() const { return mItemActor; }
 
-ItemActor const& MobPickupItemAfterEvent::getItemActor() const { return mItemActor; }
+ItemActor& MobPickupItemAfterEvent::getItemActor() const { return mItemActor; }
 
 LL_TYPE_INSTANCE_HOOK(
     MobPickupItemEventHook,
