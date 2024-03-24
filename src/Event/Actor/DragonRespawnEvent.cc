@@ -30,4 +30,22 @@ LL_TYPE_INSTANCE_HOOK(
     }
 }
 
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory1(ll::event::ListenerBase&);
+class DragonRespawnBeforeEventEmitter : public ll::event::Emitter<emitterFactory1, DragonRespawnBeforeEvent> {
+    ll::memory::HookRegistrar<DragonRespawnEventHook> hook;
+};
+
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory1(ll::event::ListenerBase&) {
+    return std::make_unique<DragonRespawnBeforeEventEmitter>();
+}
+
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::ListenerBase&);
+class DragonRespawnAfterEventEmitter : public ll::event::Emitter<emitterFactory2, DragonRespawnAfterEvent> {
+    ll::memory::HookRegistrar<DragonRespawnEventHook> hook;
+};
+
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::ListenerBase&) {
+    return std::make_unique<DragonRespawnAfterEventEmitter>();
+}
+
 } // namespace GMLIB::Event::EntityEvent
