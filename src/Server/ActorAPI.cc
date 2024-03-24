@@ -109,6 +109,53 @@ std::string GMLIB_Actor::getActorTypeName(std::string& actorKey) {
     return "unknown";
 }
 
+std::optional<std::pair<Vec3, DimensionType>> GMLIB_Actor::getActorPosition(ActorUniqueID& auid) {
+    if (auto ac = ll::service::getLevel()->fetchEntity(auid)) {
+        return {
+            {ac->getPosition(), ac->getDimensionId()}
+        };
+    }
+    auto nbt = getActorNbt(auid);
+    if (nbt) {
+        auto  tag   = nbt->getList("Pos");
+        float x     = tag->at(0)->as<FloatTag>().data;
+        float y     = tag->at(1)->as<FloatTag>().data;
+        float z     = tag->at(2)->as<FloatTag>().data;
+        int   dimId = nbt->getInt("DimensionId");
+        return {
+            {{x, y, z}, dimId}
+        };
+    }
+    return {};
+}
+
+std::optional<std::pair<Vec3, DimensionType>> GMLIB_Actor::getActorPosition(std::string& actorKey) {
+    auto auid = getActorUniqueID(actorKey);
+    return getActorPosition(auid);
+}
+
+bool GMLIB_Actor::setActorPosition(ActorUniqueID& auid, Vec3 pos, DimensionType dimId) {
+    if (auto ac = ll::service::getLevel()->fetchEntity(auid)) {
+        ac->teleport(pos, dimId);
+        return true;
+    }
+    auto nbt = getActorNbt(auid);
+    if (nbt) {
+        auto tag                        = nbt->getList("Pos");
+        tag->at(0)->as<FloatTag>().data = pos.x;
+        tag->at(1)->as<FloatTag>().data = pos.y;
+        tag->at(2)->as<FloatTag>().data = pos.z;
+        nbt->putInt("DimensionId", dimId.id);
+        return setActorNbt(auid, *nbt);
+    }
+    return false;
+}
+
+bool GMLIB_Actor::setActorPosition(std::string& actorKey, Vec3 pos, DimensionType dimId) {
+    auto auid = getActorUniqueID(actorKey);
+    return setActorPosition(auid, pos, dimId);
+}
+
 std::unique_ptr<CompoundTag> GMLIB_Actor::getActorNbt(ActorUniqueID& auid) {
     if (auto en = ll::service::getLevel()->fetchEntity(auid)) {
         auto actor = (GMLIB_Actor*)en;

@@ -286,24 +286,8 @@ std::optional<std::pair<Vec3, int>> GMLIB_Player::getPlayerPosition(std::string&
 }
 
 std::optional<std::pair<Vec3, int>> GMLIB_Player::getPlayerPosition(mce::UUID const& uuid) {
-    auto pl = ll::service::getLevel()->getPlayer(uuid);
-    if (pl) {
-        return {
-            {pl->getPosition(), pl->getDimensionId()}
-        };
-    }
-    auto nbt = getPlayerNbt(uuid);
-    if (nbt) {
-        auto  tag   = nbt->getList("Pos");
-        float x     = tag->at(0)->as<FloatTag>().data;
-        float y     = tag->at(1)->as<FloatTag>().data;
-        float z     = tag->at(2)->as<FloatTag>().data;
-        int   dimId = nbt->getInt("DimensionId");
-        return {
-            {{x, y, z}, dimId}
-        };
-    }
-    return {};
+    auto serverId = getServerIdFromUuid(uuid);
+    return getPlayerPosition(serverId);
 }
 
 bool GMLIB_Player::setPlayerPosition(std::string& serverId, Vec3 pos, DimensionType dimId) {
@@ -325,21 +309,8 @@ bool GMLIB_Player::setPlayerPosition(std::string& serverId, Vec3 pos, DimensionT
 }
 
 bool GMLIB_Player::setPlayerPosition(mce::UUID const& uuid, Vec3 pos, DimensionType dimId) {
-    auto pl = ll::service::getLevel()->getPlayer(uuid);
-    if (pl) {
-        pl->teleport(pos, dimId);
-        return true;
-    }
-    auto nbt = getPlayerNbt(uuid);
-    if (nbt) {
-        auto tag                        = nbt->getList("Pos");
-        tag->at(0)->as<FloatTag>().data = pos.x;
-        tag->at(1)->as<FloatTag>().data = pos.y;
-        tag->at(2)->as<FloatTag>().data = pos.z;
-        nbt->putInt("DimensionId", dimId.id);
-        return setPlayerNbt(uuid, *nbt);
-    }
-    return false;
+    auto serverId = getServerIdFromUuid(uuid);
+    return setPlayerPosition(serverId, pos, dimId);
 }
 
 void GMLIB_Player::setClientSidebar(

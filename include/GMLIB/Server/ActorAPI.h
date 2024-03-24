@@ -24,6 +24,14 @@ public:
 
     GMLIB_API static std::string getActorTypeName(std::string& actorKey);
 
+    GMLIB_API static std::optional<std::pair<Vec3, DimensionType>> getActorPosition(ActorUniqueID& auid);
+
+    GMLIB_API static std::optional<std::pair<Vec3, DimensionType>> getActorPosition(std::string& actorKey);
+
+    GMLIB_API static bool setActorPosition(ActorUniqueID& auid, Vec3 pos, DimensionType dimId);
+
+    GMLIB_API static bool setActorPosition(std::string& actorKey, Vec3 pos, DimensionType dimId);
+
     GMLIB_API static std::unique_ptr<CompoundTag> getActorNbt(ActorUniqueID& auid);
 
     GMLIB_API static std::unique_ptr<CompoundTag> getActorNbt(std::string& actorKey);
