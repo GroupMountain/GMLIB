@@ -534,64 +534,64 @@ std::vector<MobEffectInstance> GMLIB_Player::getAllEffects() {
 }
 
 std::optional<int> GMLIB_Player::getScore(std::string objective) {
-    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->getPlayerScore(objective, this);
 }
 
 std::optional<int> GMLIB_Player::setScore(std::string objective, int value, PlayerScoreSetFunction action) {
-    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->setPlayerScore(objective, this, value, action);
 }
 
 bool GMLIB_Player::resetScore(std::string objective) {
-    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->resetPlayerScore(objective, this);
 }
 
 bool GMLIB_Player::resetScore() {
-    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->resetPlayerScore(this);
 }
 
 std::optional<int> GMLIB_Player::getPlayerScore(std::string& serverId, std::string objective) {
-    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->getPlayerScore(objective, serverId);
 }
 
 std::optional<int> GMLIB_Player::getPlayerScore(mce::UUID const& uuid, std::string objective) {
-    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->getPlayerScore(objective, uuid);
 }
 
 std::optional<int>
 GMLIB_Player::setPlayerScore(std::string& serverId, std::string objective, int value, PlayerScoreSetFunction action) {
-    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->setPlayerScore(objective, serverId, value, action);
 }
 
 std::optional<int>
 GMLIB_Player::setPlayerScore(mce::UUID const& uuid, std::string objective, int value, PlayerScoreSetFunction action) {
-    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->setPlayerScore(objective, uuid, value, action);
 }
 
 bool GMLIB_Player::resetPlayerScore(std::string& serverId, std::string objective) {
-    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->resetPlayerScore(objective, serverId);
 }
 
 bool GMLIB_Player::resetPlayerScore(mce::UUID const& uuid, std::string objective) {
-    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->resetPlayerScore(objective, uuid);
 }
 
 bool GMLIB_Player::resetPlayerScore(std::string& serverId) {
-    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->resetPlayerScore(serverId);
 }
 
 bool GMLIB_Player::resetPlayerScore(mce::UUID const& uuid) {
-    auto scoreboard = GMLIB_Scoreboard::getServerScoreboard();
+    auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->resetPlayerScore(uuid);
 }
 

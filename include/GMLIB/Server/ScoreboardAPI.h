@@ -1,6 +1,7 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
 #include "mc/world/scores/Scoreboard.h"
+#include "mc/world/scores/ServerScoreboard.h"
 
 class GMLIB_Scoreboard : public Scoreboard {
 public:
@@ -11,9 +12,13 @@ public:
 public:
     GMLIB_API static GMLIB_Scoreboard* getInstance();
 
-    GMLIB_API static GMLIB_Scoreboard* getServerScoreboard();
-
 public:
+    GMLIB_API ServerScoreboard* getServerScoreboard();
+
+    GMLIB_API IdentityDictionary* getIdentityDictionary();
+
+    GMLIB_API std::unordered_map<std::string, DisplayObjective> getDisplayObjectives();
+
     GMLIB_API Objective* addObjective(std::string name);
 
     GMLIB_API Objective* addObjective(std::string name, std::string displayName);

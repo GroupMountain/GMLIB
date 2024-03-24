@@ -2,13 +2,18 @@
 #include <GMLIB/Server/PlayerAPI.h>
 #include <GMLIB/Server/ScoreboardAPI.h>
 #include <mc/world/scores/ScoreInfo.h>
-#include <mc/world/scores/ServerScoreboard.h>
 
 GMLIB_Scoreboard* GMLIB_Scoreboard::getInstance() {
     return (GMLIB_Scoreboard*)&ll::service::bedrock::getLevel()->getScoreboard();
 }
 
-GMLIB_Scoreboard* GMLIB_Scoreboard::getServerScoreboard() { return getInstance(); }
+ServerScoreboard* GMLIB_Scoreboard::getServerScoreboard() { return (ServerScoreboard*)this; }
+
+std::unordered_map<std::string, DisplayObjective> GMLIB_Scoreboard::getDisplayObjectives() {
+    return mDisplayObjectives;
+}
+
+IdentityDictionary* GMLIB_Scoreboard::getIdentityDictionary() { return &mIdentityDict; }
 
 Objective* GMLIB_Scoreboard::addObjective(std::string name, std::string displayName) {
     return addObjective(name, displayName, *getCriteria("dummy"));
@@ -114,8 +119,7 @@ std::optional<int>
 GMLIB_Scoreboard::setScore(std::string objective, std::string name, int value, PlayerScoreSetFunction action) {
     auto id = getScoreboardId(name);
     if (id.isValid()) {
-        auto serverScoreboard = (ServerScoreboard*)this;
-        id                    = serverScoreboard->createScoreboardId(name);
+        id = getServerScoreboard()->createScoreboardId(name);
     }
     auto obj = getObjective(objective);
     if (!obj) {
@@ -128,8 +132,7 @@ std::optional<int>
 GMLIB_Scoreboard::setScore(std::string objective, Player* pl, int value, PlayerScoreSetFunction action) {
     auto id = getScoreboardId(*pl);
     if (id.isValid()) {
-        auto serverScoreboard = (ServerScoreboard*)this;
-        id                    = serverScoreboard->createScoreboardId(*pl);
+        id = getServerScoreboard()->createScoreboardId(*pl);
     }
     auto obj = getObjective(objective);
     if (!obj) {
@@ -142,8 +145,7 @@ std::optional<int>
 GMLIB_Scoreboard::setScore(std::string objective, Actor* ac, int value, PlayerScoreSetFunction action) {
     auto id = getScoreboardId(*ac);
     if (id.isValid()) {
-        auto serverScoreboard = (ServerScoreboard*)this;
-        id                    = serverScoreboard->createScoreboardId(*ac);
+        id = getServerScoreboard()->createScoreboardId(*ac);
     }
     auto obj = getObjective(objective);
     if (!obj) {
@@ -182,14 +184,11 @@ std::optional<int> GMLIB_Scoreboard::setPlayerScore(
     }
     auto id = getPlayerScoreboardId(serverId);
     if (!id.isValid()) {
-        // make fake ID
-        auto serverScoreboard = (ServerScoreboard*)this;
-        auto fakeId           = serverScoreboard->createScoreboardId(serverId);
-        // convert fake Id D to real ID
-        auto auid = GMLIB_Player::getPlayerUniqueID(serverId);
+        auto fakeId = getServerScoreboard()->createScoreboardId(serverId);
+        auto auid   = GMLIB_Player::getPlayerUniqueID(serverId);
         if (auid != ActorUniqueID::INVALID_ID) {
             auto psid = PlayerScoreboardId(auid);
-            id        = mIdentityDict.convertFakeToReal(fakeId, psid);
+            id        = getIdentityDictionary()->convertFakeToReal(fakeId, psid);
         }
     }
     auto obj = getObjective(objective);
