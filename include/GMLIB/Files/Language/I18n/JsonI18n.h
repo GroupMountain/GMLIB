@@ -9,7 +9,8 @@ private:
     std::string                                    mLanguageDirectory;
     std::unordered_map<std::string, JsonLanguage*> mAllLanguages;
     std::string                                    mLanguageCode;
-    JsonLanguage*                                  mLocalization = nullptr;
+    JsonLanguage*                                  mLocalization    = nullptr;
+    std::string                                    mDefaultLanguage = "en_US";
 
 public:
     GMLIB_API JsonI18n(std::string languageDirectory, std::string languageCode = "en_US");
@@ -28,7 +29,9 @@ public:
 
     GMLIB_API void reloadAllLanguages();
 
-    GMLIB_API bool chooseLanguage(std::string languageCode);
+    GMLIB_API bool chooseLanguage(std::string languageCode = "en_US");
+
+    GMLIB_API void setDefaultLanguage(std::string languageCode = "en_US");
 
     GMLIB_API std::string
               translate(std::string key, std::vector<std::string> data = {}, std::string translateKey = "%0$s");

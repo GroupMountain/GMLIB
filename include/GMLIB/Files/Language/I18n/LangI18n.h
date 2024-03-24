@@ -8,7 +8,8 @@ private:
     std::string                                    mLanguageDirectory;
     std::unordered_map<std::string, LangLanguage*> mAllLanguages;
     std::string                                    mLanguageCode;
-    LangLanguage*                                  mLocalization = nullptr;
+    LangLanguage*                                  mLocalization    = nullptr;
+    std::string                                    mDefaultLanguage = "en_US";
 
 public:
     GMLIB_API LangI18n(std::string languageDirectory, std::string languageCode = "en_US");
@@ -27,7 +28,9 @@ public:
 
     GMLIB_API void reloadAllLanguages();
 
-    GMLIB_API bool chooseLanguage(std::string languageCode);
+    GMLIB_API bool chooseLanguage(std::string languageCode = "en_US");
+
+    GMLIB_API void setDefaultLanguage(std::string languageCode = "en_US");
 
     GMLIB_API std::string
               translate(std::string key, std::vector<std::string> data = {}, std::string translateKey = "%0$s");

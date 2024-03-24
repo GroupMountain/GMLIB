@@ -67,16 +67,18 @@ bool LangI18n::chooseLanguage(std::string languageCode) {
     return false;
 }
 
+void LangI18n::setDefaultLanguage(std::string languageCode) { mDefaultLanguage = languageCode; }
+
 std::string LangI18n::translate(std::string key, std::vector<std::string> data, std::string translateKey) {
     if (!mLocalization) {
-        chooseLanguage("en_US");
+        chooseLanguage(mDefaultLanguage);
     }
     if (mLocalization) {
         if (mLocalization->has_value(key)) {
             return mLocalization->translate(key, data, translateKey);
         }
-        if (mAllLanguages.count("en_US")) {
-            auto temp = mAllLanguages["en_US"];
+        if (mAllLanguages.count(mDefaultLanguage)) {
+            auto temp = mAllLanguages[mDefaultLanguage];
             if (temp) {
                 return temp->translate(key, data, translateKey);
             }

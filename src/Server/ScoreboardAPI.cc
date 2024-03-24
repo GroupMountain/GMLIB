@@ -165,6 +165,12 @@ std::optional<int> GMLIB_Scoreboard::setScore(
     if (isPlayer) {
         auto psid = PlayerScoreboardId(auid);
         id        = getScoreboardId(psid);
+        if (!id.isValid()) {
+            auto fakeId = getServerScoreboard()->createScoreboardId(S(psid.mActorUniqueId));
+            if (auid != ActorUniqueID::INVALID_ID) {
+                id = getIdentityDictionary()->convertFakeToReal(fakeId, psid);
+            }
+        }
     }
     auto obj = getObjective(objective);
     if (!obj) {
