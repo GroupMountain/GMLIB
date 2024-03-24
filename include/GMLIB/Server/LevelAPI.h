@@ -70,7 +70,7 @@ public:
 
     GMLIB_API std::vector<Actor*> getAllEntities();
 
-    GMLIB_API Actor* getEntity(ActorUniqueID auid);
+    GMLIB_API Actor* getEntity(ActorUniqueID uniqueId);
 
     GMLIB_API std::vector<Player*> getAllPlayers();
 

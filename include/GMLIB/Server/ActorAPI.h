@@ -21,41 +21,41 @@ public:
 
     GMLIB_API static ActorUniqueID getActorUniqueID(std::string& actorKey);
 
-    GMLIB_API static std::string getActorTypeName(ActorUniqueID& auid);
+    GMLIB_API static std::string getActorTypeName(ActorUniqueID& uniqueId);
 
     GMLIB_API static std::string getActorTypeName(std::string& actorKey);
 
-    GMLIB_API static std::optional<std::pair<Vec3, DimensionType>> getActorPosition(ActorUniqueID& auid);
+    GMLIB_API static std::optional<std::pair<Vec3, DimensionType>> getActorPosition(ActorUniqueID& uniqueId);
 
     GMLIB_API static std::optional<std::pair<Vec3, DimensionType>> getActorPosition(std::string& actorKey);
 
-    GMLIB_API static bool setActorPosition(ActorUniqueID& auid, Vec3 pos, DimensionType dimId);
+    GMLIB_API static bool setActorPosition(ActorUniqueID& uniqueId, Vec3 pos, DimensionType dimId);
 
     GMLIB_API static bool setActorPosition(std::string& actorKey, Vec3 pos, DimensionType dimId);
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getActorNbt(ActorUniqueID& auid);
+    GMLIB_API static std::unique_ptr<CompoundTag> getActorNbt(ActorUniqueID& uniqueId);
 
     GMLIB_API static std::unique_ptr<CompoundTag> getActorNbt(std::string& actorKey);
 
-    GMLIB_API static bool setActorNbt(ActorUniqueID& auid, CompoundTag& nbt);
+    GMLIB_API static bool setActorNbt(ActorUniqueID& uniqueId, CompoundTag& nbt);
 
     GMLIB_API static bool setActorNbt(std::string& actorKey, CompoundTag& nbt);
 
-    GMLIB_API static bool setActorNbtTags(ActorUniqueID& auid, CompoundTag& nbt, const std::vector<std::string>& tags);
+    GMLIB_API static bool setActorNbtTags(ActorUniqueID& uniqueId, CompoundTag& nbt, const std::vector<std::string>& tags);
 
     GMLIB_API static bool
     setActorNbtTags(std::string& actorKey, CompoundTag& nbt, const std::vector<std::string>& tags);
 
-    GMLIB_API static bool deleteActor(ActorUniqueID& auid);
+    GMLIB_API static bool deleteActor(ActorUniqueID& uniqueId);
 
     GMLIB_API static bool deleteActor(std::string& actorKey);
 
-    GMLIB_API static std::optional<int> getActorScore(ActorUniqueID& auid, std::string objective);
+    GMLIB_API static std::optional<int> getActorScore(ActorUniqueID& uniqueId, std::string objective);
 
     GMLIB_API static std::optional<int> getActorScore(std::string& actorKey, std::string objective);
 
     GMLIB_API static std::optional<int> setActorScore(
-        ActorUniqueID&         auid,
+        ActorUniqueID&         uniqueId,
         std::string            objective,
         int                    value,
         PlayerScoreSetFunction action = PlayerScoreSetFunction::Set
@@ -68,11 +68,11 @@ public:
         PlayerScoreSetFunction action = PlayerScoreSetFunction::Set
     );
 
-    GMLIB_API static bool resetActorScore(ActorUniqueID& auid, std::string objective);
+    GMLIB_API static bool resetActorScore(ActorUniqueID& uniqueId, std::string objective);
 
     GMLIB_API static bool resetActorScore(std::string& actorKey, std::string objective);
 
-    GMLIB_API static bool resetActorScore(ActorUniqueID& auid);
+    GMLIB_API static bool resetActorScore(ActorUniqueID& uniqueId);
 
     GMLIB_API static bool resetActorScore(std::string& actorKey);
 

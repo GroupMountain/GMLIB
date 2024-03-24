@@ -236,8 +236,8 @@ ActorUniqueID GMLIB_Player::getPlayerUniqueID(std::string& serverId) {
     }
     auto nbt = GMLIB_Player::getOfflineNbt(serverId);
     if (nbt && nbt->contains("UniqueID")) {
-        auto auid = nbt->getInt64("UniqueID");
-        return ActorUniqueID(auid);
+        auto uniqueId = nbt->getInt64("UniqueID");
+        return ActorUniqueID(uniqueId);
     }
     return ActorUniqueID::INVALID_ID;
 }
@@ -246,8 +246,8 @@ std::unordered_map<ActorUniqueID, std::string> GMLIB_Player::getUniqueIdToServer
     auto                                           serverIds = getAllServerIds();
     std::unordered_map<ActorUniqueID, std::string> result;
     for (auto& serverId : serverIds) {
-        auto auid    = getPlayerUniqueID(serverId);
-        result[auid] = serverId;
+        auto uniqueId    = getPlayerUniqueID(serverId);
+        result[uniqueId] = serverId;
     }
     return result;
 }
@@ -256,8 +256,8 @@ std::unordered_map<ActorUniqueID, mce::UUID> GMLIB_Player::getUniqueIdToUuidMap(
     auto                                         uuids = getAllUuids(true);
     std::unordered_map<ActorUniqueID, mce::UUID> result;
     for (auto& uuid : uuids) {
-        auto auid    = getPlayerUniqueID(uuid);
-        result[auid] = uuid;
+        auto uniqueId    = getPlayerUniqueID(uuid);
+        result[uniqueId] = uuid;
     }
     return result;
 }
@@ -405,8 +405,8 @@ void GMLIB_Player::setClientBossbar(
     ::BossBarOverlay overlay
 ) {
     // AddActorPacket
-    auto auid = ActorUniqueID(bossbarId);
-    if (!ll::service::getLevel()->fetchEntity(auid)) {
+    auto uniqueId = ActorUniqueID(bossbarId);
+    if (!ll::service::getLevel()->fetchEntity(uniqueId)) {
         GMLIB_BinaryStream bs1;
         bs1.writeVarInt64(bossbarId);
         bs1.writeUnsignedVarInt64(bossbarId);
@@ -443,12 +443,12 @@ GMLIB_Player::setClientBossbar(std::string name, float percentage, ::BossBarColo
 }
 
 void GMLIB_Player::removeClientBossbar(int64_t bossbarId) {
-    auto auid      = ActorUniqueID(bossbarId);
+    auto uniqueId      = ActorUniqueID(bossbarId);
     auto pkt       = BossEventPacket();
-    pkt.mBossID    = auid;
+    pkt.mBossID    = uniqueId;
     pkt.mEventType = BossEventUpdateType::Remove;
     pkt.sendTo(*this);
-    RemoveActorPacket(auid).sendTo(*this);
+    RemoveActorPacket(uniqueId).sendTo(*this);
 }
 
 void GMLIB_Player::updateClientBossbarPercentage(int64_t bossbarId, float percentage) {

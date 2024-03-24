@@ -37,13 +37,13 @@ public:
 
     GMLIB_API std::optional<int> getScore(std::string objective, Actor* ac);
 
-    GMLIB_API std::optional<int> getScore(std::string objective, ActorUniqueID auid, bool isPlayer = false);
+    GMLIB_API std::optional<int> getScore(std::string objective, ActorUniqueID uniqueId, bool isPlayer = false);
 
     GMLIB_API std::optional<int> getPlayerScore(std::string objective, std::string serverId);
 
     GMLIB_API std::optional<int> getPlayerScore(std::string objective, mce::UUID const& uuid);
 
-    GMLIB_API std::optional<int> getPlayerScore(std::string objective, ActorUniqueID auid);
+    GMLIB_API std::optional<int> getPlayerScore(std::string objective, ActorUniqueID uniqueId);
 
     GMLIB_API std::optional<int> getPlayerScore(std::string objective, Player* pl);
 
@@ -69,7 +69,7 @@ public:
 
     GMLIB_API std::optional<int> setScore(
         std::string            objective,
-        ActorUniqueID          auid,
+        ActorUniqueID          uniqueId,
         int                    value,
         PlayerScoreSetFunction action   = PlayerScoreSetFunction::Set,
         bool                   isPlayer = false
@@ -91,7 +91,7 @@ public:
 
     GMLIB_API std::optional<int> setPlayerScore(
         std::string            objective,
-        ActorUniqueID          auid,
+        ActorUniqueID          uniqueId,
         int                    value,
         PlayerScoreSetFunction action = PlayerScoreSetFunction::Set
     );
@@ -111,13 +111,13 @@ public:
 
     GMLIB_API bool resetScore(std::string objective, Actor* ac);
 
-    GMLIB_API bool resetScore(std::string objective, ActorUniqueID auid, bool isPlayer = false);
+    GMLIB_API bool resetScore(std::string objective, ActorUniqueID uniqueId, bool isPlayer = false);
 
     GMLIB_API bool resetPlayerScore(std::string objective, std::string serverId);
 
     GMLIB_API bool resetPlayerScore(std::string objective, mce::UUID const& uuid);
 
-    GMLIB_API bool resetPlayerScore(std::string objective, ActorUniqueID auid);
+    GMLIB_API bool resetPlayerScore(std::string objective, ActorUniqueID uniqueId);
 
     GMLIB_API bool resetPlayerScore(std::string objective, Player* pl);
 
@@ -129,7 +129,7 @@ public:
 
     GMLIB_API bool resetScore(Actor* ac);
 
-    GMLIB_API bool resetScore(ActorUniqueID auid, bool isPlayer = false);
+    GMLIB_API bool resetScore(ActorUniqueID uniqueId, bool isPlayer = false);
 
     GMLIB_API bool resetPlayerScore(std::string serverId);
 
@@ -137,7 +137,7 @@ public:
 
     GMLIB_API bool resetPlayerScore(Player* pl);
 
-    GMLIB_API bool resetPlayerScore(ActorUniqueID auid);
+    GMLIB_API bool resetPlayerScore(ActorUniqueID uniqueId);
 
     GMLIB_API std::vector<ScoreboardId> getAllScoreboardIds();
 
