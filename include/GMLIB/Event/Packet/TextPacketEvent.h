@@ -6,6 +6,7 @@
 namespace GMLIB::Event::PacketEvent {
 
 class TextPacketSendBeforeEvent : public ll::event::Cancellable<ll::event::Event> {
+protected:
     ServerNetworkHandler& mServerNetworkHandler;
     NetworkIdentifier&    mNetworkIdentifier;
     TextPacket&           mPacket;
@@ -27,6 +28,7 @@ public:
 };
 
 class TextPacketSendAfterEvent : public ll::event::Event {
+protected:
     ServerNetworkHandler& mServerNetworkHandler;
     NetworkIdentifier&    mNetworkIdentifier;
     TextPacket&           mPacket;
@@ -47,6 +49,7 @@ public:
 };
 
 class TextPacketWriteBeforeEvent : public ll::event::Cancellable<ll::event::Event> {
+protected:
     TextPacket& mPacket;
 
 public:
@@ -56,6 +59,7 @@ public:
 };
 
 class TextPacketWriteAfterEvent : public ll::event::Event {
+protected:
     TextPacket& mPacket;
 
 public:

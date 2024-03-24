@@ -9,6 +9,7 @@
 namespace GMLIB::Event::PacketEvent {
 
 class ClientLoginBeforeEvent : public ll::event::Cancellable<ll::event::Event> {
+protected:
     ServerNetworkHandler const& mServerNetworkHandler;
     NetworkIdentifier const&    mNetworkIdentifier;
 
@@ -26,6 +27,7 @@ public:
 };
 
 class ClientLoginAfterEvent : public ll::event::Event {
+protected:
     ServerNetworkHandler const& mServerNetworkHandler;
     NetworkIdentifier const&    mNetworkIdentifier;
     mce::UUID const             mUuid;

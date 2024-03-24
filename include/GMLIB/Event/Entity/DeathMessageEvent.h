@@ -6,6 +6,7 @@
 namespace GMLIB::Event::EntityEvent {
 
 class DeathMessageBeforeEvent : public ll::event::Cancellable<ll::event::entity::ActorEvent> {
+protected:
     ActorDamageSource& mDamageSource;
 
 public:

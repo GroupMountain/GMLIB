@@ -6,6 +6,7 @@
 namespace GMLIB::Event::PlayerEvent {
 
 class PlayerChangeDimensionBeforeEvent : public ll::event::Cancellable<ll::event::player::PlayerEvent> {
+protected:
     DimensionType& mFromDimensionId;
     DimensionType& mToDimensionId;
     Vec3&          mFromPosition;
@@ -40,6 +41,7 @@ public:
 };
 
 class PlayerChangeDimensionAfterEvent : public ll::event::player::PlayerEvent {
+protected:
     DimensionType& mFromDimensionId;
     DimensionType& mToDimensionId;
     Vec3&          mFromPosition;

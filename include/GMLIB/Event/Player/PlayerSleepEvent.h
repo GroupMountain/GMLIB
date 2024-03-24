@@ -6,6 +6,7 @@
 namespace GMLIB::Event::PlayerEvent {
 
 class PlayerStartSleepBeforeEvent : public ll::event::Cancellable<ll::event::player::PlayerEvent> {
+protected:
     BlockPos& mBlockPos;
 
 public:
@@ -17,6 +18,7 @@ public:
 };
 
 class PlayerStartSleepAfterEvent : public ll::event::player::PlayerEvent {
+protected:
     BlockPos& mBlockPos;
     bool      mResult;
 
@@ -32,6 +34,7 @@ public:
 };
 
 class PlayerStopSleepBeforeEvent : public ll::event::Cancellable<ll::event::player::PlayerEvent> {
+protected:
     bool& mForcefulWakeUp;
     bool& mUpdateLevelList;
 
@@ -46,6 +49,7 @@ public:
 };
 
 class PlayerStopSleepAfterEvent : public ll::event::player::PlayerEvent {
+protected:
     bool& mForcefulWakeUp;
     bool& mUpdateLevelList;
 

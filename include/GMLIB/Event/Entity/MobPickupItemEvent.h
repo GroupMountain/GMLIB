@@ -7,6 +7,7 @@
 namespace GMLIB::Event::EntityEvent {
 
 class MobPickupItemBeforeEvent : public ll::event::Cancellable<ll::event::entity::MobEvent> {
+protected:
     ItemActor& mItemActor;
 
 public:
@@ -18,6 +19,7 @@ public:
 };
 
 class MobPickupItemAfterEvent : public ll::event::entity::MobEvent {
+protected:
     ItemActor& mItemActor;
 
 public:
