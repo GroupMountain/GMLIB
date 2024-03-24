@@ -17,6 +17,8 @@
 #include "GMLIB/Event/Packet/TextPacketEvent.h"
 #include "GMLIB/Event/Player/PlayerChangeDimensionEvent.h"
 #include "GMLIB/Event/Player/PlayerSleepEvent.h"
+#include "GMLIB/Event/Registries/JsonItemInitEvent.h"
+#include "GMLIB/Event/Registries/ResourcePackInitEvent.h"
 #include "GMLIB/Files/FileUtils.h"
 #include "GMLIB/Files/JsonFile.h"
 #include "GMLIB/Files/Config/JsonConfig.h"
