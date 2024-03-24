@@ -1,5 +1,6 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
+#include "mc/codebuilder/MCRESULT.h"
 #include "mc/world/actor/Actor.h"
 #include "mc/world/actor/player/PlayerScoreSetFunction.h"
 #include "mc/world/effect/MobEffect.h"
@@ -147,4 +148,6 @@ public:
     GMLIB_API void hurtEntity(float damage, std::string causeName = "override", Actor* source = nullptr);
 
     GMLIB_API Biome* getBiome();
+
+    GMLIB_API MCRESULT executeCommand(std::string_view command);
 };

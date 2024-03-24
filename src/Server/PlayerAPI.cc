@@ -19,6 +19,9 @@
 #include <mc/network/packet/SetScorePacket.h>
 #include <mc/network/packet/ToastRequestPacket.h>
 #include <mc/network/packet/UpdatePlayerGameTypePacket.h>
+#include <mc/server/commands/CommandContext.h>
+#include <mc/server/commands/MinecraftCommands.h>
+#include <mc/server/commands/PlayerCommandOrigin.h>
 #include <mc/world/attribute/AttributeInstance.h>
 #include <mc/world/attribute/SharedAttributes.h>
 #include <mc/world/effect/MobEffect.h>
@@ -729,4 +732,10 @@ void GMLIB_Player::setSpawnPoint(BlockPos pos, DimensionType dimId) { setRespawn
 
 void GMLIB_Player::clearSpawnPoint() { clearRespawnPosition(); }
 
-GMLIB_API bool GMLIB_Player::hasSpawnPoint() { return hasRespawnPosition(); }
+bool GMLIB_Player::hasSpawnPoint() { return hasRespawnPosition(); }
+
+MCRESULT GMLIB_Player::executeCommand(std::string_view command) {
+    CommandContext context =
+        CommandContext(std::string(command), std::make_unique<PlayerCommandOrigin>(PlayerCommandOrigin(*this)));
+    return ll::service::getMinecraft()->getCommands().executeCommand(context);
+}

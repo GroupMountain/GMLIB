@@ -141,9 +141,12 @@ public:
 
     GMLIB_API std::vector<ScoreboardId> getAllScoreboardIds();
 
-    // GMLIB_API std::vector<ScoreboardId> getObjectiveTrackedScoreboardIds();
+    GMLIB_API std::vector<ScoreboardId> getObjectiveTrackedScoreboardIds(Objective* objective);
 
     GMLIB_API std::vector<ScoreboardId> getAllScoreboardIds(IdentityDefinition::Type type);
+
+    GMLIB_API std::vector<ScoreboardId>
+              getObjectiveTrackedScoreboardIds(Objective* objective, IdentityDefinition::Type type);
 
     GMLIB_API std::vector<ActorUniqueID> getAllPlayers();
 

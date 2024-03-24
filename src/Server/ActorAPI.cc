@@ -6,6 +6,9 @@
 #include <GMLIB/Server/SpawnerAPI.h>
 #include <corecrt_math_defines.h>
 #include <mc/math/Vec2.h>
+#include <mc/server/commands/ActorCommandOrigin.h>
+#include <mc/server/commands/CommandContext.h>
+#include <mc/server/commands/MinecraftCommands.h>
 #include <mc/util/Random.h>
 #include <mc/world/attribute/AttributeInstance.h>
 #include <mc/world/attribute/SharedAttributes.h>
@@ -443,4 +446,10 @@ void GMLIB_Actor::hurtEntity(float damage, std::string causeName, Actor* source)
 Biome* GMLIB_Actor::getBiome() {
     auto& bs = getDimensionBlockSourceConst();
     return const_cast<Biome*>(&bs.getConstBiome(getFeetBlockPos()));
+}
+
+MCRESULT GMLIB_Actor::executeCommand(std::string_view command) {
+    CommandContext context =
+        CommandContext(std::string(command), std::make_unique<ActorCommandOrigin>(ActorCommandOrigin(*this)));
+    return ll::service::getMinecraft()->getCommands().executeCommand(context);
 }

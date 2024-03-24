@@ -9,6 +9,10 @@
 #include <mc/network/packet/StartGamePacket.h>
 #include <mc/network/packet/TextPacket.h>
 #include <mc/network/packet/ToastRequestPacket.h>
+#include <mc/server/commands/CommandContext.h>
+#include <mc/server/commands/CommandOutput.h>
+#include <mc/server/commands/MinecraftCommands.h>
+#include <mc/server/commands/ServerCommandOrigin.h>
 #include <mc/server/commands/edu/AbilityCommand.h>
 #include <mc/server/common/commands/ChangeSettingCommand.h>
 #include <mc/util/Random.h>
@@ -646,4 +650,38 @@ BlockPos GMLIB_Level::getWorldSpawn() { return getLevelData().getSpawnPos(); }
 void GMLIB_Level::setWorldSpawn(BlockPos pos) {
     getLevelData().setSpawnPos(pos);
     SetSpawnPositionPacket((SpawnPositionType)1, 0, pos).sendToClients();
+}
+
+MCRESULT GMLIB_Level::executeCommand(std::string_view command, DimensionType dimId) {
+    CommandContext context = CommandContext(
+        std::string(command),
+        std::make_unique<ServerCommandOrigin>(
+            ServerCommandOrigin("Server", ll::service::getLevel()->asServer(), CommandPermissionLevel::Internal, dimId)
+        )
+    );
+    return ll::service::getMinecraft()->getCommands().executeCommand(context);
+}
+
+bool GMLIB_Level::executeCommandEx(std::string_view command, DimensionType dimId) {
+    auto origin =
+        ServerCommandOrigin("Server", ll::service::getLevel()->asServer(), CommandPermissionLevel::Internal, dimId);
+    auto cmd = ll::service::getMinecraft()->getCommands().compileCommand(
+        std::string(command),
+        origin,
+        (CurrentCmdVersion)CommandVersion::CurrentVersion,
+        [](std::string const& err) {}
+    );
+    CommandOutput output(CommandOutputType::AllOutput);
+    std::string   outputStr;
+    if (cmd) {
+        cmd->run(origin, output);
+        for (auto msg : output.getMessages()) {
+            outputStr = outputStr.append(I18n::get(msg.getMessageId(), msg.getParams())).append("\n");
+        }
+        if (output.getMessages().size()) {
+            outputStr.pop_back();
+        }
+        return true;
+    }
+    return false;
 }

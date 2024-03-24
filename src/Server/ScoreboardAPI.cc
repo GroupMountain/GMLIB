@@ -336,6 +336,31 @@ std::vector<ScoreboardId> GMLIB_Scoreboard::getAllScoreboardIds(IdentityDefiniti
     return result;
 }
 
+std::vector<ScoreboardId> GMLIB_Scoreboard::getObjectiveTrackedScoreboardIds(Objective* objective) {
+    std::vector<ScoreboardId> ids = getTrackedIds();
+    std::vector<ScoreboardId> result;
+    for (auto& id : ids) {
+        if (getScore(objective, id).has_value()) {
+            result.push_back(id);
+        }
+    }
+    return result;
+}
+
+std::vector<ScoreboardId>
+GMLIB_Scoreboard::getObjectiveTrackedScoreboardIds(Objective* objective, IdentityDefinition::Type type) {
+    std::vector<ScoreboardId> ids = getTrackedIds();
+    std::vector<ScoreboardId> result;
+    for (auto& id : ids) {
+        if (id.getIdentityDef().getIdentityType() == type) {
+            if (getScore(objective, id).has_value()) {
+                result.push_back(id);
+            }
+        }
+    }
+    return result;
+}
+
 std::optional<std::string> GMLIB_Scoreboard::getObjectiveDisplayName(std::string objective) {
     auto obj = getObjective(objective);
     if (obj) {

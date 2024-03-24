@@ -1,5 +1,6 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
+#include "mc/codebuilder/MCRESULT.h"
 #include "mc/enums/AllExperiments.h"
 #include "mc/network/packet/SetTitlePacket.h"
 #include "mc/world/level/Level.h"
@@ -72,6 +73,10 @@ public:
     GMLIB_API Actor* getEntity(ActorUniqueID auid);
 
     GMLIB_API std::vector<Player*> getAllPlayers();
+
+    GMLIB_API MCRESULT executeCommand(std::string_view command, DimensionType dimId = 0);
+
+    GMLIB_API bool executeCommandEx(std::string_view command, DimensionType dimId = 0);
 
     GMLIB_API std::string getLevelName();
 

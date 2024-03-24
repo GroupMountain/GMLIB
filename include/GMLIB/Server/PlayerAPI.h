@@ -2,6 +2,7 @@
 #include "GMLIB/GMLIB.h"
 #include "GMLIB/Server/ActorAPI.h"
 #include "GMLIB/Server/LevelAPI.h"
+#include "mc/codebuilder/MCRESULT.h"
 #include "mc/enums/BossBarColor.h"
 #include "mc/enums/BossBarOverlay.h"
 #include "mc/enums/ObjectiveSortOrder.h"
@@ -263,6 +264,8 @@ public:
     GMLIB_API void clearSpawnPoint();
 
     GMLIB_API bool hasSpawnPoint();
+
+    GMLIB_API MCRESULT executeCommand(std::string_view command);
 
     // ToDo API
     // If you need any API, please open an issue on https://github.com/GroupMountain/GMLIB/issues
