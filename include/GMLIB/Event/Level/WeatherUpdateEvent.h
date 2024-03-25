@@ -3,7 +3,6 @@
 #include "ll/api/event/Cancellable.h"
 #include "ll/api/event/world/LevelEvent.h"
 
-
 namespace GMLIB::Event::LevelEvent {
 
 class WeatherUpdateBeforeEvent : public ll::event::Cancellable<ll::event::world::LevelEvent> {
