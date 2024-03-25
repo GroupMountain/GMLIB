@@ -102,4 +102,13 @@ void CustomPacks::addCustomPackPath(std::string path) {
     mAllResourcePath.push_back(path);
 }
 
+void CustomPacks::setCustomPackPath(ResourcePackRepository& repo, std::string path, PackType type) {
+    auto  CompositePack     = (CompositePackSource*)repo.getWorldPackSource();
+    auto& PackSourceFactory = repo.getPackSourceFactory();
+    auto& DirectoryPackSource =
+        PackSourceFactory.createDirectoryPackSource(Core::Path(path), type, PackOrigin::Test, 0);
+    CompositePack->addPackSource(*(PackSource*)&DirectoryPackSource);
+    repo.refreshPacks();
+}
+
 } // namespace GMLIB::Mod
