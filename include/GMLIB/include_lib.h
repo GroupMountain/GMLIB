@@ -4,6 +4,7 @@
 
 #pragma once
 #include "GMLIB/GMLIB.h"
+#include "GMLIB/Event/Entity/ActorChangeDImensionEvent.h"
 #include "GMLIB/Event/Entity/DeathMessageEvent.h"
 #include "GMLIB/Event/Entity/DragonRespawnEvent.h"
 #include "GMLIB/Event/Entity/ItemActorEvent.h"
