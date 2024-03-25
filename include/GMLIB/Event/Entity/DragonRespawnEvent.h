@@ -2,6 +2,7 @@
 #include "GMLIB/GMLIB.h"
 #include "ll/api/event/Cancellable.h"
 #include "ll/api/event/entity/ActorEvent.h"
+#include "mc/world/ActorUniqueID.h"
 #include "mc/world/actor/monster/EnderDragon.h"
 
 namespace GMLIB::Event::EntityEvent {
