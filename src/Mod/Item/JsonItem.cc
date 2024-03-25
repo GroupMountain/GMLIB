@@ -48,4 +48,46 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
     }
 }
 
+WeakPtr<class Item> JsonItem::loadJsonItem(
+    std::string        typeId,
+    std::string        json,
+    ItemRegistry&      registry,
+    RegistryCall       call,
+    Experiments const& experiments,
+    ::ItemVersion      version
+) {
+    registry._parseItemDefinition(
+        json,
+        true,
+        call,
+        experiments,
+        version,
+        PackType::Behavior,
+        Core::Path::EMPTY,
+        cereal::ReflectionCtx::global()
+    );
+    return registry.lookupByName(HashedString(typeId));
+}
+
+WeakPtr<class Item> JsonItem::loadJsonItem(
+    std::string        typeId,
+    nlohmann::json     json,
+    ItemRegistry&      registry,
+    RegistryCall       call,
+    Experiments const& experiments,
+    ::ItemVersion      version
+) {
+    registry._parseItemDefinition(
+        json.dump(),
+        true,
+        call,
+        experiments,
+        version,
+        PackType::Behavior,
+        Core::Path::EMPTY,
+        cereal::ReflectionCtx::global()
+    );
+    return registry.lookupByName(HashedString(typeId));
+}
+
 } // namespace GMLIB::Mod
