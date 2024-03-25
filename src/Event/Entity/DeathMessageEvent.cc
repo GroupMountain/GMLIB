@@ -33,7 +33,6 @@ LL_TYPE_INSTANCE_HOOK(
     auto result     = origin(a1, a2);
     auto afterEvent = DeathMessageAfterEvent(*a2, *this, result);
     ll::event::EventBus::getInstance().publish(afterEvent);
-    result = afterEvent.getDeathMessage();
     return result;
 }
 
@@ -57,7 +56,6 @@ LL_TYPE_INSTANCE_HOOK(
     auto result     = origin(a1, a2);
     auto afterEvent = DeathMessageAfterEvent(*a2, *this, result);
     ll::event::EventBus::getInstance().publish(afterEvent);
-    result = afterEvent.getDeathMessage();
     return result;
 }
 
@@ -81,7 +79,6 @@ LL_TYPE_INSTANCE_HOOK(
     auto result     = origin(a1, a2);
     auto afterEvent = DeathMessageAfterEvent(*a2, *this, result);
     ll::event::EventBus::getInstance().publish(afterEvent);
-    result = afterEvent.getDeathMessage();
     return result;
 }
 
@@ -105,7 +102,6 @@ LL_TYPE_INSTANCE_HOOK(
     auto result     = origin(a1, a2);
     auto afterEvent = DeathMessageAfterEvent(*a2, *this, result);
     ll::event::EventBus::getInstance().publish(afterEvent);
-    result = afterEvent.getDeathMessage();
     return result;
 }
 
