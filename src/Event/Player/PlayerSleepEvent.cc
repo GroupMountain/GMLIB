@@ -5,8 +5,8 @@ namespace GMLIB::Event::PlayerEvent {
 
 BlockPos& PlayerStartSleepBeforeEvent::getPosition() const { return mBlockPos; }
 
-BlockPos& PlayerStartSleepAfterEvent::getPosition() const { return mBlockPos; }
-bool      PlayerStartSleepAfterEvent::getResult() const { return mResult; }
+BlockPos&            PlayerStartSleepAfterEvent::getPosition() const { return mBlockPos; }
+::BedSleepingResult& PlayerStartSleepAfterEvent::getResult() const { return mResult; }
 
 bool& PlayerStopSleepBeforeEvent::isForcefulWakeUp() const { return mForcefulWakeUp; }
 bool& PlayerStopSleepBeforeEvent::isUpdateLevelList() const { return mUpdateLevelList; }
@@ -19,13 +19,13 @@ LL_TYPE_INSTANCE_HOOK(
     ll::memory::HookPriority::Normal,
     Player,
     "?startSleepInBed@Player@@UEAA?AW4BedSleepingResult@@AEBVBlockPos@@@Z",
-    int,
+    ::BedSleepingResult,
     BlockPos& pos
 ) {
     PlayerStartSleepBeforeEvent beforeEvent = PlayerStartSleepBeforeEvent(*this, pos);
     ll::event::EventBus::getInstance().publish(beforeEvent);
     if (beforeEvent.isCancelled()) {
-        return 1;
+        return (BedSleepingResult)1;
     }
     auto                       res        = origin(pos);
     PlayerStartSleepAfterEvent afterEvent = PlayerStartSleepAfterEvent(*this, pos, res);

@@ -19,18 +19,17 @@ public:
 
 class PlayerStartSleepAfterEvent : public ll::event::player::PlayerEvent {
 protected:
-    BlockPos& mBlockPos;
-    bool      mResult;
+    BlockPos&            mBlockPos;
+    ::BedSleepingResult& mResult;
 
 public:
-    constexpr explicit PlayerStartSleepAfterEvent(Player& player, BlockPos& pos, int result)
+    constexpr explicit PlayerStartSleepAfterEvent(Player& player, BlockPos& pos, BedSleepingResult result)
     : PlayerEvent(player),
-      mBlockPos(pos) {
-        mResult = result == 0 ? true : false;
-    }
+      mBlockPos(pos),
+      mResult(result) {}
 
-    GMLIB_API BlockPos& getPosition() const;
-    GMLIB_API bool      getResult() const;
+    GMLIB_API BlockPos&            getPosition() const;
+    GMLIB_API ::BedSleepingResult& getResult() const;
 };
 
 class PlayerStopSleepBeforeEvent : public ll::event::Cancellable<ll::event::player::PlayerEvent> {
