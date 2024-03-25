@@ -3,15 +3,13 @@
 
 namespace GMLIB::Event::EntityEvent {
 
-using DEATH_MESSAGE = std::pair<std::string, std::vector<std::string>>;
-
 DimensionType const ActorChangeDimensionBeforeEvent::getFromDimensionId() const { return mFromDimensionType; }
 DimensionType&      ActorChangeDimensionBeforeEvent::getToDimensionId() const { return mToDimensionType; }
 
 DimensionType const ActorChangeDimensionAfterEvent::getFromDimensionId() const { return mFromDimensionType; }
 DimensionType&      ActorChangeDimensionAfterEvent::getToDimensionId() const { return mToDimensionType; }
 
-LL_AUTO_TYPE_INSTANCE_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     ActorChangeDimensionEventHook,
     ll::memory::HookPriority::Normal,
     Level,

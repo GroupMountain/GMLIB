@@ -2,57 +2,77 @@
 #include <GMLIB/Event/Entity/ProjectileCreateEvent.h>
 #include <mc/entity/components/ProjectileComponent.h>
 
-/*
-LL_AUTO_TYPE_INSTANCE_HOOK(
-    EntityChangeDimensionEventHook,
-    ll::memory::HookPriority::Normal,
-    Level,
-    &Level::entityChangeDimension,
-    void,
-    class Actor&              entity,
-    DimensionType             toId,
-    std::optional<class Vec3> entityPos
-) {
-    logger.warn("Before {} | {}", entity.getTypeName(), toId.id);
-    // origin(entity, toId, entityPos);
-    // logger.warn("After {} | {}", entity.getTypeName(), toId.id);
-}
+namespace GMLIB::Event::EntityEvent {
 
+optional_ref<Actor> ProjectileCreateBeforeEvent::getShooter() const { return mShooter; }
 
-LL_AUTO_TYPE_INSTANCE_HOOK(
+optional_ref<Actor> ProjectileCreateAfterEvent::getShooter() const { return mShooter; }
+
+LL_TYPE_INSTANCE_HOOK(
     ProjectileCreateEventHook1,
     ll::memory::HookPriority::Normal,
     ProjectileComponent,
     "?shoot@ProjectileComponent@@QEAAXAEAVActor@@AEBVVec3@@MM1PEAV2@@Z",
     void,
-    class Actor&      owner,
-    class Vec3 const& dir,
-    float             pow,
-    float             uncertainty,
+    class Actor&      projectile,
+    class Vec3 const& direction,
+    float             power,
+    float             offset,
     class Vec3 const& baseSpeed,
     class Actor*      target
 ) {
     if (!target) {
-        return origin(owner, dir, pow, uncertainty, baseSpeed, target);
+        return origin(projectile, direction, power, offset, baseSpeed, target);
     }
-    logger.warn("Shoot1 Before {}", owner.getTypeName());
-    owner.remove();
+    auto owner       = projectile.getOwner();
+    auto beforeEvent = ProjectileCreateBeforeEvent(projectile, owner);
+    ll::event::EventBus::getInstance().publish(beforeEvent);
+    if (beforeEvent.isCancelled()) {
+        projectile.remove();
+        return;
+    }
+    origin(projectile, direction, power, offset, baseSpeed, target);
+    auto afterEvent = ProjectileCreateAfterEvent(projectile, owner);
+    ll::event::EventBus::getInstance().publish(afterEvent);
 }
 
-LL_AUTO_TYPE_INSTANCE_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     ProjectileCreateEventHook2,
     ll::memory::HookPriority::Normal,
     ProjectileComponent,
     "?shoot@ProjectileComponent@@QEAAXAEAVActor@@0@Z",
     void,
-    class Actor& owner,
-    class Actor& shooter
+    class Actor& projectile,
+    class Actor& target
 ) {
-    logger.warn(
-        "Shoot2 Before {} | {}",
-        &owner ? owner.getTypeName() : "null",
-        &shooter ? shooter.getTypeName() : "null" // first
-    );
-    owner.remove();
+    auto owner       = projectile.getOwner();
+    auto beforeEvent = ProjectileCreateBeforeEvent(projectile, owner);
+    ll::event::EventBus::getInstance().publish(beforeEvent);
+    if (beforeEvent.isCancelled()) {
+        projectile.remove();
+        return;
+    }
+    origin(projectile, target);
+    auto afterEvent = ProjectileCreateAfterEvent(projectile, owner);
+    ll::event::EventBus::getInstance().publish(afterEvent);
 }
-*/
+
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory1(ll::event::ListenerBase&);
+class ProjectileCreateBeforeEventEmitter : public ll::event::Emitter<emitterFactory1, ProjectileCreateBeforeEvent> {
+    ll::memory::HookRegistrar<ProjectileCreateEventHook1, ProjectileCreateEventHook2> hook;
+};
+
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory1(ll::event::ListenerBase&) {
+    return std::make_unique<ProjectileCreateBeforeEventEmitter>();
+}
+
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::ListenerBase&);
+class ProjectileCreateAfterEventEmitter : public ll::event::Emitter<emitterFactory2, ProjectileCreateAfterEvent> {
+    ll::memory::HookRegistrar<ProjectileCreateEventHook1, ProjectileCreateEventHook2> hook;
+};
+
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::ListenerBase&) {
+    return std::make_unique<ProjectileCreateAfterEventEmitter>();
+}
+
+} // namespace GMLIB::Event::EntityEvent
