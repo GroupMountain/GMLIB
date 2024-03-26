@@ -1,5 +1,6 @@
 #pragma once
-#include "GMLIB/GMLIB.h"
+#include "GMLIB/Macros.h"
+#include "mc/deps/core/sem_ver/SemVersion.h"
 #include "mc/world/item/ItemInstance.h"
 
 namespace GMLIB::Mod {

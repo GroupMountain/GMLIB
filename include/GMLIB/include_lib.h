@@ -3,7 +3,7 @@
 // Do not edit by hand. 
 
 #pragma once
-#include "GMLIB/GMLIB.h"
+#include "GMLIB/Macros.h"
 #include "GMLIB/Event/Entity/ActorChangeDImensionEvent.h"
 #include "GMLIB/Event/Entity/DeathMessageEvent.h"
 #include "GMLIB/Event/Entity/DragonRespawnEvent.h"

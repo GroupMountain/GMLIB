@@ -1,5 +1,5 @@
 #pragma once
-#include "GMLIB/GMLIB.h"
+#include "GMLIB/Macros.h"
 #include "mc/world/level/biome/Parameter.h"
 
 namespace GMLIB::Mod {

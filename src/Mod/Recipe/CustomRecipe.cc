@@ -1,5 +1,6 @@
 #include "Global.h"
 #include <GMLIB/Mod/CustomRecipe/CustomRecipe.h>
+#include <mc/deps/core/sem_ver/SemVersion.h>
 #include <mc/network/packet/CraftingDataPacket.h>
 
 using RecipesMap = std::map<

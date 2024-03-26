@@ -1,5 +1,5 @@
 #pragma once
-#include "GMLIB/GMLIB.h"
+#include "GMLIB/Macros.h"
 #include "mc/network/packet/NpcRequestPacket.h"
 #include "mc/world/actor/player/Player.h"
 #include "nlohmann/json.hpp"

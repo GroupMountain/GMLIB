@@ -6,6 +6,7 @@
 #include <mc/common/Common.h>
 #include <mc/common/SharedConstants.h>
 #include <mc/deps/core/sem_ver/SemVersion.h>
+#include <regex>
 
 ll::Logger logger(LIB_NAME);
 
@@ -62,10 +63,52 @@ void enableLib() {
 
 void disableLib() {}
 
-namespace Version {
+Version::Version() : SemVersion() {}
 
-SemVersion getLibVersion() {
-    return SemVersion(
+Version::Version(ushort major, ushort minor, ushort patch, std::string const& preRelease, std::string const& buildMeta)
+: SemVersion(major, minor, patch, preRelease, buildMeta) {}
+
+Version::Version(class SemVersion const& sem_version) : SemVersion(sem_version) {}
+
+bool Version::matchesLowestVersion(Version lowestVersion) {
+    if (satisfies(lowestVersion)) {
+        return getPatch() >= lowestVersion.getPatch();
+    }
+    return false;
+}
+
+bool Version::isInRange(Version lowestVersion, Version highestVersion) {
+    return matchesHighestVersion(highestVersion) && matchesLowestVersion(lowestVersion);
+}
+
+bool Version::matchesHighestVersion(Version highestVersion) { return highestVersion.matchesLowestVersion(*this); }
+
+bool Version::isValidVersionString(std::string version) {
+    std::regex pattern("(v)?(\\d+)\\.(\\d+)\\.(\\d+)");
+    return std::regex_match(version, pattern);
+}
+
+std::optional<Version> Version::fromString(std::string version) {
+    if (isValidVersionString(version)) {
+        std::istringstream iss(version);
+        char               prefix;
+        int                major, minor, patch;
+        if (iss.peek() == 'v') {
+            iss >> prefix >> major;
+        } else {
+            iss >> major;
+        }
+        iss.ignore(1);
+        iss >> minor;
+        iss.ignore(1);
+        iss >> patch;
+        return Version(major, minor, patch);
+    }
+    return {};
+}
+
+Version Version::getLibVersion() {
+    return Version(
         LIB_VERSION_MAJOR,
         LIB_VERSION_MINOR,
         LIB_VERSION_REVISION,
@@ -74,35 +117,33 @@ SemVersion getLibVersion() {
     );
 }
 
-std::string getLibVersionString() { return getLibVersion().asString(); }
+std::string Version::getLibVersionString() { return getLibVersion().asString(); }
 
-bool isReleaseVersion() { return getLibVersion().getPreRelease().empty(); }
+bool Version::isReleaseVersion() { return getLibVersion().getPreRelease().empty(); }
 
-bool isPreReleaseVersion() { return !getLibVersion().getPreRelease().empty(); }
+bool Version::isPreReleaseVersion() { return !getLibVersion().getPreRelease().empty(); }
 
-std::string getPreReleaseInfo() { return getLibVersion().getPreRelease(); }
+std::string Version::getPreReleaseInfo() { return getLibVersion().getPreRelease(); }
 
-bool checkLibVersionMatch(SemVersion minVersion) {
+bool Version::checkLibVersionMatch(Version minVersion) {
     auto currentVer = getLibVersion();
     return currentVer.satisfies(minVersion);
 }
 
-int getProtocolVersion() { return SharedConstants::NetworkProtocolVersion; }
+int Version::getProtocolVersion() { return SharedConstants::NetworkProtocolVersion; }
 
-SemVersion getBdsVersion() {
+Version Version::getBdsVersion() {
     auto version = ll::getBdsVersion();
-    return SemVersion(version.major, version.minor, version.patch, "", "");
+    return Version(version.major, version.minor, version.patch);
 }
 
-std::string getBdsVersionString() { return Common::getGameVersionString(); }
+std::string Version::getBdsVersionString() { return Common::getGameVersionString(); }
 
-SemVersion getLeviLaminaVersion() {
+Version Version::getLeviLaminaVersion() {
     auto version = ll::getLoaderVersion();
-    return SemVersion(version.major, version.minor, version.patch, "", "");
+    return Version(version.major, version.minor, version.patch);
 }
 
-std::string getLeviLaminaVersionString() { return getLeviLaminaVersion().asString(); }
-
-} // namespace Version
+std::string Version::getLeviLaminaVersionString() { return getLeviLaminaVersion().asString(); }
 
 } // namespace GMLIB

@@ -1,5 +1,5 @@
 #pragma once
-#include "GMLIB/GMLIB.h"
+#include "GMLIB/Macros.h"
 #include "mc/world/item/components/ItemVersion.h"
 #include "mc/world/item/registry/ItemRegistry.h"
 #include "mc/world/level/storage/Experiments.h"

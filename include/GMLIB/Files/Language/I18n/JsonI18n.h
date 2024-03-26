@@ -1,6 +1,6 @@
 #pragma once
 #include "GMLIB/Files/Language/JsonLanguage.h"
-#include "GMLIB/GMLIB.h"
+#include "GMLIB/Macros.h"
 
 namespace GMLIB::Files::I18n {
 

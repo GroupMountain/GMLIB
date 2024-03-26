@@ -1,5 +1,5 @@
 #pragma once
-#include "GMLIB/GMLIB.h"
+#include "GMLIB/Macros.h"
 #include "GMLIB/Server/ActorAPI.h"
 #include "GMLIB/Server/LevelAPI.h"
 #include "mc/codebuilder/MCRESULT.h"

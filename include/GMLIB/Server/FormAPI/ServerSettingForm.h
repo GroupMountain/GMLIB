@@ -1,5 +1,5 @@
 #pragma once
-#include "GMLIB/GMLIB.h"
+#include "GMLIB/Macros.h"
 #include "ll/api/form/CustomForm.h"
 
 class GMLIB_ServerSettingForm {

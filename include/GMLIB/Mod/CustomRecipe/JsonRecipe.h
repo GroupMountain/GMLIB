@@ -1,5 +1,5 @@
 #pragma once
-#include "GMLIB/GMLIB.h"
+#include "GMLIB/Macros.h"
 #include "ll/api/service/Bedrock.h"
 #include "mc/world/item/crafting/Recipes.h"
 #include "nlohmann/json.hpp"

@@ -1,5 +1,6 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
+#include "GMLIB/Macros.h"
 
 namespace GMLIB::Files {
 
@@ -7,7 +8,7 @@ class ResourceLanguage {
 private:
     std::unordered_map<std::string, std::string> mLanguages;
     std::string                                  mPath;
-    SemVersion                                   mVersion;
+    Version                                      mVersion;
     std::string                                  mPluginName;
 
 public:

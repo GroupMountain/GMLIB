@@ -31,10 +31,10 @@ ResourceLanguage::ResourceLanguage(
 : mPath(directoryPath),
   mPluginName(pluginName) {
     mLanguages = {};
-    mVersion   = SemVersion(versionMajor, versionMinor, versionPatch, "", "");
+    mVersion   = Version(versionMajor, versionMinor, versionPatch, "", "");
 }
 
-bool buildManisest(SemVersion& version, std::string path, std::string name) {
+bool buildManisest(Version& version, std::string path, std::string name) {
     if (std::filesystem::exists(path)) {
         std::ifstream inputFile(path);
         std::string   fileContent((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());

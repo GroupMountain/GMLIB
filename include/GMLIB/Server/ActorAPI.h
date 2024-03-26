@@ -1,5 +1,5 @@
 #pragma once
-#include "GMLIB/GMLIB.h"
+#include "GMLIB/Macros.h"
 #include "mc/codebuilder/MCRESULT.h"
 #include "mc/world/actor/Actor.h"
 #include "mc/world/actor/player/PlayerScoreSetFunction.h"

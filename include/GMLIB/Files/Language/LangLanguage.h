@@ -1,6 +1,6 @@
 #pragma once
 #include "GMLIB/Files/Language/McLang.h"
-#include "GMLIB/GMLIB.h"
+#include "GMLIB/Macros.h"
 
 namespace GMLIB::Files {
 

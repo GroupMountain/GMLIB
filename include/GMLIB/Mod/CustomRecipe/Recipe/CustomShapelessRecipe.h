@@ -1,7 +1,8 @@
 #pragma once
-#include "GMLIB/GMLIB.h"
-#include <mc/world/item/ItemInstance.h>
-#include <mc/world/item/crafting/Recipes.h>
+#include "GMLIB/Macros.h"
+#include "mc/deps/core/sem_ver/SemVersion.h"
+#include "mc/world/item/ItemInstance.h"
+#include "mc/world/item/crafting/Recipes.h"
 
 namespace GMLIB::Mod {
 

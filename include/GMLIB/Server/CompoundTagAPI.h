@@ -1,5 +1,5 @@
 #pragma once
-#include "GMLIB/GMLIB.h"
+#include "GMLIB/Macros.h"
 #include <mc/dataloadhelper/DataLoadHelper.h>
 #include <mc/nbt/CompoundTag.h>
 #include <mc/world/actor/Actor.h>

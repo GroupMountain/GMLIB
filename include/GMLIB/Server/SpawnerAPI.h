@@ -1,5 +1,5 @@
 #pragma once
-#include "GMLIB/GMLIB.h"
+#include "GMLIB/Macros.h"
 #include "GMLIB/Server/ActorAPI.h"
 
 class GMLIB_Spawner {

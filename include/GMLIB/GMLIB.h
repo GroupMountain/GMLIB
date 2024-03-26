@@ -1,34 +1,56 @@
 #pragma once
+#include "Macros.h"
 #include "mc/deps/core/sem_ver/SemVersion.h"
 
-#ifdef GMLIB_EXPORTS
-#define GMLIB_API __declspec(dllexport)
-#else
-#define GMLIB_API __declspec(dllimport)
-#endif
+namespace GMLIB {
 
-namespace GMLIB::Version {
+class Version : public SemVersion {
+public:
+    GMLIB_API Version();
 
-GMLIB_API SemVersion getLibVersion();
+    GMLIB_API
+    Version(
+        ushort             major,
+        ushort             minor,
+        ushort             patch,
+        std::string const& preRelease = "",
+        std::string const& buildMeta  = ""
+    );
 
-GMLIB_API bool isReleaseVersion();
+    GMLIB_API Version(class SemVersion const& version);
 
-GMLIB_API bool isPreReleaseVersion();
+    GMLIB_API bool matchesLowestVersion(Version lowestVersion);
 
-GMLIB_API std::string getLibVersionString();
+    GMLIB_API bool matchesHighestVersion(Version highestVersion);
 
-GMLIB_API std::string getPreReleaseInfo();
+    GMLIB_API bool isInRange(Version lowestVersion, Version highestVersion);
 
-GMLIB_API bool checkLibVersionMatch(SemVersion minVersion);
+public:
+    GMLIB_API static bool isValidVersionString(std::string version);
 
-GMLIB_API int getProtocolVersion();
+    GMLIB_API static std::optional<Version> fromString(std::string version);
 
-GMLIB_API SemVersion getBdsVersion();
+    GMLIB_API static Version getLibVersion();
 
-GMLIB_API std::string getBdsVersionString();
+    GMLIB_API static bool isReleaseVersion();
 
-GMLIB_API SemVersion getLeviLaminaVersion();
+    GMLIB_API static bool isPreReleaseVersion();
 
-GMLIB_API std::string getLeviLaminaVersionString();
+    GMLIB_API static std::string getLibVersionString();
 
-} // namespace GMLIB::Version
+    GMLIB_API static std::string getPreReleaseInfo();
+
+    GMLIB_API static bool checkLibVersionMatch(Version neededVersion);
+
+    GMLIB_API static int getProtocolVersion();
+
+    GMLIB_API static Version getBdsVersion();
+
+    GMLIB_API static std::string getBdsVersionString();
+
+    GMLIB_API static Version getLeviLaminaVersion();
+
+    GMLIB_API static std::string getLeviLaminaVersionString();
+};
+
+} // namespace GMLIB

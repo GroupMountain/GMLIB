@@ -1,5 +1,6 @@
 #include "Global.h"
 #include <GMLIB/Mod/CustomRecipe/JsonRecipe.h>
+#include <mc/deps/core/sem_ver/SemVersion.h>
 #include <mc/deps/json/Reader.h>
 
 Json::Reader reader;

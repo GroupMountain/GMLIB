@@ -1,5 +1,5 @@
 #pragma once
-#include "GMLIB/GMLIB.h"
+#include "GMLIB/Macros.h"
 #include <mc/deps/core/utility/BinaryStream.h>
 #include <mc/nbt/CompoundTag.h>
 #include <mc/network/packet/ActorLink.h>
