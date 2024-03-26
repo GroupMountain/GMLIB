@@ -107,6 +107,13 @@ std::optional<Version> Version::fromString(std::string version) {
     return {};
 }
 
+std::optional<Version> Version::fromVector(std::vector<int> version) {
+    if (version.size() == 3) {
+        return Version(version[0], version[1], version[2]);
+    }
+    return {};
+}
+
 Version Version::getLibVersion() {
     return Version(
         LIB_VERSION_MAJOR,

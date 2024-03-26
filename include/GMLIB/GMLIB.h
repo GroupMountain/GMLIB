@@ -30,6 +30,8 @@ public:
 
     GMLIB_API static std::optional<Version> fromString(std::string version);
 
+    GMLIB_API static std::optional<Version> fromVector(std::vector<int> version);
+
     GMLIB_API static Version getLibVersion();
 
     GMLIB_API static bool isReleaseVersion();
