@@ -120,35 +120,3 @@ void GMLIB_ItemStack::setItemLockMode(::ItemLockMode mode) {
     }
     return (ItemLockMode)0;
 }
-
-EnchantmentCheckResult GMLIB_ItemStack::isEnchantedIllegally() {
-    if (isEnchanted()) {
-        std::vector<int> legalEnchants = EnchantUtils::getLegalEnchants(getItem());
-        std::vector<int> itemEnchants;
-        std::sort(legalEnchants.begin(), legalEnchants.end());
-        for (int enchantId = 0; enchantId <= 40; enchantId++) {
-            auto ench = (Enchant::Type)enchantId;
-            if (EnchantUtils::hasEnchant(ench, *this)) {
-                auto minLevel = Enchant::getEnchant(ench)->getMinLevel();
-                auto maxLevel = Enchant::getEnchant(ench)->getMaxLevel();
-                auto nowLevel = EnchantUtils::getEnchantLevel(ench, *this);
-                if (nowLevel > maxLevel) {
-                    return EnchantmentCheckResult::InvalidHighLevel;
-                }
-                if (!std::binary_search(legalEnchants.begin(), legalEnchants.end(), enchantId)) {
-                    return EnchantmentCheckResult::InvalidType;
-                }
-                itemEnchants.push_back(enchantId);
-                for (auto& enchant : itemEnchants) {
-                    if (!Enchant::getEnchant(ench)->isCompatibleWith((Enchant::Type)enchant)) {
-                        return EnchantmentCheckResult::NotCompatible;
-                    }
-                }
-            }
-            if (itemEnchants.empty()) {
-                return EnchantmentCheckResult::EnchantedWithoutLevel;
-            }
-        }
-    }
-    return EnchantmentCheckResult::NoError;
-}

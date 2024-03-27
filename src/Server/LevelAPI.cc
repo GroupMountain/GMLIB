@@ -59,7 +59,7 @@ LL_TYPE_INSTANCE_HOOK(
     "?hasAchievementsDisabled@LevelData@@QEBA_NXZ",
     bool
 ) {
-    ll::memory::dAccess<bool>(this, 1148) = false;
+    ll::memory::dAccess<bool>(this, 1276) = false;
     return false;
 }
 

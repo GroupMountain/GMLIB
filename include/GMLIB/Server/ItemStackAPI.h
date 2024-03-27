@@ -3,14 +3,6 @@
 #include "mc/world/item/components/ItemLockMode.h"
 #include "mc/world/item/registry/ItemStack.h"
 
-enum class EnchantmentCheckResult {
-    NoError               = 0,
-    InvalidHighLevel      = 1,
-    EnchantedWithoutLevel = 2,
-    InvalidType           = 3,
-    NotCompatible         = 4
-};
-
 class GMLIB_ItemStack : public ItemStack {
 public:
     GMLIB_API GMLIB_ItemStack();
@@ -83,6 +75,4 @@ public:
     GMLIB_API void setItemLockMode(::ItemLockMode mode);
 
     GMLIB_API ::ItemLockMode getItemLockMode();
-
-    GMLIB_API EnchantmentCheckResult isEnchantedIllegally();
 };
