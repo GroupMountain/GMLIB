@@ -70,18 +70,9 @@ Version::Version(ushort major, ushort minor, ushort patch, std::string const& pr
 
 Version::Version(class SemVersion const& sem_version) : SemVersion(sem_version) {}
 
-bool Version::matchesLowestVersion(Version lowestVersion) {
-    if (satisfies(lowestVersion)) {
-        return getPatch() >= lowestVersion.getPatch();
-    }
-    return false;
+bool Version::isInRange(Version minVersion, Version maxVersion) {
+    return (*this >= minVersion) && (*this <= maxVersion);
 }
-
-bool Version::isInRange(Version lowestVersion, Version highestVersion) {
-    return matchesHighestVersion(highestVersion) && matchesLowestVersion(lowestVersion);
-}
-
-bool Version::matchesHighestVersion(Version highestVersion) { return highestVersion.matchesLowestVersion(*this); }
 
 bool Version::isValidVersionString(std::string version) {
     std::regex pattern("(v)?(\\d+)\\.(\\d+)\\.(\\d+)");
@@ -132,9 +123,10 @@ bool Version::isPreReleaseVersion() { return !getLibVersion().getPreRelease().em
 
 std::string Version::getPreReleaseInfo() { return getLibVersion().getPreRelease(); }
 
-bool Version::checkLibVersionMatch(Version minVersion) {
-    auto currentVer = getLibVersion();
-    return currentVer.satisfies(minVersion);
+bool Version::checkLibVersionMatch(Version minVersion) { return getLibVersion() >= minVersion; }
+
+bool Version::checkLibVersionMatch(Version minVersion, Version maxVersion) {
+    return getLibVersion().isInRange(minVersion, maxVersion);
 }
 
 int Version::getProtocolVersion() { return SharedConstants::NetworkProtocolVersion; }

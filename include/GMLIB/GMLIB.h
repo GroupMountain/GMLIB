@@ -19,11 +19,7 @@ public:
 
     GMLIB_API Version(class SemVersion const& version);
 
-    GMLIB_API bool matchesLowestVersion(Version lowestVersion);
-
-    GMLIB_API bool matchesHighestVersion(Version highestVersion);
-
-    GMLIB_API bool isInRange(Version lowestVersion, Version highestVersion);
+    GMLIB_API bool isInRange(Version minVersion, Version maxVersion);
 
 public:
     GMLIB_API static bool isValidVersionString(std::string version);
@@ -42,7 +38,9 @@ public:
 
     GMLIB_API static std::string getPreReleaseInfo();
 
-    GMLIB_API static bool checkLibVersionMatch(Version neededVersion);
+    GMLIB_API static bool checkLibVersionMatch(Version minVersion);
+
+    GMLIB_API static bool checkLibVersionMatch(Version minVersion, Version maxVersion);
 
     GMLIB_API static int getProtocolVersion();
 

@@ -6,8 +6,6 @@ DataLoadHelper* GMLIB_CompoundTag::getDataLoadHelper() {
     return (DataLoadHelper*)ll::memory::resolveSymbol("??_7DefaultDataLoadHelper@@6B@");
 }
 
-std::unique_ptr<CompoundTag> GMLIB_CompoundTag::createCompoundTag() { return std::make_unique<CompoundTag>(); }
-
 std::unique_ptr<CompoundTag> GMLIB_CompoundTag::getFromActor(Actor* ac) {
     auto nbt = std::make_unique<CompoundTag>();
     ac->save(*nbt);
@@ -48,7 +46,11 @@ void GMLIB_CompoundTag::setToBlock(Block* block) {
     ctag->deepCopy(*this);
 }
 
-void GMLIB_CompoundTag::writeNbtTags(CompoundTag& originNbt, CompoundTag& dataNbt, const std::vector<std::string>& tags) {
+void GMLIB_CompoundTag::writeNbtTags(
+    CompoundTag&                    originNbt,
+    CompoundTag&                    dataNbt,
+    const std::vector<std::string>& tags
+) {
     for (auto tag : tags) {
         if (dataNbt.get(tag)) {
             originNbt.put(tag, dataNbt.get(tag)->copy());
