@@ -3,6 +3,7 @@
 // Do not edit by hand. 
 
 #pragma once
+#include "GMLIB/GMLIB.h"
 #include "GMLIB/Macros.h"
 #include "GMLIB/Event/Entity/ActorChangeDImensionEvent.h"
 #include "GMLIB/Event/Entity/DeathMessageEvent.h"
@@ -18,6 +19,7 @@
 #include "GMLIB/Event/Packet/TextPacketEvent.h"
 #include "GMLIB/Event/Player/PlayerChangeDimensionEvent.h"
 #include "GMLIB/Event/Player/PlayerSleepEvent.h"
+#include "GMLIB/Event/Registries/CreativeItemsInitEvent.h"
 #include "GMLIB/Event/Registries/JsonItemInitEvent.h"
 #include "GMLIB/Event/Registries/ResourcePackInitEvent.h"
 #include "GMLIB/Files/FileUtils.h"
