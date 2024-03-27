@@ -104,6 +104,8 @@ public:
 
     GMLIB_API bool setNbtTags(CompoundTag& nbt, const std::vector<std::string>& tags);
 
+    GMLIB_API std::string getDimensionName();
+
     GMLIB_API std::optional<int> getScore(std::string objective);
 
     GMLIB_API std::string_view getIP();
