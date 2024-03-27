@@ -3,6 +3,8 @@
 
 namespace GMLIB::Event::Registries {
 
+ItemRegistryRef& CreativeItemInitEvent::getItemRegistryRef() const { return mRef; }
+
 LL_STATIC_HOOK(
     CreativeItemInitEventHook,
     ll::memory::HookPriority::Normal,
@@ -12,7 +14,7 @@ LL_STATIC_HOOK(
     class BaseGameVersion const& a2,
     class ItemRegistryRef&       a3
 ) {
-    auto event = CreativeItemInitEvent();
+    auto event = CreativeItemInitEvent(a3);
     ll::event::EventBus::getInstance().publish(event);
     return origin(a1, a2, a3);
 }

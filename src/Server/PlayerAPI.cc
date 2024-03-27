@@ -443,7 +443,7 @@ GMLIB_Player::setClientBossbar(std::string name, float percentage, ::BossBarColo
 }
 
 void GMLIB_Player::removeClientBossbar(int64_t bossbarId) {
-    auto uniqueId      = ActorUniqueID(bossbarId);
+    auto uniqueId  = ActorUniqueID(bossbarId);
     auto pkt       = BossEventPacket();
     pkt.mBossID    = uniqueId;
     pkt.mEventType = BossEventUpdateType::Remove;
