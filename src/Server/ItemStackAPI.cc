@@ -1,5 +1,6 @@
 #include "Global.h"
 #include <GMLIB/Server/ItemStackAPI.h>
+#include <mc/world/item/ItemLockHelper.h>
 #include <mc/world/item/enchanting/EnchantUtils.h>
 
 GMLIB_ItemStack::GMLIB_ItemStack(std::string_view name, int count, int auxValue, class CompoundTag const* userData)
@@ -85,38 +86,10 @@ void GMLIB_ItemStack::setUnbreakable(bool value) {
     setNbt(*nbt);
 }
 
-void GMLIB_ItemStack::setShouldKeepOnDeath(bool value) {
-    auto nbt = getNbt();
-    auto tag = nbt->getCompound("tag");
-    if (!tag) {
-        nbt->putCompound("tag", CompoundTag{});
-    }
-    nbt->getCompound("tag")->putByte("minecraft:keep_on_death", (byte)value);
-    setNbt(*nbt);
-}
+void GMLIB_ItemStack::setShouldKeepOnDeath(bool value) { ItemLockHelper::setKeepOnDeath(*this, value); }
 
-bool GMLIB_ItemStack::getShouldKeepOnDeath() {
-    auto nbt = getNbt();
-    if (auto tag = nbt->getCompound("tag")) {
-        return (bool)tag->getByte("minecraft:keep_on_death");
-    }
-    return false;
-}
+bool GMLIB_ItemStack::getShouldKeepOnDeath() { return ItemLockHelper::shouldKeepOnDeath(*this); }
 
-void GMLIB_ItemStack::setItemLockMode(::ItemLockMode mode) {
-    auto nbt = getNbt();
-    auto tag = nbt->getCompound("tag");
-    if (!tag) {
-        nbt->putCompound("tag", CompoundTag{});
-    }
-    nbt->getCompound("tag")->putByte("minecraft:item_lock", (byte)mode);
-    setNbt(*nbt);
-}
+void GMLIB_ItemStack::setItemLockMode(::ItemLockMode mode) { ItemLockHelper::setItemLockMode(*this, mode); }
 
-::ItemLockMode GMLIB_ItemStack::getItemLockMode() {
-    auto nbt = getNbt();
-    if (auto tag = nbt->getCompound("tag")) {
-        return (ItemLockMode)tag->getByte("minecraft:item_lock");
-    }
-    return (ItemLockMode)0;
-}
+::ItemLockMode GMLIB_ItemStack::getItemLockMode() { return ItemLockHelper::getItemLockMode(*this); }
