@@ -74,9 +74,13 @@ bool Version::isInRange(Version minVersion, Version maxVersion) {
     return (*this >= minVersion) && (*this <= maxVersion);
 }
 
-std::string Version::toString() { return asString(); }
-
-std::string Version::toString(std::string_view prefix) { return std::string(prefix) + toString(); }
+std::string Version::toString(bool prefix) {
+    auto result = asString();
+    if (prefix) {
+        return "v" + result;
+    }
+    return result;
+}
 
 bool Version::isValidVersionString(std::string version) {
     std::regex pattern("(v)?(\\d+)\\.(\\d+)\\.(\\d+)");
