@@ -739,3 +739,39 @@ MCRESULT GMLIB_Player::executeCommand(std::string_view command) {
         CommandContext(std::string(command), std::make_unique<PlayerCommandOrigin>(PlayerCommandOrigin(*this)));
     return ll::service::getMinecraft()->getCommands().executeCommand(context);
 }
+
+bool GMLIB_Player::giveItem(ItemStack& item, bool drop) { return addAndRefresh(item); }
+
+/*
+bool GMLIB_Player::giveItem(std::string name, int count, short aux, bool drop) {
+    auto item = ItemStack(name, count, aux);
+    return giveItem(item, drop);
+}
+
+int GMLIB_Player::clearItem(std::string name, int count, short aux) {
+    auto item = ItemStack(name, 1, aux);
+    return getFullPlayerInventoryWrapper().removeResource(
+        item,
+        [name](const ItemStack& it) -> bool {
+            if (it.getTypeName() == name) {
+                return true;
+            }
+            return false;
+        },
+        (aux != -1),
+        count
+    );
+}
+
+int GMLIB_Player::hasItem(std::string name, short aux) {
+    return getFullPlayerInventoryWrapper().getItemCount([name, aux](const ItemStack& it) -> bool {
+        if (it.getTypeName() == name) {
+            if (aux == -1) {
+                return true;
+            }
+            return aux == it.getAuxValue();
+        }
+        return false;
+    });
+}
+*/

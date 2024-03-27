@@ -269,9 +269,9 @@ public:
 
     GMLIB_API bool giveItem(ItemStack& item, bool drop = true);
 
-    GMLIB_API bool giveItem(std::string name, int count = -1, short aux = 0, bool drop = true);
+    // GMLIB_API bool giveItem(std::string name, int count = 1, short aux = 0, bool drop = true);
 
-    GMLIB_API int clearItem(std::string name, int count = -1, short aux = -1);
+    // GMLIB_API int clearItem(std::string name, int count = -1, short aux = -1);
 
-    GMLIB_API int hasItem(std::string name, short aux = -1);
+    // GMLIB_API int hasItem(std::string name, short aux = -1);
 };
