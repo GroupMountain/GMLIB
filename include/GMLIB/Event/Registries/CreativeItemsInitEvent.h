@@ -5,7 +5,7 @@
 
 namespace GMLIB::Event::Registries {
 
-class CreativeItemInitEvent : public ll::event::Event {
+class CreativeItemInitEvent final : public ll::event::Event {
 protected:
     ItemRegistryRef& mRef;
 

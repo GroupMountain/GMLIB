@@ -7,7 +7,7 @@
 
 namespace GMLIB::Event::EntityEvent {
 
-class DragonRespawnBeforeEvent : public ll::event::Cancellable<ll::event::Event> {
+class DragonRespawnBeforeEvent final : public ll::event::Cancellable<ll::event::Event> {
 protected:
     ActorUniqueID mUniqueId;
 
@@ -17,7 +17,7 @@ public:
     GMLIB_API ActorUniqueID const getEnderDragon() const;
 };
 
-class DragonRespawnAfterEvent : public ll::event::entity::ActorEvent {
+class DragonRespawnAfterEvent final : public ll::event::entity::ActorEvent {
 protected:
     optional_ref<EnderDragon> mDragon;
 

@@ -5,7 +5,7 @@
 
 namespace GMLIB::Event::PlayerEvent {
 
-class PlayerStartSleepBeforeEvent : public ll::event::Cancellable<ll::event::player::PlayerEvent> {
+class PlayerStartSleepBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent> {
 protected:
     BlockPos& mBlockPos;
 
@@ -17,7 +17,7 @@ public:
     GMLIB_API BlockPos& getPosition() const;
 };
 
-class PlayerStartSleepAfterEvent : public ll::event::player::PlayerEvent {
+class PlayerStartSleepAfterEvent final : public ll::event::player::PlayerEvent {
 protected:
     BlockPos&            mBlockPos;
     ::BedSleepingResult& mResult;
@@ -32,7 +32,7 @@ public:
     GMLIB_API ::BedSleepingResult& getResult() const;
 };
 
-class PlayerStopSleepBeforeEvent : public ll::event::Cancellable<ll::event::player::PlayerEvent> {
+class PlayerStopSleepBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent> {
 protected:
     bool& mForcefulWakeUp;
     bool& mUpdateLevelList;
@@ -47,7 +47,7 @@ public:
     GMLIB_API bool& isUpdateLevelList() const;
 };
 
-class PlayerStopSleepAfterEvent : public ll::event::player::PlayerEvent {
+class PlayerStopSleepAfterEvent final : public ll::event::player::PlayerEvent {
 protected:
     bool& mForcefulWakeUp;
     bool& mUpdateLevelList;

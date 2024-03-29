@@ -740,10 +740,7 @@ MCRESULT GMLIB_Player::executeCommand(std::string_view command) {
     return ll::service::getMinecraft()->getCommands().executeCommand(context);
 }
 
-std::string GMLIB_Player::getDimensionName() {
-    auto dim = &getDimension();
-    return ll::memory::dAccess<std::string>(dim, 0x148);
-}
+std::string GMLIB_Player::getDimensionName() { return getDimension().mName; }
 
 bool GMLIB_Player::giveItem(ItemStack& item, bool drop) { return addAndRefresh(item); }
 

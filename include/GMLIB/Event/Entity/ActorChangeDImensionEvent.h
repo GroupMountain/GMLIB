@@ -5,7 +5,7 @@
 
 namespace GMLIB::Event::EntityEvent {
 
-class ActorChangeDimensionBeforeEvent : public ll::event::Cancellable<ll::event::entity::ActorEvent> {
+class ActorChangeDimensionBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent> {
 protected:
     DimensionType const mFromDimensionType;
     DimensionType&      mToDimensionType;
@@ -24,7 +24,7 @@ public:
     GMLIB_API DimensionType&      getToDimensionId() const;
 };
 
-class ActorChangeDimensionAfterEvent : public ll::event::entity::ActorEvent {
+class ActorChangeDimensionAfterEvent final : public ll::event::entity::ActorEvent {
     DimensionType const mFromDimensionType;
     DimensionType&      mToDimensionType;
 

@@ -5,7 +5,7 @@
 
 namespace GMLIB::Event::LevelEvent {
 
-class ExplodeBeforeEvent : public ll::event::Cancellable<ll::event::world::LevelEvent> {
+class ExplodeBeforeEvent final : public ll::event::Cancellable<ll::event::world::LevelEvent> {
 protected:
     BlockSource&        mBlockSource;
     optional_ref<Actor> mSource;
@@ -48,7 +48,7 @@ public:
     GMLIB_API bool&               canOverrideUnderwater() const;
 };
 
-class ExplodeAfterEvent : public ll::event::world::LevelEvent {
+class ExplodeAfterEvent final : public ll::event::world::LevelEvent {
 protected:
     BlockSource&        mBlockSource;
     optional_ref<Actor> mSource;

@@ -5,7 +5,7 @@
 
 namespace GMLIB::Event::LevelEvent {
 
-class WeatherUpdateBeforeEvent : public ll::event::Cancellable<ll::event::world::LevelEvent> {
+class WeatherUpdateBeforeEvent final: public ll::event::Cancellable<ll::event::world::LevelEvent> {
 protected:
     int& mRainingLastTick;
     int& mRainLevel;
@@ -32,7 +32,7 @@ public:
     GMLIB_API int& getLightningLevel() const;
 };
 
-class WeatherUpdateAfterEvent : public ll::event::world::LevelEvent {
+class WeatherUpdateAfterEvent final: public ll::event::world::LevelEvent {
 protected:
     int& mRainingLastTick;
     int& mRainLevel;

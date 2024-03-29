@@ -5,7 +5,7 @@
 
 namespace GMLIB::Event::EntityEvent {
 
-class DeathMessageBeforeEvent : public ll::event::Cancellable<ll::event::entity::ActorEvent> {
+class DeathMessageBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent> {
 protected:
     ActorDamageSource& mDamageSource;
 
@@ -17,7 +17,7 @@ public:
     GMLIB_API ActorDamageSource& getDamageSource() const;
 };
 
-class DeathMessageAfterEvent : public ll::event::entity::ActorEvent {
+class DeathMessageAfterEvent final : public ll::event::entity::ActorEvent {
     ActorDamageSource&                                mDamageSource;
     std::pair<std::string, std::vector<std::string>>& mDeathMessage;
 

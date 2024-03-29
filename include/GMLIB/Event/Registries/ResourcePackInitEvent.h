@@ -5,7 +5,7 @@
 
 namespace GMLIB::Event::Registries {
 
-class ResourcePackInitEvent : public ll::event::Event {
+class ResourcePackInitEvent final : public ll::event::Event {
 protected:
     ResourcePackRepository& mRepo;
 

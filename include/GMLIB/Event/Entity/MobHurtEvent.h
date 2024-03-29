@@ -5,7 +5,7 @@
 
 namespace GMLIB::Event::EntityEvent {
 
-class MobHurtAfterEvent : public ll::event::MobEvent {
+class MobHurtAfterEvent final : public ll::event::MobEvent {
 protected:
     ActorDamageSource& mSource;
     float&             mDamage;

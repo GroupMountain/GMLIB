@@ -5,7 +5,7 @@
 
 namespace GMLIB::Event::EntityEvent {
 
-class ProjectileCreateBeforeEvent : public ll::event::Cancellable<ll::event::entity::ActorEvent> {
+class ProjectileCreateBeforeEvent final : public ll::event::Cancellable<ll::event::entity::ActorEvent> {
 protected:
     optional_ref<Actor> mShooter;
 
@@ -17,7 +17,7 @@ public:
     GMLIB_API optional_ref<Actor> getShooter() const;
 };
 
-class ProjectileCreateAfterEvent : public ll::event::entity::ActorEvent {
+class ProjectileCreateAfterEvent final : public ll::event::entity::ActorEvent {
 protected:
     optional_ref<Actor> mShooter;
 

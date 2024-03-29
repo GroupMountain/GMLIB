@@ -7,7 +7,7 @@
 
 namespace GMLIB::Event::EntityEvent {
 
-class ItemActorSpawnBeforeEvent : public ll::event::Cancellable<ll::event::Event> {
+class ItemActorSpawnBeforeEvent final : public ll::event::Cancellable<ll::event::Event> {
 protected:
     BlockSource&        mBlockSource;
     Vec3&               mPosition;
@@ -37,7 +37,7 @@ public:
     GMLIB_API int&                getThrowTime() const;
 };
 
-class ItemActorSpawnAfterEvent : public ItemActorEvent {
+class ItemActorSpawnAfterEvent final : public ItemActorEvent {
 protected:
     BlockSource&        mBlockSource;
     Vec3&               mPosition;

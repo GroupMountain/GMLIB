@@ -5,7 +5,7 @@
 
 namespace GMLIB::Event::PlayerEvent {
 
-class PlayerChangeDimensionBeforeEvent : public ll::event::Cancellable<ll::event::player::PlayerEvent> {
+class PlayerChangeDimensionBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent> {
 protected:
     DimensionType& mFromDimensionId;
     DimensionType& mToDimensionId;
@@ -40,7 +40,7 @@ public:
     GMLIB_API bool&          isRespawn() const;
 };
 
-class PlayerChangeDimensionAfterEvent : public ll::event::player::PlayerEvent {
+class PlayerChangeDimensionAfterEvent final : public ll::event::player::PlayerEvent {
 protected:
     DimensionType& mFromDimensionId;
     DimensionType& mToDimensionId;
