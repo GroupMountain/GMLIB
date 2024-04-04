@@ -90,17 +90,27 @@ function pack_plugin(target,plugin_define)
         local manifest = io.readfile(manifest_path)
         local bindir = path.join(os.projectdir(), "bin/DLL")
         local pdbdir = path.join(os.projectdir(), "bin/PDB")
+        local sdkdir = path.join(os.projectdir(), "bin/SDK")
+        local sdkfile = path.join(os.projectdir(), "include/GMLIB")
+        local incdir = path.join(sdkdir, "GMLIB")
+        local libdir = path.join(sdkdir, "Lib")
         local outputdir = path.join(bindir, plugin_define.pluginName)
         local targetfile = path.join(outputdir, plugin_define.pluginFile)
         local pdbfile = path.join(pdbdir, path.basename(plugin_define.pluginFile) .. ".pdb")
+        local libfile = path.join(libdir, path.basename(plugin_define.pluginFile) .. ".lib")
         local manifestfile = path.join(outputdir, "manifest.json")
         local oritargetfile = target:targetfile()
         local oripdbfile = path.join(path.directory(oritargetfile), path.basename(oritargetfile) .. ".pdb")
+        local orilibfile = path.join(path.directory(oritargetfile), path.basename(oritargetfile) .. ".lib")
 
         os.mkdir(outputdir)
         os.cp(oritargetfile, targetfile)
+        os.cp(sdkfile, incdir)
         if os.isfile(oripdbfile) then
             os.cp(oripdbfile, pdbfile)
+        end
+        if os.isfile(orilibfile) then
+            os.cp(orilibfile, libfile)
         end
 
         formattedmanifest = string_formatter(manifest, plugin_define)
