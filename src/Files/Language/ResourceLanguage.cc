@@ -38,8 +38,9 @@ bool buildManisest(Version& version, std::string path, std::string name) {
     if (std::filesystem::exists(path)) {
         std::ifstream inputFile(path);
         std::string   fileContent((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
-        auto          oldJson    = nlohmann::ordered_json::parse(fileContent, nullptr, true, true);
-        auto          oldVersion = oldJson["header"]["version"].get<std::vector<int>>();
+        inputFile.close();
+        auto oldJson    = nlohmann::ordered_json::parse(fileContent, nullptr, true, true);
+        auto oldVersion = oldJson["header"]["version"].get<std::vector<int>>();
         if (oldVersion[0] == version.getMajor() && oldVersion[1] == version.getMinor()
             && oldVersion[2] == version.getPatch()) {
             return false;
