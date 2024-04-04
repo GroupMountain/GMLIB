@@ -23,6 +23,7 @@ bool JsonConfig::init() {
     if (std::filesystem::exists(mFilePath)) {
         std::ifstream inputFile(mFilePath);
         std::string   fileContent((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
+        inputFile.close();
         try {
             auto dataJson = nlohmann::ordered_json::parse(fileContent, nullptr, true, true);
             mValue.merge_patch(dataJson);

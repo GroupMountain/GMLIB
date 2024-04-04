@@ -83,12 +83,14 @@ void updateFile(std::string& path, std::string& newFile) {
 nlohmann::ordered_json readFromOrderedFile(std::string& path) {
     std::ifstream inputFile(path);
     std::string   fileContent((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
+    inputFile.close();
     return nlohmann::ordered_json::parse(fileContent, nullptr, true, true);
 }
 
 nlohmann::json readFromFile(std::string& path) {
     std::ifstream inputFile(path);
     std::string   fileContent((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
+    inputFile.close();
     return nlohmann::json::parse(fileContent, nullptr, true, true);
 }
 
