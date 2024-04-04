@@ -16,21 +16,22 @@ JsonConfig::JsonConfig(std::string filePath, nlohmann::ordered_json& defaultJson
 JsonConfig::~JsonConfig() { writeFile(); }
 
 bool JsonConfig::init() {
-    try {
-        auto dirPath = std::filesystem::path(mFilePath).parent_path();
-        if (!std::filesystem::exists(dirPath)) {
-            std::filesystem::create_directories(dirPath);
-        }
-        if (std::filesystem::exists(mFilePath)) {
-            std::ifstream inputFile(mFilePath);
-            std::string   fileContent((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
-            auto          dataJson = nlohmann::ordered_json::parse(fileContent, nullptr, true, true);
-            mValue.merge_patch(dataJson);
-        }
-        return this->writeFile();
-    } catch (...) {
-        return false;
+    auto dirPath = std::filesystem::path(mFilePath).parent_path();
+    if (!std::filesystem::exists(dirPath)) {
+        std::filesystem::create_directories(dirPath);
     }
+    if (std::filesystem::exists(mFilePath)) {
+        std::ifstream inputFile(mFilePath);
+        std::string   fileContent((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
+        try {
+            auto dataJson = nlohmann::ordered_json::parse(fileContent, nullptr, true, true);
+            mValue.merge_patch(dataJson);
+        } catch (...) {
+            auto backupPath = mFilePath + "_old";
+            std::filesystem::rename(mFilePath, backupPath);
+        }
+    }
+    return this->writeFile();
 }
 
 bool JsonConfig::reload() {

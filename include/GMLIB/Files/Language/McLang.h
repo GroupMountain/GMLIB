@@ -21,12 +21,14 @@ public:
     GMLIB_API static McLang parse_file(std::string filePath);
 
 public:
-    GMLIB_API std::optional<std::string> get(std::string key);
+    GMLIB_API std::optional<std::string> get_value(std::string key);
 
     GMLIB_API std::string
               translate(std::string key, std::vector<std::string> data = {}, std::string translateKeys = "%0$s");
 
-    GMLIB_API void set(std::string key, std::string value);
+    GMLIB_API std::string get(std::string key, std::vector<std::string> data = {}, std::string translateKeys = "%0$s");
+
+    GMLIB_API void set_value(std::string key, std::string value);
 
     GMLIB_API void erase(std::string key);
 

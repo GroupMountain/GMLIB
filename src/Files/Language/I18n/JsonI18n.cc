@@ -97,4 +97,33 @@ std::string JsonI18n::translate(std::string key, std::vector<std::string> data, 
     return key;
 }
 
+std::string JsonI18n::translate(
+    std::string              key,
+    std::string              localLanguage,
+    std::vector<std::string> data,
+    std::string              translateKey
+) {
+    if (mAllLanguages.count(localLanguage)) {
+        auto temp = mAllLanguages[localLanguage];
+        if (temp) {
+            return temp->translate(key, data, translateKey);
+        }
+    } else if (mAllLanguages.count(mDefaultLanguage)) {
+        auto temp = mAllLanguages[mDefaultLanguage];
+        if (temp) {
+            return temp->translate(key, data, translateKey);
+        }
+    }
+    return key;
+}
+
+std::string JsonI18n::get(std::string key, std::vector<std::string> data, std::string translateKey) {
+    return translate(key, data, translateKey);
+}
+
+std::string
+JsonI18n::get(std::string key, std::string localLanguage, std::vector<std::string> data, std::string translateKey) {
+    return translate(key, localLanguage, data, translateKey);
+}
+
 } // namespace GMLIB::Files::I18n

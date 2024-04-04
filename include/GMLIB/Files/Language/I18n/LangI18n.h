@@ -35,6 +35,21 @@ public:
     GMLIB_API std::string
               translate(std::string key, std::vector<std::string> data = {}, std::string translateKey = "%0$s");
 
+    GMLIB_API std::string translate(
+        std::string              key,
+        std::string              localLanguage,
+        std::vector<std::string> data         = {},
+        std::string              translateKey = "%0$s"
+    );
+
+    GMLIB_API std::string get(std::string key, std::vector<std::string> data = {}, std::string translateKey = "%0$s");
+
+    GMLIB_API std::string
+              get(std::string              key,
+                  std::string              localLanguage,
+                  std::vector<std::string> data         = {},
+                  std::string              translateKey = "%0$s");
+
 private:
     bool loadOrCreateLanguage(std::string languageCode, LangLanguage* language);
 };

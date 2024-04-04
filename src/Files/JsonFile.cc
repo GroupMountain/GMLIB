@@ -49,14 +49,24 @@ nlohmann::json initJson(std::string path, std::string& defaultFile) {
 
 
 void updateOrderedFile(std::string& path, nlohmann::ordered_json& newFile) {
-    auto oldFile = readFromFile(path);
-    newFile.merge_patch(oldFile);
+    try {
+        auto oldFile = readFromFile(path);
+        newFile.merge_patch(oldFile);
+    } catch (...) {
+        auto backupPath = path + "_old";
+        std::filesystem::rename(path, backupPath);
+    }
     writeOrderedFile(path, newFile);
 }
 
 void updateFile(std::string& path, nlohmann::json& newFile) {
-    auto oldFile = readFromFile(path);
-    newFile.merge_patch(oldFile);
+    try {
+        auto oldFile = readFromFile(path);
+        newFile.merge_patch(oldFile);
+    } catch (...) {
+        auto backupPath = path + "_old";
+        std::filesystem::rename(path, backupPath);
+    }
     writeFile(path, newFile);
 }
 
@@ -166,4 +176,4 @@ bool deleteKeyAndSave(nlohmann::json& json, std::string& filePath, std::vector<s
     return false;
 }
 
-}
+} // namespace GMLIB::Files::JsonFile

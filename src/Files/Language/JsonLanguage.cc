@@ -53,6 +53,10 @@ std::string JsonLanguage::translate(std::string key, std::vector<std::string> da
     return JsonLanguageFile::translate(mValue, key, data, translateKey);
 }
 
+std::string JsonLanguage::get(std::string key, std::vector<std::string> data, std::string translateKey) {
+    return JsonLanguageFile::translate(mValue, key, data, translateKey);
+}
+
 nlohmann::json JsonLanguage::getSelf() { return mValue; }
 
 bool JsonLanguage::writeFile() { return JsonFile::writeFile(mFilePath, mValue); }
