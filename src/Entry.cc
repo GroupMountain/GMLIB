@@ -12,6 +12,7 @@ bool Entry::load() {
     loadLib();
     return true;
 }
+
 bool Entry::enable() {
     enableLib();
     return true;
