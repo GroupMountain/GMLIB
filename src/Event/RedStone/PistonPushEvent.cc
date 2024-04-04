@@ -2,7 +2,6 @@
 #include <GMLIB/Event/RedStone/PistonPushEvent.h>
 #include <mc/world/level/block/actor/PistonBlockActor.h>
 
-
 namespace GMLIB::Event::RedStoneEvent {
 
 LL_TYPE_INSTANCE_HOOK(
