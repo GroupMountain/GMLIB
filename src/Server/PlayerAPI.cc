@@ -494,7 +494,29 @@ void GMLIB_Player::addEffect(
     return addEffect(effect);
 }
 
+void GMLIB_Player::addEffect(
+    std::string effectType,
+    int         duration,
+    int         amplifier,
+    bool        showParticles,
+    bool        ambient,
+    bool        showAnimation
+) {
+    if (auto effectInstance = MobEffect::getByName(effectType)) {
+        auto effectId = effectInstance->getId();
+        auto effect   = MobEffectInstance(effectId, duration, amplifier, ambient, showParticles, showAnimation);
+        return addEffect(effect);
+    }
+}
+
 void GMLIB_Player::removeEffect(MobEffect::EffectType effectType) { return removeEffect((int)effectType); }
+
+void GMLIB_Player::removeEffect(std::string effectType) {
+    if (auto effectInstance = MobEffect::getByName(effectType)) {
+        auto effectId = effectInstance->getId();
+        return removeEffect(effectId);
+    }
+}
 
 std::vector<MobEffectInstance> GMLIB_Player::getAllEffects() {
     std::vector<MobEffectInstance> result = {};

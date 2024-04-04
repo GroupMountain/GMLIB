@@ -205,7 +205,18 @@ public:
         bool                  showAnimation = false
     );
 
+    GMLIB_API void addEffect(
+        std::string effectType,
+        int         duration      = 600,
+        int         amplifier     = 0,
+        bool        showParticles = true,
+        bool        ambient       = false,
+        bool        showAnimation = false
+    );
+
     GMLIB_API void removeEffect(MobEffect::EffectType effectType);
+
+    GMLIB_API void removeEffect(std::string effectType);
 
     GMLIB_API std::vector<MobEffectInstance> getAllEffects();
 

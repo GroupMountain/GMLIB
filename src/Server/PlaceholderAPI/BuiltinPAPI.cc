@@ -322,8 +322,10 @@ void regServerPAPI() {
     PlaceholderAPI::registerServerPlaceholder(
         "server_start_time_<format>_s",
         [](std::unordered_map<std::string, std::string> map) {
-            if (map.find("<format>") != map.end()) {
-                if ("<format>" != map["<format>"]) return Helper::getTime(map["<format>"], startTime);
+            if (map.count("<format>")) {
+                if ("<format>" != map["<format>"]) {
+                    return Helper::getTime(map["<format>"], startTime);
+                }
             }
             return Helper::getTime("H:M:S", startTime);
         },
@@ -333,8 +335,10 @@ void regServerPAPI() {
     PlaceholderAPI::registerServerPlaceholder(
         "server_start_time_<format>",
         [](std::unordered_map<std::string, std::string> map) {
-            if (map.find("<format>") != map.end()) {
-                if ("<format>" != map["<format>"]) return Helper::getTime(map["<format>"], startTime);
+            if (map.count("<format>")) {
+                if ("<format>" != map["<format>"]) {
+                    return Helper::getTime(map["<format>"], startTime);
+                }
             }
             return Helper::getTime("H:M:S", startTime);
         },
