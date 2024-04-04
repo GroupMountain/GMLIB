@@ -19,6 +19,8 @@
 #include "GMLIB/Event/Packet/TextPacketEvent.h"
 #include "GMLIB/Event/Player/PlayerChangeDimensionEvent.h"
 #include "GMLIB/Event/Player/PlayerSleepEvent.h"
+#include "GMLIB/Event/RedStone/BlockMovedByPistonEvent.h"
+#include "GMLIB/Event/RedStone/PistonPushEvent.h"
 #include "GMLIB/Event/Registries/CreativeItemsInitEvent.h"
 #include "GMLIB/Event/Registries/JsonItemInitEvent.h"
 #include "GMLIB/Event/Registries/ResourcePackInitEvent.h"
