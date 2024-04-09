@@ -26,7 +26,7 @@ LL_TYPE_INSTANCE_HOOK(
         return;
     }
     origin(identifier, packet);
-    auto afterEvent = TextPacketSendBeforeEvent(*this, identifier, packet);
+    auto afterEvent = TextPacketSendAfterEvent(*this, identifier, packet);
     ll::event::EventBus::getInstance().publish(afterEvent);
 }
 
