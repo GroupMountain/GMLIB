@@ -41,7 +41,8 @@ public:
 
     GMLIB_API static bool setActorNbt(std::string& actorKey, CompoundTag& nbt);
 
-    GMLIB_API static bool setActorNbtTags(ActorUniqueID& uniqueId, CompoundTag& nbt, const std::vector<std::string>& tags);
+    GMLIB_API static bool
+    setActorNbtTags(ActorUniqueID& uniqueId, CompoundTag& nbt, const std::vector<std::string>& tags);
 
     GMLIB_API static bool
     setActorNbtTags(std::string& actorKey, CompoundTag& nbt, const std::vector<std::string>& tags);
@@ -82,6 +83,10 @@ public:
     GMLIB_API bool isItemActor() const;
 
     GMLIB_API bool isMob() const;
+
+    GMLIB_API std::string getDimensionName();
+
+    GMLIB_API std::string getDimensionTypeName();
 
     GMLIB_API std::unique_ptr<CompoundTag> getNbt();
 

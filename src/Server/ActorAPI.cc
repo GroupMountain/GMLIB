@@ -14,6 +14,7 @@
 #include <mc/world/attribute/SharedAttributes.h>
 #include <mc/world/effect/MobEffect.h>
 #include <mc/world/effect/MobEffectInstance.h>
+#include <mc/world/level/dimension/VanillaDimensions.h>
 #include <mc/world/level/storage/DBStorage.h>
 
 std::unordered_map<int64, std::string> GMLIB_Actor::getActorIdsKeyMap() {
@@ -454,3 +455,7 @@ MCRESULT GMLIB_Actor::executeCommand(std::string_view command) {
         CommandContext(std::string(command), std::make_unique<ActorCommandOrigin>(ActorCommandOrigin(*this)));
     return ll::service::getMinecraft()->getCommands().executeCommand(context);
 }
+
+std::string GMLIB_Actor::getDimensionTypeName() { return getDimension().mName; }
+
+std::string GMLIB_Actor::getDimensionName() { return VanillaDimensions::toString(getDimensionId()); }
