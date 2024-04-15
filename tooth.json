@@ -1,7 +1,7 @@
 {
     "format_version": 2,
     "tooth": "github.com/GroupMountain/GMLIB",
-    "version": "0.10.3",
+    "version": "0.11.0",
     "info": {
         "name": "GMLIB",
         "description": "Group Mountain Library",
@@ -13,9 +13,9 @@
             "library"
         ]
     },
-    "asset_url": "https://github.com/GroupMountain/GMLIB/releases/download/v0.10.3/GMLIB-windows-x64.zip",
+    "asset_url": "https://github.com/GroupMountain/GMLIB/releases/download/v0.11.0/GMLIB-windows-x64.zip",
     "prerequisites": {
-        "github.com/LiteLDev/LeviLamina": "0.10.x"
+        "github.com/LiteLDev/LeviLamina": "0.11.x"
     },
     "files": {
         "place": [

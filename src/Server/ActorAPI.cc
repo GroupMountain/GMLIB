@@ -16,8 +16,8 @@
 #include <mc/world/effect/MobEffectInstance.h>
 #include <mc/world/level/storage/DBStorage.h>
 
-std::unordered_map<ActorUniqueID, std::string> GMLIB_Actor::getActorIdsKeyMap() {
-    std::unordered_map<ActorUniqueID, std::string> result;
+std::unordered_map<int64, std::string> GMLIB_Actor::getActorIdsKeyMap() {
+    std::unordered_map<int64, std::string> result;
     GMLIB::Global<DBStorage>->forEachKeyWithPrefix(
         "actorprefix",
         DBHelpers::Category::Actor,
@@ -25,9 +25,8 @@ std::unordered_map<ActorUniqueID, std::string> GMLIB_Actor::getActorIdsKeyMap() 
             auto keyId   = "actorprefix" + std::string(key_left);
             auto keyData = CompoundTag::fromBinaryNbt(data);
             if (keyData && keyData->contains("UniqueID")) {
-                auto strAuid = keyData->getInt64("UniqueID");
-                auto uniqueId    = ActorUniqueID(strAuid);
-                result[uniqueId] = keyId;
+                auto intUniqueId    = keyData->getInt64("UniqueID");
+                result[intUniqueId] = keyId;
             } else {
                 GMLIB::Global<DBStorage>->deleteData(keyId, DBHelpers::Category::Actor);
             }
@@ -45,8 +44,8 @@ std::vector<ActorUniqueID> GMLIB_Actor::getAllEntities() {
             auto keyId   = "actorprefix" + std::string(key_left);
             auto keyData = CompoundTag::fromBinaryNbt(data);
             if (keyData && keyData->contains("UniqueID")) {
-                auto strAuid = keyData->getInt64("UniqueID");
-                auto uniqueId    = ActorUniqueID(strAuid);
+                auto strAuid  = keyData->getInt64("UniqueID");
+                auto uniqueId = ActorUniqueID(strAuid);
                 result.push_back(uniqueId);
             } else {
                 GMLIB::Global<DBStorage>->deleteData(keyId, DBHelpers::Category::Actor);
@@ -89,8 +88,8 @@ ActorUniqueID GMLIB_Actor::getActorUniqueID(std::string& actorKey) {
 
 std::string getActorKeyFromUniqueId(ActorUniqueID& uniqueId) {
     auto map = GMLIB_Actor::getActorIdsKeyMap();
-    if (map.count(uniqueId)) {
-        return map[uniqueId];
+    if (map.count(uniqueId.id)) {
+        return map[uniqueId.id];
     }
     return "";
 }
@@ -271,7 +270,9 @@ bool GMLIB_Actor::resetActorScore(std::string& actorKey, std::string objective) 
     return GMLIB_Scoreboard::getInstance()->resetScore(objective, uniqueId);
 }
 
-bool GMLIB_Actor::resetActorScore(ActorUniqueID& uniqueId) { return GMLIB_Scoreboard::getInstance()->resetScore(uniqueId); }
+bool GMLIB_Actor::resetActorScore(ActorUniqueID& uniqueId) {
+    return GMLIB_Scoreboard::getInstance()->resetScore(uniqueId);
+}
 
 bool GMLIB_Actor::resetActorScore(std::string& actorKey) {
     auto uniqueId = getActorUniqueID(actorKey);

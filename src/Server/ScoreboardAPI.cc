@@ -46,8 +46,8 @@ ScoreboardId GMLIB_Scoreboard::getPlayerScoreboardId(std::string serverId) {
         return getScoreboardId(*player);
     }
     auto uniqueId = GMLIB_Player::getPlayerUniqueID(serverId);
-    if (uniqueId != ActorUniqueID::INVALID_ID) {
-        auto psid = PlayerScoreboardId(uniqueId);
+    if (uniqueId.id != ActorUniqueID::INVALID_ID.id) {
+        auto psid = PlayerScoreboardId(uniqueId.id);
         return getScoreboardId(psid);
     }
     return ScoreboardId::INVALID;
@@ -79,7 +79,7 @@ std::optional<int> GMLIB_Scoreboard::getScore(std::string objective, Actor* ac) 
 std::optional<int> GMLIB_Scoreboard::getScore(std::string objective, ActorUniqueID uniqueId, bool isPlayer) {
     auto id = getScoreboardId(uniqueId);
     if (isPlayer) {
-        auto psid = PlayerScoreboardId(uniqueId);
+        auto psid = PlayerScoreboardId(uniqueId.id);
         id        = getScoreboardId(psid);
     }
     auto obj = getObjective(objective);
@@ -163,11 +163,11 @@ std::optional<int> GMLIB_Scoreboard::setScore(
 ) {
     auto id = getScoreboardId(uniqueId);
     if (isPlayer) {
-        auto psid = PlayerScoreboardId(uniqueId);
+        auto psid = PlayerScoreboardId(uniqueId.id);
         id        = getScoreboardId(psid);
         if (!id.isValid()) {
             auto fakeId = getServerScoreboard()->createScoreboardId(S(psid.mActorUniqueId));
-            if (uniqueId != ActorUniqueID::INVALID_ID) {
+            if (uniqueId.id != ActorUniqueID::INVALID_ID.id) {
                 id = getIdentityDictionary()->convertFakeToReal(fakeId, psid);
             }
         }
@@ -190,10 +190,10 @@ std::optional<int> GMLIB_Scoreboard::setPlayerScore(
     }
     auto id = getPlayerScoreboardId(serverId);
     if (!id.isValid()) {
-        auto fakeId = getServerScoreboard()->createScoreboardId(serverId);
-        auto uniqueId   = GMLIB_Player::getPlayerUniqueID(serverId);
-        if (uniqueId != ActorUniqueID::INVALID_ID) {
-            auto psid = PlayerScoreboardId(uniqueId);
+        auto fakeId   = getServerScoreboard()->createScoreboardId(serverId);
+        auto uniqueId = GMLIB_Player::getPlayerUniqueID(serverId);
+        if (uniqueId.id != ActorUniqueID::INVALID_ID.id) {
+            auto psid = PlayerScoreboardId(uniqueId.id);
             id        = getIdentityDictionary()->convertFakeToReal(fakeId, psid);
         }
     }
@@ -214,8 +214,12 @@ std::optional<int> GMLIB_Scoreboard::setPlayerScore(
     return setPlayerScore(objective, serverId, value, action);
 }
 
-std::optional<int>
-GMLIB_Scoreboard::setPlayerScore(std::string objective, ActorUniqueID uniqueId, int value, PlayerScoreSetFunction action) {
+std::optional<int> GMLIB_Scoreboard::setPlayerScore(
+    std::string            objective,
+    ActorUniqueID          uniqueId,
+    int                    value,
+    PlayerScoreSetFunction action
+) {
     return setScore(objective, uniqueId, value, action, true);
 }
 
@@ -253,7 +257,7 @@ bool GMLIB_Scoreboard::resetScore(std::string objective, ActorUniqueID uniqueId,
     auto obj = getObjective(objective);
     auto id  = getScoreboardId(uniqueId);
     if (isPlayer) {
-        auto psid = PlayerScoreboardId(uniqueId);
+        auto psid = PlayerScoreboardId(uniqueId.id);
         id        = getScoreboardId(psid);
     }
     return resetScore(obj, id);
@@ -303,7 +307,7 @@ bool GMLIB_Scoreboard::resetScore(Actor* ac) {
 bool GMLIB_Scoreboard::resetScore(ActorUniqueID uniqueId, bool isPlayer) {
     auto id = getScoreboardId(uniqueId);
     if (isPlayer) {
-        auto psid = PlayerScoreboardId(uniqueId);
+        auto psid = PlayerScoreboardId(uniqueId.id);
         id        = getScoreboardId(psid);
     }
     return resetScore(id);
@@ -400,11 +404,11 @@ std::vector<ActorUniqueID> GMLIB_Scoreboard::getAllPlayers() {
 }
 
 std::vector<std::string> GMLIB_Scoreboard::getAllPlayerServerIds() {
-    std::vector<ScoreboardId>                      sids = getAllScoreboardIds(IdentityDefinition::Type::Player);
-    std::vector<std::string>                       result;
-    std::unordered_map<ActorUniqueID, std::string> map = GMLIB_Player::getUniqueIdToServerIdMap();
+    std::vector<ScoreboardId>              sids = getAllScoreboardIds(IdentityDefinition::Type::Player);
+    std::vector<std::string>               result;
+    std::unordered_map<int64, std::string> map = GMLIB_Player::getUniqueIdToServerIdMap();
     for (auto& sid : sids) {
-        auto uniqueId = ActorUniqueID(sid.getIdentityDef().getPlayerId().mActorUniqueId);
+        auto uniqueId = sid.getIdentityDef().getPlayerId().mActorUniqueId;
         if (map.count(uniqueId)) {
             result.push_back(map[uniqueId]);
         }
@@ -413,11 +417,11 @@ std::vector<std::string> GMLIB_Scoreboard::getAllPlayerServerIds() {
 }
 
 std::vector<mce::UUID> GMLIB_Scoreboard::getAllPlayerUuids() {
-    std::vector<ScoreboardId>                    sids = getAllScoreboardIds(IdentityDefinition::Type::Player);
-    std::vector<mce::UUID>                       result;
-    std::unordered_map<ActorUniqueID, mce::UUID> map = GMLIB_Player::getUniqueIdToUuidMap();
+    std::vector<ScoreboardId>            sids = getAllScoreboardIds(IdentityDefinition::Type::Player);
+    std::vector<mce::UUID>               result;
+    std::unordered_map<int64, mce::UUID> map = GMLIB_Player::getUniqueIdToUuidMap();
     for (auto& sid : sids) {
-        auto uniqueId = ActorUniqueID(sid.getIdentityDef().getPlayerId().mActorUniqueId);
+        auto uniqueId = sid.getIdentityDef().getPlayerId().mActorUniqueId;
         if (map.count(uniqueId)) {
             result.push_back(map[uniqueId]);
         }

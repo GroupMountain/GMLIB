@@ -59,9 +59,9 @@ public:
 
     GMLIB_API static ActorUniqueID getPlayerUniqueID(mce::UUID const& uuid);
 
-    GMLIB_API static std::unordered_map<ActorUniqueID, std::string> getUniqueIdToServerIdMap();
+    GMLIB_API static std::unordered_map<int64, std::string> getUniqueIdToServerIdMap();
 
-    GMLIB_API static std::unordered_map<ActorUniqueID, mce::UUID> getUniqueIdToUuidMap();
+    GMLIB_API static std::unordered_map<int64, mce::UUID> getUniqueIdToUuidMap();
 
     GMLIB_API static std::optional<int> getPlayerScore(std::string& serverId, std::string objective);
 

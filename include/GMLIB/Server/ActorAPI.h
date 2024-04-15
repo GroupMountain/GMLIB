@@ -17,7 +17,7 @@ public:
 
     GMLIB_API static std::vector<ActorUniqueID> getAllEntities();
 
-    GMLIB_API static std::unordered_map<ActorUniqueID, std::string> getActorIdsKeyMap();
+    GMLIB_API static std::unordered_map<int64, std::string> getActorIdsKeyMap();
 
     GMLIB_API static ActorUniqueID getActorUniqueID(std::string& actorKey);
 

@@ -242,22 +242,22 @@ ActorUniqueID GMLIB_Player::getPlayerUniqueID(std::string& serverId) {
     return ActorUniqueID::INVALID_ID;
 }
 
-std::unordered_map<ActorUniqueID, std::string> GMLIB_Player::getUniqueIdToServerIdMap() {
-    auto                                           serverIds = getAllServerIds();
-    std::unordered_map<ActorUniqueID, std::string> result;
+std::unordered_map<int64, std::string> GMLIB_Player::getUniqueIdToServerIdMap() {
+    auto                                   serverIds = getAllServerIds();
+    std::unordered_map<int64, std::string> result;
     for (auto& serverId : serverIds) {
-        auto uniqueId    = getPlayerUniqueID(serverId);
-        result[uniqueId] = serverId;
+        auto uniqueId       = getPlayerUniqueID(serverId);
+        result[uniqueId.id] = serverId;
     }
     return result;
 }
 
-std::unordered_map<ActorUniqueID, mce::UUID> GMLIB_Player::getUniqueIdToUuidMap() {
-    auto                                         uuids = getAllUuids(true);
-    std::unordered_map<ActorUniqueID, mce::UUID> result;
+std::unordered_map<int64, mce::UUID> GMLIB_Player::getUniqueIdToUuidMap() {
+    auto                                 uuids = getAllUuids(true);
+    std::unordered_map<int64, mce::UUID> result;
     for (auto& uuid : uuids) {
-        auto uniqueId    = getPlayerUniqueID(uuid);
-        result[uniqueId] = uuid;
+        auto uniqueId       = getPlayerUniqueID(uuid);
+        result[uniqueId.id] = uuid;
     }
     return result;
 }
