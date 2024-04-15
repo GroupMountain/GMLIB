@@ -1,6 +1,7 @@
 #pragma once
 #include "GMLIB/Macros.h"
 #include "ll/api/event/entity/MobEvent.h"
+#include "mc/world/level/block/Block.h"
 
 namespace GMLIB::Event::EntityEvent {
 

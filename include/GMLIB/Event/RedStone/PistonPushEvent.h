@@ -58,19 +58,4 @@ public:
     GMLIB_API bool const&     isRetracting() const;
 };
 
-class BlockMovedByPistonAfterEvent final : public ll::event::world::WorldEvent {
-protected:
-    BlockPos&    mMovedBlockPos; // 被推动方块坐标
-    Block const& mBlock;         // 被推动方块
-
-public:
-    constexpr explicit BlockMovedByPistonAfterEvent(BlockPos& MovedBlockPos, Block& block, BlockSource& BlockSource)
-    : mMovedBlockPos(MovedBlockPos),
-      mBlock(block),
-      WorldEvent(BlockSource) {}
-
-    GMLIB_API BlockPos&    getPosition() const;
-    GMLIB_API Block const& getBlock() const;
-};
-
 } // namespace GMLIB::Event::RedStoneEvent

@@ -1,7 +1,7 @@
 #pragma once
 #include "GMLIB/Macros.h"
 #include "ll/api/event/entity/ActorEvent.h"
-#include "mc/world/actor/components/EconomyTradeableComponent.h"
+#include "mc/world/actor/player/Player.h"
 
 namespace GMLIB::Event::EntityEvent {
 

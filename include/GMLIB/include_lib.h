@@ -8,6 +8,8 @@
 #include "GMLIB/Event/Entity/ActorChangeDImensionEvent.h"
 #include "GMLIB/Event/Entity/DeathMessageEvent.h"
 #include "GMLIB/Event/Entity/DragonRespawnEvent.h"
+#include "GMLIB/Event/Entity/EconomyTradeEvent.h"
+#include "GMLIB/Event/Entity/EndermanTakeBlockEvent.h"
 #include "GMLIB/Event/Entity/ItemActorEvent.h"
 #include "GMLIB/Event/Entity/ItemActorSpawnEvent.h"
 #include "GMLIB/Event/Entity/MobHurtEvent.h"
