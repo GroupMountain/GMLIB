@@ -26,6 +26,7 @@
 #include <mc/world/attribute/SharedAttributes.h>
 #include <mc/world/effect/MobEffect.h>
 #include <mc/world/effect/MobEffectInstance.h>
+#include <mc/world/level/dimension/VanillaDimensions.h>
 #include <mc/world/level/storage/DBStorage.h>
 
 std::vector<std::string> GMLIB_Player::getAllServerIds() {
@@ -762,7 +763,9 @@ MCRESULT GMLIB_Player::executeCommand(std::string_view command) {
     return ll::service::getMinecraft()->getCommands().executeCommand(context);
 }
 
-std::string GMLIB_Player::getDimensionName() { return getDimension().mName; }
+std::string GMLIB_Player::getDimensionTypeName() { return getDimension().mName; }
+
+std::string GMLIB_Player::getDimensionName() { return VanillaDimensions::toString(getDimensionId()); }
 
 bool GMLIB_Player::giveItem(ItemStack& item, bool drop) { return addAndRefresh(item); }
 

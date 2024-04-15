@@ -106,6 +106,8 @@ public:
 
     GMLIB_API std::string getDimensionName();
 
+    GMLIB_API std::string getDimensionTypeName();
+
     GMLIB_API std::optional<int> getScore(std::string objective);
 
     GMLIB_API std::string_view getIP();
