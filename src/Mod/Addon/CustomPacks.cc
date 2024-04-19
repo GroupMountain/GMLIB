@@ -17,7 +17,6 @@ namespace GMLIB::Mod {
 
 std::vector<std::string> mAllResourcePath;
 std::vector<std::string> mPackListCache;
-bool                     mCustomPackEnabled = false;
 
 void addResourcePackPath(ResourcePackRepository* repo, PackType type) {
     auto  CompositePack     = (CompositePackSource*)repo->getWorldPackSource();
@@ -89,12 +88,15 @@ LL_TYPE_INSTANCE_HOOK(
     return origin();
 }
 
+struct CustomPack_Impl {
+    ll::memory::HookRegistrar<PacksBuildEvent, ResourcePackRepositoryInitEvent, PacksLoadEvent> r;
+};
+
+std::unique_ptr<CustomPack_Impl> impl;
+
 void CustomPacks::addCustomPackPath(std::string path) {
-    if (!mCustomPackEnabled) {
-        ll::memory::HookRegistrar<PacksBuildEvent>().hook();
-        ll::memory::HookRegistrar<ResourcePackRepositoryInitEvent>().hook();
-        ll::memory::HookRegistrar<PacksLoadEvent>().hook();
-        mCustomPackEnabled = true;
+    if (!impl) {
+        impl = std::make_unique<CustomPack_Impl>();
     }
     if (!std::filesystem::exists(path)) {
         std::filesystem::create_directories(path);

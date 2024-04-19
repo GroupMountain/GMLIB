@@ -3,7 +3,6 @@
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/CompoundTagAPI.h>
-#include <GMLIB/Server/NetworkPacketAPI.h>
 #include <GMLIB/Server/PlayerAPI.h>
 #include <GMLIB/Server/ScoreboardAPI.h>
 #include <GMLIB/Server/SpawnerAPI.h>
@@ -409,6 +408,7 @@ void GMLIB_Player::setClientBossbar(
     auto uniqueId = ActorUniqueID(bossbarId);
     if (!ll::service::getLevel()->fetchEntity(uniqueId)) {
         GMLIB_BinaryStream bs1;
+        bs1.writePacketHeader(MinecraftPacketIds::AddActor, getClientSubId());
         bs1.writeVarInt64(bossbarId);
         bs1.writeUnsignedVarInt64(bossbarId);
         bs1.writeString("player");
@@ -422,8 +422,7 @@ void GMLIB_Player::setClientBossbar(
         bs1.writeUnsignedVarInt(0);
         bs1.writeUnsignedVarInt(0);
         bs1.writeUnsignedVarInt(0);
-        GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::AddActor> pkt1(bs1.getAndReleaseData());
-        pkt1.sendTo(*this);
+        bs1.sendTo(*this);
     }
     // BossEventPacket
     auto pkt2           = BossEventPacket();
