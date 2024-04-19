@@ -8,7 +8,6 @@ namespace GMLIB::Server {
 
 namespace FakeListAPI {
 
-// std::unordered_set<std::string>                  mInvisibleMap;
 std::unordered_map<std::string, std::string>     mReplaceMap;
 std::unordered_map<std::string, PlayerListEntry> mFakeListMap;
 bool                                             mSimulatedPlayerOptList = false;
@@ -51,11 +50,7 @@ LL_TYPE_INSTANCE_HOOK(
     PlayerListEntry& entry
 ) {
     if (this->mAction == PlayerListPacketType::Add) {
-        // if (GMLIB::Server::FakeListAPI::mInvisibleMap.count(entry.mName)) {
-        //     return;
-        // }
         if (GMLIB::Server::FakeListAPI::mSimulatedPlayerOptList) {
-            // auto pl = ll::service::getLevel()->getPlayer(entry.mId); 安全性检测?
             if (ll::service::getLevel()->getPlayer(entry.mId)->isSimulatedPlayer()) {
                 return;
             }
@@ -67,24 +62,29 @@ LL_TYPE_INSTANCE_HOOK(
     return origin(entry);
 }
 
+struct Fakelist_Impl_1 {
+    ll::memory::HookRegistrar<SendAllFakeListPlayerJoinHook> r;
+};
+
+std::unique_ptr<Fakelist_Impl_1> fakelist_Impl_1;
+
 void enableHook1() {
-    if (!FakeListAPI::EnableHook1) {
-        ll::memory::HookRegistrar<SendAllFakeListPlayerJoinHook>().hook();
-        FakeListAPI::EnableHook1 = true;
+    if (!fakelist_Impl_1) {
+        fakelist_Impl_1 = std::make_unique<Fakelist_Impl_1>();
     }
 }
 
-void enableHook2() {
-    if (!FakeListAPI::EnableHook2) {
-        ll::memory::HookRegistrar<FakeListEmplaceHook>().hook();
-        FakeListAPI::EnableHook2 = true;
-    }
-}
+struct Fakelist_Impl_2 {
+    ll::memory::HookRegistrar<FakeListEmplaceHook> r;
+};
 
-void disableHook2() {
-    if (FakeListAPI::EnableHook2) {
-        ll::memory::HookRegistrar<FakeListEmplaceHook>().unhook();
-        FakeListAPI::EnableHook2 = false;
+std::unique_ptr<Fakelist_Impl_2> fakelist_Impl_2;
+
+void changeHook2(bool enable) {
+    if (enable) {
+        if (!fakelist_Impl_2) fakelist_Impl_2 = std::make_unique<Fakelist_Impl_2>();
+    } else {
+        fakelist_Impl_2.reset();
     }
 }
 
