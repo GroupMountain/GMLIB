@@ -129,7 +129,6 @@ struct UserCache_Impl {
 std::unique_ptr<UserCache_Impl> impl;
 
 void initUserCache() {
-    ll::memory::HookRegistrar<PlayerLoginHook>().hook();
     auto emptyFile = nlohmann::json::array();
     try {
         mUserCache = GMLIB::Files::JsonFile::initJson("./usercache.json", emptyFile);
