@@ -729,7 +729,7 @@ bool GMLIB_Player::updateClientBlock(
 
 Biome* GMLIB_Player::getBiome() {
     auto& bs = getDimensionBlockSourceConst();
-    return const_cast<Biome*>(&bs.getConstBiome(getFeetBlockPos()));
+    return const_cast<Biome*>(&bs.getConstBiome(BlockPos(getPosition())));
 }
 
 void GMLIB_Player::sendTitle(std::string_view text, SetTitlePacket::TitleType type) {
