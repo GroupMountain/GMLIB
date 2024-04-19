@@ -205,11 +205,7 @@ void FakeList::resetListName(std::string realName) {
 
 void FakeList::setSimulatedPlayerListOptimizeEnabled(bool value) {
     GMLIB::Server::FakeListAPI::mSimulatedPlayerOptList = value;
-    if (value) {
-        GMLIB::Server::enableHook2();
-    } else {
-        GMLIB::Server::disableHook2();
-    }
+    changeHook2(value);
 }
 
 bool FakeList::getSimulatedPlayerListOptimizeEnabled() { return GMLIB::Server::FakeListAPI::mSimulatedPlayerOptList; }
