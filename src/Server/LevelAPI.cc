@@ -16,6 +16,8 @@
 #include <mc/server/commands/edu/AbilityCommand.h>
 #include <mc/server/common/commands/ChangeSettingCommand.h>
 #include <mc/util/Random.h>
+#include <mc/world/level/levelgen/WorldGenerator.h>
+#include <mc/world/level/levelgen/structure/StructureFeatureTypeNames.h>
 #include <mc/world/level/storage/Experiments.h>
 
 typedef std::chrono::high_resolution_clock timer_clock;
@@ -711,4 +713,47 @@ bool GMLIB_Level::executeCommandEx(std::string_view command, DimensionType dimId
         return true;
     }
     return false;
+}
+
+bool GMLIB_Level::isInStructureFeature(StructureFeatureType structure, BlockPos pos, DimensionType dimId) {
+    return getDimension(dimId)->getWorldGenerator()->isStructureFeatureTypeAt(pos, structure);
+}
+
+StructureFeatureType GMLIB_Level::getStructureFeature(BlockPos pos, DimensionType dimId) {
+    return getDimension(dimId)->getWorldGenerator()->findStructureFeatureTypeAt(pos);
+}
+
+bool GMLIB_Level::isInStructureFeature(std::string const& structure, BlockPos pos, DimensionType dimId) {
+    auto type = StructureFeatureTypeNames::getFeatureType(structure);
+    return isInStructureFeature(type, pos, dimId);
+}
+
+std::string_view GMLIB_Level::getStructureFeatureName(BlockPos pos, DimensionType dimId) {
+    return StructureFeatureTypeNames::getFeatureName(getStructureFeature(pos, dimId));
+}
+
+std::optional<BlockPos> GMLIB_Level::locateNearestStructureFeature(
+    StructureFeatureType structure,
+    BlockPos             pos,
+    DimensionType        dimId,
+    bool                 useNewChunksOnly
+) {
+    BlockPos result = {0, 64, 0};
+    auto     find   = getOrCreateDimension(dimId)
+                    ->getWorldGenerator()
+                    ->findNearestStructureFeature(structure, pos, result, useNewChunksOnly, {});
+    if (find) {
+        return result;
+    }
+    return {};
+}
+
+std::optional<BlockPos> GMLIB_Level::locateNearestStructureFeature(
+    std::string const& structure,
+    BlockPos           pos,
+    DimensionType      dimId,
+    bool               useNewChunksOnly
+) {
+    auto type = StructureFeatureTypeNames::getFeatureType(structure);
+    return locateNearestStructureFeature(type, pos, dimId, useNewChunksOnly);
 }

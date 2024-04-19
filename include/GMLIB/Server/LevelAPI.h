@@ -4,6 +4,7 @@
 #include "mc/enums/AllExperiments.h"
 #include "mc/network/packet/SetTitlePacket.h"
 #include "mc/world/level/Level.h"
+#include "mc/world/level/levelgen/structure/StructureFeatureType.h"
 #include "mc/world/level/storage/GameRuleId.h"
 
 enum class WeatherType : int {
@@ -13,9 +14,9 @@ enum class WeatherType : int {
 };
 
 enum class FillMode : int {
-    Replace = 0, // Replace Air
-    Keep    = 1,
-    Outline = 2,
+    Replace = 0, //
+    Keep    = 1, //
+    Outline = 2, //
     Hollow  = 3,
     Destroy = 4
 };
@@ -181,4 +182,26 @@ public:
     GMLIB_API BlockPos getWorldSpawn();
 
     GMLIB_API void setWorldSpawn(BlockPos pos);
+
+    GMLIB_API bool isInStructureFeature(StructureFeatureType structure, BlockPos pos, DimensionType dimId);
+
+    GMLIB_API bool isInStructureFeature(std::string const& structure, BlockPos pos, DimensionType dimId);
+
+    GMLIB_API StructureFeatureType getStructureFeature(BlockPos pos, DimensionType dimId);
+
+    GMLIB_API std::string_view getStructureFeatureName(BlockPos pos, DimensionType dimId);
+
+    GMLIB_API std::optional<BlockPos> locateNearestStructureFeature(
+        StructureFeatureType structure,
+        BlockPos             pos,
+        DimensionType        dimId,
+        bool                 useNewChunksOnly = false
+    );
+
+    GMLIB_API std::optional<BlockPos> locateNearestStructureFeature(
+        std::string const& structure,
+        BlockPos           pos,
+        DimensionType      dimId,
+        bool               useNewChunksOnly = false
+    );
 };

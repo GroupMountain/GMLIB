@@ -13,6 +13,7 @@
 #include "mc/world/actor/player/PlayerScoreSetFunction.h"
 #include "mc/world/inventory/transaction/InventoryTransactionManager.h"
 #include "mc/world/level/block/Block.h"
+#include "mc/world/level/levelgen/structure/StructureFeatureType.h"
 
 class GMLIB_Player : public Player {
 public:
@@ -289,4 +290,18 @@ public:
     // GMLIB_API int clearItem(std::string name, int count = -1, short aux = -1);
 
     // GMLIB_API int hasItem(std::string name, short aux = -1);
+
+    GMLIB_API bool isInStructureFeature(StructureFeatureType structure);
+
+    GMLIB_API bool isInStructureFeature(std::string const& structure);
+
+    GMLIB_API StructureFeatureType getStructureFeature();
+
+    GMLIB_API std::string_view getStructureFeatureName();
+
+    GMLIB_API std::optional<BlockPos>
+              locateNearestStructureFeature(StructureFeatureType structure, bool useNewChunksOnly = false);
+
+    GMLIB_API std::optional<BlockPos>
+              locateNearestStructureFeature(std::string const& structure, bool useNewChunksOnly = false);
 };
