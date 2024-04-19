@@ -1,20 +1,14 @@
 #include "Global.h"
-#include "mc/enums/SubClientId.h"
-#include "mc/network/NetworkConnection.h"
-#include "mc/network/NetworkSystem.h"
-#include "mc/world/item/NetworkItemStackDescriptor.h"
 #include <GMLIB/Event/Player/PlayerChangeDimensionEvent.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/FloatingTextAPI.h>
 #include <GMLIB/Server/LevelAPI.h>
-#include <GMLIB/Server/NetworkPacketAPI.h>
 #include <GMLIB/Server/PlaceholderAPI.h>
 #include <ll/api/event/player/PlayerJoinEvent.h>
 #include <mc/network/packet/AddItemActorPacket.h>
 #include <mc/network/packet/RemoveActorPacket.h>
 #include <mc/network/packet/SetActorDataPacket.h>
 #include <mc/util/Random.h>
-
 
 namespace GMLIB::Server {
 
@@ -59,10 +53,7 @@ void sendUpdateFloatingTextPacket(FloatingText* ft, Player* pl) {
         PlaceholderAPI::translate(text, pl);
     }
     GMLIB_BinaryStream bs;
-    bs.writeUnsignedVarInt(
-        (int)MinecraftPacketIds::SetActorData & 0x3FF | (((uchar)pl->getClientSubId() & 3) << 10)
-        | (((uchar)SubClientId::PrimaryClient & 3) << 12)
-    );
+    bs.writePacketHeader(MinecraftPacketIds::SetActorData, pl->getClientSubId());
     bs.writeUnsignedVarInt64(ft->getRuntimeID());
     // DataItem
     bs.writeUnsignedVarInt(2);
@@ -76,17 +67,7 @@ void sendUpdateFloatingTextPacket(FloatingText* ft, Player* pl) {
     bs.writeUnsignedVarInt(0);
     bs.writeUnsignedVarInt(0);
     bs.writeUnsignedVarInt64(0);
-    if (auto networksystem = ll::service::getNetworkSystem(); networksystem) {
-        if (auto connection = networksystem->_getConnectionFromId(pl->getNetworkIdentifier()); connection) {
-            if (auto peer = connection->mPeer; peer) {
-                peer->sendPacket(
-                    *bs.mBuffer,
-                    ::NetworkPeer::Reliability::ReliableOrdered,
-                    ::Compressibility::Compressible
-                );
-            }
-        }
-    }
+    bs.sendTo(*pl);
 }
 
 
@@ -98,10 +79,7 @@ void sendAddFloatingTextPacket(FloatingText* ft, Player* pl) {
         PlaceholderAPI::translate(text, pl);
     }
     GMLIB_BinaryStream bs;
-    bs.writeUnsignedVarInt(
-        (int)MinecraftPacketIds::AddItemActor & 0x3FF | (((uchar)pl->getClientSubId() & 3) << 10)
-        | (((uchar)SubClientId::PrimaryClient & 3) << 12)
-    );
+    bs.writePacketHeader(MinecraftPacketIds::AddItemActor, pl->getClientSubId());
     bs.writeVarInt64(ft->getRuntimeID());
     bs.writeUnsignedVarInt64(ft->getRuntimeID());
     bs.writeType(nisd);
@@ -116,18 +94,7 @@ void sendAddFloatingTextPacket(FloatingText* ft, Player* pl) {
     bs.writeUnsignedVarInt((uint)0x0);
     bs.writeBool(true);
     bs.writeBool(false);
-    // pkt.sendTo(*pl);
-    if (auto networksystem = ll::service::getNetworkSystem(); networksystem) {
-        if (auto connection = networksystem->_getConnectionFromId(pl->getNetworkIdentifier()); connection) {
-            if (auto peer = connection->mPeer; peer) {
-                peer->sendPacket(
-                    *bs.mBuffer,
-                    ::NetworkPeer::Reliability::ReliableOrdered,
-                    ::Compressibility::Compressible
-                );
-            }
-        }
-    }
+    bs.sendTo(*pl);
 }
 
 void FloatingText::sendToClient(Player* pl) {

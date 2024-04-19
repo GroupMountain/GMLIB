@@ -2,7 +2,7 @@
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/FormAPI/NpcDialogueForm.h>
-#include <GMLIB/Server/NetworkPacketAPI.h>
+#include <mc/network/MinecraftPackets.h>
 #include <mc/network/packet/AddActorPacket.h>
 #include <mc/network/packet/NpcDialoguePacket.h>
 #include <mc/network/packet/NpcRequestPacket.h>
@@ -71,6 +71,7 @@ void NpcDialogueForm::sendTo(
 ) {
     auto               actionJson = mActionJSON.dump(4);
     GMLIB_BinaryStream bs1;
+    bs1.writePacketHeader(MinecraftPacketIds::AddActor, pl->getClientSubId());
     bs1.writeVarInt64(mFormRuntimeId);
     bs1.writeUnsignedVarInt64(mFormRuntimeId);
     bs1.writeString("npc");
@@ -100,18 +101,17 @@ void NpcDialogueForm::sendTo(
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
-    GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::AddActor> pkt1(bs1.getAndReleaseData());
-    pkt1.sendTo(*pl);
+    bs1.sendTo(*pl);
     // NpcDialoguePacket
     GMLIB_BinaryStream bs2;
+    bs2.writePacketHeader(MinecraftPacketIds::NpcDialogue, pl->getClientSubId());
     bs2.writeUnsignedInt64(mFormRuntimeId); // ActorUniqueId
     bs2.writeVarInt(0);                     // 0: Open  1: Close
     bs2.writeString(mDialogue);             // Dialogue
     bs2.writeString(mSceneName);            // SceneName
     bs2.writeString(mNpcName);              // NpcName
     bs2.writeString(actionJson);            // ActionJSON
-    GMLIB::Server::NetworkPacket<(int)MinecraftPacketIds::NpcDialogue> pkt2(bs2.getAndReleaseData());
-    pkt2.sendTo(*pl);
+    bs2.sendTo(*pl);
     mRuntimeNpcFormList[mFormRuntimeId] = this;
     mCallback                           = callback;
 }

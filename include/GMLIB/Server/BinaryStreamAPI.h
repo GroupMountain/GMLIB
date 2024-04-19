@@ -1,14 +1,26 @@
 #pragma once
 #include "GMLIB/Macros.h"
-#include <mc/deps/core/utility/BinaryStream.h>
-#include <mc/nbt/CompoundTag.h>
-#include <mc/network/packet/ActorLink.h>
-#include <mc/world/actor/Actor.h>
-#include <mc/world/actor/player/SerializedSkin.h>
+#include "mc/deps/core/utility/BinaryStream.h"
+#include "mc/enums/SubClientId.h"
+#include "mc/nbt/CompoundTag.h"
+#include "mc/network/MinecraftPackets.h"
+#include "mc/network/packet/ActorLink.h"
+#include "mc/world/actor/Actor.h"
+#include "mc/world/actor/player/Player.h"
+#include "mc/world/actor/player/SerializedSkin.h"
 
 class GMLIB_BinaryStream : public BinaryStream {
 public:
     GMLIB_API std::string getRaw();
+
+public:
+    GMLIB_API void writePacketHeader(MinecraftPacketIds packetId, SubClientId subId = SubClientId::PrimaryClient);
+
+    GMLIB_API void sendTo(Player& pl);
+
+    GMLIB_API void sendToClients();
+
+    GMLIB_API void sendToClients(DimensionType dimId);
 
 public:
     GMLIB_API void writeCompoundTag(CompoundTag& data);
