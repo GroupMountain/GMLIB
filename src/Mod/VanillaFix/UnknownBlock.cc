@@ -6,8 +6,7 @@
 namespace GMLIB::Mod {
 
 std::unordered_set<std::string>                       mUnknownBlockLegacyNameList;
-bool                                                  mAutoCleanUnknownBlockEnabled = false;
-std::unordered_map<int, std::unordered_set<ChunkPos>> mFixedChunksList              = {};
+std::unordered_map<int, std::unordered_set<ChunkPos>> mFixedChunksList = {};
 
 std::unordered_set<std::string> VanillaFix::getUnknownBlockLegacyNameList() { return mUnknownBlockLegacyNameList; }
 
@@ -65,21 +64,23 @@ LL_TYPE_INSTANCE_HOOK(
     "?_setOnChunkLoadedCalled@LevelChunk@@QEAA_NXZ",
     bool
 ) {
-    if (mAutoCleanUnknownBlockEnabled) {
-        auto cp    = this->getPosition();
-        auto dimid = this->getDimension().getDimensionId();
-        if (!isChunkFixed(cp, dimid)) {
-            setChunkFixed(cp, dimid);
-        }
+    auto cp    = this->getPosition();
+    auto dimid = this->getDimension().getDimensionId();
+    if (!isChunkFixed(cp, dimid)) {
+        setChunkFixed(cp, dimid);
     }
     return origin();
 }
 
+struct Impl {
+    ll::memory::HookRegistrar<LoadUnknownBlock, ChunkLoadEvent> r;
+};
+
+std::unique_ptr<Impl> impl;
+
 GMLIB_API void VanillaFix::setAutoCleanUnknownBlockEnabled() {
-    if (!mAutoCleanUnknownBlockEnabled) {
-        ll::memory::HookRegistrar<LoadUnknownBlock>().hook();
-        ll::memory::HookRegistrar<ChunkLoadEvent>().hook();
-        mAutoCleanUnknownBlockEnabled = true;
+    if (!impl) {
+        impl = std::make_unique<Impl>();
     }
 }
 

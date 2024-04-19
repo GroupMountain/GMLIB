@@ -8,7 +8,6 @@ namespace GMLIB::Mod {
 
 std::unordered_map<std::string, std::vector<BiomeData>> mClimates;
 std::vector<std::string>                                mNewBiomes;
-bool                                                    mCustomBiomeEnabled = false;
 
 // 6 | Experimentalholiday
 // 7 | Experimentalbiomes
@@ -88,14 +87,17 @@ LL_INSTANCE_HOOK(ClientGenHook, HookPriority::Highest, "?isClientSideGenEnabled@
     return false;
 }
 
+struct Impl {
+    ll::memory::HookRegistrar<OverworldBiomeBuilderHook, BiomeRegistryHook, ClientGenHook> r;
+};
+
+std::unique_ptr<Impl> impl;
+
 void CustomBiome::registerBiomeClimates(std::string id, BiomeData data) {
     mClimates[id].push_back(data);
     GMLIB_Level::addExperimentsRequire((AllExperiments)7);
-    if (!mCustomBiomeEnabled) {
-        ll::memory::HookRegistrar<OverworldBiomeBuilderHook>().hook();
-        ll::memory::HookRegistrar<BiomeRegistryHook>().hook();
-        ll::memory::HookRegistrar<ClientGenHook>().hook();
-        mCustomBiomeEnabled = true;
+    if (!impl) {
+        impl = std::make_unique<Impl>();
     }
 }
 

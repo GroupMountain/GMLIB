@@ -10,7 +10,6 @@ namespace GMLIB::Mod {
 std::thread I18n_thread;
 bool        isResourcesLoaded = false;
 std::mutex  mtx;
-bool        isI18nFixEnabled = false;
 
 LL_STATIC_HOOK(
     I18nFix1,
@@ -55,12 +54,15 @@ LL_TYPE_INSTANCE_HOOK(
     I18n_thread.join();
 }
 
+struct Impl {
+    ll::memory::HookRegistrar<I18nFix1, I18nFix2, I18nFix3> r;
+};
+
+std::unique_ptr<Impl> impl;
+
 void VanillaFix::setFixI18nEnabled() {
-    if (!isI18nFixEnabled) {
-        ll::memory::HookRegistrar<I18nFix1>().hook();
-        ll::memory::HookRegistrar<I18nFix2>().hook();
-        ll::memory::HookRegistrar<I18nFix3>().hook();
-        isI18nFixEnabled = true;
+    if (!impl) {
+        impl = std::make_unique<Impl>();
     }
 }
 

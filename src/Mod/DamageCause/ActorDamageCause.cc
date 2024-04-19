@@ -14,8 +14,7 @@ using namespace ll::chrono_literals;
 
 std::unordered_map<int64, int>            mFallHeightMap;
 std::unordered_map<int64, ActorUniqueID>  mHurtByEntityMap;
-bool                                      mDamageCauseDefinitionEnabled = false;
-int                                       mMaxCauseId                   = 34;
+int                                       mMaxCauseId = 34;
 std::vector<std::pair<std::string, int>>  mCustomCauseMap;
 std::unordered_map<int, std::string_view> mVanillaCauseMessage;
 
@@ -466,15 +465,22 @@ LL_TYPE_INSTANCE_HOOK(
     return res;
 }
 
+struct Impl {
+    ll::memory::HookRegistrar<
+        DeathMessageHook1,
+        DeathMessageHook2,
+        DeathMessageHook3,
+        DeathMessageHook4,
+        MobDieHook,
+        CryatslHurtHook>
+        r;
+};
+
+std::unique_ptr<Impl> impl;
+
 void DamageCause::setCustomDamageCauseEnabled() {
-    if (!mDamageCauseDefinitionEnabled) {
-        ll::memory::HookRegistrar<DeathMessageHook1>().hook();
-        ll::memory::HookRegistrar<DeathMessageHook2>().hook();
-        ll::memory::HookRegistrar<DeathMessageHook3>().hook();
-        ll::memory::HookRegistrar<DeathMessageHook4>().hook();
-        ll::memory::HookRegistrar<MobDieHook>().hook();
-        ll::memory::HookRegistrar<CryatslHurtHook>().hook();
-        mDamageCauseDefinitionEnabled = true;
+    if (!impl) {
+        impl = std::make_unique<Impl>();
     }
 }
 

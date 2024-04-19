@@ -6,7 +6,6 @@
 namespace GMLIB::Server::UserCache {
 
 nlohmann::json mUserCache;
-bool           mEnableUserCache = false;
 
 void saveUserCacheFile() {
     std::string path = "./usercache.json";
@@ -123,22 +122,26 @@ LL_TYPE_INSTANCE_HOOK(
     GMLIB::Server::UserCache::updateUserCache(uuid, xuid, realName);
 }
 
+struct Impl {
+    ll::memory::HookRegistrar<PlayerLoginHook> r;
+};
+
+std::unique_ptr<Impl> impl;
+
 void initUserCache() {
-    if (mEnableUserCache) {
-        ll::memory::HookRegistrar<PlayerLoginHook>().hook();
-        auto emptyFile = nlohmann::json::array();
-        try {
-            mUserCache = GMLIB::Files::JsonFile::initJson("./usercache.json", emptyFile);
-        } catch (...) {
-            mUserCache = emptyFile;
-            saveUserCacheFile();
-        }
+    ll::memory::HookRegistrar<PlayerLoginHook>().hook();
+    auto emptyFile = nlohmann::json::array();
+    try {
+        mUserCache = GMLIB::Files::JsonFile::initJson("./usercache.json", emptyFile);
+    } catch (...) {
+        mUserCache = emptyFile;
+        saveUserCacheFile();
     }
 }
 
 void enableUserCache() {
-    if (!mEnableUserCache) {
-        mEnableUserCache = true;
+    if (!impl) {
+        impl = std::make_unique<Impl>();
         initUserCache();
     }
 }
