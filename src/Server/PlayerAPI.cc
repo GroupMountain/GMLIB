@@ -26,6 +26,8 @@
 #include <mc/world/effect/MobEffect.h>
 #include <mc/world/effect/MobEffectInstance.h>
 #include <mc/world/level/dimension/VanillaDimensions.h>
+#include <mc/world/level/levelgen/WorldGenerator.h>
+#include <mc/world/level/levelgen/structure/StructureFeatureTypeNames.h>
 #include <mc/world/level/storage/DBStorage.h>
 
 std::vector<std::string> GMLIB_Player::getAllServerIds() {
@@ -727,7 +729,7 @@ bool GMLIB_Player::updateClientBlock(
 
 Biome* GMLIB_Player::getBiome() {
     auto& bs = getDimensionBlockSourceConst();
-    return const_cast<Biome*>(&bs.getConstBiome(getFeetBlockPos()));
+    return const_cast<Biome*>(&bs.getConstBiome(BlockPos(getPosition())));
 }
 
 void GMLIB_Player::sendTitle(std::string_view text, SetTitlePacket::TitleType type) {
@@ -801,3 +803,38 @@ int GMLIB_Player::hasItem(std::string name, short aux) {
     });
 }
 */
+
+bool GMLIB_Player::isInStructureFeature(StructureFeatureType structure) {
+    return getDimension().getWorldGenerator()->isStructureFeatureTypeAt(BlockPos(getPosition()), structure);
+}
+
+StructureFeatureType GMLIB_Player::getStructureFeature() {
+    return getDimension().getWorldGenerator()->findStructureFeatureTypeAt(BlockPos(getPosition()));
+}
+
+bool GMLIB_Player::isInStructureFeature(std::string const& structure) {
+    auto type = StructureFeatureTypeNames::getFeatureType(structure);
+    return isInStructureFeature(type);
+}
+
+std::string_view GMLIB_Player::getStructureFeatureName() {
+    return StructureFeatureTypeNames::getFeatureName(getStructureFeature());
+}
+
+std::optional<BlockPos>
+GMLIB_Player::locateNearestStructureFeature(StructureFeatureType structure, bool useNewChunksOnly) {
+    BlockPos result = {0, 64, 0};
+    auto     find   = getDimension()
+                    .getWorldGenerator()
+                    ->findNearestStructureFeature(structure, BlockPos(getPosition()), result, useNewChunksOnly, {});
+    if (find) {
+        return result;
+    }
+    return {};
+}
+
+std::optional<BlockPos>
+GMLIB_Player::locateNearestStructureFeature(std::string const& structure, bool useNewChunksOnly) {
+    auto type = StructureFeatureTypeNames::getFeatureType(structure);
+    return locateNearestStructureFeature(type, useNewChunksOnly);
+}

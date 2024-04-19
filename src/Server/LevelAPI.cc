@@ -16,6 +16,8 @@
 #include <mc/server/commands/edu/AbilityCommand.h>
 #include <mc/server/common/commands/ChangeSettingCommand.h>
 #include <mc/util/Random.h>
+#include <mc/world/level/levelgen/WorldGenerator.h>
+#include <mc/world/level/levelgen/structure/StructureFeatureTypeNames.h>
 #include <mc/world/level/storage/Experiments.h>
 
 typedef std::chrono::high_resolution_clock timer_clock;
@@ -26,20 +28,15 @@ typedef std::chrono::high_resolution_clock timer_clock;
 
 namespace GMLIB::LevelAPI {
 
-bool                          mFakeLevelNameEnabled     = false;
-std::string_view              mFakeLevelName            = "";
-bool                          mFakeSeedEnabled          = false;
-int64_t                       mFakeSeed                 = 0;
-bool                          mForceTrustSkin           = false;
-bool                          mCoResourcePack           = false;
-std::vector<::AllExperiments> mExperimentsRequireList   = {};
-bool                          mForceAchievementsEnabled = false;
-bool                          mRegAbilityCommand        = false;
-bool                          mEducationEditionEnabled  = false;
-uint                          mTicks                    = 0;
-float                         mAverageTps               = 20;
-double                        mMspt                     = 0;
-std::list<ushort>             mTickList                 = {};
+std::string_view              mFakeLevelName;
+int64_t                       mFakeSeed;
+std::vector<::AllExperiments> mExperimentsRequireList;
+bool                          mRegAbilityCommand       = false;
+bool                          mEducationEditionEnabled = false;
+uint                          mTicks                   = 0;
+float                         mAverageTps              = 20;
+double                        mMspt                    = 0;
+std::list<ushort>             mTickList;
 
 } // namespace GMLIB::LevelAPI
 
@@ -97,20 +94,27 @@ LL_TYPE_INSTANCE_HOOK(
     return origin(stream);
 }
 
-LL_AUTO_TYPE_INSTANCE_HOOK(
-    StartGamePacketWrite,
+LL_TYPE_INSTANCE_HOOK(
+    FakeSeedHook,
     ll::memory::HookPriority::Normal,
     StartGamePacket,
     "?write@StartGamePacket@@UEBAXAEAVBinaryStream@@@Z",
     void,
     class BinaryStream& stream
 ) {
-    if (GMLIB::LevelAPI::mFakeSeedEnabled) {
-        this->mSettings.setRandomSeed(LevelSeed64(GMLIB::LevelAPI::mFakeSeed));
-    }
-    if (GMLIB::LevelAPI::mFakeLevelNameEnabled) {
-        this->mLevelName = GMLIB::LevelAPI::mFakeLevelName;
-    }
+    this->mSettings.setRandomSeed(LevelSeed64(GMLIB::LevelAPI::mFakeSeed));
+    return origin(stream);
+}
+
+LL_TYPE_INSTANCE_HOOK(
+    FakeLevelNameHook,
+    ll::memory::HookPriority::Normal,
+    StartGamePacket,
+    "?write@StartGamePacket@@UEBAXAEAVBinaryStream@@@Z",
+    void,
+    class BinaryStream& stream
+) {
+    this->mLevelName = GMLIB::LevelAPI::mFakeLevelName;
     return origin(stream);
 }
 
@@ -182,37 +186,59 @@ std::string GMLIB_Level::getLevelName() { return getLevelData().getLevelName(); 
 
 void GMLIB_Level::setLevelName(std::string_view newName) { getLevelData().setLevelName(std::string(newName)); }
 
+struct FakeLevelName_Impl {
+    ll::memory::HookRegistrar<FakeLevelNameHook> r;
+};
+
+std::unique_ptr<FakeLevelName_Impl> fakeLevelName_Impl;
+
 void GMLIB_Level::setFakeLevelName(std::string_view fakeName) {
-    GMLIB::LevelAPI::mFakeLevelNameEnabled = true;
-    GMLIB::LevelAPI::mFakeLevelName        = fakeName;
+    GMLIB::LevelAPI::mFakeLevelName = fakeName;
+    if (!fakeLevelName_Impl) {
+        fakeLevelName_Impl = std::make_unique<FakeLevelName_Impl>();
+    }
 }
 
 int64_t GMLIB_Level::getSeed() { return getLevelData().getSeed().mValue; }
 
+struct FakeSeed_Impl {
+    ll::memory::HookRegistrar<FakeSeedHook> r;
+};
+
+std::unique_ptr<FakeSeed_Impl> fakeSeed_Impl;
+
 void GMLIB_Level::setFakeSeed(int64_t fakeSeed) {
-    GMLIB::LevelAPI::mFakeSeedEnabled = true;
-    GMLIB::LevelAPI::mFakeSeed        = fakeSeed;
+    GMLIB::LevelAPI::mFakeSeed = fakeSeed;
+    if (!fakeSeed_Impl) {
+        fakeSeed_Impl = std::make_unique<FakeSeed_Impl>();
+    }
 }
+
+struct CoResourcePack_Impl {
+    ll::memory::HookRegistrar<ResourcePacksInfoPacketWrite> r;
+};
+
+std::unique_ptr<CoResourcePack_Impl> coResourcePack_Impl;
 
 void GMLIB_Level::setCoResourcePack(bool enabled) {
-    if (!GMLIB::LevelAPI::mCoResourcePack && enabled) {
-        ll::memory::HookRegistrar<ResourcePacksInfoPacketWrite>().hook();
-        GMLIB::LevelAPI::mCoResourcePack = true;
-    }
-    if (GMLIB::LevelAPI::mCoResourcePack && !enabled) {
-        ll::memory::HookRegistrar<ResourcePacksInfoPacketWrite>().unhook();
-        GMLIB::LevelAPI::mCoResourcePack = false;
+    if (enabled) {
+        if (!coResourcePack_Impl) coResourcePack_Impl = std::make_unique<CoResourcePack_Impl>();
+    } else {
+        coResourcePack_Impl.reset();
     }
 }
 
+struct ForceTrustSkin_Impl {
+    ll::memory::HookRegistrar<TrustSkinHook> r;
+};
+
+std::unique_ptr<ForceTrustSkin_Impl> forceTrustSkin_Impl;
+
 void GMLIB_Level::setForceTrustSkin(bool enabled) {
-    if (!GMLIB::LevelAPI::mForceTrustSkin && enabled) {
-        ll::memory::HookRegistrar<TrustSkinHook>().hook();
-        GMLIB::LevelAPI::mForceTrustSkin = true;
-    }
-    if (GMLIB::LevelAPI::mForceTrustSkin && !enabled) {
-        ll::memory::HookRegistrar<TrustSkinHook>().unhook();
-        GMLIB::LevelAPI::mForceTrustSkin = false;
+    if (enabled) {
+        if (!forceTrustSkin_Impl) forceTrustSkin_Impl = std::make_unique<ForceTrustSkin_Impl>();
+    } else {
+        forceTrustSkin_Impl.reset();
     }
 }
 
@@ -265,12 +291,15 @@ void GMLIB_Level::addExperimentsRequire(::AllExperiments experiment) {
     }
 }
 
+struct ForceAchievements_Impl {
+    ll::memory::HookRegistrar<ForceAchievementHook1, ForceAchievementHook2, AllowCheatsSettingHook> r;
+};
+
+std::unique_ptr<ForceAchievements_Impl> forceAchievements_Impl;
+
 void GMLIB_Level::setForceAchievementsEnabled() {
-    if (!GMLIB::LevelAPI::mForceAchievementsEnabled) {
-        ll::memory::HookRegistrar<ForceAchievementHook1>().hook();
-        ll::memory::HookRegistrar<ForceAchievementHook2>().hook();
-        ll::memory::HookRegistrar<AllowCheatsSettingHook>().hook();
-        GMLIB::LevelAPI::mForceAchievementsEnabled = true;
+    if (!forceAchievements_Impl) {
+        forceAchievements_Impl = std::make_unique<ForceAchievements_Impl>();
     }
 }
 
@@ -684,4 +713,47 @@ bool GMLIB_Level::executeCommandEx(std::string_view command, DimensionType dimId
         return true;
     }
     return false;
+}
+
+bool GMLIB_Level::isInStructureFeature(StructureFeatureType structure, BlockPos pos, DimensionType dimId) {
+    return getDimension(dimId)->getWorldGenerator()->isStructureFeatureTypeAt(pos, structure);
+}
+
+StructureFeatureType GMLIB_Level::getStructureFeature(BlockPos pos, DimensionType dimId) {
+    return getDimension(dimId)->getWorldGenerator()->findStructureFeatureTypeAt(pos);
+}
+
+bool GMLIB_Level::isInStructureFeature(std::string const& structure, BlockPos pos, DimensionType dimId) {
+    auto type = StructureFeatureTypeNames::getFeatureType(structure);
+    return isInStructureFeature(type, pos, dimId);
+}
+
+std::string_view GMLIB_Level::getStructureFeatureName(BlockPos pos, DimensionType dimId) {
+    return StructureFeatureTypeNames::getFeatureName(getStructureFeature(pos, dimId));
+}
+
+std::optional<BlockPos> GMLIB_Level::locateNearestStructureFeature(
+    StructureFeatureType structure,
+    BlockPos             pos,
+    DimensionType        dimId,
+    bool                 useNewChunksOnly
+) {
+    BlockPos result = {0, 64, 0};
+    auto     find   = getOrCreateDimension(dimId)
+                    ->getWorldGenerator()
+                    ->findNearestStructureFeature(structure, pos, result, useNewChunksOnly, {});
+    if (find) {
+        return result;
+    }
+    return {};
+}
+
+std::optional<BlockPos> GMLIB_Level::locateNearestStructureFeature(
+    std::string const& structure,
+    BlockPos           pos,
+    DimensionType      dimId,
+    bool               useNewChunksOnly
+) {
+    auto type = StructureFeatureTypeNames::getFeatureType(structure);
+    return locateNearestStructureFeature(type, pos, dimId, useNewChunksOnly);
 }
