@@ -7,15 +7,15 @@ LL_TYPE_INSTANCE_HOOK(UndeadMobFix, HookPriority::Highest, Actor, "?isInvertedHe
     return this->hasFamily("undead");
 }
 
-struct Impl {
+struct Undead_Impl {
     ll::memory::HookRegistrar<UndeadMobFix> r;
 };
 
-std::unique_ptr<Impl> impl;
+std::unique_ptr<Undead_Impl> impl;
 
 void VanillaFix::setFixCustomUndeadMobsEnabled() {
     if (!impl) {
-        impl = std::make_unique<Impl>();
+        impl = std::make_unique<Undead_Impl>();
     }
 }
 

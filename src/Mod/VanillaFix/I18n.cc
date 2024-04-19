@@ -54,15 +54,15 @@ LL_TYPE_INSTANCE_HOOK(
     I18n_thread.join();
 }
 
-struct Impl {
+struct I18n_Impl {
     ll::memory::HookRegistrar<I18nFix1, I18nFix2, I18nFix3> r;
 };
 
-std::unique_ptr<Impl> impl;
+std::unique_ptr<I18n_Impl> impl;
 
 void VanillaFix::setFixI18nEnabled() {
     if (!impl) {
-        impl = std::make_unique<Impl>();
+        impl = std::make_unique<I18n_Impl>();
     }
 }
 

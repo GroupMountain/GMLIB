@@ -122,11 +122,11 @@ LL_TYPE_INSTANCE_HOOK(
     GMLIB::Server::UserCache::updateUserCache(uuid, xuid, realName);
 }
 
-struct Impl {
+struct UserCache_Impl {
     ll::memory::HookRegistrar<PlayerLoginHook> r;
 };
 
-std::unique_ptr<Impl> impl;
+std::unique_ptr<UserCache_Impl> impl;
 
 void initUserCache() {
     ll::memory::HookRegistrar<PlayerLoginHook>().hook();
@@ -141,7 +141,7 @@ void initUserCache() {
 
 void enableUserCache() {
     if (!impl) {
-        impl = std::make_unique<Impl>();
+        impl = std::make_unique<UserCache_Impl>();
         initUserCache();
     }
 }

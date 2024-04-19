@@ -88,15 +88,15 @@ LL_TYPE_INSTANCE_HOOK(
     return origin();
 }
 
-struct Impl {
+struct CustomPack_Impl {
     ll::memory::HookRegistrar<PacksBuildEvent, ResourcePackRepositoryInitEvent, PacksLoadEvent> r;
 };
 
-std::unique_ptr<Impl> impl;
+std::unique_ptr<CustomPack_Impl> impl;
 
 void CustomPacks::addCustomPackPath(std::string path) {
     if (!impl) {
-        impl = std::make_unique<Impl>();
+        impl = std::make_unique<CustomPack_Impl>();
     }
     if (!std::filesystem::exists(path)) {
         std::filesystem::create_directories(path);

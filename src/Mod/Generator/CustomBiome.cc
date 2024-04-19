@@ -87,17 +87,17 @@ LL_INSTANCE_HOOK(ClientGenHook, HookPriority::Highest, "?isClientSideGenEnabled@
     return false;
 }
 
-struct Impl {
+struct CustomBiome_Impl {
     ll::memory::HookRegistrar<OverworldBiomeBuilderHook, BiomeRegistryHook, ClientGenHook> r;
 };
 
-std::unique_ptr<Impl> impl;
+std::unique_ptr<CustomBiome_Impl> impl;
 
 void CustomBiome::registerBiomeClimates(std::string id, BiomeData data) {
     mClimates[id].push_back(data);
     GMLIB_Level::addExperimentsRequire((AllExperiments)7);
     if (!impl) {
-        impl = std::make_unique<Impl>();
+        impl = std::make_unique<CustomBiome_Impl>();
     }
 }
 

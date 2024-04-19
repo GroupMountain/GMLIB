@@ -465,7 +465,7 @@ LL_TYPE_INSTANCE_HOOK(
     return res;
 }
 
-struct Impl {
+struct DamageCause_Impl {
     ll::memory::HookRegistrar<
         DeathMessageHook1,
         DeathMessageHook2,
@@ -476,11 +476,11 @@ struct Impl {
         r;
 };
 
-std::unique_ptr<Impl> impl;
+std::unique_ptr<DamageCause_Impl> impl;
 
 void DamageCause::setCustomDamageCauseEnabled() {
     if (!impl) {
-        impl = std::make_unique<Impl>();
+        impl = std::make_unique<DamageCause_Impl>();
     }
 }
 

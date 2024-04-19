@@ -72,15 +72,15 @@ LL_TYPE_INSTANCE_HOOK(
     return origin();
 }
 
-struct Impl {
+struct UnknownBlock_Impl {
     ll::memory::HookRegistrar<LoadUnknownBlock, ChunkLoadEvent> r;
 };
 
-std::unique_ptr<Impl> impl;
+std::unique_ptr<UnknownBlock_Impl> impl;
 
 GMLIB_API void VanillaFix::setAutoCleanUnknownBlockEnabled() {
     if (!impl) {
-        impl = std::make_unique<Impl>();
+        impl = std::make_unique<UnknownBlock_Impl>();
     }
 }
 
