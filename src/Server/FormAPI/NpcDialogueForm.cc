@@ -2,6 +2,8 @@
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/FormAPI/NpcDialogueForm.h>
+#include <mc/entity/utilities/ActorDataIDs.h>
+#include <mc/enums/DataItemType.h>
 #include <mc/network/MinecraftPackets.h>
 #include <mc/network/packet/AddActorPacket.h>
 #include <mc/network/packet/NpcDialoguePacket.h>
@@ -83,20 +85,20 @@ void NpcDialogueForm::sendTo(
     bs1.writeUnsignedVarInt(0);
     // DataItem
     bs1.writeUnsignedVarInt(5);
-    bs1.writeUnsignedVarInt((uint)0x4);
-    bs1.writeUnsignedVarInt((uint)0x4);
+    bs1.writeUnsignedVarInt((uint)ActorDataIDs::Name);
+    bs1.writeUnsignedVarInt((uint)DataItemType::String);
     bs1.writeString("GMLIB-NpcDialogueForm");
-    bs1.writeUnsignedVarInt((uint)0x27);
-    bs1.writeUnsignedVarInt((uint)0x0);
+    bs1.writeUnsignedVarInt((uint)ActorDataIDs::HasNpc);
+    bs1.writeUnsignedVarInt((uint)DataItemType::Byte);
     bs1.writeBool(true);
-    bs1.writeUnsignedVarInt((uint)0x28);
-    bs1.writeUnsignedVarInt((uint)0x4);
+    bs1.writeUnsignedVarInt((uint)ActorDataIDs::NpcData);
+    bs1.writeUnsignedVarInt((uint)DataItemType::String);
     bs1.writeString(npcData);
-    bs1.writeUnsignedVarInt((uint)0x29);
-    bs1.writeUnsignedVarInt((uint)0x4);
+    bs1.writeUnsignedVarInt((uint)ActorDataIDs::Actions);
+    bs1.writeUnsignedVarInt((uint)DataItemType::String);
     bs1.writeString(actionJson);
-    bs1.writeUnsignedVarInt((uint)0x64);
-    bs1.writeUnsignedVarInt((uint)0x4);
+    bs1.writeUnsignedVarInt((uint)ActorDataIDs::InteractText);
+    bs1.writeUnsignedVarInt((uint)DataItemType::String);
     bs1.writeString("GMLIB-NpcDialogueForm");
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
