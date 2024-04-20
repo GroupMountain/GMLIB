@@ -115,15 +115,11 @@ void GMLIB_BinaryStream::writePacketHeader(MinecraftPacketIds packetId, SubClien
     );
 }
 
-void GMLIB_BinaryStream::sendTo(Player& pl) {
+void GMLIB_BinaryStream::sendTo(Player& pl, ::NetworkPeer::Reliability reliability, ::Compressibility compressible) {
     if (auto networksystem = ll::service::getNetworkSystem(); networksystem) {
         if (auto connection = networksystem->_getConnectionFromId(pl.getNetworkIdentifier()); connection) {
             if (auto peer = connection->mPeer; peer) {
-                peer->sendPacket(
-                    *mBuffer,
-                    ::NetworkPeer::Reliability::ReliableOrdered,
-                    ::Compressibility::Compressible
-                );
+                peer->sendPacket(*mBuffer, reliability, compressible);
             }
         }
     }
