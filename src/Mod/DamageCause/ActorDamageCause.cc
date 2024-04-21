@@ -121,10 +121,12 @@ DEATH_MESSAGE makeDeathMessage(
         // 没有武器名不使用.item结尾
         if (weaponName.empty()) {
             // 试图逃离 xx 使用.player
-            if (killer && isEscaping) {
-                ll::utils::string_utils::replaceAll(msg, ".item", ".player");
-            } else {
-                ll::utils::string_utils::replaceAll(msg, ".item", "");
+            if (killer) {
+                if (isEscaping) {
+                    ll::utils::string_utils::replaceAll(msg, ".item", ".player");
+                } else {
+                    ll::utils::string_utils::replaceAll(msg, ".item", "");
+                }
             }
         }
         DEATH_MESSAGE res = {msg, {name}};
@@ -277,9 +279,10 @@ std::optional<DEATH_MESSAGE> tryTranslateHardCodedDeathMessage(
     case ActorDamageCause::EntityExplosion: {
         switch (ll::hash_utils::doHash(directKiller)) {
         case ll::hash_utils::doHash("minecraft:wither_skull"):
-        case ll::hash_utils::doHash("minecraft:wither_skull_dangerous"):
+        case ll::hash_utils::doHash("minecraft:wither_skull_dangerous"): {
             deathMessage.first = "death.attack.witherSkull.item";
             break;
+        }
         default: {
             deathMessage.first = "death.attack.explosion.item";
             break;

@@ -56,16 +56,13 @@ void sendUpdateFloatingTextPacket(FloatingText* ft, Player* pl) {
     bs.writePacketHeader(MinecraftPacketIds::SetActorData, pl->getClientSubId());
     bs.writeUnsignedVarInt64(ft->getRuntimeID());
     // DataItem
-    bs.writeUnsignedVarInt(3);
+    bs.writeUnsignedVarInt(2);
     bs.writeUnsignedVarInt((uint)ActorDataIDs::Name);
     bs.writeUnsignedVarInt((uint)DataItemType::String);
     bs.writeString(text);
     bs.writeUnsignedVarInt((uint)ActorDataIDs::NametagAlwaysShow);
     bs.writeUnsignedVarInt((uint)DataItemType::Byte);
     bs.writeBool(true);
-    bs.writeUnsignedVarInt((uint)ActorDataIDs::DataLifetimeTicks);
-    bs.writeUnsignedVarInt((uint)DataItemType::Int);
-    bs.writeUnsignedInt(300);
     // Other
     bs.writeUnsignedVarInt(0);
     bs.writeUnsignedVarInt(0);
