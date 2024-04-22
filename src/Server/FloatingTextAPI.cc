@@ -104,8 +104,8 @@ void FloatingText::sendToClient(Player* pl) {
 }
 
 void FloatingText::sendToAllClients() {
-    ll::service::getLevel()->forEachPlayer([this](Player& pl) -> bool {
-        if (!pl.isSimulatedPlayer() && pl.getDimensionId() == getDimensionId()) {
+    ll::service::getLevel()->getOrCreateDimension(getDimensionId())->forEachPlayer([this](Player& pl) -> bool {
+        if (!pl.isSimulatedPlayer()) {
             sendAddFloatingTextPacket(this, &pl);
         }
         return true;
@@ -119,8 +119,8 @@ GMLIB_API void FloatingText::updateClient(Player* pl) {
 }
 
 GMLIB_API void FloatingText::updateAllClients() {
-    ll::service::getLevel()->forEachPlayer([this](Player& pl) -> bool {
-        if (!pl.isSimulatedPlayer() && pl.getDimensionId() == getDimensionId()) {
+    ll::service::getLevel()->getOrCreateDimension(getDimensionId())->forEachPlayer([this](Player& pl) -> bool {
+        if (!pl.isSimulatedPlayer()) {
             sendUpdateFloatingTextPacket(this, &pl);
         }
         return true;
