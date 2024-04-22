@@ -124,14 +124,14 @@ DEATH_MESSAGE makeDeathMessage(
             if (killer) {
                 if (isEscaping) {
                     ll::utils::string_utils::replaceAll(msg, ".item", ".player");
-                } else {
-                    ll::utils::string_utils::replaceAll(msg, ".item", "");
                 }
+            } else {
+                ll::utils::string_utils::replaceAll(msg, ".item", "");
             }
         }
         DEATH_MESSAGE res = {msg, {name}};
         if (killer) {
-            if (killer->hasCategory(ActorCategory::Player)) {
+            if (killer->isPlayer()) {
                 res.second.push_back(((Player*)killer)->getName());
             } else {
                 res.second.push_back(getResourcePackKey(name, killer));
@@ -140,6 +140,8 @@ DEATH_MESSAGE makeDeathMessage(
             if (!weaponname.empty()) {
                 weaponname = "[" + weaponname + "§r]";
                 res.second.push_back(weaponname);
+            } else {
+                ll::utils::string_utils::replaceAll(res.first, ".item", "");
             }
         } else {
             // 如果没有击杀者和试图逃离，那么不可能使用 .player 结尾
