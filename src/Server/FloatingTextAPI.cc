@@ -73,6 +73,7 @@ void sendUpdateFloatingTextPacket(FloatingText* ft, Player* pl) {
 
 void sendAddFloatingTextPacket(FloatingText* ft, Player* pl) {
     auto text = ft->getText();
+    auto pos  = ft->getPos();
     if (ft->shouldUsePapi()) {
         PlaceholderAPI::translate(text, pl);
     }
@@ -81,7 +82,7 @@ void sendAddFloatingTextPacket(FloatingText* ft, Player* pl) {
     bs.writeVarInt64(ft->getRuntimeID());
     bs.writeUnsignedVarInt64(ft->getRuntimeID());
     bs.writeString("player");
-    bs.writeVec3(ft->getPos());
+    bs.writeVec3({pos.x, pos.y - 2, pos.z});
     bs.writeVec3(Vec3{0, 0, 0});
     bs.writeVec2(Vec2{0, 0});
     bs.writeFloat(0.0f);
@@ -175,11 +176,14 @@ StaticFloatingText::StaticFloatingText(std::string text, Vec3 position, Dimensio
     auto& eventBus = ll::event::EventBus::getInstance();
     auto  event1 =
         eventBus.emplaceListener<ll::event::player::PlayerJoinEvent>([&](ll::event::player::PlayerJoinEvent& ev) {
-            this->sendToClient(&ev.self());
+            sendToClient(&ev.self());
         });
     mEventIds.push_back(event1->getId());
     auto event2 = eventBus.emplaceListener<GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent>(
-        [&](GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent& ev) { this->sendToClient(&ev.self()); }
+        [&](GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent& ev) {
+            removeFromClient(&ev.self());
+            sendToClient(&ev.self());
+        }
     );
     mEventIds.push_back(event2->getId());
 }
@@ -196,11 +200,14 @@ DynamicFloatingText::DynamicFloatingText(
     auto& eventBus = ll::event::EventBus::getInstance();
     auto  event1 =
         eventBus.emplaceListener<ll::event::player::PlayerJoinEvent>([&](ll::event::player::PlayerJoinEvent& ev) {
-            this->sendToClient(&ev.self());
+            sendToClient(&ev.self());
         });
     mEventIds.push_back(event1->getId());
     auto event2 = eventBus.emplaceListener<GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent>(
-        [&](GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent& ev) { this->sendToClient(&ev.self()); }
+        [&](GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent& ev) {
+            removeFromClient(&ev.self());
+            sendToClient(&ev.self());
+        }
     );
     mEventIds.push_back(event2->getId());
     mUpdateRate = updateRate;
