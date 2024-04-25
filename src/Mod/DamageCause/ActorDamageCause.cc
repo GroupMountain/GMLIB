@@ -18,6 +18,8 @@ int                                       mMaxCauseId = 34;
 std::vector<std::pair<std::string, int>>  mCustomCauseMap;
 std::unordered_map<int, std::string_view> mVanillaCauseMessage;
 
+std::unordered_map<ActorDamageCause, std::unordered_map<std::string_view, std::string_view>> mHardCodedDeathMessage;
+
 bool isCrystal = false;
 
 bool isCustomDefinition(int cause) {
@@ -215,60 +217,6 @@ std::optional<DEATH_MESSAGE> tryTranslateHardCodedDeathMessage(
             deadUniqueId
         );
     }
-    // 硬编码弹射物信息
-    case ActorDamageCause::Projectile: {
-        switch (ll::hash_utils::doHash(directKiller)) {
-        case ll::hash_utils::doHash("minecraft:small_fireball"):
-            deathMessage.first = "death.attack.fireball.item";
-            break;
-        case ll::hash_utils::doHash("minecraft:thrown_trident"):
-            deathMessage.first = "death.attack.trident.item";
-            break;
-        case ll::hash_utils::doHash("minecraft:llama_spit"):
-            deathMessage.first = "death.attack.spit";
-            break;
-        case ll::hash_utils::doHash("minecraft:shulker_bullet"):
-            deathMessage.first = "death.attack.bullet";
-            break;
-        case ll::hash_utils::doHash("minecraft:arrow"):
-            deathMessage.first = "death.attack.arrow.item";
-            break;
-        default:
-            deathMessage.first = "death.attack.thrown.item";
-            break;
-        }
-        return makeDeathMessage((int)cause, deathMessage, name, killer, weaponName, isEscaping, true);
-    }
-    // 硬编码直接击杀信息
-    case ActorDamageCause::EntityAttack: {
-        switch (ll::hash_utils::doHash(directKiller)) {
-        case ll::hash_utils::doHash("minecraft:player"):
-            deathMessage.first = "death.attack.player.item";
-            break;
-        case ll::hash_utils::doHash("minecraft:bee"):
-            deathMessage.first = "death.attack.sting.item";
-            break;
-        default:
-            deathMessage.first = "death.attack.mob.item";
-            break;
-        }
-        return makeDeathMessage((int)cause, deathMessage, name, killer, weaponName, isEscaping, true);
-    }
-    // 硬编码接触死亡信息
-    case ActorDamageCause::Contact: {
-        switch (ll::hash_utils::doHash(deathMessage.first)) {
-        case ll::hash_utils::doHash("death.attack.cactus"):
-            deathMessage.first = "death.attack.cactus.item";
-            break;
-        case ll::hash_utils::doHash("death.attack.sweetBerry"):
-            deathMessage.first = "death.attack.sweetBerry.item";
-            break;
-        default:
-            deathMessage.first = "death.attack.generic.item";
-            break;
-        }
-        return makeDeathMessage((int)cause, deathMessage, name, killer, weaponName, isEscaping, true);
-    }
     // 硬编码爆炸信息
     case ActorDamageCause::BlockExplosion: {
         if (!isCrystal) {
@@ -278,49 +226,19 @@ std::optional<DEATH_MESSAGE> tryTranslateHardCodedDeathMessage(
         }
         return makeDeathMessage((int)cause, deathMessage, name, killer, weaponName, isEscaping, true);
     }
-    case ActorDamageCause::EntityExplosion: {
-        switch (ll::hash_utils::doHash(directKiller)) {
-        case ll::hash_utils::doHash("minecraft:wither_skull"):
-        case ll::hash_utils::doHash("minecraft:wither_skull_dangerous"): {
-            deathMessage.first = "death.attack.witherSkull.item";
-            break;
-        }
-        default: {
-            deathMessage.first = "death.attack.explosion.item";
-            break;
-        }
-        }
-        return makeDeathMessage((int)cause, deathMessage, name, killer, weaponName, isEscaping, true);
     }
-    // Magic
-    case ActorDamageCause::Magic: {
-        if (killer) {
-            deathMessage.first = "death.attack.indirectMagic.item";
-        } else {
-            deathMessage.first = "death.attack.magic";
-        }
-        return makeDeathMessage((int)cause, deathMessage, name, killer, weaponName, isEscaping, true);
-    }
-    // SonicBoom
-    case ActorDamageCause::All: {
-        if (directKiller == "minecraft:warden") {
-            deathMessage.first = "death.attack.sonicBoom";
-        } else {
-            deathMessage.first = "death.attack.sonicBoom.item";
-        }
-        return makeDeathMessage((int)cause, deathMessage, name, killer, weaponName, isEscaping, true);
-    }
-    // Thorns
-    case ActorDamageCause::Thorns: {
+    if (mHardCodedDeathMessage.contains(cause)) {
         if (directKiller.empty()) {
-            deathMessage.first = "death.attack.generic";
-        } else {
-            deathMessage.first = "death.attack.thorns.item";
+            directKiller = "empty";
         }
-        return makeDeathMessage((int)cause, deathMessage, name, killer, weaponName, isEscaping, true);
+        if (mHardCodedDeathMessage[cause].contains(directKiller)) {
+            deathMessage.first = std::string(mHardCodedDeathMessage[cause][directKiller]);
+            return makeDeathMessage((int)cause, deathMessage, name, killer, weaponName, isEscaping, true);
+        } else if (mHardCodedDeathMessage[cause].contains("all")) {
+            deathMessage.first = std::string(mHardCodedDeathMessage[cause]["all"]);
+            return makeDeathMessage((int)cause, deathMessage, name, killer, weaponName, isEscaping, true);
+        }
     }
-    }
-    // 非硬编码死亡信息
     return {};
 }
 
