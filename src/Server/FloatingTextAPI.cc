@@ -95,12 +95,11 @@ void sendAddFloatingTextPacket(FloatingText* ft, Player* pl) {
     bs.writeUnsignedVarInt((uint)ActorDataIDs::NametagAlwaysShow);
     bs.writeUnsignedVarInt((uint)DataItemType::Byte);
     bs.writeBool(true);
-    bs.writeBool(false);
-
+    // Others
     bs.writeUnsignedVarInt(0);
     bs.writeUnsignedVarInt(0);
     bs.writeUnsignedVarInt(0);
-
+    // send
     bs.sendTo(*pl);
 }
 
