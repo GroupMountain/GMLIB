@@ -72,8 +72,6 @@ void sendUpdateFloatingTextPacket(FloatingText* ft, Player* pl) {
 
 
 void sendAddFloatingTextPacket(FloatingText* ft, Player* pl) {
-    auto item = std::make_unique<ItemStack>(ItemStack{"minecraft:air"});
-    auto nisd = NetworkItemStackDescriptor(*item);
     auto text = ft->getText();
     if (ft->shouldUsePapi()) {
         PlaceholderAPI::translate(text, pl);

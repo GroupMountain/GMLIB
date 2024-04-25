@@ -125,19 +125,23 @@ void GMLIB_BinaryStream::sendTo(Player& pl, ::NetworkPeer::Reliability reliabili
     }
 }
 
-void GMLIB_BinaryStream::sendToClients() {
+void GMLIB_BinaryStream::sendToClients(::NetworkPeer::Reliability reliability, ::Compressibility compressible) {
     ll::service::getLevel()->forEachPlayer([&](Player& pl) -> bool {
         if (!pl.isSimulatedPlayer()) {
-            sendTo(pl);
+            sendTo(pl, reliability, compressible);
         }
         return true;
     });
 }
 
-void GMLIB_BinaryStream::sendToClients(DimensionType dimId) {
-    ll::service::getLevel()->forEachPlayer([&](Player& pl) -> bool {
-        if (!pl.isSimulatedPlayer() && pl.getDimensionId() == dimId) {
-            sendTo(pl);
+void GMLIB_BinaryStream::sendToClients(
+    DimensionType              dimId,
+    ::NetworkPeer::Reliability reliability,
+    ::Compressibility          compressible
+) {
+    ll::service::getLevel()->getOrCreateDimension(dimId)->forEachPlayer([&](Player& pl) -> bool {
+        if (!pl.isSimulatedPlayer()) {
+            sendTo(pl, reliability, compressible);
         }
         return true;
     });

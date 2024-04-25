@@ -22,9 +22,16 @@ public:
         ::Compressibility          compressible = ::Compressibility::Compressible
     );
 
-    GMLIB_API void sendToClients();
+    GMLIB_API void sendToClients(
+        ::NetworkPeer::Reliability reliability  = ::NetworkPeer::Reliability::ReliableOrdered,
+        ::Compressibility          compressible = ::Compressibility::Compressible
+    );
 
-    GMLIB_API void sendToClients(DimensionType dimId);
+    GMLIB_API void sendToClients(
+        DimensionType              dimId,
+        ::NetworkPeer::Reliability reliability  = ::NetworkPeer::Reliability::ReliableOrdered,
+        ::Compressibility          compressible = ::Compressibility::Compressible
+    );
 
 public:
     GMLIB_API void writeCompoundTag(CompoundTag& data);
