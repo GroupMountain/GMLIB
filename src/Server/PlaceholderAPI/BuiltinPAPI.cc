@@ -226,6 +226,21 @@ void regPlayerPAPI() {
         [](Player* sp) { return S((int)sp->getAttribute(Player::HUNGER).getMaxValue()); },
         "GMLIB"
     );
+
+    GMLIB::Server::PlaceholderAPI::registerPlayerPlaceholder(
+        "player_score_<objective>",
+        [](Player* sp, std::unordered_map<std::string, std::string> map) {
+            auto pl = (GMLIB_Player*)sp;
+            if (map.contains("<objective>")) {
+                auto score = pl->getScore(map["<objective>"]);
+                if (score) {
+                    return std::to_string(score.value());
+                }
+            }
+            return std::string();
+        },
+        "GMLIB"
+    );
 }
 
 void regServerPAPI() {
@@ -322,7 +337,7 @@ void regServerPAPI() {
     PlaceholderAPI::registerServerPlaceholder(
         "server_start_time_<format>_s",
         [](std::unordered_map<std::string, std::string> map) {
-            if (map.count("<format>")) {
+            if (map.contains("<format>")) {
                 if ("<format>" != map["<format>"]) {
                     return Helper::getTime(map["<format>"], startTime);
                 }
@@ -335,7 +350,7 @@ void regServerPAPI() {
     PlaceholderAPI::registerServerPlaceholder(
         "server_start_time_<format>",
         [](std::unordered_map<std::string, std::string> map) {
-            if (map.count("<format>")) {
+            if (map.contains("<format>")) {
                 if ("<format>" != map["<format>"]) {
                     return Helper::getTime(map["<format>"], startTime);
                 }
@@ -411,23 +426,18 @@ void regServerPAPI() {
     );
 
     PlaceholderAPI::registerServerPlaceholder(
-        "server_tps_fixed",
-        []() {
-            if (auto level = GMLIB_Level::getInstance()) {
-                return double2String(level->getServerCurrentTps(), 2);
+        "server_tps_fix_<fixed>",
+        [](std::unordered_map<std::string, std::string> map) {
+            if (map.contains("<fixed>")) {
+                try {
+                    auto num = std::stoi(map["<fixed>"]);
+                    if (auto level = GMLIB_Level::getInstance()) {
+                        return double2String(level->getServerCurrentTps(), num);
+                    }
+                    return double2String(0.0f, num);
+                } catch (...) {}
             }
-            return double2String(0.0f, 2);
-        },
-        "GMLIB"
-    );
-
-    PlaceholderAPI::registerServerPlaceholder(
-        "server_tps_int",
-        []() {
-            if (auto level = GMLIB_Level::getInstance()) {
-                return double2String(level->getServerCurrentTps(), 0);
-            }
-            return double2String(0.0f, 0);
+            return std::string("%server_tps_fix_<fixed>%");
         },
         "GMLIB"
     );
@@ -444,12 +454,18 @@ void regServerPAPI() {
     );
 
     PlaceholderAPI::registerServerPlaceholder(
-        "server_mspt_fixed",
-        []() {
-            if (auto level = GMLIB_Level::getInstance()) {
-                return double2String(level->getServerMspt(), 2);
+        "server_mspt_fix_<fixed>",
+        [](std::unordered_map<std::string, std::string> map) {
+            if (map.contains("<fixed>")) {
+                try {
+                    auto num = std::stoi(map["<fixed>"]);
+                    if (auto level = GMLIB_Level::getInstance()) {
+                        return double2String(level->getServerMspt(), num);
+                    }
+                    return double2String(0.0f, num);
+                } catch (...) {}
             }
-            return double2String(0.0f, 2);
+            return std::string("%server_mspt_fix_<fixed>%");
         },
         "GMLIB"
     );
