@@ -323,14 +323,12 @@ void GMLIB_Player::setClientSidebar(
     const std::vector<std::pair<std::string, int>>& data,
     ObjectiveSortOrder                              sortOrder
 ) {
-    // todo ???
     SetDisplayObjectivePacket("sidebar", "GMLIB_SIDEBAR_API", title, "dummy", ObjectiveSortOrder(sortOrder))
         .sendTo(*this);
 
     std::vector<ScorePacketInfo> info;
     for (auto& key : data) {
-        auto                idValue   = GMLIB_Actor::getNextActorUniqueID();
-        const ScoreboardId& id        = ScoreboardId(idValue);
+        const ScoreboardId& id        = ScoreboardId(key.second);
         auto                text      = key.first;
         auto                scoreInfo = ScorePacketInfo();
         scoreInfo.mScoreboardId       = id;
@@ -340,16 +338,9 @@ void GMLIB_Player::setClientSidebar(
         scoreInfo.mFakePlayerName     = text;
         info.emplace_back(scoreInfo);
     }
-    auto pkt        = (SetScorePacket*)(MinecraftPackets::createPacket(MinecraftPacketIds::SetScore).get());
-    pkt->mType      = (ScorePacketType)0;
-    pkt->mScoreInfo = info;
-    pkt->sendTo(*this);
-
-    SetDisplayObjectivePacket("sidebar", "GMLIB_SIDEBAR_API", title, "dummy", ObjectiveSortOrder(sortOrder))
-        .sendTo(*this);
+    auto pkt = SetScorePacket::change(info);
+    pkt.sendTo(*this);
 }
-
-// Todo : Below Name | List
 
 void GMLIB_Player::removeClientSidebar() {
     SetDisplayObjectivePacket("sidebar", "", "", "dummy", ObjectiveSortOrder::Ascending).sendTo(*this);
