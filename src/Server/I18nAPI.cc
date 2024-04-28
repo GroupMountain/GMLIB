@@ -12,7 +12,7 @@ std::optional<std::string> I18nAPI::getCurrentLanguageCode() {
     return getI18n().getCurrentLanguage()->getFullLanguageCode();
 }
 
-std::vector<std::string> getSupportedLanguageCodes() { return getI18n().getSupportedLanguageCodes(); }
+std::vector<std::string> I18nAPI::getSupportedLanguageCodes() { return getI18n().getSupportedLanguageCodes(); }
 
 std::optional<std::string> I18nAPI::tryGet(std::string const& key, std::vector<std::string> const& params) {
     if (auto localization = getI18n().getCurrentLanguage()) {
@@ -52,6 +52,11 @@ std::string I18nAPI::get(std::string const& key, std::vector<std::string> const&
         auto        has_value = localization->get(key, result, params);
         if (has_value) return result;
     }
+    if (auto defaultLocalization = getI18n().getLocaleFor("en_US")) {
+        std::string result;
+        defaultLocalization->get(key, result, params);
+        return result;
+    }
     return key;
 }
 
@@ -61,6 +66,11 @@ I18nAPI::get(std::string const& key, std::vector<std::string> const& params, std
         std::string result;
         auto        has_value = localization->get(key, result, params);
         if (has_value) return result;
+    }
+    if (auto defaultLocalization = getI18n().getLocaleFor("en_US")) {
+        std::string result;
+        defaultLocalization->get(key, result, params);
+        return result;
     }
     return key;
 }
@@ -75,7 +85,12 @@ std::string I18nAPI::get(
         auto        has_value = localization->get(key, result, params);
         if (has_value) return result;
     }
-    return {};
+    if (auto defaultLocalization = getI18n().getLocaleFor("en_US")) {
+        std::string result;
+        defaultLocalization->get(key, result, params);
+        return result;
+    }
+    return key;
 }
 
 void I18nAPI::loadLanguage(
