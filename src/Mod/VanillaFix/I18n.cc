@@ -7,15 +7,15 @@
 
 namespace GMLIB::Mod {
 
-/*
 std::thread I18n_thread;
 bool        isResourcesLoaded = false;
 std::mutex  mtx;
 
-LL_STATIC_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     I18nFix1,
     HookPriority::Normal,
-    "?chooseLanguage@I18n@@SAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z",
+    I18n,
+    "?chooseLanguage@I18nImpl@@UEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z",
     void,
     std::string const& code
 ) {
@@ -26,7 +26,7 @@ LL_TYPE_INSTANCE_HOOK(
     I18nFix2,
     HookPriority::Normal,
     I18n,
-    "?loadAllLanguages@I18n@@SAXAEAVResourcePackManager@@@Z",
+    "?loadAllLanguages@I18nImpl@@UEAAXAEAVResourcePackManager@@@Z",
     void,
     class ResourcePackManager& resourcePackManager
 ) {
@@ -37,7 +37,7 @@ LL_TYPE_INSTANCE_HOOK(
         mtx.lock();
         origin(resourcePackManager);
         auto lang = ll::service::getPropertiesSettings()->getLanguage();
-        I18n::chooseLanguage(lang);
+        chooseLanguage(lang);
         mtx.unlock();
     });
 }
@@ -66,6 +66,5 @@ void VanillaFix::setFixI18nEnabled() {
         impl = std::make_unique<I18n_Impl>();
     }
 }
-*/
 
 } // namespace GMLIB::Mod
