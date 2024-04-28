@@ -1,5 +1,8 @@
 #pragma once
 #include "GMLIB/Macros.h"
+#include <iostream>
+#include <optional>
+#include <unordered_map>
 
 namespace GMLIB::Files {
 
@@ -40,6 +43,8 @@ public:
     GMLIB_API std::string dump();
 
     GMLIB_API bool write_to_file(std::string const& filePath);
+
+    GMLIB_API std::unordered_map<std::string, std::string>& getTranslationMap();
 };
 
 } // namespace GMLIB::Files

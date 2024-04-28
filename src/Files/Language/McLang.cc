@@ -13,17 +13,20 @@ McLang McLang::parse_file(std::string const& filePath) {
         std::string line;
         while (std::getline(file, line)) {
             if (!line.empty()) {
+                ll::string_utils::replaceAll(line, "\t", "");
                 size_t equalPos = line.find("=");
-                auto   key      = line.substr(0, equalPos);
-                ll::string_utils::replaceAll(key, " ", "");
-                auto   right_key  = line.substr(equalPos + 1, line.size());
-                size_t commentPos = right_key.find("#");
-                auto   value      = right_key.substr(0, commentPos);
-                while (value.ends_with(" ")) {
-                    value.erase(value.size() - 1);
-                }
-                if (!key.empty() && !value.empty()) {
-                    result.mData[key] = value;
+                if (equalPos != std::string::npos) {
+                    auto key = line.substr(0, equalPos);
+                    ll::string_utils::replaceAll(key, " ", "");
+                    auto   right_key  = line.substr(equalPos + 1, line.size());
+                    size_t commentPos = right_key.find("#");
+                    auto   value      = right_key.substr(0, commentPos);
+                    while (value.ends_with(" ")) {
+                        value.erase(value.size() - 1);
+                    }
+                    if (!key.empty() && !value.empty()) {
+                        result.mData[key] = value;
+                    }
                 }
             }
         }
@@ -52,6 +55,7 @@ McLang McLang::parse(std::string const& data) {
     auto result = McLang();
     for (auto& line : lines) {
         if (!line.empty()) {
+            ll::string_utils::replaceAll(line, "\t", "");
             size_t equalPos = line.find("=");
             auto   key      = line.substr(0, equalPos);
             ll::string_utils::replaceAll(key, " ", "");
@@ -140,5 +144,7 @@ std::string
 McLang::get(std::string const& key, std::vector<std::string> const& data, std::string const& translateKeys) {
     return translate(key, data, translateKeys);
 }
+
+std::unordered_map<std::string, std::string>& McLang::getTranslationMap() { return mData; }
 
 } // namespace GMLIB::Files

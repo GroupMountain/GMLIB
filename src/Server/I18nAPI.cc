@@ -1,4 +1,6 @@
 #include "GMLIB/Server/I18nAPI.h"
+#include "GMLIB/Files/FileUtils.h"
+#include "Global.h"
 
 void I18nAPI::chooseLanguage(std::string const& languageCode) { getI18n().chooseLanguage(languageCode); }
 
@@ -9,6 +11,8 @@ optional_ref<const Localization> I18nAPI::getCurrentLanguage() { return getI18n(
 std::optional<std::string> I18nAPI::getCurrentLanguageCode() {
     return getI18n().getCurrentLanguage()->getFullLanguageCode();
 }
+
+std::vector<std::string> getSupportedLanguageCodes() { return getI18n().getSupportedLanguageCodes(); }
 
 std::optional<std::string> I18nAPI::tryGet(std::string const& key, std::vector<std::string> const& params) {
     if (auto localization = getI18n().getCurrentLanguage()) {
@@ -72,4 +76,68 @@ std::string I18nAPI::get(
         if (has_value) return result;
     }
     return {};
+}
+
+void I18nAPI::loadLanguage(
+    std::string const&                                  languageCode,
+    std::unordered_map<std::string, std::string> const& language
+) {
+    getI18n().appendTranslations(languageCode, language);
+}
+
+void I18nAPI::loadLanguage(std::string const& languageCode, GMLIB::Files::McLang const& language) {
+    auto data = language;
+    getI18n().appendTranslations(languageCode, data.getTranslationMap());
+}
+
+void I18nAPI::loadLanguageFromFile(std::string const& languageCode, std::filesystem::path const& path) {
+    auto language = GMLIB::Files::McLang::parse_file(path.string());
+    getI18n().appendTranslations(languageCode, language.getTranslationMap());
+}
+
+void I18nAPI::updateOrCreateLanguageFile(
+    std::filesystem::path const& path,
+    std::string const&           languageCode,
+    std::string const&           language
+) {
+    auto mclang = GMLIB::Files::McLang::parse(language);
+    updateOrCreateLanguageFile(path, languageCode, mclang);
+}
+
+void I18nAPI::updateOrCreateLanguageFile(
+    std::filesystem::path const& path,
+    std::string const&           languageCode,
+    GMLIB::Files::McLang const&  language
+) {
+    if (!std::filesystem::exists(path)) {
+        std::filesystem::create_directories(path);
+    }
+    auto filepath  = path / (languageCode + ".lang");
+    auto finalLang = language;
+    auto localLang = GMLIB::Files::McLang::parse_file(filepath.string());
+    finalLang.merge_patch(localLang);
+    finalLang.write_to_file(filepath.string());
+    loadLanguage(languageCode, finalLang);
+}
+
+void I18nAPI::updateOrCreateLanguageFile(
+    std::filesystem::path const&                        path,
+    std::string const&                                  languageCode,
+    std::unordered_map<std::string, std::string> const& language
+) {
+    auto mclang = GMLIB::Files::McLang(language);
+    updateOrCreateLanguageFile(path, languageCode, mclang);
+}
+
+void I18nAPI::loadLanguagesFromDirectory(std::filesystem::path const& path) {
+    auto files = GMLIB::Files::FileUtils::getAllFileFullNameInDirectory(path.string());
+    for (auto& file : files) {
+        if (file.ends_with(".lang")) {
+            auto code = file;
+            ll::string_utils::replaceAll(code, ".lang", "");
+            auto filepath = path / file;
+            auto mclang   = GMLIB::Files::McLang::parse_file(filepath.string());
+            loadLanguage(code, mclang);
+        }
+    }
 }
