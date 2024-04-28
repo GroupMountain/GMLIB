@@ -9,17 +9,10 @@
 #include <mc/world/actor/player/SerializedSkin.h>
 #include <mc/world/actor/state/PropertySyncData.h>
 
-void GMLIB_BinaryStream::writeCompoundTag(CompoundTag& tag) {
-    LL_SYMBOL_CALL("?write@?$serialize@VCompoundTag@@@@SAXAEBVCompoundTag@@AEAVBinaryStream@@@Z", void, CompoundTag&, BinaryStream&)
-    (tag, *this);
-}
+void GMLIB_BinaryStream::writeCompoundTag(CompoundTag& tag) { writeType<CompoundTag>(tag); }
 
 void GMLIB_BinaryStream::writeDataItem(std::vector<std::unique_ptr<class DataItem>> const& dataItems) {
-    LL_SYMBOL_CALL("?write@?$serialize@V?$vector@V?$unique_ptr@VDataItem@@U?$default_delete@VDataItem@@@std@@@std@@V?$"
-                "allocator@V?$unique_ptr@VDataItem@@U?$default_delete@VDataItem@@@std@@@std@@@2@@std@@@@SAXAEBV?$"
-                "vector@V?$unique_ptr@VDataItem@@U?$default_delete@VDataItem@@@std@@@std@@V?$allocator@V?$unique_ptr@"
-                "VDataItem@@U?$default_delete@VDataItem@@@std@@@std@@@2@@std@@AEAVBinaryStream@@@Z", void,std::vector<std::unique_ptr<class DataItem>> const&, class BinaryStream&)
-    (dataItems, *this);
+    writeType<std::vector<std::unique_ptr<class DataItem>>>(dataItems);
 }
 
 void GMLIB_BinaryStream::writeVec3(Vec3 vec3) {
@@ -40,8 +33,7 @@ void GMLIB_BinaryStream::writeBlockPos(BlockPos pos) {
 }
 
 void GMLIB_BinaryStream::writeAbilitiesData(struct SerializedAbilitiesData const& abilitiesData) {
-    LL_SYMBOL_CALL("?write@?$serialize@USerializedAbilitiesData@@@@SAXAEBUSerializedAbilitiesData@@AEAVBinaryStream@@@Z", void, struct SerializedAbilitiesData const&, BinaryStream&)
-    (abilitiesData, *this);
+    writeType<SerializedAbilitiesData>(abilitiesData);
 }
 
 void GMLIB_BinaryStream::writeSkin(class SerializedSkin const& serializedSkin) { serializedSkin.write(*this); }

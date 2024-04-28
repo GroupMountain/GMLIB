@@ -2,10 +2,10 @@
 #include "mc/locale/I18n.h"
 #include "mc/locale/Localization.h"
 
+I18n& getI18n();
+
 class I18nAPI {
 public:
-    GMLIB_API static I18n* getI18n();
-
     GMLIB_API static void chooseLanguage(std::string const& languageCode);
 
     GMLIB_API static void chooseLanguage(class Localization const& localization);
