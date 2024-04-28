@@ -120,7 +120,7 @@ void McLang::erase(std::string const& key) {
 
 std::string
 McLang::translate(std::string const& key, std::vector<std::string> const& data, std::string const& translateKeys) {
-    auto value = get_value(key);
+    auto value = try_get(key);
     if (value.has_value()) {
         auto result = value.value();
         ll::utils::string_utils::replaceAll(result, "\\n", "\n");
