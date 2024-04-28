@@ -4,6 +4,7 @@
 
 #pragma once
 #include "ll/api/Config.h"
+#include "ll/api/Expected.h"
 #include "ll/api/Global.h"
 #include "ll/api/Logger.h"
 #include "ll/api/base/Concepts.h"
@@ -100,7 +101,6 @@
 #include "ll/api/reflection/Serialization.h"
 #include "ll/api/reflection/SerializationError.h"
 #include "ll/api/reflection/TypeName.h"
-#include "ll/api/reflection/Visit.h"
 #include "ll/api/schedule/Scheduler.h"
 #include "ll/api/schedule/Task.h"
 #include "ll/api/service/Bedrock.h"
@@ -111,7 +111,6 @@
 #include "ll/api/service/ServiceManager.h"
 #include "ll/api/thread/GlobalThreadPauser.h"
 #include "ll/api/thread/InterruptableSleep.h"
-#include "ll/api/thread/SharedRecursiveMutex.h"
 #include "ll/api/thread/ThreadPool.h"
 #include "ll/api/thread/TickSyncSleep.h"
 #include "ll/api/thread/TickSyncTaskPool.h"

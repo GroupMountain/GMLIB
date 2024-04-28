@@ -7,6 +7,7 @@
 
 namespace GMLIB::Mod {
 
+/*
 std::thread I18n_thread;
 bool        isResourcesLoaded = false;
 std::mutex  mtx;
@@ -65,5 +66,6 @@ void VanillaFix::setFixI18nEnabled() {
         impl = std::make_unique<I18n_Impl>();
     }
 }
+*/
 
 } // namespace GMLIB::Mod

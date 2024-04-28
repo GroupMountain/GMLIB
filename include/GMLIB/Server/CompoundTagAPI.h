@@ -20,7 +20,7 @@ public:
     GMLIB_CompoundTag& operator=(GMLIB_CompoundTag&&)      = default;
 
 public:
-    GMLIB_API static DataLoadHelper* getDataLoadHelper();
+    GMLIB_API static std::unique_ptr<DataLoadHelper> getDataLoadHelper();
 
     GMLIB_API static std::unique_ptr<CompoundTag> getFromActor(Actor* ac);
 

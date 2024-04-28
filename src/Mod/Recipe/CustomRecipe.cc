@@ -68,7 +68,7 @@ void CustomRecipe::registerShapelessCraftingTableRecipe(
         priority,
         nullptr,
         makeRecipeUnlockingRequirement(unlock),
-        SemVersion(1, 20, 60, "", "")
+        SemVersion(1, 20, 80, "", "")
     );
 }
 
@@ -88,7 +88,7 @@ void CustomRecipe::registerStoneCutterRecipe(
         priority,
         nullptr,
         makeRecipeUnlockingRequirement(unlock),
-        SemVersion(1, 20, 60, "", "")
+        SemVersion(1, 20, 80, "", "")
     );
 }
 
@@ -118,7 +118,7 @@ void CustomRecipe::registerShapelessCraftingTableRecipe(
         priority,
         nullptr,
         makeRecipeUnlockingRequirement(unlock),
-        SemVersion(1, 20, 60, "", "")
+        SemVersion(1, 20, 80, "", "")
     );
 }
 
@@ -142,7 +142,8 @@ void CustomRecipe::registerShapedCraftingTableRecipe(
         priority,
         nullptr,
         makeRecipeUnlockingRequirement(unlock),
-        SemVersion(1, 20, 60, "", "")
+        SemVersion(1, 20, 80, "", ""),
+        true
     );
 }
 
@@ -174,7 +175,8 @@ void CustomRecipe::registerShapedCraftingTableRecipe(
         priority,
         nullptr,
         makeRecipeUnlockingRequirement(unlock),
-        SemVersion(1, 20, 60, "", "")
+        SemVersion(1, 20, 80, "", ""),
+        true
     );
 }
 

@@ -3,6 +3,7 @@
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/CompoundTagAPI.h>
+#include <GMLIB/Server/I18nAPI.h>
 #include <GMLIB/Server/PlayerAPI.h>
 #include <GMLIB/Server/ScoreboardAPI.h>
 #include <GMLIB/Server/SpawnerAPI.h>
@@ -161,7 +162,7 @@ bool GMLIB_Player::setPlayerNbt(std::string& serverId, CompoundTag& nbt) {
     }
     auto player = ll::service::bedrock::getLevel()->getPlayerFromServerId(serverId);
     if (player) {
-        auto res = player->load(nbt);
+        auto res = player->load(nbt, *GMLIB_CompoundTag::getDataLoadHelper());
         player->refreshInventory();
         return res;
     }
@@ -180,7 +181,7 @@ bool GMLIB_Player::setPlayerNbt(mce::UUID const& uuid, CompoundTag& nbt, bool fo
     return setPlayerNbt(serverId, nbt);
 }
 
-bool GMLIB_Player::setNbt(CompoundTag& nbt) { return load(nbt); }
+bool GMLIB_Player::setNbt(CompoundTag& nbt) { return load(nbt, *GMLIB_CompoundTag::getDataLoadHelper()); }
 
 bool GMLIB_Player::setPlayerNbtTags(std::string& serverId, CompoundTag& nbt, const std::vector<std::string>& tags) {
     if (serverId.empty()) {
@@ -203,7 +204,7 @@ bool GMLIB_Player::setPlayerNbtTags(mce::UUID const& uuid, CompoundTag& nbt, con
 bool GMLIB_Player::setNbtTags(CompoundTag& nbt, const std::vector<std::string>& tags) {
     auto data = *getNbt();
     GMLIB_CompoundTag::writeNbtTags(data, nbt, tags);
-    auto res = load(data);
+    auto res = load(data, *GMLIB_CompoundTag::getDataLoadHelper());
     refreshInventory();
     return res;
 }
@@ -387,7 +388,8 @@ void GMLIB_Player::setUnderwaterMovementSpeed(int value) {
 }
 
 void GMLIB_Player::setClientGamemode(GameType gamemode) {
-    UpdatePlayerGameTypePacket(gamemode, getOrCreateUniqueID()).sendTo(*this);
+    UpdatePlayerGameTypePacket(gamemode, getOrCreateUniqueID(), GMLIB_Level::getInstance()->getCurrentTick())
+        .sendTo(*this);
 }
 
 void GMLIB_Player::setClientBossbar(
@@ -613,15 +615,7 @@ InventoryTransactionManager* GMLIB_Player::getInventoryTransactionManager() {
     return ll::memory::dAccess<InventoryTransactionManager*>(this, 3752); // IDA: ClearCommand::execute()  Line 392
 }
 
-FullPlayerInventoryWrapper GMLIB_Player::getFullPlayerInventoryWrapper() {
-    return FullPlayerInventoryWrapper(
-        getSupplies(),
-        getArmorContainer(),
-        getHandContainer(),
-        getInventoryTransactionManager(),
-        this
-    );
-}
+FullPlayerInventoryWrapper GMLIB_Player::getFullPlayerInventoryWrapper() { return FullPlayerInventoryWrapper(*this); }
 
 int GMLIB_Player::clearAllItems() { return getFullPlayerInventoryWrapper().clearAllItems(); }
 
@@ -654,7 +648,7 @@ int GMLIB_Player::getLastPing() {
 
 std::string_view GMLIB_Player::getLanguageCode() {
     if (isSimulatedPlayer()) {
-        return I18n::getCurrentLanguage()->getFullLanguageCode();
+        return I18nAPI::getCurrentLanguage()->getFullLanguageCode();
     }
     auto request = getConnectionRequest();
     if (request) {

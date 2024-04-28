@@ -2,8 +2,8 @@
 #include <GMLIB/Server/CompoundTagAPI.h>
 #include <mc/world/level/block/actor/BlockActor.h>
 
-DataLoadHelper* GMLIB_CompoundTag::getDataLoadHelper() {
-    return (DataLoadHelper*)ll::memory::resolveSymbol("??_7DefaultDataLoadHelper@@6B@");
+std::unique_ptr<DataLoadHelper> GMLIB_CompoundTag::getDataLoadHelper() {
+    return std::make_unique<DefaultDataLoadHelper>();
 }
 
 std::unique_ptr<CompoundTag> GMLIB_CompoundTag::getFromActor(Actor* ac) {
@@ -33,11 +33,13 @@ std::unique_ptr<CompoundTag> GMLIB_CompoundTag::getFromBlock(Block* block) {
 
 std::unique_ptr<CompoundTag> GMLIB_CompoundTag::getFromItemStack(ItemStack* item) { return item->save(); }
 
-bool GMLIB_CompoundTag::setToActor(Actor* ac) { return ac->load(*this); }
+bool GMLIB_CompoundTag::setToActor(Actor* ac) { return ac->load(*this, *getDataLoadHelper()); }
 
-bool GMLIB_CompoundTag::setToPlayer(Player* pl) { return pl->load(*this); }
+bool GMLIB_CompoundTag::setToPlayer(Player* pl) { return pl->load(*this, *getDataLoadHelper()); }
 
-void GMLIB_CompoundTag::setToBlockActor(BlockActor* blac) { blac->load(ll::service::getLevel(), *this); }
+void GMLIB_CompoundTag::setToBlockActor(BlockActor* blac) {
+    blac->load(ll::service::getLevel(), *this, *getDataLoadHelper());
+}
 
 void GMLIB_CompoundTag::setToItemStack(ItemStack* item) { item->load(*this); }
 

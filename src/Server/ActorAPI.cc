@@ -292,12 +292,12 @@ std::unique_ptr<CompoundTag> GMLIB_Actor::getNbt() {
     return std::move(nbt);
 }
 
-bool GMLIB_Actor::setNbt(CompoundTag& nbt) { return load(nbt); }
+bool GMLIB_Actor::setNbt(CompoundTag& nbt) { return load(nbt, *GMLIB_CompoundTag::getDataLoadHelper()); }
 
 bool GMLIB_Actor::setNbtTags(CompoundTag& nbt, const std::vector<std::string>& tags) {
     auto data = *getNbt();
     GMLIB_CompoundTag::writeNbtTags(data, nbt, tags);
-    auto res = load(data);
+    auto res = load(data, *GMLIB_CompoundTag::getDataLoadHelper());
     refresh();
     return res;
 }

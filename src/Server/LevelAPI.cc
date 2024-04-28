@@ -1,6 +1,6 @@
-#include "GMLIB/Server/LevelAPI.h"
 #include "Global.h"
-#include <mc/locale/I18n.h>
+#include <GMLIB/Server/I18nAPI.h>
+#include <GMLIB/Server/LevelAPI.h>
 #include <mc/network/packet/GameRulesChangedPacket.h>
 #include <mc/network/packet/LevelEventPacket.h>
 #include <mc/network/packet/ResourcePacksInfoPacket.h>
@@ -255,7 +255,7 @@ std::map<int, std::string> GMLIB_Level::getAllExperimentsTranslateKeys() {
     for (auto& [id, name] : result) {
         name.erase(0, 1);
         name = "createWorldScreen.e" + name;
-        name = I18n::get(name, {});
+        name = I18nAPI::get(name);
     }
     return result;
 }
@@ -705,7 +705,7 @@ bool GMLIB_Level::executeCommandEx(std::string_view command, DimensionType dimId
     if (cmd) {
         cmd->run(origin, output);
         for (auto msg : output.getMessages()) {
-            outputStr = outputStr.append(I18n::get(msg.getMessageId(), msg.getParams())).append("\n");
+            outputStr = outputStr.append(I18nAPI::get(msg.getMessageId(), msg.getParams())).append("\n");
         }
         if (output.getMessages().size()) {
             outputStr.pop_back();

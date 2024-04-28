@@ -434,10 +434,31 @@ void regServerPAPI() {
                     if (auto level = GMLIB_Level::getInstance()) {
                         return double2String(level->getServerCurrentTps(), num);
                     }
-                    return double2String(0.0f, num);
+                    return std::string();
                 } catch (...) {}
             }
             return std::string("%server_tps_fix_<fixed>%");
+        },
+        "GMLIB"
+    );
+
+    PlaceholderAPI::registerServerPlaceholder(
+        "server_tps_colored_<fixed>",
+        [](std::unordered_map<std::string, std::string> map) {
+            if (map.contains("<fixed>")) {
+                try {
+                    auto num = std::stoi(map["<fixed>"]);
+                    if (auto level = GMLIB_Level::getInstance()) {
+                        auto tps    = level->getServerCurrentTps();
+                        auto result = double2String(tps, num);
+                        if (tps >= 20) return "§a" + result;
+                        else if (tps > 15) return "§6" + result;
+                        else return "§c" + result;
+                    }
+                    return std::string();
+                } catch (...) {}
+            }
+            return std::string("%server_mspt_colored_<fixed>%");
         },
         "GMLIB"
     );
@@ -466,6 +487,27 @@ void regServerPAPI() {
                 } catch (...) {}
             }
             return std::string("%server_mspt_fix_<fixed>%");
+        },
+        "GMLIB"
+    );
+
+    PlaceholderAPI::registerServerPlaceholder(
+        "server_mspt_colored_<fixed>",
+        [](std::unordered_map<std::string, std::string> map) {
+            if (map.contains("<fixed>")) {
+                try {
+                    auto num = std::stoi(map["<fixed>"]);
+                    if (auto level = GMLIB_Level::getInstance()) {
+                        auto mspt   = level->getServerMspt();
+                        auto result = double2String(mspt, num);
+                        if (mspt < 50) return "§a" + result;
+                        else if (mspt < 100) return "§6" + result;
+                        else return "§c" + result;
+                    }
+                    return std::string();
+                } catch (...) {}
+            }
+            return std::string("%server_mspt_colored_<fixed>%");
         },
         "GMLIB"
     );

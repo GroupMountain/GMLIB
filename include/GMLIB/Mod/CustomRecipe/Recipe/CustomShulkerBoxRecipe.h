@@ -18,7 +18,7 @@ public:
 
     virtual std::optional<class RecipeUnlockingRequirement> getRecipeUnlockingRequirement() { return {}; }
 
-    virtual SemVersion getSemVersion() { return SemVersion(1, 20, 60, "", ""); }
+    virtual SemVersion getSemVersion() { return SemVersion(1, 20, 80, "", ""); }
 };
 
 } // namespace GMLIB::Mod

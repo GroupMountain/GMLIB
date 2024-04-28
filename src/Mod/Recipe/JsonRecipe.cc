@@ -13,7 +13,7 @@ bool addRecipeJson(std::string ricipe_type, std::string json_string) {
     reader.parse(json_string, value, true);
     return ll::service::bedrock::getLevel()
         ->getRecipes()
-        .loadRecipe({ricipe_type, value}, SemVersion(1, 20, 60, "", ""), SemVersion(1, 20, 60, "", ""), true);
+        .loadRecipe({ricipe_type, value}, SemVersion(1, 20, 80, "", ""), SemVersion(1, 20, 80, "", ""), true);
 }
 
 // json形式构造
