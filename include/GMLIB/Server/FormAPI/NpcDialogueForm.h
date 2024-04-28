@@ -23,7 +23,7 @@ public:
     std::function<void(Player* pl, int index, NpcRequestPacket::RequestType type)> mCallback;
 
 public:
-    GMLIB_API NpcDialogueForm(std::string npcName, std::string sceneName, std::string dialogue);
+    GMLIB_API NpcDialogueForm(std::string const& npcName, std::string const& sceneName, std::string const& dialogue);
 
     NpcDialogueForm() = delete;
 
@@ -32,9 +32,9 @@ public:
 
 public:
     GMLIB_API int addAction(
-        std::string              name,
-        NpcDialogueFormAction    type     = NpcDialogueFormAction::Button,
-        std::vector<std::string> commands = {}
+        std::string const&              name,
+        NpcDialogueFormAction           type     = NpcDialogueFormAction::Button,
+        std::vector<std::string> const& commands = {}
     );
 
     GMLIB_API void

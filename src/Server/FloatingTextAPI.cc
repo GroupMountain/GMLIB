@@ -23,7 +23,7 @@ int getNextFloatingTextId() {
     return id;
 }
 
-FloatingText::FloatingText(std::string text, Vec3 position, DimensionType dimensionId, bool usePapi)
+FloatingText::FloatingText(std::string const& text, Vec3 const& position, DimensionType dimensionId, bool usePapi)
 : mText(text),
   mPosition(position),
   mDimensionId(dimensionId),
@@ -37,7 +37,7 @@ FloatingText::~FloatingText() {
     mRuntimeFloatingTextList.erase(mRuntimeId);
 }
 
-void FloatingText::setPosition(Vec3& pos, DimensionType dimid) {
+void FloatingText::setPosition(Vec3 const& pos, DimensionType dimid) {
     mPosition    = pos;
     mDimensionId = dimid;
 }
@@ -47,13 +47,13 @@ void FloatingText::setUsePapi(bool value) { mUsePapi = value; }
 bool FloatingText::shouldUsePapi() const { return mUsePapi; }
 
 
-void sendUpdateFloatingTextPacket(FloatingText* ft, Player* pl) {
+void sendUpdateFloatingTextPacket(FloatingText* ft, Player& pl) {
     auto text = ft->getText();
     if (ft->shouldUsePapi()) {
-        PlaceholderAPI::translate(text, pl);
+        PlaceholderAPI::translate(text, &pl);
     }
     GMLIB_BinaryStream bs;
-    bs.writePacketHeader(MinecraftPacketIds::SetActorData, pl->getClientSubId());
+    bs.writePacketHeader(MinecraftPacketIds::SetActorData, pl.getClientSubId());
     bs.writeUnsignedVarInt64(ft->getRuntimeID());
     // DataItem
     bs.writeUnsignedVarInt(2);
@@ -67,18 +67,18 @@ void sendUpdateFloatingTextPacket(FloatingText* ft, Player* pl) {
     bs.writeUnsignedVarInt(0);
     bs.writeUnsignedVarInt(0);
     bs.writeUnsignedVarInt64(0);
-    bs.sendTo(*pl);
+    bs.sendTo(pl);
 }
 
 
-void sendAddFloatingTextPacket(FloatingText* ft, Player* pl) {
+void sendAddFloatingTextPacket(FloatingText* ft, Player& pl) {
     auto text = ft->getText();
     auto pos  = ft->getPos();
     if (ft->shouldUsePapi()) {
-        PlaceholderAPI::translate(text, pl);
+        PlaceholderAPI::translate(text, &pl);
     }
     GMLIB_BinaryStream bs;
-    bs.writePacketHeader(MinecraftPacketIds::AddActor, pl->getClientSubId());
+    bs.writePacketHeader(MinecraftPacketIds::AddActor, pl.getClientSubId());
     bs.writeVarInt64(ft->getRuntimeID());
     bs.writeUnsignedVarInt64(ft->getRuntimeID());
     bs.writeString("player");
@@ -101,11 +101,11 @@ void sendAddFloatingTextPacket(FloatingText* ft, Player* pl) {
     bs.writeUnsignedVarInt(0);
     bs.writeUnsignedVarInt(0);
     // send
-    bs.sendTo(*pl);
+    bs.sendTo(pl);
 }
 
-void FloatingText::sendToClient(Player* pl) {
-    if (!pl->isSimulatedPlayer() && pl->getDimensionId() == getDimensionId()) {
+void FloatingText::sendToClient(Player& pl) {
+    if (!pl.isSimulatedPlayer() && pl.getDimensionId() == getDimensionId()) {
         sendAddFloatingTextPacket(this, pl);
     }
 }
@@ -113,14 +113,14 @@ void FloatingText::sendToClient(Player* pl) {
 void FloatingText::sendToAllClients() {
     ll::service::getLevel()->getOrCreateDimension(getDimensionId())->forEachPlayer([this](Player& pl) -> bool {
         if (!pl.isSimulatedPlayer()) {
-            sendAddFloatingTextPacket(this, &pl);
+            sendAddFloatingTextPacket(this, pl);
         }
         return true;
     });
 }
 
-GMLIB_API void FloatingText::updateClient(Player* pl) {
-    if (!pl->isSimulatedPlayer() && pl->getDimensionId() == getDimensionId()) {
+GMLIB_API void FloatingText::updateClient(Player& pl) {
+    if (!pl.isSimulatedPlayer() && pl.getDimensionId() == getDimensionId()) {
         sendUpdateFloatingTextPacket(this, pl);
     }
 }
@@ -128,7 +128,7 @@ GMLIB_API void FloatingText::updateClient(Player* pl) {
 GMLIB_API void FloatingText::updateAllClients() {
     ll::service::getLevel()->getOrCreateDimension(getDimensionId())->forEachPlayer([this](Player& pl) -> bool {
         if (!pl.isSimulatedPlayer()) {
-            sendUpdateFloatingTextPacket(this, &pl);
+            sendUpdateFloatingTextPacket(this, pl);
         }
         return true;
     });
@@ -136,13 +136,13 @@ GMLIB_API void FloatingText::updateAllClients() {
 
 void FloatingText::removeFromAllClients() { RemoveActorPacket(ActorUniqueID(this->mRuntimeId)).sendToClients(); }
 
-void FloatingText::removeFromClient(Player* pl) {
-    if (!pl->isSimulatedPlayer()) {
-        RemoveActorPacket(ActorUniqueID(this->mRuntimeId)).sendTo(*pl);
+void FloatingText::removeFromClient(Player& pl) {
+    if (!pl.isSimulatedPlayer()) {
+        RemoveActorPacket(ActorUniqueID(this->mRuntimeId)).sendTo(pl);
     }
 }
 
-void FloatingText::setText(std::string newText) { mText = newText; }
+void FloatingText::setText(std::string const& newText) { mText = newText; }
 
 FloatingText* FloatingText::getFloatingText(int64 runtimeId) {
     if (mRuntimeFloatingTextList.count(runtimeId)) {
@@ -170,43 +170,48 @@ DimensionType FloatingText::getDimensionId() const { return mDimensionId; }
 
 bool FloatingText::isDynamic() const { return false; }
 
-StaticFloatingText::StaticFloatingText(std::string text, Vec3 position, DimensionType dimensionId, bool usePapi)
-: FloatingText(text, position, dimensionId, usePapi) {
-    sendToAllClients();
-    auto& eventBus = ll::event::EventBus::getInstance();
-    auto  event1 =
-        eventBus.emplaceListener<ll::event::player::PlayerJoinEvent>([&](ll::event::player::PlayerJoinEvent& ev) {
-            sendToClient(&ev.self());
-        });
-    mEventIds.push_back(event1->getId());
-    auto event2 = eventBus.emplaceListener<GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent>(
-        [&](GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent& ev) {
-            removeFromClient(&ev.self());
-            sendToClient(&ev.self());
-        }
-    );
-    mEventIds.push_back(event2->getId());
-}
-
-DynamicFloatingText::DynamicFloatingText(
-    std::string   text,
-    Vec3          position,
-    DimensionType dimensionId,
-    uint          updateRate,
-    bool          usePapi
+StaticFloatingText::StaticFloatingText(
+    std::string const& text,
+    Vec3 const&        position,
+    DimensionType      dimensionId,
+    bool               usePapi
 )
 : FloatingText(text, position, dimensionId, usePapi) {
     sendToAllClients();
     auto& eventBus = ll::event::EventBus::getInstance();
     auto  event1 =
         eventBus.emplaceListener<ll::event::player::PlayerJoinEvent>([&](ll::event::player::PlayerJoinEvent& ev) {
-            sendToClient(&ev.self());
+            sendToClient(ev.self());
         });
     mEventIds.push_back(event1->getId());
     auto event2 = eventBus.emplaceListener<GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent>(
         [&](GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent& ev) {
-            removeFromClient(&ev.self());
-            sendToClient(&ev.self());
+            removeFromClient(ev.self());
+            sendToClient(ev.self());
+        }
+    );
+    mEventIds.push_back(event2->getId());
+}
+
+DynamicFloatingText::DynamicFloatingText(
+    std::string const& text,
+    Vec3 const&        position,
+    DimensionType      dimensionId,
+    uint               updateRate,
+    bool               usePapi
+)
+: FloatingText(text, position, dimensionId, usePapi) {
+    sendToAllClients();
+    auto& eventBus = ll::event::EventBus::getInstance();
+    auto  event1 =
+        eventBus.emplaceListener<ll::event::player::PlayerJoinEvent>([&](ll::event::player::PlayerJoinEvent& ev) {
+            sendToClient(ev.self());
+        });
+    mEventIds.push_back(event1->getId());
+    auto event2 = eventBus.emplaceListener<GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent>(
+        [&](GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent& ev) {
+            removeFromClient(ev.self());
+            sendToClient(ev.self());
         }
     );
     mEventIds.push_back(event2->getId());
@@ -262,25 +267,24 @@ void DynamicFloatingText::setUpdateRate(uint seconds) {
     startUpdate();
 }
 
-void StaticFloatingText::updateText(std::string newText) {
+void StaticFloatingText::updateText(std::string const& newText) {
     setText(newText);
     updateAllClients();
 }
 
-void DynamicFloatingText::updateText(std::string newText) {
+void DynamicFloatingText::updateText(std::string const& newText) {
     setText(newText);
     updateAllClients();
 }
 
-void StaticFloatingText::updatePosition(Vec3& pos, DimensionType dimid) {
+void StaticFloatingText::updatePosition(Vec3 const& pos, DimensionType dimid) {
     setPosition(pos, dimid);
     sendToAllClients();
 }
 
-void DynamicFloatingText::updatePosition(Vec3& pos, DimensionType dimid) {
+void DynamicFloatingText::updatePosition(Vec3 const& pos, DimensionType dimid) {
     setPosition(pos, dimid);
     sendToAllClients();
 }
-
 
 } // namespace GMLIB::Server

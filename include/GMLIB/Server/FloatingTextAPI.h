@@ -16,7 +16,8 @@ private:
     bool          mUsePapi;
 
 public:
-    GMLIB_API FloatingText(std::string text, Vec3 position, DimensionType dimensionId, bool usePapi = false);
+    GMLIB_API
+    FloatingText(std::string const& text, Vec3 const& position, DimensionType dimensionId, bool usePapi = false);
 
     FloatingText() = delete;
 
@@ -31,21 +32,21 @@ public:
     GMLIB_API virtual bool isDynamic() const;
 
 public:
-    GMLIB_API void sendToClient(Player* pl);
+    GMLIB_API void sendToClient(Player& pl);
 
     GMLIB_API void sendToAllClients();
 
-    GMLIB_API void updateClient(Player* pl);
+    GMLIB_API void updateClient(Player& pl);
 
     GMLIB_API void updateAllClients();
 
-    GMLIB_API void removeFromClient(Player* pl);
+    GMLIB_API void removeFromClient(Player& pl);
 
     GMLIB_API void removeFromAllClients();
 
-    GMLIB_API void setText(std::string newText);
+    GMLIB_API void setText(std::string const& newText);
 
-    GMLIB_API void setPosition(Vec3& pos, DimensionType dimid);
+    GMLIB_API void setPosition(Vec3 const& pos, DimensionType dimid);
 
     GMLIB_API void setUsePapi(bool value);
 
@@ -65,7 +66,8 @@ private:
     std::vector<ll::event::ListenerId> mEventIds;
 
 public:
-    GMLIB_API StaticFloatingText(std::string text, Vec3 position, DimensionType dimensionId, bool usePapi = false);
+    GMLIB_API
+    StaticFloatingText(std::string const& text, Vec3 const& position, DimensionType dimensionId, bool usePapi = false);
 
     StaticFloatingText() = delete;
 
@@ -73,9 +75,9 @@ public:
     GMLIB_API virtual ~StaticFloatingText();
 
 public:
-    GMLIB_API void updateText(std::string newText);
+    GMLIB_API void updateText(std::string const& newText);
 
-    GMLIB_API void updatePosition(Vec3& pos, DimensionType dimid);
+    GMLIB_API void updatePosition(Vec3 const& pos, DimensionType dimid);
 };
 
 class DynamicFloatingText : public FloatingText {
@@ -86,7 +88,13 @@ private:
 
 public:
     GMLIB_API
-    DynamicFloatingText(std::string text, Vec3 position, DimensionType dimensionId, uint seconds, bool usePapi = true);
+    DynamicFloatingText(
+        std::string const& text,
+        Vec3 const&        position,
+        DimensionType      dimensionId,
+        uint               seconds,
+        bool               usePapi = true
+    );
 
     DynamicFloatingText() = delete;
 
@@ -96,9 +104,9 @@ public:
     GMLIB_API virtual bool isDynamic() const;
 
 public:
-    GMLIB_API void updateText(std::string newText);
+    GMLIB_API void updateText(std::string const& newText);
 
-    GMLIB_API void updatePosition(Vec3& pos, DimensionType dimid);
+    GMLIB_API void updatePosition(Vec3 const& pos, DimensionType dimid);
 
     GMLIB_API bool stopUpdate();
 

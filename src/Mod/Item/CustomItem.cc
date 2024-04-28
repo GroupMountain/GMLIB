@@ -4,7 +4,7 @@
 
 namespace GMLIB::Mod {
 
-void CustomItem::unregisterItem(std::string id) {
+void CustomItem::unregisterItem(std::string const& id) {
     ll::service::getLevel()->getItemRegistry().unregisterItem(HashedString(id));
 }
 

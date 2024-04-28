@@ -4,36 +4,36 @@
 
 namespace GMLIB::Files::JsonFile {
 
-GMLIB_API nlohmann::ordered_json initOrderedJson(std::string path, nlohmann::ordered_json& defaultFile);
+GMLIB_API nlohmann::ordered_json initOrderedJson(std::string const& path, nlohmann::ordered_json const& defaultFile);
 
-GMLIB_API nlohmann::ordered_json initOrderedJson(std::string path, std::string& defaultFile);
+GMLIB_API nlohmann::ordered_json initOrderedJson(std::string const& path, std::string const& defaultFile);
 
-GMLIB_API nlohmann::json initJson(std::string path, nlohmann::json& defaultFile);
+GMLIB_API nlohmann::json initJson(std::string const& path, nlohmann::json const& defaultFile);
 
-GMLIB_API nlohmann::json initJson(std::string path, std::string& defaultFile);
+GMLIB_API nlohmann::json initJson(std::string const& path, std::string const& defaultFile);
 
-GMLIB_API void writeOrUpdateOrderedFile(std::string path, nlohmann::ordered_json& defaultFile);
+GMLIB_API void writeOrUpdateOrderedFile(std::string const& path, nlohmann::ordered_json const& defaultFile);
 
-GMLIB_API void writeOrUpdateFile(std::string path, nlohmann::json& defaultFile);
+GMLIB_API void writeOrUpdateFile(std::string const& path, nlohmann::json const& defaultFile);
 
-GMLIB_API void updateOrderedFile(std::string& path, nlohmann::ordered_json& newFile);
+GMLIB_API void updateOrderedFile(std::string const& path, nlohmann::ordered_json const& newFile);
 
-GMLIB_API void updateOrderedFile(std::string& path, std::string& newFile);
+GMLIB_API void updateOrderedFile(std::string const& path, std::string const& newFile);
 
-GMLIB_API void updateFile(std::string& path, nlohmann::json& newFile);
+GMLIB_API void updateFile(std::string const& path, nlohmann::json const& newFile);
 
-GMLIB_API void updateFile(std::string& path, std::string& newFile);
+GMLIB_API void updateFile(std::string const& path, std::string const& newFile);
 
-GMLIB_API nlohmann::ordered_json readFromOrderedFile(std::string& path);
+GMLIB_API nlohmann::ordered_json readFromOrderedFile(std::string const& path);
 
-GMLIB_API nlohmann::json readFromFile(std::string& path);
+GMLIB_API nlohmann::json readFromFile(std::string const& path);
 
-GMLIB_API bool writeOrderedFile(std::string& path, nlohmann::ordered_json& json);
+GMLIB_API bool writeOrderedFile(std::string const& path, nlohmann::ordered_json const& json);
 
-GMLIB_API bool writeFile(std::string& path, nlohmann::json& json);
+GMLIB_API bool writeFile(std::string const& path, nlohmann::json const& json);
 
 template <typename T>
-inline std::optional<T> getValue(nlohmann::ordered_json& json, std::vector<std::string> keyPath) {
+inline std::optional<T> getValue(nlohmann::ordered_json const& json, std::vector<std::string> const& keyPath) {
     try {
         if (keyPath.empty()) {
             return {};
@@ -53,7 +53,7 @@ inline std::optional<T> getValue(nlohmann::ordered_json& json, std::vector<std::
 }
 
 template <typename T>
-inline std::optional<T> getValue(nlohmann::json& json, std::vector<std::string> keyPath) {
+inline std::optional<T> getValue(nlohmann::json const& json, std::vector<std::string> const& keyPath) {
     try {
         if (keyPath.empty()) {
             return {};
@@ -73,7 +73,7 @@ inline std::optional<T> getValue(nlohmann::json& json, std::vector<std::string> 
 }
 
 template <typename T>
-inline T getValue(nlohmann::ordered_json& json, std::vector<std::string> keyPath, T defaultValue) {
+inline T getValue(nlohmann::ordered_json const& json, std::vector<std::string> const& keyPath, T defaultValue) {
     try {
         std::optional<T> result = getValue<T>(json, keyPath);
         if (result.has_value()) {
@@ -88,7 +88,7 @@ inline T getValue(nlohmann::ordered_json& json, std::vector<std::string> keyPath
 }
 
 template <typename T>
-inline T getValue(nlohmann::json& json, std::vector<std::string> keyPath, T defaultValue) {
+inline T getValue(nlohmann::json const& json, std::vector<std::string> const& keyPath, T defaultValue) {
     try {
         std::optional<T> result = getValue<T>(json, keyPath);
         if (result.has_value()) {
@@ -103,7 +103,7 @@ inline T getValue(nlohmann::json& json, std::vector<std::string> keyPath, T defa
 }
 
 template <typename T>
-inline bool setValue(nlohmann::ordered_json& json, std::vector<std::string> keyPath, T data) {
+inline bool setValue(nlohmann::ordered_json& json, std::vector<std::string> const& keyPath, T data) {
     try {
         if (keyPath.empty()) {
             return false;
@@ -123,7 +123,7 @@ inline bool setValue(nlohmann::ordered_json& json, std::vector<std::string> keyP
 }
 
 template <typename T>
-inline bool setValue(nlohmann::json& json, std::vector<std::string> keyPath, T data) {
+inline bool setValue(nlohmann::json& json, std::vector<std::string> const& keyPath, T data) {
     try {
         if (keyPath.empty()) {
             return false;
@@ -143,7 +143,12 @@ inline bool setValue(nlohmann::json& json, std::vector<std::string> keyPath, T d
 }
 
 template <typename T>
-inline bool setValueAndSave(nlohmann::ordered_json& json, std::string& filePath, std::vector<std::string> keyPath, T data) {
+inline bool setValueAndSave(
+    nlohmann::ordered_json&         json,
+    std::string const&              filePath,
+    std::vector<std::string> const& keyPath,
+    T                               data
+) {
     auto res = setValue<T>(json, keyPath, data);
     if (res) {
         return writeOrderedFile(filePath, json);
@@ -152,7 +157,8 @@ inline bool setValueAndSave(nlohmann::ordered_json& json, std::string& filePath,
 }
 
 template <typename T>
-inline bool setValueAndSave(nlohmann::json& json, std::string& filePath, std::vector<std::string> keyPath, T data) {
+inline bool
+setValueAndSave(nlohmann::json& json, std::string const& filePath, std::vector<std::string> const& keyPath, T data) {
     auto res = setValue<T>(json, keyPath, data);
     if (res) {
         return writeFile(filePath, json);
@@ -160,12 +166,17 @@ inline bool setValueAndSave(nlohmann::json& json, std::string& filePath, std::ve
     return false;
 }
 
-GMLIB_API bool deleteOrderedKey(nlohmann::ordered_json& json, std::vector<std::string> keyPath);
+GMLIB_API bool deleteOrderedKey(nlohmann::ordered_json& json, std::vector<std::string> const& keyPath);
 
-GMLIB_API bool deleteKey(nlohmann::json& json, std::vector<std::string> keyPath);
+GMLIB_API bool deleteKey(nlohmann::json& json, std::vector<std::string> const& keyPath);
 
-GMLIB_API bool deleteOrderedKeyAndSave(nlohmann::ordered_json& json, std::string& filePath, std::vector<std::string> keyPath);
+GMLIB_API bool deleteOrderedKeyAndSave(
+    nlohmann::ordered_json&         json,
+    std::string const&              filePath,
+    std::vector<std::string> const& keyPath
+);
 
-GMLIB_API bool deleteKeyAndSave(nlohmann::json& json, std::string& filePath, std::vector<std::string> keyPath);
+GMLIB_API bool
+deleteKeyAndSave(nlohmann::json& json, std::string const& filePath, std::vector<std::string> const& keyPath);
 
 } // namespace GMLIB::Files::JsonFile

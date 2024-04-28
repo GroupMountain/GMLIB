@@ -14,19 +14,19 @@ private:
 public:
     GMLIB_API
     ResourceLanguage(
-        std::string directoryPath,
-        std::string pluginName,
-        ushort      versionMajor = 0,
-        ushort      versionMinor = 0,
-        ushort      versionPatch = 1
+        std::string const& directoryPath,
+        std::string const& pluginName,
+        ushort             versionMajor = 0,
+        ushort             versionMinor = 0,
+        ushort             versionPatch = 1
     );
 
     ResourceLanguage() = delete;
 
 public:
-    GMLIB_API void addLanguage(std::string identifider, std::string& language);
+    GMLIB_API void addLanguage(std::string const& identifider, std::string const& language);
 
-    GMLIB_API void addLanguages(std::vector<std::pair<std::string, std::string>>& languages);
+    GMLIB_API void addLanguages(std::vector<std::pair<std::string, std::string>> const& languages);
 
     GMLIB_API void initLanguage();
 };

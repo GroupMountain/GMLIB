@@ -3,17 +3,17 @@
 
 namespace GMLIB::Files::JsonFile {
 
-nlohmann::ordered_json initOrderedJson(std::string path, nlohmann::ordered_json& defaultFile) {
+nlohmann::ordered_json initOrderedJson(std::string const& path, nlohmann::ordered_json const& defaultFile) {
     writeOrUpdateOrderedFile(path, defaultFile);
     return readFromFile(path);
 }
 
-nlohmann::json initJson(std::string path, nlohmann::json& defaultFile) {
+nlohmann::json initJson(std::string const& path, nlohmann::json const& defaultFile) {
     writeOrUpdateFile(path, defaultFile);
     return readFromFile(path);
 }
 
-void writeOrUpdateOrderedFile(std::string path, nlohmann::ordered_json& defaultFile) {
+void writeOrUpdateOrderedFile(std::string const& path, nlohmann::ordered_json const& defaultFile) {
     auto dirPath = std::filesystem::path(path).parent_path();
     if (!std::filesystem::exists(dirPath)) {
         std::filesystem::create_directories(dirPath);
@@ -25,7 +25,7 @@ void writeOrUpdateOrderedFile(std::string path, nlohmann::ordered_json& defaultF
     }
 }
 
-void writeOrUpdateFile(std::string path, nlohmann::json& defaultFile) {
+void writeOrUpdateFile(std::string const& path, nlohmann::json const& defaultFile) {
     auto dirPath = std::filesystem::path(path).parent_path();
     if (!std::filesystem::exists(dirPath)) {
         std::filesystem::create_directories(dirPath);
@@ -37,18 +37,19 @@ void writeOrUpdateFile(std::string path, nlohmann::json& defaultFile) {
     }
 }
 
-nlohmann::ordered_json initOrderedJson(std::string path, std::string& defaultFile) {
+nlohmann::ordered_json initOrderedJson(std::string const& path, std::string const& defaultFile) {
     auto file = nlohmann::ordered_json::parse(defaultFile, nullptr, true, true);
     return initOrderedJson(path, file);
 }
 
-nlohmann::json initJson(std::string path, std::string& defaultFile) {
+nlohmann::json initJson(std::string const& path, std::string const& defaultFile) {
     auto file = nlohmann::json::parse(defaultFile, nullptr, true, true);
     return initJson(path, file);
 }
 
 
-void updateOrderedFile(std::string& path, nlohmann::ordered_json& newFile) {
+void updateOrderedFile(std::string const& path, nlohmann::ordered_json const& file) {
+    auto newFile = file;
     try {
         auto oldFile = readFromFile(path);
         newFile.merge_patch(oldFile);
@@ -59,7 +60,8 @@ void updateOrderedFile(std::string& path, nlohmann::ordered_json& newFile) {
     writeOrderedFile(path, newFile);
 }
 
-void updateFile(std::string& path, nlohmann::json& newFile) {
+void updateFile(std::string const& path, nlohmann::json const& file) {
+    auto newFile = file;
     try {
         auto oldFile = readFromFile(path);
         newFile.merge_patch(oldFile);
@@ -70,31 +72,31 @@ void updateFile(std::string& path, nlohmann::json& newFile) {
     writeFile(path, newFile);
 }
 
-void updateOrderedFile(std::string& path, std::string& newFile) {
+void updateOrderedFile(std::string const& path, std::string const& newFile) {
     auto file = nlohmann::ordered_json::parse(newFile, nullptr, true, true);
     updateOrderedFile(path, file);
 }
 
-void updateFile(std::string& path, std::string& newFile) {
+void updateFile(std::string const& path, std::string const& newFile) {
     auto file = nlohmann::json::parse(newFile, nullptr, true, true);
     updateFile(path, file);
 }
 
-nlohmann::ordered_json readFromOrderedFile(std::string& path) {
+nlohmann::ordered_json readFromOrderedFile(std::string const& path) {
     std::ifstream inputFile(path);
     std::string   fileContent((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
     inputFile.close();
     return nlohmann::ordered_json::parse(fileContent, nullptr, true, true);
 }
 
-nlohmann::json readFromFile(std::string& path) {
+nlohmann::json readFromFile(std::string const& path) {
     std::ifstream inputFile(path);
     std::string   fileContent((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
     inputFile.close();
     return nlohmann::json::parse(fileContent, nullptr, true, true);
 }
 
-bool writeOrderedFile(std::string& path, nlohmann::ordered_json& json) {
+bool writeOrderedFile(std::string const& path, nlohmann::ordered_json const& json) {
     try {
         std::ofstream newFile(path);
         if (!newFile.is_open()) {
@@ -108,7 +110,7 @@ bool writeOrderedFile(std::string& path, nlohmann::ordered_json& json) {
     }
 }
 
-bool writeFile(std::string& path, nlohmann::json& json) {
+bool writeFile(std::string const& path, nlohmann::json const& json) {
     try {
         std::ofstream newFile(path);
         if (!newFile.is_open()) {
@@ -122,7 +124,7 @@ bool writeFile(std::string& path, nlohmann::json& json) {
     }
 }
 
-bool deleteOrderedKey(nlohmann::ordered_json& json, std::vector<std::string> keyPath) {
+bool deleteOrderedKey(nlohmann::ordered_json& json, std::vector<std::string> const& keyPath) {
     try {
         if (keyPath.empty()) {
             return false;
@@ -142,7 +144,7 @@ bool deleteOrderedKey(nlohmann::ordered_json& json, std::vector<std::string> key
     }
 }
 
-bool deleteKey(nlohmann::json& json, std::vector<std::string> keyPath) {
+bool deleteKey(nlohmann::json& json, std::vector<std::string> const& keyPath) {
     try {
         if (keyPath.empty()) {
             return false;
@@ -162,7 +164,11 @@ bool deleteKey(nlohmann::json& json, std::vector<std::string> keyPath) {
     }
 }
 
-bool deleteOrderedKeyAndSave(nlohmann::ordered_json& json, std::string& filePath, std::vector<std::string> keyPath) {
+bool deleteOrderedKeyAndSave(
+    nlohmann::ordered_json&         json,
+    std::string const&              filePath,
+    std::vector<std::string> const& keyPath
+) {
     auto res = deleteOrderedKey(json, keyPath);
     if (res) {
         return writeOrderedFile(filePath, json);
@@ -170,7 +176,7 @@ bool deleteOrderedKeyAndSave(nlohmann::ordered_json& json, std::string& filePath
     return false;
 }
 
-bool deleteKeyAndSave(nlohmann::json& json, std::string& filePath, std::vector<std::string> keyPath) {
+bool deleteKeyAndSave(nlohmann::json& json, std::string const& filePath, std::vector<std::string> const& keyPath) {
     auto res = deleteKey(json, keyPath);
     if (res) {
         return writeFile(filePath, json);

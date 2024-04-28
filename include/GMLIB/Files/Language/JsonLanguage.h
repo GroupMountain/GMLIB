@@ -10,9 +10,9 @@ private:
     nlohmann::json mValue;
 
 public:
-    GMLIB_API JsonLanguage(std::string filePath, std::string& defaultJson);
+    GMLIB_API JsonLanguage(std::string const& filePath, std::string const& defaultJson);
 
-    GMLIB_API JsonLanguage(std::string filePath, nlohmann::json& defaultJson);
+    GMLIB_API JsonLanguage(std::string const& filePath, nlohmann::json const& defaultJson);
 
     JsonLanguage() = delete;
 
@@ -24,22 +24,23 @@ public:
 
     GMLIB_API bool reload();
 
-    GMLIB_API bool hasValue(std::string key);
+    GMLIB_API bool hasValue(std::string const& key);
 
-    GMLIB_API std::string getValue(std::string key);
+    GMLIB_API std::string getValue(std::string const& key);
 
-    GMLIB_API std::string getValue(std::string key, std::string defaultValue);
+    GMLIB_API std::string getValue(std::string const& key, std::string const& defaultValue);
 
-    GMLIB_API bool setValue(std::string key, std::string value, std::string path);
+    GMLIB_API bool setValue(std::string const& key, std::string const& value, std::string const& path);
 
-    GMLIB_API bool deleteKey(std::string key, std::string path);
+    GMLIB_API bool deleteKey(std::string const& key, std::string const& path);
 
-    GMLIB_API bool deleteKeys(std::vector<std::string> keys, std::string path);
+    GMLIB_API bool deleteKeys(std::vector<std::string> const& keys, std::string const& path);
 
     GMLIB_API std::string
-              translate(std::string key, std::vector<std::string> data = {}, std::string translateKey = "%0$s");
+    translate(std::string const& key, std::vector<std::string> const& param = {}, std::string const& data = "%0$s");
 
-    GMLIB_API std::string get(std::string key, std::vector<std::string> data = {}, std::string translateKey = "%0$s");
+    GMLIB_API std::string
+              get(std::string const& key, std::vector<std::string> const& param = {}, std::string const& data = "%0$s");
 
     GMLIB_API nlohmann::json getSelf();
 
@@ -48,22 +49,27 @@ public:
 
 namespace JsonLanguageFile {
 
-GMLIB_API nlohmann::json initLanguage(std::string path, nlohmann::json& defaultFile);
+GMLIB_API nlohmann::json initLanguage(std::string const& path, nlohmann::json const& defaultFile);
 
-GMLIB_API nlohmann::json initLanguage(std::string path, std::string& defaultFile);
+GMLIB_API nlohmann::json initLanguage(std::string const& path, std::string const& defaultFile);
 
-GMLIB_API std::string getValue(nlohmann::json& json, std::string key);
+GMLIB_API std::string getValue(nlohmann::json const& json, std::string const& key);
 
-GMLIB_API std::string getValue(nlohmann::json& json, std::string key, std::string defaultValue);
+GMLIB_API std::string getValue(nlohmann::json const& json, std::string const& key, std::string const& defaultValue);
 
-GMLIB_API bool setValue(nlohmann::json& json, std::string key, std::string value, std::string path);
+GMLIB_API bool
+setValue(nlohmann::json& json, std::string const& key, std::string const& value, std::string const& path);
 
-GMLIB_API bool deleteKey(nlohmann::json& json, std::string key, std::string path);
+GMLIB_API bool deleteKey(nlohmann::json& json, std::string const& key, std::string const& path);
 
-GMLIB_API bool deleteKeys(nlohmann::json& json, std::vector<std::string> keys, std::string path);
+GMLIB_API bool deleteKeys(nlohmann::json& json, std::vector<std::string> const& keys, std::string const& path);
 
-GMLIB_API std::string
-translate(nlohmann::json& json, std::string key, std::vector<std::string> data = {}, std::string translateKey = "%0$s");
+GMLIB_API std::string translate(
+    nlohmann::json const&           json,
+    std::string const&              key,
+    std::vector<std::string> const& param = {},
+    std::string const&              data  = "%0$s"
+);
 
 } // namespace JsonLanguageFile
 

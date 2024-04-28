@@ -56,7 +56,7 @@ std::vector<ActorUniqueID> GMLIB_Actor::getAllEntities() {
     return result;
 }
 
-std::unique_ptr<CompoundTag> getUnloadedActorNbt(std::string& actorKey) {
+std::unique_ptr<CompoundTag> getUnloadedActorNbt(std::string const& actorKey) {
     if (actorKey.empty()) {
         return nullptr;
     }
@@ -66,7 +66,7 @@ std::unique_ptr<CompoundTag> getUnloadedActorNbt(std::string& actorKey) {
     return GMLIB::Global<DBStorage>->getCompoundTag(actorKey, DBHelpers::Category::Actor);
 }
 
-bool setUnloadedActorNbt(std::string& actorKey, CompoundTag& nbt) {
+bool setUnloadedActorNbt(std::string const& actorKey, CompoundTag& nbt) {
     try {
         if (actorKey.empty()) {
             return false;
@@ -78,7 +78,7 @@ bool setUnloadedActorNbt(std::string& actorKey, CompoundTag& nbt) {
     }
 }
 
-ActorUniqueID GMLIB_Actor::getActorUniqueID(std::string& actorKey) {
+ActorUniqueID GMLIB_Actor::getActorUniqueID(std::string const& actorKey) {
     auto nbt = getUnloadedActorNbt(actorKey);
     if (nbt && nbt->contains("UniqueID")) {
         auto uniqueId = nbt->getInt64("UniqueID");
@@ -87,7 +87,7 @@ ActorUniqueID GMLIB_Actor::getActorUniqueID(std::string& actorKey) {
     return ActorUniqueID::INVALID_ID;
 }
 
-std::string getActorKeyFromUniqueId(ActorUniqueID& uniqueId) {
+std::string getActorKeyFromUniqueId(ActorUniqueID const& uniqueId) {
     auto map = GMLIB_Actor::getActorIdsKeyMap();
     if (map.count(uniqueId.id)) {
         return map[uniqueId.id];
@@ -95,7 +95,7 @@ std::string getActorKeyFromUniqueId(ActorUniqueID& uniqueId) {
     return "";
 }
 
-std::string GMLIB_Actor::getActorTypeName(ActorUniqueID& uniqueId) {
+std::string GMLIB_Actor::getActorTypeName(ActorUniqueID const& uniqueId) {
     if (auto en = ll::service::getLevel()->fetchEntity(uniqueId)) {
         return en->getTypeName();
     }
@@ -103,7 +103,7 @@ std::string GMLIB_Actor::getActorTypeName(ActorUniqueID& uniqueId) {
     return getActorTypeName(actorKey);
 }
 
-std::string GMLIB_Actor::getActorTypeName(std::string& actorKey) {
+std::string GMLIB_Actor::getActorTypeName(std::string const& actorKey) {
     auto nbt = getUnloadedActorNbt(actorKey);
     if (nbt && nbt->contains("identifier")) {
         auto type = nbt->getString("identifier");
@@ -112,7 +112,7 @@ std::string GMLIB_Actor::getActorTypeName(std::string& actorKey) {
     return "unknown";
 }
 
-std::optional<std::pair<Vec3, DimensionType>> GMLIB_Actor::getActorPosition(ActorUniqueID& uniqueId) {
+std::optional<std::pair<Vec3, DimensionType>> GMLIB_Actor::getActorPosition(ActorUniqueID const& uniqueId) {
     if (auto ac = ll::service::getLevel()->fetchEntity(uniqueId)) {
         return {
             {ac->getPosition(), ac->getDimensionId()}
@@ -132,12 +132,12 @@ std::optional<std::pair<Vec3, DimensionType>> GMLIB_Actor::getActorPosition(Acto
     return {};
 }
 
-std::optional<std::pair<Vec3, DimensionType>> GMLIB_Actor::getActorPosition(std::string& actorKey) {
+std::optional<std::pair<Vec3, DimensionType>> GMLIB_Actor::getActorPosition(std::string const& actorKey) {
     auto uniqueId = getActorUniqueID(actorKey);
     return getActorPosition(uniqueId);
 }
 
-bool GMLIB_Actor::setActorPosition(ActorUniqueID& uniqueId, Vec3 pos, DimensionType dimId) {
+bool GMLIB_Actor::setActorPosition(ActorUniqueID const& uniqueId, Vec3 const& pos, DimensionType dimId) {
     if (auto ac = ll::service::getLevel()->fetchEntity(uniqueId)) {
         ac->teleport(pos, dimId);
         return true;
@@ -154,12 +154,12 @@ bool GMLIB_Actor::setActorPosition(ActorUniqueID& uniqueId, Vec3 pos, DimensionT
     return false;
 }
 
-bool GMLIB_Actor::setActorPosition(std::string& actorKey, Vec3 pos, DimensionType dimId) {
+bool GMLIB_Actor::setActorPosition(std::string const& actorKey, Vec3 const& pos, DimensionType dimId) {
     auto uniqueId = getActorUniqueID(actorKey);
     return setActorPosition(uniqueId, pos, dimId);
 }
 
-std::unique_ptr<CompoundTag> GMLIB_Actor::getActorNbt(ActorUniqueID& uniqueId) {
+std::unique_ptr<CompoundTag> GMLIB_Actor::getActorNbt(ActorUniqueID const& uniqueId) {
     if (auto en = ll::service::getLevel()->fetchEntity(uniqueId)) {
         auto actor = (GMLIB_Actor*)en;
         return actor->getNbt();
@@ -168,7 +168,7 @@ std::unique_ptr<CompoundTag> GMLIB_Actor::getActorNbt(ActorUniqueID& uniqueId) {
     return getActorNbt(actorKey);
 }
 
-std::unique_ptr<CompoundTag> GMLIB_Actor::getActorNbt(std::string& actorKey) {
+std::unique_ptr<CompoundTag> GMLIB_Actor::getActorNbt(std::string const& actorKey) {
     auto uniqueId = getActorUniqueID(actorKey);
     if (auto en = ll::service::getLevel()->fetchEntity(uniqueId)) {
         auto actor = (GMLIB_Actor*)en;
@@ -177,7 +177,7 @@ std::unique_ptr<CompoundTag> GMLIB_Actor::getActorNbt(std::string& actorKey) {
     return getUnloadedActorNbt(actorKey);
 }
 
-bool GMLIB_Actor::setActorNbt(ActorUniqueID& uniqueId, CompoundTag& nbt) {
+bool GMLIB_Actor::setActorNbt(ActorUniqueID const& uniqueId, CompoundTag& nbt) {
     if (auto en = ll::service::getLevel()->fetchEntity(uniqueId)) {
         auto actor = (GMLIB_Actor*)en;
         return actor->setNbt(nbt);
@@ -186,7 +186,7 @@ bool GMLIB_Actor::setActorNbt(ActorUniqueID& uniqueId, CompoundTag& nbt) {
     return setActorNbt(actorKey, nbt);
 }
 
-bool GMLIB_Actor::setActorNbt(std::string& actorKey, CompoundTag& nbt) {
+bool GMLIB_Actor::setActorNbt(std::string const& actorKey, CompoundTag& nbt) {
     auto uniqueId = getActorUniqueID(actorKey);
     if (auto en = ll::service::getLevel()->fetchEntity(uniqueId)) {
         auto actor = (GMLIB_Actor*)en;
@@ -195,7 +195,11 @@ bool GMLIB_Actor::setActorNbt(std::string& actorKey, CompoundTag& nbt) {
     return setUnloadedActorNbt(actorKey, nbt);
 }
 
-bool GMLIB_Actor::setActorNbtTags(ActorUniqueID& uniqueId, CompoundTag& nbt, const std::vector<std::string>& tags) {
+bool GMLIB_Actor::setActorNbtTags(
+    ActorUniqueID const&            uniqueId,
+    CompoundTag&                    nbt,
+    std::vector<std::string> const& tags
+) {
     if (auto en = ll::service::getLevel()->fetchEntity(uniqueId)) {
         auto actor = (GMLIB_Actor*)en;
         return actor->setNbtTags(nbt, tags);
@@ -204,7 +208,11 @@ bool GMLIB_Actor::setActorNbtTags(ActorUniqueID& uniqueId, CompoundTag& nbt, con
     return setActorNbtTags(actorKey, nbt, tags);
 }
 
-bool GMLIB_Actor::setActorNbtTags(std::string& actorKey, CompoundTag& nbt, const std::vector<std::string>& tags) {
+bool GMLIB_Actor::setActorNbtTags(
+    std::string const&                    actorKey,
+    CompoundTag&                          nbt,
+    std::vector<std::string> const& tags
+) {
     if (actorKey.empty()) {
         return false;
     }
@@ -217,7 +225,7 @@ bool GMLIB_Actor::setActorNbtTags(std::string& actorKey, CompoundTag& nbt, const
     return setUnloadedActorNbt(actorKey, data);
 }
 
-bool GMLIB_Actor::deleteActor(ActorUniqueID& uniqueId) {
+bool GMLIB_Actor::deleteActor(ActorUniqueID const& uniqueId) {
     if (auto en = ll::service::getLevel()->fetchEntity(uniqueId)) {
         en->remove();
         return true;
@@ -226,7 +234,7 @@ bool GMLIB_Actor::deleteActor(ActorUniqueID& uniqueId) {
     return deleteActor(actorKey);
 }
 
-bool GMLIB_Actor::deleteActor(std::string& actorKey) {
+bool GMLIB_Actor::deleteActor(std::string const& actorKey) {
     if (actorKey.empty()) {
         return false;
     }
@@ -242,40 +250,48 @@ bool GMLIB_Actor::deleteActor(std::string& actorKey) {
     return false;
 }
 
-std::optional<int> GMLIB_Actor::getActorScore(ActorUniqueID& uniqueId, std::string objective) {
+std::optional<int> GMLIB_Actor::getActorScore(ActorUniqueID const& uniqueId, std::string const& objective) {
     return GMLIB_Scoreboard::getInstance()->getScore(objective, uniqueId);
 }
 
-std::optional<int> GMLIB_Actor::getActorScore(std::string& actorKey, std::string objective) {
+std::optional<int> GMLIB_Actor::getActorScore(std::string const& actorKey, std::string const& objective) {
     auto uniqueId = getActorUniqueID(actorKey);
     return GMLIB_Scoreboard::getInstance()->getScore(objective, uniqueId);
 }
 
-std::optional<int>
-GMLIB_Actor::setActorScore(ActorUniqueID& uniqueId, std::string objective, int value, PlayerScoreSetFunction action) {
+std::optional<int> GMLIB_Actor::setActorScore(
+    ActorUniqueID const&   uniqueId,
+    std::string const&     objective,
+    int                    value,
+    PlayerScoreSetFunction action
+) {
     return GMLIB_Scoreboard::getInstance()->setScore(objective, uniqueId, value, action);
 }
 
-std::optional<int>
-GMLIB_Actor::setActorScore(std::string& actorKey, std::string objective, int value, PlayerScoreSetFunction action) {
+std::optional<int> GMLIB_Actor::setActorScore(
+    std::string const&     actorKey,
+    std::string const&     objective,
+    int                    value,
+    PlayerScoreSetFunction action
+) {
     auto uniqueId = getActorUniqueID(actorKey);
     return GMLIB_Scoreboard::getInstance()->setScore(objective, uniqueId, value, action);
 }
 
-bool GMLIB_Actor::resetActorScore(ActorUniqueID& uniqueId, std::string objective) {
+bool GMLIB_Actor::resetActorScore(ActorUniqueID const& uniqueId, std::string const& objective) {
     return GMLIB_Scoreboard::getInstance()->resetScore(objective, uniqueId);
 }
 
-bool GMLIB_Actor::resetActorScore(std::string& actorKey, std::string objective) {
+bool GMLIB_Actor::resetActorScore(std::string const& actorKey, std::string const& objective) {
     auto uniqueId = getActorUniqueID(actorKey);
     return GMLIB_Scoreboard::getInstance()->resetScore(objective, uniqueId);
 }
 
-bool GMLIB_Actor::resetActorScore(ActorUniqueID& uniqueId) {
+bool GMLIB_Actor::resetActorScore(ActorUniqueID const& uniqueId) {
     return GMLIB_Scoreboard::getInstance()->resetScore(uniqueId);
 }
 
-bool GMLIB_Actor::resetActorScore(std::string& actorKey) {
+bool GMLIB_Actor::resetActorScore(std::string const& actorKey) {
     auto uniqueId = getActorUniqueID(actorKey);
     return GMLIB_Scoreboard::getInstance()->resetScore(uniqueId);
 }
@@ -302,15 +318,15 @@ bool GMLIB_Actor::setNbtTags(CompoundTag& nbt, const std::vector<std::string>& t
     return res;
 }
 
-std::optional<int> GMLIB_Actor::getScore(std::string objective) {
+std::optional<int> GMLIB_Actor::getScore(std::string const& objective) {
     return GMLIB_Scoreboard::getInstance()->getScore(objective, this);
 }
 
-std::optional<int> GMLIB_Actor::setScore(std::string objective, int value, PlayerScoreSetFunction action) {
+std::optional<int> GMLIB_Actor::setScore(std::string const& objective, int value, PlayerScoreSetFunction action) {
     return GMLIB_Scoreboard::getInstance()->setScore(objective, this, value, action);
 }
 
-bool GMLIB_Actor::resetScore(std::string objective) {
+bool GMLIB_Actor::resetScore(std::string const& objective) {
     return GMLIB_Scoreboard::getInstance()->resetScore(objective, this);
 }
 
@@ -428,7 +444,7 @@ void GMLIB_Actor::setOffHandSlot(ItemStack& itemStack) {
     return setEquippedSlot(Puv::Legacy::EquipmentSlot::Offhand, itemStack);
 }
 
-GMLIB_Actor* GMLIB_Actor::shootProjectile(std::string typeName, float speed, float offset) {
+GMLIB_Actor* GMLIB_Actor::shootProjectile(std::string const& typeName, float speed, float offset) {
     return GMLIB_Spawner::spawnProjectile((GMLIB_Actor*)this, typeName, speed, offset);
 }
 
@@ -440,7 +456,7 @@ int64_t GMLIB_Actor::getNextActorUniqueID() {
     return res;
 }
 
-void GMLIB_Actor::hurtEntity(float damage, std::string causeName, Actor* source) {
+void GMLIB_Actor::hurtEntity(float damage, std::string const& causeName, Actor* source) {
     auto cause = GMLIB::Mod::DamageCause::getCauseFromName(causeName);
     this->hurtByCause(damage, cause, source);
 }

@@ -3,10 +3,10 @@
 
 namespace GMLIB::Files::FileUtils {
 
-GMLIB_API std::vector<std::string> getAllFileNameInDirectory(const std::string& path);
+GMLIB_API std::vector<std::string> getAllFileNameInDirectory(std::string const& path);
 
-GMLIB_API std::vector<std::string> getAllFileFullNameInDirectory(const std::string& path);
+GMLIB_API std::vector<std::string> getAllFileFullNameInDirectory(std::string const& path);
 
-GMLIB_API std::vector<std::string> getAllFilePathInDirectory(const std::string& path);
+GMLIB_API std::vector<std::string> getAllFilePathInDirectory(std::string const& path);
 
 } // namespace GMLIB::Files::FileUtils

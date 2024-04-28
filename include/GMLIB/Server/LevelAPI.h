@@ -71,7 +71,7 @@ public:
 
     GMLIB_API std::vector<Actor*> getAllEntities();
 
-    GMLIB_API Actor* getEntity(ActorUniqueID uniqueId);
+    GMLIB_API Actor* getEntity(ActorUniqueID const& uniqueId);
 
     GMLIB_API std::vector<Player*> getAllPlayers();
 
@@ -122,7 +122,7 @@ public:
     GMLIB_API void setGamerule(std::string_view name, int value);
 
     GMLIB_API void createExplosion(
-        const Vec3&   pos,
+        Vec3 const&   pos,
         DimensionType dimensionId,
         float         power,
         Actor*        source          = nullptr,
@@ -132,23 +132,23 @@ public:
         float         maxResistance   = 3.40282347e+38
     );
 
-    GMLIB_API Block* getBlock(BlockPos& pos, DimensionType dimId);
+    GMLIB_API Block* getBlock(BlockPos const& pos, DimensionType dimId);
 
-    GMLIB_API bool setBlock(BlockPos& pos, DimensionType dimId, Block* block);
+    GMLIB_API bool setBlock(BlockPos const& pos, DimensionType dimId, Block* block);
 
-    GMLIB_API bool setBlock(BlockPos& pos, DimensionType dimId, std::string_view name, short aux = 0);
+    GMLIB_API bool setBlock(BlockPos const& pos, DimensionType dimId, std::string_view name, short aux = 0);
 
     GMLIB_API int fillBlocks(
-        BlockPos      startpos,
-        BlockPos      endpos,
-        DimensionType dimId,
-        Block*        block,
-        FillMode      mode = FillMode::Replace
+        BlockPos const& startpos,
+        BlockPos const& endpos,
+        DimensionType   dimId,
+        Block*          block,
+        FillMode        mode = FillMode::Replace
     );
 
     GMLIB_API int fillBlocks(
-        BlockPos         startpos,
-        BlockPos         endpos,
+        BlockPos const&  startpos,
+        BlockPos const&  endpos,
         DimensionType    dimId,
         std::string_view name,
         ushort           tileData = 0,
@@ -158,8 +158,8 @@ public:
     GMLIB_API int fillBlocks(BlockPos startpos, BlockPos endpos, DimensionType dimId, Block* oldBlock, Block* newBlock);
 
     GMLIB_API int fillBlocks(
-        BlockPos         startpos,
-        BlockPos         endpos,
+        BlockPos const&  startpos,
+        BlockPos const&  endpos,
         DimensionType    dimId,
         std::string_view oldName,
         ushort           oldTileData,
@@ -183,24 +183,24 @@ public:
 
     GMLIB_API void setWorldSpawn(BlockPos pos);
 
-    GMLIB_API bool isInStructureFeature(StructureFeatureType structure, BlockPos pos, DimensionType dimId);
+    GMLIB_API bool isInStructureFeature(StructureFeatureType structure, BlockPos const& pos, DimensionType dimId);
 
-    GMLIB_API bool isInStructureFeature(std::string const& structure, BlockPos pos, DimensionType dimId);
+    GMLIB_API bool isInStructureFeature(std::string const& structure, BlockPos const& pos, DimensionType dimId);
 
-    GMLIB_API StructureFeatureType getStructureFeature(BlockPos pos, DimensionType dimId);
+    GMLIB_API StructureFeatureType getStructureFeature(BlockPos const& pos, DimensionType dimId);
 
-    GMLIB_API std::string_view getStructureFeatureName(BlockPos pos, DimensionType dimId);
+    GMLIB_API std::string_view getStructureFeatureName(BlockPos const& pos, DimensionType dimId);
 
     GMLIB_API std::optional<BlockPos> locateNearestStructureFeature(
         StructureFeatureType structure,
-        BlockPos             pos,
+        BlockPos const&      pos,
         DimensionType        dimId,
         bool                 useNewChunksOnly = false
     );
 
     GMLIB_API std::optional<BlockPos> locateNearestStructureFeature(
         std::string const& structure,
-        BlockPos           pos,
+        BlockPos const&    pos,
         DimensionType      dimId,
         bool               useNewChunksOnly = false
     );

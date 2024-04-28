@@ -4,12 +4,12 @@
 
 namespace GMLIB::Files {
 
-JsonConfig::JsonConfig(std::string filePath, std::string& defaultJson) : mFilePath(filePath) {
+JsonConfig::JsonConfig(std::string const& filePath, std::string const& defaultJson) : mFilePath(filePath) {
     auto json_value = nlohmann::ordered_json::parse(defaultJson, nullptr, true, true);
     mValue          = json_value;
 }
 
-JsonConfig::JsonConfig(std::string filePath, nlohmann::ordered_json& defaultJson)
+JsonConfig::JsonConfig(std::string const& filePath, nlohmann::ordered_json const& defaultJson)
 : mFilePath(filePath),
   mValue(defaultJson) {}
 
@@ -57,7 +57,7 @@ bool JsonConfig::writeFile() {
 
 nlohmann::ordered_json JsonConfig::getSelf() { return mValue; }
 
-bool JsonConfig::deleteKey(std::vector<std::string> path) {
+bool JsonConfig::deleteKey(std::vector<std::string> const& path) {
     try {
         if (path.empty()) {
             return false;

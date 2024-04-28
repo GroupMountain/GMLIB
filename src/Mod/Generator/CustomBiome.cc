@@ -19,7 +19,7 @@ std::vector<std::string>                                mNewBiomes;
 // 17 | ExperimentalUpdateAnnounced2023
 // 18 | ExperimentalArmadillo
 
-void CustomBiome::registerEmptyBiome(std::string id, BiomeData data) {
+void CustomBiome::registerEmptyBiome(std::string const& id, BiomeData data) {
     mNewBiomes.push_back(id);
     CustomBiome::registerBiomeClimates(id, data);
 }
@@ -93,7 +93,7 @@ struct CustomBiome_Impl {
 
 std::unique_ptr<CustomBiome_Impl> impl;
 
-void CustomBiome::registerBiomeClimates(std::string id, BiomeData data) {
+void CustomBiome::registerBiomeClimates(std::string const& id, BiomeData data) {
     mClimates[id].push_back(data);
     GMLIB_Level::addExperimentsRequire((AllExperiments)7);
     if (!impl) {

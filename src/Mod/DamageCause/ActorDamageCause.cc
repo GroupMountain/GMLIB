@@ -32,7 +32,7 @@ bool isCustomDefinition(int cause) {
     return false;
 }
 
-bool isCustomCauseExist(std::string& causeName) {
+bool isCustomCauseExist(std::string const& causeName) {
     for (auto& key : mCustomCauseMap) {
         if (key.first == causeName) {
             return true;
@@ -50,7 +50,7 @@ bool isCustomCauseExist(int cause) {
     return false;
 }
 
-::ActorDamageCause getCustomCause(std::string& causeName) {
+::ActorDamageCause getCustomCause(std::string const& causeName) {
     for (auto& key : mCustomCauseMap) {
         if (key.first == causeName) {
             return (ActorDamageCause)key.second;
@@ -79,7 +79,7 @@ std::string getCause(::ActorDamageCause cause) {
     return "";
 }
 
-::ActorDamageCause DamageCause::getCauseFromName(std::string& causeName) {
+::ActorDamageCause DamageCause::getCauseFromName(std::string const& causeName) {
     auto cause = getCustomCause(causeName);
     if (cause != ActorDamageCause::None) {
         return cause;
@@ -93,7 +93,7 @@ Actor* getDamagingEntity(ActorDamageSource* ads) {
 }
 
 // %entity.warden.name
-std::string getResourcePackKey(std::string name, Actor* ac) {
+std::string getResourcePackKey(std::string const& name, Actor* ac) {
     if (ac->hasCategory(ActorCategory::Player)) {
         return name;
     }
@@ -412,7 +412,7 @@ int getNextCauseId() {
     return mMaxCauseId;
 }
 
-bool DamageCause::registerDamageCause(std::string causeName) {
+bool DamageCause::registerDamageCause(std::string const& causeName) {
     if (!isCustomCauseExist(causeName)) {
         setCustomDamageCauseEnabled();
         auto id = getNextCauseId();

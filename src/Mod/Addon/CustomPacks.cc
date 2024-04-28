@@ -94,7 +94,7 @@ struct CustomPack_Impl {
 
 std::unique_ptr<CustomPack_Impl> impl;
 
-void CustomPacks::addCustomPackPath(std::string path) {
+void CustomPacks::addCustomPackPath(std::string const& path) {
     if (!impl) {
         impl = std::make_unique<CustomPack_Impl>();
     }
@@ -104,7 +104,7 @@ void CustomPacks::addCustomPackPath(std::string path) {
     mAllResourcePath.push_back(path);
 }
 
-void CustomPacks::setCustomPackPath(ResourcePackRepository& repo, std::string path, PackType type) {
+void CustomPacks::setCustomPackPath(ResourcePackRepository& repo, std::string const& path, PackType type) {
     auto  CompositePack     = (CompositePackSource*)repo.getWorldPackSource();
     auto& PackSourceFactory = repo.getPackSourceFactory();
     auto& DirectoryPackSource =

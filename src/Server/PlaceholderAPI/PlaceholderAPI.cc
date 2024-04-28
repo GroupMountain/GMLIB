@@ -10,12 +10,12 @@ std::unordered_map<std::string, PlaceholderAPI> mGlobalPAPI;
 std::unordered_map<std::string, PlaceholderAPI> mUpdatePlaceholders;
 
 PlaceholderAPI::PlaceholderAPI(
-    std::string                                                                             placeholder,
+    std::string const&                                                                      placeholder,
     int                                                                                     updateInterval,
     bool                                                                                    autoUpdate,
     bool                                                                                    processPlayer,
     bool                                                                                    processParameters,
-    std::string                                                                             pluginName,
+    std::string const&                                                                      pluginName,
     std::function<std::string(class Player*)>                                               callback,
     std::function<std::string(class Player*, std::unordered_map<std::string, std::string>)> callbackWithParameters
 )
@@ -54,7 +54,11 @@ bool PlaceholderAPI::registerPlaceholder(PlaceholderAPI placeholderapi) {
 
 ////---------------------------------------Static------------------------------------------
 
-bool PlaceholderAPI::registerStaticPlaceholder(std::string placeholder, std::string value, std::string PluginName) {
+bool PlaceholderAPI::registerStaticPlaceholder(
+    std::string const& placeholder,
+    std::string const& value,
+    std::string const& PluginName
+) {
     PlaceholderAPI placeholderapi(
         placeholder,
         -1,
@@ -69,9 +73,9 @@ bool PlaceholderAPI::registerStaticPlaceholder(std::string placeholder, std::str
 }
 
 bool PlaceholderAPI::registerStaticPlaceholder(
-    std::string                  name,
+    std::string const&           name,
     std::function<std::string()> callback,
-    std::string                  PluginName
+    std::string const&           PluginName
 ) {
     PlaceholderAPI placeholderapi(
         name,
@@ -85,7 +89,11 @@ bool PlaceholderAPI::registerStaticPlaceholder(
     );
     return registerPlaceholder(placeholderapi);
 }
-bool PlaceholderAPI::registerStaticPlaceholder(std::string placeholder, std::string (*Func)(), std::string PluginName) {
+bool PlaceholderAPI::registerStaticPlaceholder(
+    std::string const& placeholder,
+    std::string (*Func)(),
+    std::string const& PluginName
+) {
     PlaceholderAPI placeholderapi(
         placeholder,
         -1,
@@ -100,10 +108,10 @@ bool PlaceholderAPI::registerStaticPlaceholder(std::string placeholder, std::str
 }
 
 bool PlaceholderAPI::registerStaticPlaceholder(
-    std::string placeholder,
-    int         UpdateInterval,
+    std::string const& placeholder,
+    int                UpdateInterval,
     std::string (*Func)(),
-    std::string PluginName
+    std::string const& PluginName
 ) {
     PlaceholderAPI placeholderapi(
         placeholder,
@@ -119,10 +127,10 @@ bool PlaceholderAPI::registerStaticPlaceholder(
 }
 
 bool PlaceholderAPI::registerStaticPlaceholder(
-    std::string                  name,
+    std::string const&           name,
     int                          UpdateInterval,
     std::function<std::string()> callback,
-    std::string                  PluginName
+    std::string const&           PluginName
 ) {
     PlaceholderAPI placeholderapi(
         name,
@@ -140,9 +148,9 @@ bool PlaceholderAPI::registerStaticPlaceholder(
 
 //---------------------------------------Server------------------------------------------
 bool PlaceholderAPI::registerServerPlaceholder(
-    std::string                  name,
+    std::string const&           name,
     std::function<std::string()> callback,
-    std::string                  PluginName
+    std::string const&           PluginName
 ) {
     PlaceholderAPI placeholderapi(
         name,
@@ -158,9 +166,9 @@ bool PlaceholderAPI::registerServerPlaceholder(
 }
 
 bool PlaceholderAPI::registerServerPlaceholder(
-    std::string                                                              name,
+    std::string const&                                                       name,
     std::function<std::string(std::unordered_map<std::string, std::string>)> callback,
-    std::string                                                              PluginName
+    std::string const&                                                       PluginName
 ) {
     PlaceholderAPI placeholderapi(
         name,
@@ -178,24 +186,24 @@ bool PlaceholderAPI::registerServerPlaceholder(
 
 //---------------------------------------Player------------------------------------------
 bool PlaceholderAPI::registerPlayerPlaceholder(
-    std::string                               name,
+    std::string const&                        name,
     std::function<std::string(class Player*)> callback,
-    std::string                               PluginName
+    std::string const&                        PluginName
 ) {
     PlaceholderAPI placeholderapi(name, -1, false, true, false, PluginName, callback, nullptr);
     return registerPlaceholder(placeholderapi);
 }
 
 bool PlaceholderAPI::registerPlayerPlaceholder(
-    std::string                                                                             name,
+    std::string const&                                                                      name,
     std::function<std::string(class Player*, std::unordered_map<std::string, std::string>)> callback,
-    std::string                                                                             PluginName
+    std::string const&                                                                      PluginName
 ) {
     PlaceholderAPI placeholderapi(name, -1, false, true, true, PluginName, nullptr, callback);
     return registerPlaceholder(placeholderapi);
 }
 
-bool PlaceholderAPI::unRegisterPlaceholder(std::string placeholder) {
+bool PlaceholderAPI::unRegisterPlaceholder(std::string const& placeholder) {
     std::string placeholderapi = Helper::checkPAPIName(placeholder);
     bool        isremove       = false;
     placeholderapi             = Helper::checkPAPIName(placeholderapi);

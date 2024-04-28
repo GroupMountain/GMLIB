@@ -72,8 +72,8 @@ public:
 
 public:
     GMLIB_API static void registerShapelessCraftingTableRecipe(
-        std::string                                                                               recipe_id,
-        std::vector<Recipes::Type>                                                                ingredients,
+        std::string const&                                                                        recipe_id,
+        std::vector<Recipes::Type> const&                                                         ingredients,
         ItemStack*                                                                                result,
         std::variant<RecipeUnlockingRequirement::UnlockingContext, std::vector<RecipeIngredient>> unlock =
             RecipeUnlockingRequirement::UnlockingContext::AlwaysUnlocked,
@@ -81,8 +81,8 @@ public:
     );
 
     GMLIB_API static void registerStoneCutterRecipe(
-        std::string                                                                               recipe_id,
-        Recipes::Type                                                                             input,
+        std::string const&                                                                        recipe_id,
+        Recipes::Type const&                                                                      input,
         ItemStack*                                                                                result,
         std::variant<RecipeUnlockingRequirement::UnlockingContext, std::vector<RecipeIngredient>> unlock =
             RecipeUnlockingRequirement::UnlockingContext::AlwaysUnlocked,
@@ -90,9 +90,9 @@ public:
     );
 
     GMLIB_API static void registerShapelessCraftingTableRecipe(
-        std::string                                                                               recipe_id,
-        std::vector<std::string>                                                                  ingredients,
-        std::string                                                                               result,
+        std::string const&                                                                        recipe_id,
+        std::vector<std::string> const&                                                           ingredients,
+        std::string const&                                                                        result,
         int                                                                                       count,
         std::variant<RecipeUnlockingRequirement::UnlockingContext, std::vector<RecipeIngredient>> unlock =
             RecipeUnlockingRequirement::UnlockingContext::AlwaysUnlocked,
@@ -100,9 +100,9 @@ public:
     );
 
     GMLIB_API static void registerShapedCraftingTableRecipe(
-        std::string                                                                               recipe_id,
-        std::vector<std::string>                                                                  shape,
-        std::vector<Recipes::Type>                                                                ingredients,
+        std::string const&                                                                        recipe_id,
+        std::vector<std::string> const&                                                           shape,
+        std::vector<Recipes::Type> const&                                                         ingredients,
         ItemStack*                                                                                result,
         std::variant<RecipeUnlockingRequirement::UnlockingContext, std::vector<RecipeIngredient>> unlock =
             RecipeUnlockingRequirement::UnlockingContext::AlwaysUnlocked,
@@ -110,10 +110,10 @@ public:
     );
 
     GMLIB_API static void registerShapedCraftingTableRecipe(
-        std::string                                                                               recipe_id,
-        std::vector<std::string>                                                                  shape,
-        std::vector<std::string>                                                                  ingredients,
-        std::string                                                                               result,
+        std::string const&                                                                        recipe_id,
+        std::vector<std::string> const&                                                           shape,
+        std::vector<std::string> const&                                                           ingredients,
+        std::string const&                                                                        result,
         int                                                                                       count,
         std::variant<RecipeUnlockingRequirement::UnlockingContext, std::vector<RecipeIngredient>> unlock =
             RecipeUnlockingRequirement::UnlockingContext::AlwaysUnlocked,

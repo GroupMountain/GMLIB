@@ -171,7 +171,7 @@ BlockSource* GMLIB_Level::getBlockSource(DimensionType dimid) {
 
 std::vector<Actor*> GMLIB_Level::getAllEntities() { return getRuntimeActorList(); }
 
-Actor* GMLIB_Level::getEntity(ActorUniqueID uniqueId) { return fetchEntity(uniqueId); }
+Actor* GMLIB_Level::getEntity(ActorUniqueID const& uniqueId) { return fetchEntity(uniqueId); }
 
 std::vector<Player*> GMLIB_Level::getAllPlayers() {
     std::vector<Player*> result = {};
@@ -484,27 +484,27 @@ void GMLIB_Level::createExplosion(
     explode(*getBlockSource(dimensionId), source, pos, power, causeFire, breakBlocks, allowUnderwater, maxResistance);
 }
 
-Block* GMLIB_Level::getBlock(BlockPos& pos, DimensionType dimid) {
+Block* GMLIB_Level::getBlock(BlockPos const& pos, DimensionType dimid) {
     return (Block*)&getBlockSource(dimid)->getBlock(pos);
 }
 
-bool GMLIB_Level::setBlock(BlockPos& pos, DimensionType dimid, Block* block) {
+bool GMLIB_Level::setBlock(BlockPos const& pos, DimensionType dimid, Block* block) {
     return getBlockSource(dimid)->setBlock(pos, *block, 3, nullptr, nullptr);
 }
 
-bool GMLIB_Level::setBlock(BlockPos& pos, DimensionType dimid, std::string_view name, short aux) {
+bool GMLIB_Level::setBlock(BlockPos const& pos, DimensionType dimid, std::string_view name, short aux) {
     auto block = Block::tryGetFromRegistry(name, aux);
     return getBlockSource(dimid)->setBlock(pos, block, 3, nullptr, nullptr);
 }
 
-bool checkFillPos(BlockPos startpos, BlockPos endpos) {
+bool checkFillPos(BlockPos const& startpos, BlockPos const& endpos) {
     if (startpos.x <= endpos.x && startpos.y <= endpos.y && startpos.z <= endpos.z) {
         return true;
     }
     return false;
 }
 
-bool checkPosInRange(BlockPos pos, BlockPos startpos, BlockPos endpos) {
+bool checkPosInRange(BlockPos const& pos, BlockPos const& startpos, BlockPos const& endpos) {
     if (pos.x > startpos.x && pos.y > startpos.y && pos.z > startpos.z && pos.x < endpos.x && pos.y < endpos.y
         && pos.z < endpos.z) {
         return true;
@@ -513,11 +513,11 @@ bool checkPosInRange(BlockPos pos, BlockPos startpos, BlockPos endpos) {
 }
 
 int GMLIB_Level::fillBlocks(
-    BlockPos      startpos,
-    BlockPos      endpos,
-    DimensionType dimensionId,
-    Block*        block,
-    FillMode      mode
+    BlockPos const& startpos,
+    BlockPos const& endpos,
+    DimensionType   dimensionId,
+    Block*          block,
+    FillMode        mode
 ) {
     int  count       = 0;
     auto blockSource = getBlockSource(dimensionId);
@@ -567,8 +567,8 @@ int GMLIB_Level::fillBlocks(
 }
 
 int GMLIB_Level::fillBlocks(
-    BlockPos         startpos,
-    BlockPos         endpos,
+    BlockPos const&  startpos,
+    BlockPos const&  endpos,
     DimensionType    dimId,
     std::string_view name,
     unsigned short   tileData,
@@ -605,8 +605,8 @@ int GMLIB_Level::fillBlocks(BlockPos startpos, BlockPos endpos, DimensionType di
 }
 
 int GMLIB_Level::fillBlocks(
-    BlockPos         startpos,
-    BlockPos         endpos,
+    BlockPos const&  startpos,
+    BlockPos const&  endpos,
     DimensionType    dimId,
     std::string_view oldName,
     unsigned short   oldTileData,
@@ -715,26 +715,26 @@ bool GMLIB_Level::executeCommandEx(std::string_view command, DimensionType dimId
     return false;
 }
 
-bool GMLIB_Level::isInStructureFeature(StructureFeatureType structure, BlockPos pos, DimensionType dimId) {
+bool GMLIB_Level::isInStructureFeature(StructureFeatureType structure, BlockPos const& pos, DimensionType dimId) {
     return getDimension(dimId)->getWorldGenerator()->isStructureFeatureTypeAt(pos, structure);
 }
 
-StructureFeatureType GMLIB_Level::getStructureFeature(BlockPos pos, DimensionType dimId) {
+StructureFeatureType GMLIB_Level::getStructureFeature(BlockPos const& pos, DimensionType dimId) {
     return getDimension(dimId)->getWorldGenerator()->findStructureFeatureTypeAt(pos);
 }
 
-bool GMLIB_Level::isInStructureFeature(std::string const& structure, BlockPos pos, DimensionType dimId) {
+bool GMLIB_Level::isInStructureFeature(std::string const& structure, BlockPos const& pos, DimensionType dimId) {
     auto type = StructureFeatureTypeNames::getFeatureType(structure);
     return isInStructureFeature(type, pos, dimId);
 }
 
-std::string_view GMLIB_Level::getStructureFeatureName(BlockPos pos, DimensionType dimId) {
+std::string_view GMLIB_Level::getStructureFeatureName(BlockPos const& pos, DimensionType dimId) {
     return StructureFeatureTypeNames::getFeatureName(getStructureFeature(pos, dimId));
 }
 
 std::optional<BlockPos> GMLIB_Level::locateNearestStructureFeature(
     StructureFeatureType structure,
-    BlockPos             pos,
+    BlockPos const&      pos,
     DimensionType        dimId,
     bool                 useNewChunksOnly
 ) {
@@ -750,7 +750,7 @@ std::optional<BlockPos> GMLIB_Level::locateNearestStructureFeature(
 
 std::optional<BlockPos> GMLIB_Level::locateNearestStructureFeature(
     std::string const& structure,
-    BlockPos           pos,
+    BlockPos const&    pos,
     DimensionType      dimId,
     bool               useNewChunksOnly
 ) {

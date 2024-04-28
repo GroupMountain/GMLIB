@@ -3,9 +3,9 @@
 
 namespace GMLIB::Files {
 
-McLang::McLang(std::unordered_map<std::string, std::string> data) : mData(data) {}
+McLang::McLang(std::unordered_map<std::string, std::string> const& data) : mData(data) {}
 
-McLang McLang::parse_file(std::string filePath) {
+McLang McLang::parse_file(std::string const& filePath) {
     std::vector<std::string> lines;
     std::ifstream            file(filePath);
     auto                     result = McLang();
@@ -47,7 +47,7 @@ std::vector<std::string> splitStringByNewline(const std::string& input) {
     return lines;
 }
 
-McLang McLang::parse(std::string data) {
+McLang McLang::parse(std::string const& data) {
     auto lines  = splitStringByNewline(data);
     auto result = McLang();
     for (auto& line : lines) {
@@ -81,7 +81,7 @@ std::string McLang::dump() {
     return result;
 }
 
-bool McLang::write_to_file(std::string filePath) {
+bool McLang::write_to_file(std::string const& filePath) {
     std::ofstream newFile(filePath);
     if (newFile.is_open()) {
         newFile << dump();
@@ -91,30 +91,31 @@ bool McLang::write_to_file(std::string filePath) {
     return false;
 }
 
-bool McLang::has_value(std::string key) { return (bool)mData.count(key); }
+bool McLang::has_value(std::string const& key) { return (bool)mData.count(key); }
 
-void McLang::set_value(std::string key, std::string value) { mData[key] = value; }
+void McLang::set_value(std::string const& key, std::string const& value) { mData[key] = value; }
 
-void McLang::merge_patch(McLang newData) {
+void McLang::merge_patch(McLang const& newData) {
     for (auto& key : newData.mData) {
         mData[key.first] = key.second;
     }
 }
 
-std::optional<std::string> McLang::get_value(std::string key) {
+std::optional<std::string> McLang::get_value(std::string const& key) {
     if (mData.count(key)) {
         return mData[key];
     }
     return {};
 }
 
-void McLang::erase(std::string key) {
+void McLang::erase(std::string const& key) {
     if (has_value(key)) {
         mData.erase(key);
     }
 }
 
-std::string McLang::translate(std::string key, std::vector<std::string> data, std::string translateKeys) {
+std::string
+McLang::translate(std::string const& key, std::vector<std::string> const& data, std::string const& translateKeys) {
     auto value = get_value(key);
     if (value.has_value()) {
         auto result = value.value();
@@ -135,7 +136,8 @@ std::string McLang::translate(std::string key, std::vector<std::string> data, st
     return key;
 }
 
-std::string McLang::get(std::string key, std::vector<std::string> data, std::string translateKeys) {
+std::string
+McLang::get(std::string const& key, std::vector<std::string> const& data, std::string const& translateKeys) {
     return translate(key, data, translateKeys);
 }
 

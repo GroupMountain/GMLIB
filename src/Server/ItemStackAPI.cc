@@ -38,13 +38,13 @@ short GMLIB_ItemStack::getAuxValue() { return mAuxValue; }
 
 void GMLIB_ItemStack::setAuxValue(short auxValue) { mAuxValue = auxValue; }
 
-void GMLIB_ItemStack::setItem(std::string name, int count, short auxValue) { reinit(name, count, auxValue); }
+void GMLIB_ItemStack::setItem(std::string const& name, int count, short auxValue) { reinit(name, count, auxValue); }
 
 std::vector<const BlockLegacy*> GMLIB_ItemStack::getCanDestroy() { return mCanDestroy; }
 
 void GMLIB_ItemStack::setCanDestroy(std::vector<const BlockLegacy*> blocks) { mCanDestroy = blocks; }
 
-void GMLIB_ItemStack::setCanDestroy(std::vector<std::string> blocks) {
+void GMLIB_ItemStack::setCanDestroy(std::vector<std::string> const& blocks) {
     std::vector<const BlockLegacy*> data;
     for (auto& name : blocks) {
         if (auto block = BlockLegacy::tryGetFromRegistry(name)) {
@@ -58,7 +58,7 @@ std::vector<const BlockLegacy*> GMLIB_ItemStack::getCanPlaceOn() { return mCanPl
 
 void GMLIB_ItemStack::setCanPlaceOn(std::vector<const BlockLegacy*> blocks) { mCanPlaceOn = blocks; }
 
-void GMLIB_ItemStack::setCanPlaceOn(std::vector<std::string> blocks) {
+void GMLIB_ItemStack::setCanPlaceOn(std::vector<std::string> const& blocks) {
     std::vector<const BlockLegacy*> data;
     for (auto& name : blocks) {
         if (auto block = BlockLegacy::tryGetFromRegistry(name)) {

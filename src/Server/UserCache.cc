@@ -12,7 +12,7 @@ void saveUserCacheFile() {
     GMLIB::Files::JsonFile::writeFile(path, mUserCache);
 }
 
-void updateUserCache(mce::UUID const& uuid, std::string& xuid, std::string& realName) {
+void updateUserCache(mce::UUID const& uuid, std::string const& xuid, std::string const& realName) {
     for (auto& key : mUserCache) {
         if (key["uuid"] == uuid.asString()) {
             key["uuid"]     = uuid.asString();
@@ -30,7 +30,7 @@ void updateUserCache(mce::UUID const& uuid, std::string& xuid, std::string& real
     saveUserCacheFile();
 }
 
-std::optional<nlohmann::json> tryFindCacheInfoFromUuid(std::string& uuid) {
+std::optional<nlohmann::json> tryFindCacheInfoFromUuid(std::string const& uuid) {
     for (auto& key : mUserCache) {
         if (key["uuid"] == uuid) {
             return key;
@@ -39,7 +39,7 @@ std::optional<nlohmann::json> tryFindCacheInfoFromUuid(std::string& uuid) {
     return {};
 }
 
-std::optional<nlohmann::json> tryFindCacheInfoFromXuid(std::string& xuid) {
+std::optional<nlohmann::json> tryFindCacheInfoFromXuid(std::string const& xuid) {
     for (auto& key : mUserCache) {
         if (key["xuid"] == xuid) {
             return key;
@@ -48,7 +48,7 @@ std::optional<nlohmann::json> tryFindCacheInfoFromXuid(std::string& xuid) {
     return {};
 }
 
-std::optional<nlohmann::json> tryFindCacheInfoFromName(std::string& name) {
+std::optional<nlohmann::json> tryFindCacheInfoFromName(std::string const& name) {
     for (auto& key : mUserCache) {
         if (key["realName"] == name) {
             return key;
@@ -57,7 +57,7 @@ std::optional<nlohmann::json> tryFindCacheInfoFromName(std::string& name) {
     return {};
 }
 
-std::optional<std::string> getXuidByUuid(std::string& uuid) {
+std::optional<std::string> getXuidByUuid(std::string const& uuid) {
     auto info = tryFindCacheInfoFromUuid(uuid);
     if (info.has_value()) {
         auto res = info.value().at("xuid").get<std::string>();
@@ -65,7 +65,7 @@ std::optional<std::string> getXuidByUuid(std::string& uuid) {
     return {};
 }
 
-std::optional<std::string> getNameByUuid(std::string& uuid) {
+std::optional<std::string> getNameByUuid(std::string const& uuid) {
     auto info = tryFindCacheInfoFromUuid(uuid);
     if (info.has_value()) {
         auto res = info.value().at("realName").get<std::string>();
@@ -73,7 +73,7 @@ std::optional<std::string> getNameByUuid(std::string& uuid) {
     return {};
 }
 
-std::optional<std::string> getUuidByXuid(std::string& xuid) {
+std::optional<std::string> getUuidByXuid(std::string const& xuid) {
     auto info = tryFindCacheInfoFromUuid(xuid);
     if (info.has_value()) {
         auto res = info.value().at("uuid").get<std::string>();
@@ -81,7 +81,7 @@ std::optional<std::string> getUuidByXuid(std::string& xuid) {
     return {};
 }
 
-std::optional<std::string> getNameByXuid(std::string& xuid) {
+std::optional<std::string> getNameByXuid(std::string const& xuid) {
     auto info = tryFindCacheInfoFromUuid(xuid);
     if (info.has_value()) {
         auto res = info.value().at("realName").get<std::string>();
@@ -89,7 +89,7 @@ std::optional<std::string> getNameByXuid(std::string& xuid) {
     return {};
 }
 
-std::optional<std::string> getXuidByName(std::string& name) {
+std::optional<std::string> getXuidByName(std::string const& name) {
     auto info = tryFindCacheInfoFromUuid(name);
     if (info.has_value()) {
         auto res = info.value().at("xuid").get<std::string>();
@@ -97,7 +97,7 @@ std::optional<std::string> getXuidByName(std::string& name) {
     return {};
 }
 
-std::optional<std::string> getUuidByName(std::string& name) {
+std::optional<std::string> getUuidByName(std::string const& name) {
     auto info = tryFindCacheInfoFromUuid(name);
     if (info.has_value()) {
         auto res = info.value().at("uuid").get<std::string>();

@@ -12,13 +12,13 @@ using RegistryCall = std::function<
 
 class JsonItem {
 public:
-    GMLIB_API static void loadJsonItem(std::string json);
+    GMLIB_API static void loadJsonItem(std::string const& json);
 
-    GMLIB_API static void loadJsonItem(nlohmann::json json);
+    GMLIB_API static void loadJsonItem(nlohmann::json const& json);
 
     GMLIB_API static WeakPtr<class Item> loadJsonItem(
-        std::string        typeId,
-        std::string        json,
+        std::string const& typeId,
+        std::string const& json,
         ItemRegistry&      registry,
         RegistryCall       call,
         Experiments const& experiments,
@@ -26,12 +26,12 @@ public:
     );
 
     GMLIB_API static WeakPtr<class Item> loadJsonItem(
-        std::string        typeId,
-        nlohmann::json     json,
-        ItemRegistry&      registry,
-        RegistryCall       call,
-        Experiments const& experiments,
-        ::ItemVersion      version
+        std::string const&    typeId,
+        nlohmann::json const& json,
+        ItemRegistry&         registry,
+        RegistryCall          call,
+        Experiments const&    experiments,
+        ::ItemVersion         version
     );
 };
 

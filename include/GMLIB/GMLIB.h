@@ -19,16 +19,16 @@ public:
 
     GMLIB_API Version(class SemVersion const& version);
 
-    GMLIB_API bool isInRange(Version minVersion, Version maxVersion);
+    GMLIB_API bool isInRange(Version const& minVersion, Version const& maxVersion);
 
     GMLIB_API std::string toString(bool prefix = true);
 
 public:
-    GMLIB_API static bool isValidVersionString(std::string version);
+    GMLIB_API static bool isValidVersionString(std::string const& version);
 
-    GMLIB_API static std::optional<Version> fromString(std::string version);
+    GMLIB_API static std::optional<Version> fromString(std::string const& version);
 
-    GMLIB_API static std::optional<Version> fromVector(std::vector<int> version);
+    GMLIB_API static std::optional<Version> fromVector(std::vector<int> const& version);
 
     GMLIB_API static Version getLibVersion();
 
@@ -40,9 +40,9 @@ public:
 
     GMLIB_API static std::string getPreReleaseInfo();
 
-    GMLIB_API static bool checkLibVersionMatch(Version minVersion);
+    GMLIB_API static bool checkLibVersionMatch(Version const& minVersion);
 
-    GMLIB_API static bool checkLibVersionMatch(Version minVersion, Version maxVersion);
+    GMLIB_API static bool checkLibVersionMatch(Version const& minVersion, Version const& maxVersion);
 
     GMLIB_API static int getProtocolVersion();
 

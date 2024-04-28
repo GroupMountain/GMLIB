@@ -12,9 +12,9 @@ namespace GMLIB::Mod {
 
 std::vector<std::string> mAllItemJson;
 
-void JsonItem::loadJsonItem(std::string json) { mAllItemJson.push_back(json); }
+void JsonItem::loadJsonItem(std::string const& json) { mAllItemJson.push_back(json); }
 
-void JsonItem::loadJsonItem(nlohmann::json json) {
+void JsonItem::loadJsonItem(nlohmann::json const& json) {
     auto value = json.dump();
     mAllItemJson.push_back(value);
 }
@@ -49,8 +49,8 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
 }
 
 WeakPtr<class Item> JsonItem::loadJsonItem(
-    std::string        typeId,
-    std::string        json,
+    std::string const& typeId,
+    std::string const& json,
     ItemRegistry&      registry,
     RegistryCall       call,
     Experiments const& experiments,
@@ -70,12 +70,12 @@ WeakPtr<class Item> JsonItem::loadJsonItem(
 }
 
 WeakPtr<class Item> JsonItem::loadJsonItem(
-    std::string        typeId,
-    nlohmann::json     json,
-    ItemRegistry&      registry,
-    RegistryCall       call,
-    Experiments const& experiments,
-    ::ItemVersion      version
+    std::string const&    typeId,
+    nlohmann::json const& json,
+    ItemRegistry&         registry,
+    RegistryCall          call,
+    Experiments const&    experiments,
+    ::ItemVersion         version
 ) {
     registry._parseItemDefinition(
         json.dump(),

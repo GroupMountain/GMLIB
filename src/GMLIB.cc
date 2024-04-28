@@ -70,7 +70,7 @@ Version::Version(ushort major, ushort minor, ushort patch, std::string const& pr
 
 Version::Version(class SemVersion const& sem_version) : SemVersion(sem_version) {}
 
-bool Version::isInRange(Version minVersion, Version maxVersion) {
+bool Version::isInRange(Version const& minVersion, Version const& maxVersion) {
     return (*this >= minVersion) && (*this <= maxVersion);
 }
 
@@ -82,12 +82,12 @@ std::string Version::toString(bool prefix) {
     return result;
 }
 
-bool Version::isValidVersionString(std::string version) {
+bool Version::isValidVersionString(std::string const& version) {
     std::regex pattern("(v)?(\\d+)\\.(\\d+)\\.(\\d+)");
     return std::regex_match(version, pattern);
 }
 
-std::optional<Version> Version::fromString(std::string version) {
+std::optional<Version> Version::fromString(std::string const& version) {
     if (isValidVersionString(version)) {
         std::istringstream iss(version);
         char               prefix;
@@ -106,7 +106,7 @@ std::optional<Version> Version::fromString(std::string version) {
     return {};
 }
 
-std::optional<Version> Version::fromVector(std::vector<int> version) {
+std::optional<Version> Version::fromVector(std::vector<int> const& version) {
     if (version.size() == 3) {
         return Version(version[0], version[1], version[2]);
     }
@@ -131,9 +131,9 @@ bool Version::isPreReleaseVersion() { return !getLibVersion().getPreRelease().em
 
 std::string Version::getPreReleaseInfo() { return getLibVersion().getPreRelease(); }
 
-bool Version::checkLibVersionMatch(Version minVersion) { return getLibVersion() >= minVersion; }
+bool Version::checkLibVersionMatch(Version const& minVersion) { return getLibVersion() >= minVersion; }
 
-bool Version::checkLibVersionMatch(Version minVersion, Version maxVersion) {
+bool Version::checkLibVersionMatch(Version const& minVersion, Version const& maxVersion) {
     return getLibVersion().isInRange(minVersion, maxVersion);
 }
 

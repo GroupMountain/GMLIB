@@ -21,9 +21,9 @@ struct BiomeData {
 
 class CustomBiome {
 public:
-    GMLIB_API static void registerBiomeClimates(std::string id, BiomeData data);
+    GMLIB_API static void registerBiomeClimates(std::string const& id, BiomeData data);
 
-    GMLIB_API static void registerEmptyBiome(std::string id, BiomeData data);
+    GMLIB_API static void registerEmptyBiome(std::string const& id, BiomeData data);
 };
 
 } // namespace GMLIB::Mod

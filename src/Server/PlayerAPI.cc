@@ -100,14 +100,14 @@ std::string GMLIB_Player::getServerIdFromUuid(mce::UUID const& uuid) {
     return DBTag->getString("ServerId");
 }
 
-std::unique_ptr<CompoundTag> GMLIB_Player::getOfflineNbt(std::string& serverId) {
+std::unique_ptr<CompoundTag> GMLIB_Player::getOfflineNbt(std::string const& serverId) {
     if (!GMLIB::Global<DBStorage>->hasKey(serverId, DBHelpers::Category::Player)) {
         return nullptr;
     }
     return GMLIB::Global<DBStorage>->getCompoundTag(serverId, DBHelpers::Category::Player);
 }
 
-bool GMLIB_Player::createNewPlayerTag(mce::UUID const& uuid, std::string serverId) {
+bool GMLIB_Player::createNewPlayerTag(mce::UUID const& uuid, std::string const& serverId) {
     auto keyId = "player_" + uuid.asString();
     if (!GMLIB::Global<DBStorage>->hasKey(keyId, DBHelpers::Category::Player)) {
         auto keyData = CompoundTag{
@@ -121,7 +121,7 @@ bool GMLIB_Player::createNewPlayerTag(mce::UUID const& uuid, std::string serverI
     return false;
 }
 
-bool GMLIB_Player::setOfflineNbt(std::string& serverId, CompoundTag& nbt) {
+bool GMLIB_Player::setOfflineNbt(std::string const& serverId, CompoundTag& nbt) {
     try {
         if (serverId.empty()) {
             return false;
@@ -133,7 +133,7 @@ bool GMLIB_Player::setOfflineNbt(std::string& serverId, CompoundTag& nbt) {
     }
 }
 
-std::unique_ptr<CompoundTag> GMLIB_Player::getPlayerNbt(std::string& serverId) {
+std::unique_ptr<CompoundTag> GMLIB_Player::getPlayerNbt(std::string const& serverId) {
     if (serverId.empty()) {
         return nullptr;
     }
@@ -156,7 +156,7 @@ std::unique_ptr<CompoundTag> GMLIB_Player::getNbt() {
     return std::move(nbt);
 }
 
-bool GMLIB_Player::setPlayerNbt(std::string& serverId, CompoundTag& nbt) {
+bool GMLIB_Player::setPlayerNbt(std::string const& serverId, CompoundTag& nbt) {
     if (serverId.empty()) {
         return false;
     }
@@ -183,7 +183,11 @@ bool GMLIB_Player::setPlayerNbt(mce::UUID const& uuid, CompoundTag& nbt, bool fo
 
 bool GMLIB_Player::setNbt(CompoundTag& nbt) { return load(nbt, *GMLIB_CompoundTag::getDataLoadHelper()); }
 
-bool GMLIB_Player::setPlayerNbtTags(std::string& serverId, CompoundTag& nbt, const std::vector<std::string>& tags) {
+bool GMLIB_Player::setPlayerNbtTags(
+    std::string const&              serverId,
+    CompoundTag&                    nbt,
+    std::vector<std::string> const& tags
+) {
     if (serverId.empty()) {
         return false;
     }
@@ -209,7 +213,7 @@ bool GMLIB_Player::setNbtTags(CompoundTag& nbt, const std::vector<std::string>& 
     return res;
 }
 
-bool GMLIB_Player::deletePlayerNbt(std::string& serverId) {
+bool GMLIB_Player::deletePlayerNbt(std::string const& serverId) {
     if (serverId.empty()) {
         return false;
     }
@@ -233,7 +237,7 @@ bool GMLIB_Player::deletePlayerNbt(mce::UUID const& uuid) {
     return deletePlayerNbt(serverId);
 }
 
-ActorUniqueID GMLIB_Player::getPlayerUniqueID(std::string& serverId) {
+ActorUniqueID GMLIB_Player::getPlayerUniqueID(std::string const& serverId) {
     if (auto player = ll::service::bedrock::getLevel()->getPlayerFromServerId(serverId)) {
         return player->getOrCreateUniqueID();
     }
@@ -270,7 +274,7 @@ ActorUniqueID GMLIB_Player::getPlayerUniqueID(mce::UUID const& uuid) {
     return getPlayerUniqueID(serverId);
 }
 
-std::optional<std::pair<Vec3, int>> GMLIB_Player::getPlayerPosition(std::string& serverId) {
+std::optional<std::pair<Vec3, int>> GMLIB_Player::getPlayerPosition(std::string const& serverId) {
     auto pl = ll::service::getLevel()->getPlayerFromServerId(serverId);
     if (pl) {
         return {
@@ -296,7 +300,7 @@ std::optional<std::pair<Vec3, int>> GMLIB_Player::getPlayerPosition(mce::UUID co
     return getPlayerPosition(serverId);
 }
 
-bool GMLIB_Player::setPlayerPosition(std::string& serverId, Vec3 pos, DimensionType dimId) {
+bool GMLIB_Player::setPlayerPosition(std::string const& serverId, Vec3 const& pos, DimensionType dimId) {
     auto pl = ll::service::getLevel()->getPlayerFromServerId(serverId);
     if (pl) {
         pl->teleport(pos, dimId);
@@ -314,14 +318,14 @@ bool GMLIB_Player::setPlayerPosition(std::string& serverId, Vec3 pos, DimensionT
     return false;
 }
 
-bool GMLIB_Player::setPlayerPosition(mce::UUID const& uuid, Vec3 pos, DimensionType dimId) {
+bool GMLIB_Player::setPlayerPosition(mce::UUID const& uuid, Vec3 const& pos, DimensionType dimId) {
     auto serverId = getServerIdFromUuid(uuid);
     return setPlayerPosition(serverId, pos, dimId);
 }
 
 void GMLIB_Player::setClientSidebar(
-    const std::string                               title,
-    const std::vector<std::pair<std::string, int>>& data,
+    std::string const&                              title,
+    std::vector<std::pair<std::string, int>> const& data,
     ObjectiveSortOrder                              sortOrder
 ) {
     SetDisplayObjectivePacket("sidebar", "GMLIB_SIDEBAR_API", title, "dummy", ObjectiveSortOrder(sortOrder))
@@ -393,11 +397,11 @@ void GMLIB_Player::setClientGamemode(GameType gamemode) {
 }
 
 void GMLIB_Player::setClientBossbar(
-    int64_t          bossbarId,
-    std::string      name,
-    float            percentage,
-    ::BossBarColor   color,
-    ::BossBarOverlay overlay
+    int64_t            bossbarId,
+    std::string const& name,
+    float              percentage,
+    ::BossBarColor     color,
+    ::BossBarOverlay   overlay
 ) {
     // AddActorPacket
     auto uniqueId = ActorUniqueID(bossbarId);
@@ -430,8 +434,12 @@ void GMLIB_Player::setClientBossbar(
     pkt2.sendTo(*this);
 }
 
-int64_t
-GMLIB_Player::setClientBossbar(std::string name, float percentage, ::BossBarColor color, ::BossBarOverlay overlay) {
+int64_t GMLIB_Player::setClientBossbar(
+    std::string const& name,
+    float              percentage,
+    ::BossBarColor     color,
+    ::BossBarOverlay   overlay
+) {
     auto bossbarId = GMLIB_Actor::getNextActorUniqueID();
     setClientBossbar(bossbarId, name, percentage, color, overlay);
     return bossbarId;
@@ -454,7 +462,7 @@ void GMLIB_Player::updateClientBossbarPercentage(int64_t bossbarId, float percen
     pkt.sendTo(*this);
 }
 
-void GMLIB_Player::updateClientBossbarName(int64_t bossbarId, std::string name) {
+void GMLIB_Player::updateClientBossbarName(int64_t bossbarId, std::string const& name) {
     auto pkt       = BossEventPacket();
     pkt.mBossID    = ActorUniqueID(bossbarId);
     pkt.mName      = name;
@@ -490,12 +498,12 @@ void GMLIB_Player::addEffect(
 }
 
 void GMLIB_Player::addEffect(
-    std::string effectType,
-    int         duration,
-    int         amplifier,
-    bool        showParticles,
-    bool        ambient,
-    bool        showAnimation
+    std::string const& effectType,
+    int                duration,
+    int                amplifier,
+    bool               showParticles,
+    bool               ambient,
+    bool               showAnimation
 ) {
     if (auto effectInstance = MobEffect::getByName(effectType)) {
         auto effectId = effectInstance->getId();
@@ -506,7 +514,7 @@ void GMLIB_Player::addEffect(
 
 void GMLIB_Player::removeEffect(MobEffect::EffectType effectType) { return removeEffect((int)effectType); }
 
-void GMLIB_Player::removeEffect(std::string effectType) {
+void GMLIB_Player::removeEffect(std::string const& effectType) {
     if (auto effectInstance = MobEffect::getByName(effectType)) {
         auto effectId = effectInstance->getId();
         return removeEffect(effectId);
@@ -524,17 +532,17 @@ std::vector<MobEffectInstance> GMLIB_Player::getAllEffects() {
     return result;
 }
 
-std::optional<int> GMLIB_Player::getScore(std::string objective) {
+std::optional<int> GMLIB_Player::getScore(std::string const& objective) {
     auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->getPlayerScore(objective, this);
 }
 
-std::optional<int> GMLIB_Player::setScore(std::string objective, int value, PlayerScoreSetFunction action) {
+std::optional<int> GMLIB_Player::setScore(std::string const& objective, int value, PlayerScoreSetFunction action) {
     auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->setPlayerScore(objective, this, value, action);
 }
 
-bool GMLIB_Player::resetScore(std::string objective) {
+bool GMLIB_Player::resetScore(std::string const& objective) {
     auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->resetPlayerScore(objective, this);
 }
@@ -544,39 +552,47 @@ bool GMLIB_Player::resetScore() {
     return scoreboard->resetPlayerScore(this);
 }
 
-std::optional<int> GMLIB_Player::getPlayerScore(std::string& serverId, std::string objective) {
+std::optional<int> GMLIB_Player::getPlayerScore(std::string const& serverId, std::string const& objective) {
     auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->getPlayerScore(objective, serverId);
 }
 
-std::optional<int> GMLIB_Player::getPlayerScore(mce::UUID const& uuid, std::string objective) {
+std::optional<int> GMLIB_Player::getPlayerScore(mce::UUID const& uuid, std::string const& objective) {
     auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->getPlayerScore(objective, uuid);
 }
 
-std::optional<int>
-GMLIB_Player::setPlayerScore(std::string& serverId, std::string objective, int value, PlayerScoreSetFunction action) {
+std::optional<int> GMLIB_Player::setPlayerScore(
+    std::string const&     serverId,
+    std::string const&     objective,
+    int                    value,
+    PlayerScoreSetFunction action
+) {
     auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->setPlayerScore(objective, serverId, value, action);
 }
 
-std::optional<int>
-GMLIB_Player::setPlayerScore(mce::UUID const& uuid, std::string objective, int value, PlayerScoreSetFunction action) {
+std::optional<int> GMLIB_Player::setPlayerScore(
+    mce::UUID const&       uuid,
+    std::string const&     objective,
+    int                    value,
+    PlayerScoreSetFunction action
+) {
     auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->setPlayerScore(objective, uuid, value, action);
 }
 
-bool GMLIB_Player::resetPlayerScore(std::string& serverId, std::string objective) {
+bool GMLIB_Player::resetPlayerScore(std::string const& serverId, std::string const& objective) {
     auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->resetPlayerScore(objective, serverId);
 }
 
-bool GMLIB_Player::resetPlayerScore(mce::UUID const& uuid, std::string objective) {
+bool GMLIB_Player::resetPlayerScore(mce::UUID const& uuid, std::string const& objective) {
     auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->resetPlayerScore(objective, uuid);
 }
 
-bool GMLIB_Player::resetPlayerScore(std::string& serverId) {
+bool GMLIB_Player::resetPlayerScore(std::string const& serverId) {
     auto scoreboard = GMLIB_Scoreboard::getInstance();
     return scoreboard->resetPlayerScore(serverId);
 }
@@ -600,13 +616,13 @@ void GMLIB_Player::setOffHandSlot(ItemStack& itemStack) {
     return setEquippedSlot(Puv::Legacy::EquipmentSlot::Offhand, itemStack);
 }
 
-GMLIB_Actor* GMLIB_Player::shootProjectile(std::string typeName, float speed, float offset) {
+GMLIB_Actor* GMLIB_Player::shootProjectile(std::string const& typeName, float speed, float offset) {
     return GMLIB_Spawner::spawnProjectile((GMLIB_Actor*)this, typeName, speed, offset);
 }
 
 void GMLIB_Player::setFreezing(float percentage) { getEntityData().set<float>(0x78, percentage); }
 
-void GMLIB_Player::hurtPlayer(float damage, std::string causeName, Actor* source) {
+void GMLIB_Player::hurtPlayer(float damage, std::string const& causeName, Actor* source) {
     auto cause = GMLIB::Mod::DamageCause::getCauseFromName(causeName);
     this->hurtByCause(damage, cause, source);
 }

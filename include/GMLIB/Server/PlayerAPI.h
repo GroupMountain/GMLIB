@@ -32,31 +32,31 @@ public:
 
     GMLIB_API static std::string getServerIdFromUuid(mce::UUID const& uuid);
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getOfflineNbt(std::string& serverId);
+    GMLIB_API static std::unique_ptr<CompoundTag> getOfflineNbt(std::string const& serverId);
 
-    GMLIB_API static bool setOfflineNbt(std::string& serverId, CompoundTag& nbt);
+    GMLIB_API static bool setOfflineNbt(std::string const& serverId, CompoundTag& nbt);
 
-    GMLIB_API static bool createNewPlayerTag(mce::UUID const& uuid, std::string serverId);
+    GMLIB_API static bool createNewPlayerTag(mce::UUID const& uuid, std::string const& serverId);
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getPlayerNbt(std::string& serverId);
+    GMLIB_API static std::unique_ptr<CompoundTag> getPlayerNbt(std::string const& serverId);
 
     GMLIB_API static std::unique_ptr<CompoundTag> getPlayerNbt(mce::UUID const& uuid);
 
-    GMLIB_API static bool setPlayerNbt(std::string& serverId, CompoundTag& nbt);
+    GMLIB_API static bool setPlayerNbt(std::string const& serverId, CompoundTag& nbt);
 
     GMLIB_API static bool setPlayerNbt(mce::UUID const& uuid, CompoundTag& nbt, bool forceCreate = true);
 
     GMLIB_API static bool
-    setPlayerNbtTags(std::string& serverId, CompoundTag& nbt, const std::vector<std::string>& tags);
+    setPlayerNbtTags(std::string const& serverId, CompoundTag& nbt, std::vector<std::string> const& tags);
 
     GMLIB_API static bool
-    setPlayerNbtTags(mce::UUID const& uuid, CompoundTag& nbt, const std::vector<std::string>& tags);
+    setPlayerNbtTags(mce::UUID const& uuid, CompoundTag& nbt, std::vector<std::string> const& tags);
 
-    GMLIB_API static bool deletePlayerNbt(std::string& serverId);
+    GMLIB_API static bool deletePlayerNbt(std::string const& serverId);
 
     GMLIB_API static bool deletePlayerNbt(mce::UUID const& uuid);
 
-    GMLIB_API static ActorUniqueID getPlayerUniqueID(std::string& serverId);
+    GMLIB_API static ActorUniqueID getPlayerUniqueID(std::string const& serverId);
 
     GMLIB_API static ActorUniqueID getPlayerUniqueID(mce::UUID const& uuid);
 
@@ -64,52 +64,52 @@ public:
 
     GMLIB_API static std::unordered_map<int64, mce::UUID> getUniqueIdToUuidMap();
 
-    GMLIB_API static std::optional<int> getPlayerScore(std::string& serverId, std::string objective);
+    GMLIB_API static std::optional<int> getPlayerScore(std::string const& serverId, std::string const& objective);
 
-    GMLIB_API static std::optional<int> getPlayerScore(mce::UUID const& uuid, std::string objective);
+    GMLIB_API static std::optional<int> getPlayerScore(mce::UUID const& uuid, std::string const& objective);
 
     GMLIB_API static std::optional<int> setPlayerScore(
-        std::string&           serverId,
-        std::string            objective,
+        std::string const&     serverId,
+        std::string const&     objective,
         int                    value,
         PlayerScoreSetFunction action = PlayerScoreSetFunction::Set
     );
 
     GMLIB_API static std::optional<int> setPlayerScore(
         mce::UUID const&       uuid,
-        std::string            objective,
+        std::string const&     objective,
         int                    value,
         PlayerScoreSetFunction action = PlayerScoreSetFunction::Set
     );
 
-    GMLIB_API static bool resetPlayerScore(std::string& serverId, std::string objective);
+    GMLIB_API static bool resetPlayerScore(std::string const& serverId, std::string const& objective);
 
-    GMLIB_API static bool resetPlayerScore(mce::UUID const& uuid, std::string objective);
+    GMLIB_API static bool resetPlayerScore(mce::UUID const& uuid, std::string const& objective);
 
-    GMLIB_API static bool resetPlayerScore(std::string& serverId);
+    GMLIB_API static bool resetPlayerScore(std::string const& serverId);
 
     GMLIB_API static bool resetPlayerScore(mce::UUID const& uuid);
 
-    GMLIB_API static std::optional<std::pair<Vec3, int>> getPlayerPosition(std::string& serverId);
+    GMLIB_API static std::optional<std::pair<Vec3, int>> getPlayerPosition(std::string const& serverId);
 
     GMLIB_API static std::optional<std::pair<Vec3, int>> getPlayerPosition(mce::UUID const& uuid);
 
-    GMLIB_API static bool setPlayerPosition(std::string& serverId, Vec3 pos, DimensionType dimId);
+    GMLIB_API static bool setPlayerPosition(std::string const& serverId, Vec3 const& pos, DimensionType dimId);
 
-    GMLIB_API static bool setPlayerPosition(mce::UUID const& uuid, Vec3 pos, DimensionType dimId);
+    GMLIB_API static bool setPlayerPosition(mce::UUID const& uuid, Vec3 const& pos, DimensionType dimId);
 
 public:
     GMLIB_API std::unique_ptr<CompoundTag> getNbt();
 
     GMLIB_API bool setNbt(CompoundTag& nbt);
 
-    GMLIB_API bool setNbtTags(CompoundTag& nbt, const std::vector<std::string>& tags);
+    GMLIB_API bool setNbtTags(CompoundTag& nbt, std::vector<std::string> const& tags);
 
     GMLIB_API std::string getDimensionName();
 
     GMLIB_API std::string getDimensionTypeName();
 
-    GMLIB_API std::optional<int> getScore(std::string objective);
+    GMLIB_API std::optional<int> getScore(std::string const& objective);
 
     GMLIB_API std::string_view getIP();
 
@@ -122,17 +122,17 @@ public:
     GMLIB_API std::string_view getLanguageCode();
 
     GMLIB_API std::optional<int>
-              setScore(std::string objective, int value, PlayerScoreSetFunction action = PlayerScoreSetFunction::Set);
+    setScore(std::string const& objective, int value, PlayerScoreSetFunction action = PlayerScoreSetFunction::Set);
 
-    GMLIB_API bool resetScore(std::string objective);
+    GMLIB_API bool resetScore(std::string const& objective);
 
-    GMLIB_API GMLIB_Actor* shootProjectile(std::string typeName, float speed = 2, float offset = 3);
+    GMLIB_API GMLIB_Actor* shootProjectile(std::string const& typeName, float speed = 2, float offset = 3);
 
     GMLIB_API bool resetScore();
 
     GMLIB_API void setClientSidebar(
-        const std::string                               title,
-        const std::vector<std::pair<std::string, int>>& data,
+        std::string const&                              title,
+        std::vector<std::pair<std::string, int>> const& data,
         ObjectiveSortOrder                              sortOrder = ObjectiveSortOrder::Ascending
     );
 
@@ -163,25 +163,25 @@ public:
     GMLIB_API void setClientGamemode(GameType gamemode);
 
     GMLIB_API void setClientBossbar(
-        int64_t          bossbarId,
-        std::string      name,
-        float            percentage,
-        ::BossBarColor   color   = BossBarColor::Purple,
-        ::BossBarOverlay overlay = BossBarOverlay::Progress
+        int64_t            bossbarId,
+        std::string const& name,
+        float              percentage,
+        ::BossBarColor     color   = BossBarColor::Purple,
+        ::BossBarOverlay   overlay = BossBarOverlay::Progress
     );
 
     GMLIB_API int64_t setClientBossbar(
-        std::string      name,
-        float            percentage = 1.00f,
-        ::BossBarColor   color      = BossBarColor::Purple,
-        ::BossBarOverlay overlay    = BossBarOverlay::Progress
+        std::string const& name,
+        float              percentage = 1.00f,
+        ::BossBarColor     color      = BossBarColor::Purple,
+        ::BossBarOverlay   overlay    = BossBarOverlay::Progress
     );
 
     GMLIB_API void removeClientBossbar(int64_t bossbarId);
 
     GMLIB_API void updateClientBossbarPercentage(int64_t bossbarId, float percentage);
 
-    GMLIB_API void updateClientBossbarName(int64_t bossbarId, std::string name);
+    GMLIB_API void updateClientBossbarName(int64_t bossbarId, std::string const& name);
 
     GMLIB_API void updateClientBossbarColor(int64_t bossbarId, ::BossBarColor color);
 
@@ -209,17 +209,17 @@ public:
     );
 
     GMLIB_API void addEffect(
-        std::string effectType,
-        int         duration      = 600,
-        int         amplifier     = 0,
-        bool        showParticles = true,
-        bool        ambient       = false,
-        bool        showAnimation = false
+        std::string const& effectType,
+        int                duration      = 600,
+        int                amplifier     = 0,
+        bool               showParticles = true,
+        bool               ambient       = false,
+        bool               showAnimation = false
     );
 
     GMLIB_API void removeEffect(MobEffect::EffectType effectType);
 
-    GMLIB_API void removeEffect(std::string effectType);
+    GMLIB_API void removeEffect(std::string const& effectType);
 
     GMLIB_API std::vector<MobEffectInstance> getAllEffects();
 
@@ -235,7 +235,7 @@ public:
 
     GMLIB_API FullPlayerInventoryWrapper getFullPlayerInventoryWrapper();
 
-    GMLIB_API void hurtPlayer(float damage, std::string causeName = "override", Actor* source = nullptr);
+    GMLIB_API void hurtPlayer(float damage, std::string const& causeName = "override", Actor* source = nullptr);
 
     GMLIB_API int clearAllItems();
 

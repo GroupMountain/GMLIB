@@ -15,13 +15,15 @@ std::unordered_map<std::string, DisplayObjective> GMLIB_Scoreboard::getDisplayOb
 
 IdentityDictionary* GMLIB_Scoreboard::getIdentityDictionary() { return &mIdentityDict; }
 
-Objective* GMLIB_Scoreboard::addObjective(std::string name, std::string displayName) {
+Objective* GMLIB_Scoreboard::addObjective(std::string const& name, std::string const& displayName) {
     return addObjective(name, displayName, *getCriteria("dummy"));
 }
 
-Objective* GMLIB_Scoreboard::addObjective(std::string name) { return addObjective(name, name, *getCriteria("dummy")); }
+Objective* GMLIB_Scoreboard::addObjective(std::string const& name) {
+    return addObjective(name, name, *getCriteria("dummy"));
+}
 
-bool GMLIB_Scoreboard::removeObjective(std::string objective) {
+bool GMLIB_Scoreboard::removeObjective(std::string const& objective) {
     auto obj = getObjective(objective);
     if (obj) {
         return removeObjective(obj);
@@ -29,7 +31,7 @@ bool GMLIB_Scoreboard::removeObjective(std::string objective) {
     return false;
 }
 
-std::optional<int> GMLIB_Scoreboard::getScore(Objective* objective, ScoreboardId& scoreboardId) {
+std::optional<int> GMLIB_Scoreboard::getScore(Objective* objective, ScoreboardId const& scoreboardId) {
     if (objective && scoreboardId.isValid()) {
         auto scores = getIdScores(scoreboardId);
         for (auto& score : scores) {
@@ -41,7 +43,7 @@ std::optional<int> GMLIB_Scoreboard::getScore(Objective* objective, ScoreboardId
     return {};
 }
 
-ScoreboardId GMLIB_Scoreboard::getPlayerScoreboardId(std::string serverId) {
+ScoreboardId GMLIB_Scoreboard::getPlayerScoreboardId(std::string const& serverId) {
     if (auto player = ll::service::bedrock::getLevel()->getPlayerFromServerId(serverId)) {
         return getScoreboardId(*player);
     }
@@ -58,25 +60,26 @@ ScoreboardId GMLIB_Scoreboard::getPlayerScoreboardId(mce::UUID const& uuid) {
     return getPlayerScoreboardId(serverId);
 }
 
-std::optional<int> GMLIB_Scoreboard::getScore(std::string objective, std::string name) {
+std::optional<int> GMLIB_Scoreboard::getScore(std::string const& objective, std::string const& name) {
     auto id  = getScoreboardId(name);
     auto obj = getObjective(objective);
     return getScore(obj, id);
 }
 
-std::optional<int> GMLIB_Scoreboard::getScore(std::string objective, Player* pl) {
+std::optional<int> GMLIB_Scoreboard::getScore(std::string const& objective, Player* pl) {
     auto id  = getScoreboardId(*pl);
     auto obj = getObjective(objective);
     return getScore(obj, id);
 }
 
-std::optional<int> GMLIB_Scoreboard::getScore(std::string objective, Actor* ac) {
+std::optional<int> GMLIB_Scoreboard::getScore(std::string const& objective, Actor* ac) {
     auto id  = getScoreboardId(*ac);
     auto obj = getObjective(objective);
     return getScore(obj, id);
 }
 
-std::optional<int> GMLIB_Scoreboard::getScore(std::string objective, ActorUniqueID uniqueId, bool isPlayer) {
+std::optional<int>
+GMLIB_Scoreboard::getScore(std::string const& objective, ActorUniqueID const& uniqueId, bool isPlayer) {
     auto id = getScoreboardId(uniqueId);
     if (isPlayer) {
         auto psid = PlayerScoreboardId(uniqueId.id);
@@ -86,37 +89,46 @@ std::optional<int> GMLIB_Scoreboard::getScore(std::string objective, ActorUnique
     return getScore(obj, id);
 }
 
-std::optional<int> GMLIB_Scoreboard::getPlayerScore(std::string objective, std::string serverId) {
+std::optional<int> GMLIB_Scoreboard::getPlayerScore(std::string const& objective, std::string const& serverId) {
     auto id  = getPlayerScoreboardId(serverId);
     auto obj = getObjective(objective);
     return getScore(obj, id);
 }
 
-std::optional<int> GMLIB_Scoreboard::getPlayerScore(std::string objective, mce::UUID const& uuid) {
+std::optional<int> GMLIB_Scoreboard::getPlayerScore(std::string const& objective, mce::UUID const& uuid) {
     auto id  = getPlayerScoreboardId(uuid);
     auto obj = getObjective(objective);
     return getScore(obj, id);
 }
 
-std::optional<int> GMLIB_Scoreboard::getPlayerScore(std::string objective, ActorUniqueID uniqueId) {
+std::optional<int> GMLIB_Scoreboard::getPlayerScore(std::string const& objective, ActorUniqueID const& uniqueId) {
     return getScore(objective, uniqueId, true);
 }
 
-std::optional<int> GMLIB_Scoreboard::getPlayerScore(std::string objective, Player* pl) {
+std::optional<int> GMLIB_Scoreboard::getPlayerScore(std::string const& objective, Player* pl) {
     return getScore(objective, pl);
 }
 
-std::optional<int>
-GMLIB_Scoreboard::setScore(Objective* objective, ScoreboardId& scoreboardId, int value, PlayerScoreSetFunction action) {
+std::optional<int> GMLIB_Scoreboard::setScore(
+    Objective*             objective,
+    ScoreboardId const&    scoreboardId,
+    int                    value,
+    PlayerScoreSetFunction action
+) {
     if (objective && scoreboardId.isValid()) {
-        bool success = true;
-        return modifyPlayerScore(success, scoreboardId, *objective, value, action);
+        bool success;
+        auto result = modifyPlayerScore(success, scoreboardId, *objective, value, action);
+        if (success) return result;
     }
     return {};
 }
 
-std::optional<int>
-GMLIB_Scoreboard::setScore(std::string objective, std::string name, int value, PlayerScoreSetFunction action) {
+std::optional<int> GMLIB_Scoreboard::setScore(
+    std::string const&     objective,
+    std::string const&     name,
+    int                    value,
+    PlayerScoreSetFunction action
+) {
     auto id = getScoreboardId(name);
     if (!id.isValid()) {
         id = getServerScoreboard()->createScoreboardId(name);
@@ -129,7 +141,7 @@ GMLIB_Scoreboard::setScore(std::string objective, std::string name, int value, P
 }
 
 std::optional<int>
-GMLIB_Scoreboard::setScore(std::string objective, Player* pl, int value, PlayerScoreSetFunction action) {
+GMLIB_Scoreboard::setScore(std::string const& objective, Player* pl, int value, PlayerScoreSetFunction action) {
     auto id = getScoreboardId(*pl);
     if (!id.isValid()) {
         id = getServerScoreboard()->createScoreboardId(*pl);
@@ -142,7 +154,7 @@ GMLIB_Scoreboard::setScore(std::string objective, Player* pl, int value, PlayerS
 }
 
 std::optional<int>
-GMLIB_Scoreboard::setScore(std::string objective, Actor* ac, int value, PlayerScoreSetFunction action) {
+GMLIB_Scoreboard::setScore(std::string const& objective, Actor* ac, int value, PlayerScoreSetFunction action) {
     auto id = getScoreboardId(*ac);
     if (!id.isValid()) {
         id = getServerScoreboard()->createScoreboardId(*ac);
@@ -155,8 +167,8 @@ GMLIB_Scoreboard::setScore(std::string objective, Actor* ac, int value, PlayerSc
 }
 
 std::optional<int> GMLIB_Scoreboard::setScore(
-    std::string            objective,
-    ActorUniqueID          uniqueId,
+    std::string const&     objective,
+    ActorUniqueID const&   uniqueId,
     int                    value,
     PlayerScoreSetFunction action,
     bool                   isPlayer
@@ -180,8 +192,8 @@ std::optional<int> GMLIB_Scoreboard::setScore(
 }
 
 std::optional<int> GMLIB_Scoreboard::setPlayerScore(
-    std::string            objective,
-    std::string            serverId,
+    std::string const&     objective,
+    std::string const&     serverId,
     int                    value,
     PlayerScoreSetFunction action
 ) {
@@ -205,7 +217,7 @@ std::optional<int> GMLIB_Scoreboard::setPlayerScore(
 }
 
 std::optional<int> GMLIB_Scoreboard::setPlayerScore(
-    std::string            objective,
+    std::string const&     objective,
     mce::UUID const&       uuid,
     int                    value,
     PlayerScoreSetFunction action
@@ -215,8 +227,8 @@ std::optional<int> GMLIB_Scoreboard::setPlayerScore(
 }
 
 std::optional<int> GMLIB_Scoreboard::setPlayerScore(
-    std::string            objective,
-    ActorUniqueID          uniqueId,
+    std::string const&     objective,
+    ActorUniqueID const&   uniqueId,
     int                    value,
     PlayerScoreSetFunction action
 ) {
@@ -224,36 +236,36 @@ std::optional<int> GMLIB_Scoreboard::setPlayerScore(
 }
 
 std::optional<int>
-GMLIB_Scoreboard::setPlayerScore(std::string objective, Player* pl, int value, PlayerScoreSetFunction action) {
+GMLIB_Scoreboard::setPlayerScore(std::string const& objective, Player* pl, int value, PlayerScoreSetFunction action) {
     return setScore(objective, pl, value, action);
 }
 
-bool GMLIB_Scoreboard::resetScore(Objective* objective, ScoreboardId& scoreboardId) {
+bool GMLIB_Scoreboard::resetScore(Objective* objective, ScoreboardId const& scoreboardId) {
     if (objective && scoreboardId.isValid()) {
         return resetPlayerScore(scoreboardId, *objective);
     }
     return false;
 }
 
-bool GMLIB_Scoreboard::resetScore(std::string objective, std::string name) {
+bool GMLIB_Scoreboard::resetScore(std::string const& objective, std::string const& name) {
     auto id  = getScoreboardId(name);
     auto obj = getObjective(objective);
     return resetScore(obj, id);
 }
 
-bool GMLIB_Scoreboard::resetScore(std::string objective, Player* pl) {
+bool GMLIB_Scoreboard::resetScore(std::string const& objective, Player* pl) {
     auto id  = getScoreboardId(*pl);
     auto obj = getObjective(objective);
     return resetScore(obj, id);
 }
 
-bool GMLIB_Scoreboard::resetScore(std::string objective, Actor* ac) {
+bool GMLIB_Scoreboard::resetScore(std::string const& objective, Actor* ac) {
     auto id  = getScoreboardId(*ac);
     auto obj = getObjective(objective);
     return resetScore(obj, id);
 }
 
-bool GMLIB_Scoreboard::resetScore(std::string objective, ActorUniqueID uniqueId, bool isPlayer) {
+bool GMLIB_Scoreboard::resetScore(std::string const& objective, ActorUniqueID const& uniqueId, bool isPlayer) {
     auto obj = getObjective(objective);
     auto id  = getScoreboardId(uniqueId);
     if (isPlayer) {
@@ -263,25 +275,25 @@ bool GMLIB_Scoreboard::resetScore(std::string objective, ActorUniqueID uniqueId,
     return resetScore(obj, id);
 }
 
-bool GMLIB_Scoreboard::resetPlayerScore(std::string objective, std::string serverId) {
+bool GMLIB_Scoreboard::resetPlayerScore(std::string const& objective, std::string const& serverId) {
     auto id  = getPlayerScoreboardId(serverId);
     auto obj = getObjective(objective);
     return resetScore(obj, id);
 }
 
-bool GMLIB_Scoreboard::resetPlayerScore(std::string objective, mce::UUID const& uuid) {
+bool GMLIB_Scoreboard::resetPlayerScore(std::string const& objective, mce::UUID const& uuid) {
     auto id  = getPlayerScoreboardId(uuid);
     auto obj = getObjective(objective);
     return resetScore(obj, id);
 }
 
-bool GMLIB_Scoreboard::resetPlayerScore(std::string objective, ActorUniqueID uniqueId) {
+bool GMLIB_Scoreboard::resetPlayerScore(std::string const& objective, ActorUniqueID const& uniqueId) {
     return resetScore(objective, uniqueId, true);
 }
 
-bool GMLIB_Scoreboard::resetPlayerScore(std::string objective, Player* pl) { return resetScore(objective, pl); }
+bool GMLIB_Scoreboard::resetPlayerScore(std::string const& objective, Player* pl) { return resetScore(objective, pl); }
 
-bool GMLIB_Scoreboard::resetScore(ScoreboardId& scoreboardId) {
+bool GMLIB_Scoreboard::resetScore(ScoreboardId const& scoreboardId) {
     if (scoreboardId.isValid()) {
         resetPlayerScore(scoreboardId);
         return true;
@@ -289,7 +301,7 @@ bool GMLIB_Scoreboard::resetScore(ScoreboardId& scoreboardId) {
     return false;
 }
 
-bool GMLIB_Scoreboard::resetScore(std::string name) {
+bool GMLIB_Scoreboard::resetScore(std::string const& name) {
     auto id = getScoreboardId(name);
     return resetScore(id);
 }
@@ -304,7 +316,7 @@ bool GMLIB_Scoreboard::resetScore(Actor* ac) {
     return resetScore(id);
 }
 
-bool GMLIB_Scoreboard::resetScore(ActorUniqueID uniqueId, bool isPlayer) {
+bool GMLIB_Scoreboard::resetScore(ActorUniqueID const& uniqueId, bool isPlayer) {
     auto id = getScoreboardId(uniqueId);
     if (isPlayer) {
         auto psid = PlayerScoreboardId(uniqueId.id);
@@ -313,7 +325,7 @@ bool GMLIB_Scoreboard::resetScore(ActorUniqueID uniqueId, bool isPlayer) {
     return resetScore(id);
 }
 
-bool GMLIB_Scoreboard::resetPlayerScore(std::string serverId) {
+bool GMLIB_Scoreboard::resetPlayerScore(std::string const& serverId) {
     auto id = getPlayerScoreboardId(serverId);
     return resetScore(id);
 }
@@ -323,7 +335,7 @@ bool GMLIB_Scoreboard::resetPlayerScore(mce::UUID const& uuid) {
     return resetScore(id);
 }
 
-bool GMLIB_Scoreboard::resetPlayerScore(ActorUniqueID uniqueId) { return resetScore(uniqueId, true); }
+bool GMLIB_Scoreboard::resetPlayerScore(ActorUniqueID const& uniqueId) { return resetScore(uniqueId, true); }
 
 bool GMLIB_Scoreboard::resetPlayerScore(Player* pl) { return resetScore(pl); }
 
@@ -365,7 +377,7 @@ GMLIB_Scoreboard::getObjectiveTrackedScoreboardIds(Objective* objective, Identit
     return result;
 }
 
-std::optional<std::string> GMLIB_Scoreboard::getObjectiveDisplayName(std::string objective) {
+std::optional<std::string> GMLIB_Scoreboard::getObjectiveDisplayName(std::string const& objective) {
     auto obj = getObjective(objective);
     if (obj) {
         return obj->getDisplayName();
@@ -373,7 +385,7 @@ std::optional<std::string> GMLIB_Scoreboard::getObjectiveDisplayName(std::string
     return {};
 }
 
-bool GMLIB_Scoreboard::setObjectiveDisplayName(std::string objective, std::string newName) {
+bool GMLIB_Scoreboard::setObjectiveDisplayName(std::string const& objective, std::string const& newName) {
     auto obj = getObjective(objective);
     if (obj) {
         obj->mDisplayName = newName;
@@ -382,16 +394,24 @@ bool GMLIB_Scoreboard::setObjectiveDisplayName(std::string objective, std::strin
     return false;
 }
 
-void GMLIB_Scoreboard::setObjectiveDisplay(Objective* objctive, std::string displaySlot, ObjectiveSortOrder order) {
+void GMLIB_Scoreboard::setObjectiveDisplay(
+    Objective*         objctive,
+    std::string const& displaySlot,
+    ObjectiveSortOrder order
+) {
     setDisplayObjective(displaySlot, *objctive, order);
 }
 
-void GMLIB_Scoreboard::setObjectiveDisplay(std::string objective, std::string displaySlot, ObjectiveSortOrder order) {
+void GMLIB_Scoreboard::setObjectiveDisplay(
+    std::string const& objective,
+    std::string const& displaySlot,
+    ObjectiveSortOrder order
+) {
     auto obj = getObjective(objective);
     setDisplayObjective(displaySlot, *obj, order);
 }
 
-void GMLIB_Scoreboard::clearObjectiveDisplay(std::string displaySlot) { clearDisplayObjective(displaySlot); }
+void GMLIB_Scoreboard::clearObjectiveDisplay(std::string const& displaySlot) { clearDisplayObjective(displaySlot); }
 
 std::vector<ActorUniqueID> GMLIB_Scoreboard::getAllPlayers() {
     std::vector<ScoreboardId>  sids = getAllScoreboardIds(IdentityDefinition::Type::Player);

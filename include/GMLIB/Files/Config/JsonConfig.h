@@ -10,8 +10,8 @@ private:
     nlohmann::ordered_json mValue;
 
 public:
-    GMLIB_API JsonConfig(std::string filePath, std::string& defaultJson);
-    GMLIB_API JsonConfig(std::string filePath, nlohmann::ordered_json& defaultJson);
+    GMLIB_API JsonConfig(std::string const& filePath, std::string const& defaultJson);
+    GMLIB_API JsonConfig(std::string const& filePath, nlohmann::ordered_json const& defaultJson);
 
     JsonConfig() = delete;
 
@@ -24,7 +24,7 @@ public:
     GMLIB_API bool reload();
 
     template <typename T>
-    inline std::optional<T> getValue(std::vector<std::string> keyPath) {
+    inline std::optional<T> getValue(std::vector<std::string> const& keyPath) {
         try {
             if (keyPath.empty()) {
                 return {};
@@ -44,7 +44,7 @@ public:
     }
 
     template <typename T>
-    inline T getValue(std::vector<std::string> keyPath, T defaultValue) {
+    inline T getValue(std::vector<std::string> const& keyPath, T defaultValue) {
         try {
             std::optional<T> result = getValue<T>(keyPath);
             if (result.has_value()) {
@@ -59,7 +59,7 @@ public:
     }
 
     template <typename T>
-    inline bool setValue(std::vector<std::string> keyPath, T data) {
+    inline bool setValue(std::vector<std::string> const& keyPath, T data) {
         try {
             if (keyPath.empty()) {
                 return false;
@@ -78,7 +78,7 @@ public:
         }
     }
 
-    GMLIB_API bool deleteKey(std::vector<std::string> keyPath);
+    GMLIB_API bool deleteKey(std::vector<std::string> const& keyPath);
 
     GMLIB_API nlohmann::ordered_json getSelf();
 

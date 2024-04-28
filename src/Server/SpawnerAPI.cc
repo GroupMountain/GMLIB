@@ -4,7 +4,8 @@
 #include <GMLIB/Server/SpawnerAPI.h>
 #include <mc/world/actor/ActorDefinitionIdentifier.h>
 
-GMLIB_Actor* GMLIB_Spawner::spawnEntity(Vec3 pos, int dimid, std::string name, GMLIB_Actor* owner) {
+GMLIB_Actor* GMLIB_Spawner::spawnEntity(Vec3 const& pos, int dimid, std::string const& id, GMLIB_Actor* owner) {
+    auto name = id;
     try {
         ll::utils::string_utils::replaceAll(name, "minecraft:", "");
         ActorDefinitionIdentifier identifier(name);
@@ -20,14 +21,15 @@ GMLIB_Actor* GMLIB_Spawner::spawnEntity(Vec3 pos, int dimid, std::string name, G
 }
 
 Mob* GMLIB_Spawner::spawnMob(
-    Vec3         pos,
-    int          dimid,
-    std::string  name,
-    GMLIB_Actor* owner,
-    bool         naturalSpawn,
-    bool         surface,
-    bool         fromSpawner
+    Vec3 const&        pos,
+    int                dimid,
+    std::string const& id,
+    GMLIB_Actor*       owner,
+    bool               naturalSpawn,
+    bool               surface,
+    bool               fromSpawner
 ) {
+    auto name = id;
     try {
         ll::utils::string_utils::replaceAll(name, "minecraft:", "");
         ActorDefinitionIdentifier identifier(name);
@@ -42,7 +44,7 @@ Mob* GMLIB_Spawner::spawnMob(
     }
 }
 
-ItemActor* GMLIB_Spawner::spawnItem(Vec3 pos, int dimid, ItemStack& item, GMLIB_Actor* owner) {
+ItemActor* GMLIB_Spawner::spawnItem(Vec3 const& pos, int dimid, ItemStack& item, GMLIB_Actor* owner) {
     try {
         auto       bs        = GMLIB_Level::getInstance()->getBlockSource(dimid);
         ItemActor* itemActor = ll::service::getLevel()->getSpawner().spawnItem(*bs, item, owner, pos, 0);
@@ -52,7 +54,8 @@ ItemActor* GMLIB_Spawner::spawnItem(Vec3 pos, int dimid, ItemStack& item, GMLIB_
     }
 }
 
-ItemActor* GMLIB_Spawner::spawnItem(Vec3 pos, int dimid, std::string name, int count, int aux, GMLIB_Actor* owner) {
+ItemActor*
+GMLIB_Spawner::spawnItem(Vec3 const& pos, int dimid, std::string const& name, int count, int aux, GMLIB_Actor* owner) {
     try {
         auto       bs        = GMLIB_Level::getInstance()->getBlockSource(dimid);
         auto       item      = ItemStack{name, count, aux};
@@ -63,7 +66,7 @@ ItemActor* GMLIB_Spawner::spawnItem(Vec3 pos, int dimid, std::string name, int c
     }
 }
 
-GMLIB_Actor* GMLIB_Spawner::spawnProjectile(GMLIB_Actor* owner, std::string name, float speed, float offset) {
+GMLIB_Actor* GMLIB_Spawner::spawnProjectile(GMLIB_Actor* owner, std::string const& name, float speed, float offset) {
     if (owner) {
         auto proj = spawnEntity(owner->getPosition(), owner->getDimensionId(), name, owner);
         if (proj) {

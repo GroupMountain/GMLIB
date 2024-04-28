@@ -22,11 +22,11 @@ std::string defaultManifest = R"({
 })";
 
 ResourceLanguage::ResourceLanguage(
-    std::string directoryPath,
-    std::string pluginName,
-    ushort      versionMajor,
-    ushort      versionMinor,
-    ushort      versionPatch
+    std::string const& directoryPath,
+    std::string const& pluginName,
+    ushort             versionMajor,
+    ushort             versionMinor,
+    ushort             versionPatch
 )
 : mPath(directoryPath),
   mPluginName(pluginName) {
@@ -34,7 +34,7 @@ ResourceLanguage::ResourceLanguage(
     mVersion   = Version(versionMajor, versionMinor, versionPatch, "", "");
 }
 
-bool buildManisest(Version& version, std::string path, std::string name) {
+bool buildManisest(Version const& version, std::string const& path, std::string const& name) {
     if (std::filesystem::exists(path)) {
         std::ifstream inputFile(path);
         std::string   fileContent((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
@@ -96,11 +96,11 @@ void ResourceLanguage::initLanguage() {
     newLangJson.close();
 }
 
-void ResourceLanguage::addLanguage(std::string identifider, std::string& language) {
+void ResourceLanguage::addLanguage(std::string const& identifider, std::string const& language) {
     mLanguages[identifider] = language;
 }
 
-void ResourceLanguage::addLanguages(std::vector<std::pair<std::string, std::string>>& languages) {
+void ResourceLanguage::addLanguages(std::vector<std::pair<std::string, std::string>> const& languages) {
     for (auto& data : languages) {
         mLanguages[data.first] = data.second;
     }

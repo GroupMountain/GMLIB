@@ -38,7 +38,7 @@ public:
 
     GMLIB_API void setNbt(CompoundTag& nbt);
 
-    GMLIB_API void setItem(std::string name, int count = 1, short auxValue = 0);
+    GMLIB_API void setItem(std::string const& name, int count = 1, short auxValue = 0);
 
     GMLIB_API int getCount();
 
@@ -60,13 +60,13 @@ public:
 
     GMLIB_API void setCanDestroy(std::vector<const BlockLegacy*> blocks);
 
-    GMLIB_API void setCanDestroy(std::vector<std::string> blocks);
+    GMLIB_API void setCanDestroy(std::vector<std::string> const& blocks);
 
     GMLIB_API std::vector<const BlockLegacy*> getCanPlaceOn();
 
     GMLIB_API void setCanPlaceOn(std::vector<const BlockLegacy*> blocks);
 
-    GMLIB_API void setCanPlaceOn(std::vector<std::string> blocks);
+    GMLIB_API void setCanPlaceOn(std::vector<std::string> const& blocks);
 
     GMLIB_API void setShouldKeepOnDeath(bool value);
 

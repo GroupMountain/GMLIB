@@ -4,7 +4,7 @@
 
 namespace GMLIB::Files::I18n {
 
-JsonI18n::JsonI18n(std::string languageDirectory, std::string languageCode)
+JsonI18n::JsonI18n(std::string const& languageDirectory, std::string const& languageCode)
 : mLanguageDirectory(languageDirectory),
   mLanguageCode(mLanguageCode) {
     if (!mLanguageDirectory.ends_with("/") && !mLanguageDirectory.ends_with("\\")) {
@@ -19,20 +19,20 @@ JsonI18n::~JsonI18n() {
     mAllLanguages.clear();
 }
 
-bool JsonI18n::loadOrCreateLanguage(std::string languageCode, JsonLanguage* language) {
+bool JsonI18n::loadOrCreateLanguage(std::string const& languageCode, JsonLanguage* language) {
     auto result                 = language->init();
     mAllLanguages[languageCode] = language;
     return result;
 }
 
-bool JsonI18n::updateOrCreateLanguage(std::string languageCode, nlohmann::json& language) {
+bool JsonI18n::updateOrCreateLanguage(std::string const& languageCode, nlohmann::json const& language) {
     auto path = mLanguageDirectory;
     path      = path + languageCode + ".json";
     auto lang = new JsonLanguage(path, language);
     return loadOrCreateLanguage(languageCode, lang);
 }
 
-bool JsonI18n::updateOrCreateLanguage(std::string languageCode, std::string& language) {
+bool JsonI18n::updateOrCreateLanguage(std::string const& languageCode, std::string const& language) {
     auto path = mLanguageDirectory;
     if (!path.ends_with("/") && !path.ends_with("\\")) {
         path = path + "/";
@@ -69,7 +69,7 @@ void JsonI18n::reloadAllLanguages() {
     }
 }
 
-bool JsonI18n::chooseLanguage(std::string languageCode) {
+bool JsonI18n::chooseLanguage(std::string const& languageCode) {
     if (mAllLanguages.count(languageCode)) {
         mLocalization = mAllLanguages[languageCode];
         return true;
@@ -77,9 +77,10 @@ bool JsonI18n::chooseLanguage(std::string languageCode) {
     return false;
 }
 
-void JsonI18n::setDefaultLanguage(std::string languageCode) { mDefaultLanguage = languageCode; }
+void JsonI18n::setDefaultLanguage(std::string const& languageCode) { mDefaultLanguage = languageCode; }
 
-std::string JsonI18n::translate(std::string key, std::vector<std::string> data, std::string translateKey) {
+std::string
+JsonI18n::translate(std::string const& key, std::vector<std::string> const& data, std::string const& translateKey) {
     if (!mLocalization) {
         chooseLanguage(mDefaultLanguage);
     }
@@ -98,10 +99,10 @@ std::string JsonI18n::translate(std::string key, std::vector<std::string> data, 
 }
 
 std::string JsonI18n::translate(
-    std::string              key,
-    std::string              localLanguage,
-    std::vector<std::string> data,
-    std::string              translateKey
+    std::string const&              key,
+    std::string const&              localLanguage,
+    std::vector<std::string> const& data,
+    std::string const&              translateKey
 ) {
     if (mAllLanguages.count(localLanguage)) {
         auto temp = mAllLanguages[localLanguage];
@@ -117,12 +118,17 @@ std::string JsonI18n::translate(
     return key;
 }
 
-std::string JsonI18n::get(std::string key, std::vector<std::string> data, std::string translateKey) {
+std::string
+JsonI18n::get(std::string const& key, std::vector<std::string> const& data, std::string const& translateKey) {
     return translate(key, data, translateKey);
 }
 
-std::string
-JsonI18n::get(std::string key, std::string localLanguage, std::vector<std::string> data, std::string translateKey) {
+std::string JsonI18n::get(
+    std::string const&              key,
+    std::string const&              localLanguage,
+    std::vector<std::string> const& data,
+    std::string const&              translateKey
+) {
     return translate(key, localLanguage, data, translateKey);
 }
 
