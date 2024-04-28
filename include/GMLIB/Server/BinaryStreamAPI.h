@@ -11,9 +11,6 @@
 
 class GMLIB_BinaryStream : public BinaryStream {
 public:
-    GMLIB_API std::string getRaw();
-
-public:
     GMLIB_API void writePacketHeader(MinecraftPacketIds packetId, SubClientId subId = SubClientId::PrimaryClient);
 
     GMLIB_API void sendTo(

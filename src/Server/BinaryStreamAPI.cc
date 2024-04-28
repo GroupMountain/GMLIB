@@ -9,8 +9,6 @@
 #include <mc/world/actor/player/SerializedSkin.h>
 #include <mc/world/actor/state/PropertySyncData.h>
 
-std::string GMLIB_BinaryStream::getRaw() { return *ll::memory::dAccess<std::string*>(this, 96); }
-
 void GMLIB_BinaryStream::writeCompoundTag(CompoundTag& tag) {
     LL_SYMBOL_CALL("?write@?$serialize@VCompoundTag@@@@SAXAEBVCompoundTag@@AEAVBinaryStream@@@Z", void, CompoundTag&, BinaryStream&)
     (tag, *this);

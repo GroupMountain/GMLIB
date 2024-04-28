@@ -611,10 +611,6 @@ void GMLIB_Player::hurtPlayer(float damage, std::string causeName, Actor* source
     this->hurtByCause(damage, cause, source);
 }
 
-InventoryTransactionManager* GMLIB_Player::getInventoryTransactionManager() {
-    return ll::memory::dAccess<InventoryTransactionManager*>(this, 3752); // IDA: ClearCommand::execute()  Line 392
-}
-
 FullPlayerInventoryWrapper GMLIB_Player::getFullPlayerInventoryWrapper() { return FullPlayerInventoryWrapper(*this); }
 
 int GMLIB_Player::clearAllItems() { return getFullPlayerInventoryWrapper().clearAllItems(); }

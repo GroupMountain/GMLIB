@@ -233,8 +233,6 @@ public:
 
     GMLIB_API void setFreezing(float percentage = 1.0f);
 
-    GMLIB_API InventoryTransactionManager* getInventoryTransactionManager();
-
     GMLIB_API FullPlayerInventoryWrapper getFullPlayerInventoryWrapper();
 
     GMLIB_API void hurtPlayer(float damage, std::string causeName = "override", Actor* source = nullptr);
