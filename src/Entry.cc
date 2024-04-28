@@ -18,7 +18,7 @@ bool Entry::enable() {
     return true;
 }
 
-bool Entry::disable() { return false; }
+bool Entry::disable() { return true; }
 
 } // namespace GMLIB
 

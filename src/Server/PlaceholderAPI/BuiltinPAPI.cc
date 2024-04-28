@@ -277,7 +277,10 @@ void regServerPAPI() {
 
     PlaceholderAPI::registerServerPlaceholder(
         "server_max_players",
-        []() { return S(*((int*)ll::service::getServerNetworkHandler().as_ptr() + 192)); },
+        []() {
+            // IDA: ServerNetworkHandler::setMaxNumPlayers
+            return S(ll::memory::dAccess<int>(ll::service::getServerNetworkHandler().as_ptr(), 200));
+        },
         "GMLIB"
     );
 
