@@ -24,7 +24,7 @@ public:
     GMLIB_API static McLang parse_file(std::string const& filePath);
 
 public:
-    GMLIB_API std::optional<std::string> get_value(std::string const& key);
+    GMLIB_API std::optional<std::string> try_get(std::string const& key);
 
     GMLIB_API std::string
     translate(std::string const& key, std::vector<std::string> const& param = {}, std::string const& data = "%0$s");

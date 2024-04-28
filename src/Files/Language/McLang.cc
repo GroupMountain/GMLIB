@@ -105,8 +105,8 @@ void McLang::merge_patch(McLang const& newData) {
     }
 }
 
-std::optional<std::string> McLang::get_value(std::string const& key) {
-    if (mData.count(key)) {
+std::optional<std::string> McLang::try_get(std::string const& key) {
+    if (mData.contains(key)) {
         return mData[key];
     }
     return {};
