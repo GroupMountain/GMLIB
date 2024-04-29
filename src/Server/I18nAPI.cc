@@ -144,6 +144,20 @@ void I18nAPI::updateOrCreateLanguageFile(
     updateOrCreateLanguageFile(path, languageCode, mclang);
 }
 
+void I18nAPI::updateOrCreateLanguageFile(
+    std::filesystem::path const& path,
+    std::string const&           languageCode,
+    nlohmann::json const&        language
+) {
+    std::unordered_map<std::string, std::string> languageMap;
+    for (nlohmann::json::const_iterator it = language.begin(); it != language.end(); ++it) {
+        if (it.value().is_string()) {
+            languageMap[it.key()] = it.value().get<std::string>();
+        }
+    }
+    updateOrCreateLanguageFile(path, languageCode, languageMap);
+}
+
 void I18nAPI::loadLanguagesFromDirectory(std::filesystem::path const& path) {
     auto files = GMLIB::Files::FileUtils::getAllFileFullNameInDirectory(path.string());
     for (auto& file : files) {

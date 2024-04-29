@@ -1,7 +1,11 @@
+#pragma once
+#pragma warning(disable : 4273) // I18n& getI18n();
+
 #include "GMLIB/Files/Language/McLang.h"
 #include "GMLIB/Macros.h"
 #include "mc/locale/I18n.h"
 #include "mc/locale/Localization.h"
+#include "nlohmann/json.hpp"
 
 I18n& getI18n();
 
@@ -62,6 +66,12 @@ public:
         std::filesystem::path const&                        path,
         std::string const&                                  languageCode,
         std::unordered_map<std::string, std::string> const& language
+    );
+
+    GMLIB_API static void updateOrCreateLanguageFile(
+        std::filesystem::path const& path,
+        std::string const&           languageCode,
+        nlohmann::json const&        language
     );
 
     GMLIB_API static void loadLanguagesFromDirectory(std::filesystem::path const& path);
