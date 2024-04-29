@@ -33,7 +33,7 @@ GMLIB_API bool writeOrderedFile(std::string const& path, nlohmann::ordered_json 
 GMLIB_API bool writeFile(std::string const& path, nlohmann::json const& json);
 
 template <typename T>
-inline std::optional<T> getValue(nlohmann::ordered_json const& json, std::vector<std::string> const& keyPath) {
+inline std::optional<T> getValue(nlohmann::ordered_json& json, std::vector<std::string> const& keyPath) {
     try {
         if (keyPath.empty()) {
             return {};
@@ -53,7 +53,7 @@ inline std::optional<T> getValue(nlohmann::ordered_json const& json, std::vector
 }
 
 template <typename T>
-inline std::optional<T> getValue(nlohmann::json const& json, std::vector<std::string> const& keyPath) {
+inline std::optional<T> getValue(nlohmann::json& json, std::vector<std::string> const& keyPath) {
     try {
         if (keyPath.empty()) {
             return {};
@@ -73,7 +73,7 @@ inline std::optional<T> getValue(nlohmann::json const& json, std::vector<std::st
 }
 
 template <typename T>
-inline T getValue(nlohmann::ordered_json const& json, std::vector<std::string> const& keyPath, T defaultValue) {
+inline T getValue(nlohmann::ordered_json& json, std::vector<std::string> const& keyPath, T defaultValue) {
     try {
         std::optional<T> result = getValue<T>(json, keyPath);
         if (result.has_value()) {
@@ -88,7 +88,7 @@ inline T getValue(nlohmann::ordered_json const& json, std::vector<std::string> c
 }
 
 template <typename T>
-inline T getValue(nlohmann::json const& json, std::vector<std::string> const& keyPath, T defaultValue) {
+inline T getValue(nlohmann::json& json, std::vector<std::string> const& keyPath, T defaultValue) {
     try {
         std::optional<T> result = getValue<T>(json, keyPath);
         if (result.has_value()) {
