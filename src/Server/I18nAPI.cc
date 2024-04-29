@@ -8,9 +8,7 @@ void I18nAPI::chooseLanguage(class Localization const& localization) { getI18n()
 
 optional_ref<const Localization> I18nAPI::getCurrentLanguage() { return getI18n().getCurrentLanguage(); }
 
-std::optional<std::string> I18nAPI::getCurrentLanguageCode() {
-    return getI18n().getCurrentLanguage()->getFullLanguageCode();
-}
+std::string I18nAPI::getCurrentLanguageCode() { return getI18n().getCurrentLanguage()->getFullLanguageCode(); }
 
 std::vector<std::string> I18nAPI::getSupportedLanguageCodes() { return getI18n().getSupportedLanguageCodes(); }
 
@@ -47,32 +45,14 @@ std::optional<std::string> I18nAPI::tryGet(
 }
 
 std::string I18nAPI::get(std::string const& key, std::vector<std::string> const& params) {
-    if (auto localization = getI18n().getCurrentLanguage()) {
-        std::string result;
-        auto        has_value = localization->get(key, result, params);
-        if (has_value) return result;
-    }
-    if (auto defaultLocalization = getI18n().getLocaleFor("en_US")) {
-        std::string result;
-        defaultLocalization->get(key, result, params);
-        return result;
-    }
-    return key;
+    auto localization = getI18n().getLocaleFor(getCurrentLanguageCode());
+    return getI18n().get(key, params, localization);
 }
 
 std::string
 I18nAPI::get(std::string const& key, std::vector<std::string> const& params, std::string const& languageCode) {
-    if (auto localization = getI18n().getLocaleFor(languageCode)) {
-        std::string result;
-        auto        has_value = localization->get(key, result, params);
-        if (has_value) return result;
-    }
-    if (auto defaultLocalization = getI18n().getLocaleFor("en_US")) {
-        std::string result;
-        defaultLocalization->get(key, result, params);
-        return result;
-    }
-    return key;
+    auto localization = getI18n().getLocaleFor(languageCode);
+    return getI18n().get(key, params, localization);
 }
 
 std::string I18nAPI::get(
@@ -80,17 +60,7 @@ std::string I18nAPI::get(
     std::vector<std::string> const&     params,
     std::shared_ptr<class Localization> localization
 ) {
-    if (localization) {
-        std::string result;
-        auto        has_value = localization->get(key, result, params);
-        if (has_value) return result;
-    }
-    if (auto defaultLocalization = getI18n().getLocaleFor("en_US")) {
-        std::string result;
-        defaultLocalization->get(key, result, params);
-        return result;
-    }
-    return key;
+    return getI18n().get(key, params, localization);
 }
 
 void I18nAPI::loadLanguage(

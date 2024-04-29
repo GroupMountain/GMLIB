@@ -17,7 +17,7 @@ public:
 
     GMLIB_API static optional_ref<const Localization> getCurrentLanguage();
 
-    GMLIB_API static std::optional<std::string> getCurrentLanguageCode();
+    GMLIB_API static std::string getCurrentLanguageCode();
 
     GMLIB_API static std::vector<std::string> getSupportedLanguageCodes();
 

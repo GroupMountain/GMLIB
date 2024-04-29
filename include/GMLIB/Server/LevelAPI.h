@@ -77,7 +77,7 @@ public:
 
     GMLIB_API MCRESULT executeCommand(std::string_view command, DimensionType dimId = 0);
 
-    GMLIB_API bool executeCommandEx(std::string_view command, DimensionType dimId = 0);
+    GMLIB_API std::pair<bool, std::string> executeCommandEx(std::string_view command, DimensionType dimId = 0);
 
     GMLIB_API std::string getLevelName();
 

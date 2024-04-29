@@ -609,9 +609,9 @@ int GMLIB_Level::fillBlocks(
     BlockPos const&  endpos,
     DimensionType    dimId,
     std::string_view oldName,
-    unsigned short   oldTileData,
+    ushort           oldTileData,
     std::string_view newName,
-    unsigned short   newTileData
+    ushort           newTileData
 ) {
     Block* newblock = (Block*)Block::tryGetFromRegistry(newName, newTileData).as_ptr();
     Block* oldblock = (Block*)Block::tryGetFromRegistry(oldName, oldTileData).as_ptr();
@@ -691,28 +691,36 @@ MCRESULT GMLIB_Level::executeCommand(std::string_view command, DimensionType dim
     return ll::service::getMinecraft()->getCommands().executeCommand(context);
 }
 
-bool GMLIB_Level::executeCommandEx(std::string_view command, DimensionType dimId) {
-    auto origin =
+std::pair<bool, std::string> GMLIB_Level::executeCommandEx(std::string_view cmd, DimensionType dimId) {
+    std::pair<bool, std::string> result;
+    auto                         origin =
         ServerCommandOrigin("Server", ll::service::getLevel()->asServer(), CommandPermissionLevel::Internal, dimId);
-    auto cmd = ll::service::getMinecraft()->getCommands().compileCommand(
-        std::string(command),
+    auto command = ll::service::getMinecraft()->getCommands().compileCommand(
+        std::string(cmd),
         origin,
         (CurrentCmdVersion)CommandVersion::CurrentVersion,
-        [](std::string const& err) {}
+        [&](std::string const& err) { result.second.append(err).append("\n"); }
     );
-    CommandOutput output(CommandOutputType::AllOutput);
-    std::string   outputStr;
-    if (cmd) {
-        cmd->run(origin, output);
+    if (command) {
+        CommandOutput output(CommandOutputType::AllOutput);
+        command->run(origin, output);
         for (auto msg : output.getMessages()) {
-            outputStr = outputStr.append(I18nAPI::get(msg.getMessageId(), msg.getParams())).append("\n");
+            std::string temp;
+            getI18n().getCurrentLanguage()->get(msg.getMessageId(), temp, msg.getParams());
+            result.second += temp.append("\n");
         }
-        if (output.getMessages().size()) {
-            outputStr.pop_back();
+        if (result.second.ends_with('\n')) {
+            result.second.pop_back();
         }
-        return true;
+        result.first = output.getSuccessCount() ? true : false;
+        return result;
     }
-    return false;
+    if (result.second.ends_with('\n')) {
+        result.second.pop_back();
+    }
+    result.first = false;
+    ;
+    return result;
 }
 
 bool GMLIB_Level::isInStructureFeature(StructureFeatureType structure, BlockPos const& pos, DimensionType dimId) {
