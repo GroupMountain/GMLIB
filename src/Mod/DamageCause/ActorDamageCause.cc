@@ -226,6 +226,20 @@ std::optional<DEATH_MESSAGE> tryTranslateHardCodedDeathMessage(
         }
         return makeDeathMessage((int)cause, deathMessage, name, killer, weaponName, isEscaping, true);
     }
+    case ActorDamageCause::Contact: {
+        switch (ll::hash_utils::doHash(deathMessage.first)) {
+        case ll::hash_utils::doHash("death.attack.cactus"):
+            deathMessage.first = "death.attack.cactus.item";
+            break;
+        case ll::hash_utils::doHash("death.attack.sweetBerry"):
+            deathMessage.first = "death.attack.sweetBerry.item";
+            break;
+        default:
+            deathMessage.first = "death.attack.generic.item";
+            break;
+        }
+        return makeDeathMessage((int)cause, deathMessage, name, killer, weaponName, isEscaping, true);
+    }
     }
     if (mHardCodedDeathMessage.contains(cause)) {
         if (directKiller.empty()) {
