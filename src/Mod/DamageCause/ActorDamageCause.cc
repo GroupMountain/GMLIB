@@ -448,7 +448,7 @@ bool DamageCause::setVanillaCauseMessage(ActorDamageCause cause, std::string_vie
 bool DamageCause::registerCustomDeathMessage(
     ActorDamageCause cause,
     std::string_view message,
-    std::string_view killerType = "empty"
+    std::string_view killerType
 ) {
     if (mHardCodedDeathMessage.contains(cause)) {
         if (mHardCodedDeathMessage[cause].contains(killerType)) {
