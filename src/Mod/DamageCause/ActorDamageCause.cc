@@ -445,4 +445,18 @@ bool DamageCause::setVanillaCauseMessage(ActorDamageCause cause, std::string_vie
     return false;
 }
 
+bool DamageCause::registerCustomDeathMessage(
+    ActorDamageCause cause,
+    std::string_view message,
+    std::string_view killerType = "empty"
+) {
+    if (mHardCodedDeathMessage.contains(cause)) {
+        if (mHardCodedDeathMessage[cause].contains(killerType)) {
+            return false;
+        }
+    }
+    mHardCodedDeathMessage[cause][killerType] = message;
+    return true;
+}
+
 } // namespace GMLIB::Mod
