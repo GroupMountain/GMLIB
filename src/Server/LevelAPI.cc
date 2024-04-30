@@ -765,3 +765,5 @@ std::optional<BlockPos> GMLIB_Level::locateNearestStructureFeature(
     auto type = StructureFeatureTypeNames::getFeatureType(structure);
     return locateNearestStructureFeature(type, pos, dimId, useNewChunksOnly);
 }
+
+DBStorage& GMLIB_Level::getDBStorage() { return *GMLIB::Global<DBStorage>; }

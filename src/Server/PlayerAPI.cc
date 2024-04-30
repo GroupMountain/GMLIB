@@ -7,6 +7,8 @@
 #include <GMLIB/Server/PlayerAPI.h>
 #include <GMLIB/Server/ScoreboardAPI.h>
 #include <GMLIB/Server/SpawnerAPI.h>
+#include <mc/deps/core/utility/LootTableUtils.h>
+#include <mc/entity/utilities/ActorEquipment.h>
 #include <mc/locale/I18n.h>
 #include <mc/locale/Localization.h>
 #include <mc/network/ConnectionRequest.h>
@@ -20,12 +22,15 @@
 #include <mc/network/packet/ToastRequestPacket.h>
 #include <mc/network/packet/UpdatePlayerGameTypePacket.h>
 #include <mc/server/commands/CommandContext.h>
+#include <mc/server/commands/CommandUtils.h>
 #include <mc/server/commands/MinecraftCommands.h>
 #include <mc/server/commands/PlayerCommandOrigin.h>
+#include <mc/world/SimpleContainer.h>
 #include <mc/world/attribute/AttributeInstance.h>
 #include <mc/world/attribute/SharedAttributes.h>
 #include <mc/world/effect/MobEffect.h>
 #include <mc/world/effect/MobEffectInstance.h>
+#include <mc/world/item/ItemInstance.h>
 #include <mc/world/level/dimension/VanillaDimensions.h>
 #include <mc/world/level/levelgen/WorldGenerator.h>
 #include <mc/world/level/levelgen/structure/StructureFeatureTypeNames.h>
@@ -235,6 +240,15 @@ bool GMLIB_Player::deletePlayerNbt(mce::UUID const& uuid) {
     }
     auto serverId = getServerIdFromUuid(uuid);
     return deletePlayerNbt(serverId);
+}
+
+bool GMLIB_Player::deletePlayer(mce::UUID const& uuid) {
+    auto pl = ll::service::getLevel()->getPlayer(uuid);
+    if (pl) {
+        return false;
+    }
+    auto serverId = getServerIdFromUuid(uuid);
+    return deletePlayerNbt(serverId) || deleteUuidDBTag(uuid);
 }
 
 ActorUniqueID GMLIB_Player::getPlayerUniqueID(std::string const& serverId) {
@@ -765,41 +779,55 @@ std::string GMLIB_Player::getDimensionTypeName() { return getDimension().mName; 
 
 std::string GMLIB_Player::getDimensionName() { return VanillaDimensions::toString(getDimensionId()); }
 
-bool GMLIB_Player::giveItem(ItemStack& item, bool drop) { return addAndRefresh(item); }
-
-/*
-bool GMLIB_Player::giveItem(std::string name, int count, short aux, bool drop) {
-    auto item = ItemStack(name, count, aux);
-    return giveItem(item, drop);
+int GMLIB_Player::giveItems(std::vector<ItemStack>& items, bool drop) {
+    return Util::LootTableUtils::givePlayer(*this, items, drop);
 }
 
-int GMLIB_Player::clearItem(std::string name, int count, short aux) {
-    auto item = ItemStack(name, 1, aux);
-    return getFullPlayerInventoryWrapper().removeResource(
-        item,
-        [name](const ItemStack& it) -> bool {
-            if (it.getTypeName() == name) {
-                return true;
-            }
-            return false;
-        },
-        (aux != -1),
-        count
-    );
+int GMLIB_Player::giveItem(std::string_view name, int count, short aux, bool drop) {
+    int  result = 0;
+    auto items  = CommandUtils::createItemStacks(ItemInstance(name, 1, aux, nullptr), 100, result);
+    Util::LootTableUtils::givePlayer(*this, items, drop);
+    return result;
 }
 
-int GMLIB_Player::hasItem(std::string name, short aux) {
-    return getFullPlayerInventoryWrapper().getItemCount([name, aux](const ItemStack& it) -> bool {
-        if (it.getTypeName() == name) {
-            if (aux == -1) {
-                return true;
+int GMLIB_Player::clearItem(std::string_view name, int clearCount) {
+    int   result         = 0;
+    auto& inventorySlots = getInventory().getSlots();
+    for (ushort slot = 0; slot < inventorySlots.size(); ++slot) {
+        if (inventorySlots[slot]->getTypeName() == name) {
+            if (inventorySlots[slot]->mCount < clearCount) {
+                result += inventorySlots[slot]->mCount;
+            } else {
+                result += clearCount;
             }
-            return aux == it.getAuxValue();
+            getInventory().removeItem(slot, clearCount);
         }
-        return false;
-    });
+    }
+    auto& handSlots = ActorEquipment::getHandContainer(getEntityContext()).getSlots();
+    for (ushort slot = 0; slot < handSlots.size(); ++slot) {
+        if (handSlots[slot]->getTypeName() == name) {
+            if (handSlots[slot]->mCount < clearCount) {
+                result += handSlots[slot]->mCount;
+            } else {
+                result += clearCount;
+            }
+            ActorEquipment::getHandContainer(getEntityContext()).removeItem(slot, clearCount);
+        }
+    }
+    auto& armorSlots = ActorEquipment::getArmorContainer(getEntityContext()).getSlots();
+    for (unsigned short slot = 0; slot < armorSlots.size(); ++slot) {
+        if (armorSlots[slot]->getTypeName() == name) {
+            if (armorSlots[slot]->mCount < clearCount) {
+                result += armorSlots[slot]->mCount;
+            } else {
+                result += clearCount;
+            }
+            ActorEquipment::getArmorContainer(getEntityContext()).removeItem(slot, clearCount);
+        }
+    }
+    refreshInventory();
+    return result;
 }
-*/
 
 bool GMLIB_Player::isInStructureFeature(StructureFeatureType structure) {
     return getDimension().getWorldGenerator()->isStructureFeatureTypeAt(BlockPos(getPosition()), structure);

@@ -56,6 +56,8 @@ public:
 
     GMLIB_API static bool deletePlayerNbt(mce::UUID const& uuid);
 
+    GMLIB_API static bool deletePlayer(mce::UUID const& uuid);
+
     GMLIB_API static ActorUniqueID getPlayerUniqueID(std::string const& serverId);
 
     GMLIB_API static ActorUniqueID getPlayerUniqueID(mce::UUID const& uuid);
@@ -237,8 +239,6 @@ public:
 
     GMLIB_API void hurtPlayer(float damage, std::string const& causeName = "override", Actor* source = nullptr);
 
-    GMLIB_API int clearAllItems();
-
     GMLIB_API void updateClientBlock(
         BlockPos const&               pos,
         uint                          runtimeId,
@@ -281,13 +281,13 @@ public:
 
     GMLIB_API MCRESULT executeCommand(std::string_view command);
 
-    GMLIB_API bool giveItem(ItemStack& item, bool drop = true);
+    GMLIB_API int giveItems(std::vector<ItemStack>& items, bool drop = true);
 
-    // GMLIB_API bool giveItem(std::string name, int count = 1, short aux = 0, bool drop = true);
+    GMLIB_API int giveItem(std::string_view name, int count = 1, short aux = 0, bool drop = true);
 
-    // GMLIB_API int clearItem(std::string name, int count = -1, short aux = -1);
+    GMLIB_API int clearAllItems();
 
-    // GMLIB_API int hasItem(std::string name, short aux = -1);
+    GMLIB_API int clearItem(std::string_view name, int count = 2147483647);
 
     GMLIB_API bool isInStructureFeature(StructureFeatureType structure);
 

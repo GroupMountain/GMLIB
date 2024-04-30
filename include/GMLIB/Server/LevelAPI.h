@@ -5,6 +5,7 @@
 #include "mc/network/packet/SetTitlePacket.h"
 #include "mc/world/level/Level.h"
 #include "mc/world/level/levelgen/structure/StructureFeatureType.h"
+#include "mc/world/level/storage/DBStorage.h"
 #include "mc/world/level/storage/GameRuleId.h"
 
 enum class WeatherType : int {
@@ -204,4 +205,6 @@ public:
         DimensionType      dimId,
         bool               useNewChunksOnly = false
     );
+
+    GMLIB_API DBStorage& getDBStorage();
 };
