@@ -77,8 +77,9 @@ McLang McLang::parse(std::string const& data) {
 
 std::string McLang::dump() {
     std::map<std::string, std::string> map;
-    for (auto& lang : mData) {
-        map[lang.first] = lang.second;
+    for (auto& [key, lang] : mData) {
+        map[key] = lang;
+        ll::utils::string_utils::replaceAll(map[key], "\n", "\\n");
     }
     std::string result;
     for (auto& key : map) {
