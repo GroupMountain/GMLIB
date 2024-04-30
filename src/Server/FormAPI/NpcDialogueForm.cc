@@ -2,6 +2,7 @@
 #include <GMLIB/Server/ActorAPI.h>
 #include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/FormAPI/NpcDialogueForm.h>
+#include <GMLIB/Server/LevelAPI.h>
 #include <mc/entity/utilities/ActorDataIDs.h>
 #include <mc/enums/DataItemType.h>
 #include <mc/network/MinecraftPackets.h>
@@ -38,7 +39,7 @@ NpcDialogueForm::NpcDialogueForm(std::string const& npcName, std::string const& 
 
 NpcDialogueForm::~NpcDialogueForm() {
     auto pkt = RemoveActorPacket(ActorUniqueID(mFormRuntimeId));
-    pkt.sendToClients();
+    GMLIB_Level::getInstance()->sendPacketToClients(pkt);
     mRuntimeNpcFormList.erase(mFormRuntimeId);
 }
 

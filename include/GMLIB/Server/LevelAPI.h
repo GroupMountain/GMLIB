@@ -2,6 +2,7 @@
 #include "GMLIB/Macros.h"
 #include "mc/codebuilder/MCRESULT.h"
 #include "mc/enums/AllExperiments.h"
+#include "mc/network/packet/Packet.h"
 #include "mc/network/packet/SetTitlePacket.h"
 #include "mc/world/level/Level.h"
 #include "mc/world/level/levelgen/structure/StructureFeatureType.h"
@@ -28,10 +29,6 @@ public:
 
     GMLIB_API static GMLIB_Level* getLevel();
 
-    GMLIB_API static void setClientWeather(WeatherType weather, Player* pl);
-
-    GMLIB_API static void setClientWeather(WeatherType weather);
-
     GMLIB_API static void setFakeSeed(int64_t fakeSeed);
 
     GMLIB_API static void setCoResourcePack(bool enabled = true);
@@ -51,21 +48,6 @@ public:
     GMLIB_API static std::map<int, std::string> getAllExperiments();
 
     GMLIB_API static std::map<int, std::string> getAllExperimentsTranslateKeys();
-
-    GMLIB_API static void broadcast(std::string_view message);
-
-    GMLIB_API static void broadcastToast(std::string_view title, std::string_view message);
-
-    GMLIB_API static void
-    broadcastTitle(std::string_view title, SetTitlePacket::TitleType type = SetTitlePacket::TitleType::Title);
-
-    GMLIB_API static void broadcastTitle(
-        std::string_view          title,
-        SetTitlePacket::TitleType type,
-        int                       fadeInDuration,
-        int                       remainDuration,
-        int                       fadeOutDuration
-    );
 
 public:
     GMLIB_API BlockSource* getBlockSource(DimensionType dimid);
@@ -207,4 +189,29 @@ public:
     );
 
     GMLIB_API DBStorage& getDBStorage();
+
+    GMLIB_API void sendPacketToClients(Packet& packet);
+
+    GMLIB_API void sendPacketToDimension(Packet& packet, DimensionType dimId);
+
+    GMLIB_API void sendPacketTo(Packet& packet, Player& player);
+
+    GMLIB_API void setClientWeather(WeatherType weather, Player* pl);
+
+    GMLIB_API void setClientWeather(WeatherType weather);
+
+    GMLIB_API void broadcast(std::string_view message);
+
+    GMLIB_API void broadcastToast(std::string_view title, std::string_view message);
+
+    GMLIB_API void
+    broadcastTitle(std::string_view title, SetTitlePacket::TitleType type = SetTitlePacket::TitleType::Title);
+
+    GMLIB_API void broadcastTitle(
+        std::string_view          title,
+        SetTitlePacket::TitleType type,
+        int                       fadeInDuration,
+        int                       remainDuration,
+        int                       fadeOutDuration
+    );
 };

@@ -1,5 +1,6 @@
 #include "Global.h"
 #include <GMLIB/Mod/CustomRecipe/CustomRecipe.h>
+#include <GMLIB/Server/LevelAPI.h>
 #include <mc/deps/core/sem_ver/SemVersion.h>
 #include <mc/network/packet/CraftingDataPacket.h>
 
@@ -27,8 +28,8 @@ bool CustomRecipe::unregisterRecipe(std::string recipe_id) {
     for (auto& recipe : AllRecipes) {
         if (recipe.second.count(recipe_id)) {
             recipe.second.erase(recipe_id);
-            CraftingDataPacket::prepareFromRecipes(ll::service::bedrock::getLevel()->getRecipes(), true)
-                ->sendToClients();
+            auto packet = CraftingDataPacket::prepareFromRecipes(ll::service::bedrock::getLevel()->getRecipes(), true);
+            GMLIB_Level::getInstance()->sendPacketToClients(*packet);
             return true;
         }
     }

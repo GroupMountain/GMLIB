@@ -1,5 +1,7 @@
 #include "Global.h"
+#include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/FakeListAPI.h>
+#include <GMLIB/Server/LevelAPI.h>
 #include <mc/network/MinecraftPackets.h>
 #include <mc/network/packet/PlayerListEntry.h>
 #include <mc/network/packet/PlayerListPacket.h>
@@ -26,15 +28,14 @@ LL_TYPE_INSTANCE_HOOK(
     for (auto& fakeListPair : GMLIB::Server::FakeListAPI::mFakeListMap) {
         pkt.emplace(std::move(fakeListPair.second));
     }
-    BinaryStream bs; // DefaultPermission
-    bs.writeUnsignedInt64(-1, 0, 0);
-    bs.writeUnsignedChar((uchar)1, 0, 0);
-    bs.writeUnsignedChar((uchar)CommandPermissionLevel::Any, 0, 0);
-    bs.writeUnsignedVarInt(0, 0, 0);
-    auto ablitiespkt = MinecraftPackets::createPacket(MinecraftPacketIds::UpdateAbilities);
-    ablitiespkt->read(bs);
-    pkt.sendToClients();
-    ablitiespkt->sendToClients();
+    GMLIB_BinaryStream bs; // DefaultPermission
+    bs.writePacketHeader(MinecraftPacketIds::UpdateAbilities);
+    bs.writeUnsignedInt64(-1);
+    bs.writeUnsignedChar((uchar)1);
+    bs.writeUnsignedChar((uchar)CommandPermissionLevel::Any);
+    bs.writeUnsignedVarInt(0);
+    GMLIB_Level::getInstance()->sendPacketToClients(pkt);
+    bs.sendToClients();
     return origin();
 }
 
@@ -89,7 +90,7 @@ inline void sendAddFakeListPacket(PlayerListEntry entry) {
     auto pkt    = PlayerListPacket();
     pkt.mAction = PlayerListPacketType::Add;
     pkt.emplace(std::move(entry));
-    pkt.sendToClients();
+    GMLIB_Level::getInstance()->sendPacketToClients(pkt);
 }
 
 inline void sendRemoveFakeListPacket(std::vector<PlayerListEntry> entries) {
@@ -98,7 +99,7 @@ inline void sendRemoveFakeListPacket(std::vector<PlayerListEntry> entries) {
     for (auto& entry : entries) {
         pkt.emplace(std::move(entry));
     }
-    pkt.sendToClients();
+    GMLIB_Level::getInstance()->sendPacketToClients(pkt);
 }
 
 bool FakeList::addFakeList(PlayerListEntry const& entry) {

@@ -1,4 +1,5 @@
 #include "Global.h"
+#include <GMLIB/Server/BinaryStreamAPI.h>
 #include <GMLIB/Server/I18nAPI.h>
 #include <GMLIB/Server/LevelAPI.h>
 #include <mc/network/packet/GameRulesChangedPacket.h>
@@ -310,7 +311,8 @@ void GMLIB_Level::addEducationEditionRequired() { GMLIB::LevelAPI::mEducationEdi
 void GMLIB_Level::setAndUpdateTime(int time) {
     setTime(time);
     try {
-        SetTimePacket(time).sendToClients();
+        auto pkt = SetTimePacket(time);
+        sendPacketToClients(pkt);
     } catch (...) {}
 }
 
@@ -350,18 +352,24 @@ void GMLIB_Level::setClientWeather(WeatherType weather, Player* pl) {
     Vec3 pos = {0, 0, 0};
     switch (weather) {
     case WeatherType::Thunder: {
-        LevelEventPacket(LevelEvent::StartThunderstorm, pos, 65565).sendTo(*pl);
-        LevelEventPacket(LevelEvent::StartRaining, pos, 65565).sendTo(*pl);
+        auto pkt1 = LevelEventPacket(LevelEvent::StartThunderstorm, pos, 65565);
+        sendPacketTo(pkt1, *pl);
+        auto pkt2 = LevelEventPacket(LevelEvent::StartRaining, pos, 65565);
+        sendPacketTo(pkt2, *pl);
         break;
     }
     case WeatherType::Rain: {
-        LevelEventPacket(LevelEvent::StopThunderstorm, pos, 0).sendTo(*pl);
-        LevelEventPacket(LevelEvent::StartRaining, pos, 65565).sendTo(*pl);
+        auto pkt1 = LevelEventPacket(LevelEvent::StopThunderstorm, pos, 0);
+        sendPacketTo(pkt1, *pl);
+        auto pkt2 = LevelEventPacket(LevelEvent::StartRaining, pos, 65565);
+        sendPacketTo(pkt2, *pl);
         break;
     }
     default: {
-        LevelEventPacket(LevelEvent::StopThunderstorm, pos, 0).sendTo(*pl);
-        LevelEventPacket(LevelEvent::StopRaining, pos, 0).sendTo(*pl);
+        auto pkt1 = LevelEventPacket(LevelEvent::StopThunderstorm, pos, 0);
+        sendPacketTo(pkt1, *pl);
+        auto pkt2 = LevelEventPacket(LevelEvent::StopRaining, pos, 0);
+        sendPacketTo(pkt2, *pl);
         break;
     }
     }
@@ -371,28 +379,37 @@ void GMLIB_Level::setClientWeather(WeatherType weather) {
     Vec3 pos = {0, 0, 0};
     switch (weather) {
     case WeatherType::Thunder: {
-        LevelEventPacket(LevelEvent::StartThunderstorm, pos, 65565).sendToClients();
-        LevelEventPacket(LevelEvent::StartRaining, pos, 65565).sendToClients();
+        auto pkt1 = LevelEventPacket(LevelEvent::StartThunderstorm, pos, 65565);
+        sendPacketToClients(pkt1);
+        auto pkt2 = LevelEventPacket(LevelEvent::StartRaining, pos, 65565);
+        sendPacketToClients(pkt2);
         break;
     }
     case WeatherType::Rain: {
-        LevelEventPacket(LevelEvent::StopThunderstorm, pos, 0).sendToClients();
-        LevelEventPacket(LevelEvent::StartRaining, pos, 65565).sendToClients();
+        auto pkt1 = LevelEventPacket(LevelEvent::StopThunderstorm, pos, 0);
+        sendPacketToClients(pkt1);
+        auto pkt2 = LevelEventPacket(LevelEvent::StartRaining, pos, 65565);
+        sendPacketToClients(pkt2);
         break;
     }
     default: {
-        LevelEventPacket(LevelEvent::StopThunderstorm, pos, 0).sendToClients();
-        LevelEventPacket(LevelEvent::StopRaining, pos, 0).sendToClients();
+        auto pkt1 = LevelEventPacket(LevelEvent::StopThunderstorm, pos, 0);
+        sendPacketToClients(pkt1);
+        auto pkt2 = LevelEventPacket(LevelEvent::StopRaining, pos, 0);
+        sendPacketToClients(pkt2);
         break;
     }
     }
 }
 
-void GMLIB_Level::broadcast(std::string_view message) { TextPacket::createRawMessage(message).sendToClients(); }
+void GMLIB_Level::broadcast(std::string_view message) {
+    auto pkt = TextPacket::createRawMessage(message);
+    sendPacketToClients(pkt);
+}
 
 void GMLIB_Level::broadcastToast(std::string_view title, std::string_view message) {
     auto pkt = ToastRequestPacket(std::string(title), std::string(message));
-    pkt.sendToClients();
+    sendPacketToClients(pkt);
 }
 
 std::optional<bool> GMLIB_Level::getGameruleBool(GameRuleId id) {
@@ -442,7 +459,7 @@ std::optional<int> GMLIB_Level::getGameruleInt(std::string_view name) {
 
 void GMLIB_Level::setGamerule(GameRuleId id, bool value) {
     auto pkt = ll::service::bedrock::getLevel()->getGameRules().setRule(id, value, true, nullptr, nullptr, nullptr);
-    pkt->sendToClients();
+    sendPacketToClients(*pkt);
 }
 
 void GMLIB_Level::setGamerule(std::string_view name, bool value) {
@@ -452,7 +469,7 @@ void GMLIB_Level::setGamerule(std::string_view name, bool value) {
 
 void GMLIB_Level::setGamerule(GameRuleId id, float value) {
     auto pkt = ll::service::bedrock::getLevel()->getGameRules().setRule(id, value, true, nullptr, nullptr, nullptr);
-    pkt->sendToClients();
+    sendPacketToClients(*pkt);
 }
 
 void GMLIB_Level::setGamerule(std::string_view name, float value) {
@@ -463,7 +480,7 @@ void GMLIB_Level::setGamerule(std::string_view name, float value) {
 void GMLIB_Level::setGamerule(GameRuleId id, int value) {
     ll::service::bedrock::getLevel()->getGameRules();
     auto pkt = ll::service::bedrock::getLevel()->getGameRules().setRule(id, value, true, nullptr, nullptr, nullptr);
-    pkt->sendToClients();
+    sendPacketToClients(*pkt);
 }
 
 void GMLIB_Level::setGamerule(std::string_view name, int value) {
@@ -657,7 +674,8 @@ void CaculateTPS() {
 }
 
 void GMLIB_Level::broadcastTitle(std::string_view text, SetTitlePacket::TitleType type) {
-    SetTitlePacket(type, std::string(text)).sendToClients();
+    auto pkt = SetTitlePacket(type, std::string(text));
+    sendPacketToClients(pkt);
 }
 
 void GMLIB_Level::broadcastTitle(
@@ -671,14 +689,15 @@ void GMLIB_Level::broadcastTitle(
     pkt.mFadeInTime  = fadeInDuration;
     pkt.mFadeOutTime = fadeOutDuration;
     pkt.mStayTime    = remainDuration;
-    pkt.sendToClients();
+    sendPacketToClients(pkt);
 }
 
 BlockPos GMLIB_Level::getWorldSpawn() { return getLevelData().getSpawnPos(); }
 
 void GMLIB_Level::setWorldSpawn(BlockPos pos) {
     getLevelData().setSpawnPos(pos);
-    SetSpawnPositionPacket((SpawnPositionType)1, 0, pos).sendToClients();
+    auto pkt = SetSpawnPositionPacket((SpawnPositionType)1, 0, pos);
+    sendPacketToClients(pkt);
 }
 
 MCRESULT GMLIB_Level::executeCommand(std::string_view command, DimensionType dimId) {
@@ -767,3 +786,24 @@ std::optional<BlockPos> GMLIB_Level::locateNearestStructureFeature(
 }
 
 DBStorage& GMLIB_Level::getDBStorage() { return *GMLIB::Global<DBStorage>; }
+
+void GMLIB_Level::sendPacketToClients(Packet& packet) {
+    GMLIB_BinaryStream bs;
+    bs.writePacketHeader(packet.getId());
+    packet.write(bs);
+    bs.sendToClients();
+}
+
+void GMLIB_Level::sendPacketToDimension(Packet& packet, DimensionType dimId) {
+    GMLIB_BinaryStream bs;
+    bs.writePacketHeader(packet.getId());
+    packet.write(bs);
+    bs.sendToClients(dimId);
+}
+
+void GMLIB_Level::sendPacketTo(Packet& packet, Player& player) {
+    GMLIB_BinaryStream bs;
+    bs.writePacketHeader(packet.getId());
+    packet.write(bs);
+    bs.sendTo(player);
+}

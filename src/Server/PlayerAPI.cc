@@ -342,8 +342,9 @@ void GMLIB_Player::setClientSidebar(
     std::vector<std::pair<std::string, int>> const& data,
     ObjectiveSortOrder                              sortOrder
 ) {
-    SetDisplayObjectivePacket("sidebar", "GMLIB_SIDEBAR_API", title, "dummy", ObjectiveSortOrder(sortOrder))
-        .sendTo(*this);
+    auto pkt1 =
+        SetDisplayObjectivePacket("sidebar", "GMLIB_SIDEBAR_API", title, "dummy", ObjectiveSortOrder(sortOrder));
+    sendPacket(pkt1);
 
     std::vector<ScorePacketInfo> info;
     for (auto& key : data) {
@@ -357,12 +358,13 @@ void GMLIB_Player::setClientSidebar(
         scoreInfo.mFakePlayerName     = text;
         info.emplace_back(scoreInfo);
     }
-    auto pkt = SetScorePacket::change(info);
-    pkt.sendTo(*this);
+    auto pkt2 = SetScorePacket::change(info);
+    sendPacket(pkt2);
 }
 
 void GMLIB_Player::removeClientSidebar() {
-    SetDisplayObjectivePacket("sidebar", "", "", "dummy", ObjectiveSortOrder::Ascending).sendTo(*this);
+    auto pkt = SetDisplayObjectivePacket("sidebar", "", "", "dummy", ObjectiveSortOrder::Ascending);
+    sendPacket(pkt);
 }
 
 void GMLIB_Player::setHealth(int value) {
@@ -406,8 +408,9 @@ void GMLIB_Player::setUnderwaterMovementSpeed(int value) {
 }
 
 void GMLIB_Player::setClientGamemode(GameType gamemode) {
-    UpdatePlayerGameTypePacket(gamemode, getOrCreateUniqueID(), GMLIB_Level::getInstance()->getCurrentTick())
-        .sendTo(*this);
+    auto pkt =
+        UpdatePlayerGameTypePacket(gamemode, getOrCreateUniqueID(), GMLIB_Level::getInstance()->getCurrentTick());
+    sendPacket(pkt);
 }
 
 void GMLIB_Player::setClientBossbar(
@@ -445,7 +448,7 @@ void GMLIB_Player::setClientBossbar(
     pkt2.mColor         = color;
     pkt2.mOverlay       = overlay;
     pkt2.mName          = name;
-    pkt2.sendTo(*this);
+    sendPacket(pkt2);
 }
 
 int64_t GMLIB_Player::setClientBossbar(
@@ -464,8 +467,9 @@ void GMLIB_Player::removeClientBossbar(int64_t bossbarId) {
     auto pkt       = BossEventPacket();
     pkt.mBossID    = uniqueId;
     pkt.mEventType = BossEventUpdateType::Remove;
-    pkt.sendTo(*this);
-    RemoveActorPacket(uniqueId).sendTo(*this);
+    sendPacket(pkt);
+    auto pkt2 = RemoveActorPacket(uniqueId);
+    sendPacket(pkt2);
 }
 
 void GMLIB_Player::updateClientBossbarPercentage(int64_t bossbarId, float percentage) {
@@ -473,7 +477,7 @@ void GMLIB_Player::updateClientBossbarPercentage(int64_t bossbarId, float percen
     pkt.mBossID        = ActorUniqueID(bossbarId);
     pkt.mHealthPercent = percentage;
     pkt.mEventType     = BossEventUpdateType::UpdatePercent;
-    pkt.sendTo(*this);
+    sendPacket(pkt);
 }
 
 void GMLIB_Player::updateClientBossbarName(int64_t bossbarId, std::string const& name) {
@@ -481,7 +485,7 @@ void GMLIB_Player::updateClientBossbarName(int64_t bossbarId, std::string const&
     pkt.mBossID    = ActorUniqueID(bossbarId);
     pkt.mName      = name;
     pkt.mEventType = BossEventUpdateType::UpdateName;
-    pkt.sendTo(*this);
+    sendPacket(pkt);
 }
 
 void GMLIB_Player::updateClientBossbarColor(int64_t bossbarId, ::BossBarColor color) {
@@ -489,14 +493,16 @@ void GMLIB_Player::updateClientBossbarColor(int64_t bossbarId, ::BossBarColor co
     pkt.mBossID    = ActorUniqueID(bossbarId);
     pkt.mColor     = color;
     pkt.mEventType = BossEventUpdateType::UpdateStyle;
-    pkt.sendTo(*this);
+    sendPacket(pkt);
 }
 
-void GMLIB_Player::setClientWeather(WeatherType weather) { return GMLIB_Level::setClientWeather(weather, this); }
+void GMLIB_Player::setClientWeather(WeatherType weather) {
+    return GMLIB_Level::getInstance()->setClientWeather(weather, this);
+}
 
 void GMLIB_Player::sendToast(std::string_view title, std::string_view message) {
     auto pkt = ToastRequestPacket(std::string(title), std::string(message));
-    pkt.sendTo(*this);
+    sendPacket(pkt);
 }
 
 void GMLIB_Player::addEffect(
@@ -689,7 +695,8 @@ void GMLIB_Player::updateClientBlock(
     BlockUpdateFlag               flag,
     UpdateBlockPacket::BlockLayer layer
 ) {
-    UpdateBlockPacket(pos, (uint)layer, runtimeId, (uchar)flag).sendTo(*this);
+    auto pkt = UpdateBlockPacket(pos, (uint)layer, runtimeId, (uchar)flag);
+    sendPacket(pkt);
 }
 
 bool GMLIB_Player::updateClientBlock(
@@ -744,7 +751,8 @@ Biome* GMLIB_Player::getBiome() {
 }
 
 void GMLIB_Player::sendTitle(std::string_view text, SetTitlePacket::TitleType type) {
-    SetTitlePacket(type, std::string(text)).sendTo(*this);
+    auto pkt = SetTitlePacket(type, std::string(text));
+    sendPacket(pkt);
 }
 
 void GMLIB_Player::sendTitle(
@@ -758,7 +766,7 @@ void GMLIB_Player::sendTitle(
     pkt.mFadeInTime  = fadeInDuration;
     pkt.mFadeOutTime = fadeOutDuration;
     pkt.mStayTime    = remainDuration;
-    pkt.sendTo(*this);
+    sendPacket(pkt);
 }
 
 std::pair<BlockPos, DimensionType> GMLIB_Player::getSpawnPoint() { return {getSpawnPosition(), getSpawnDimension()}; }
@@ -862,4 +870,11 @@ std::optional<BlockPos>
 GMLIB_Player::locateNearestStructureFeature(std::string const& structure, bool useNewChunksOnly) {
     auto type = StructureFeatureTypeNames::getFeatureType(structure);
     return locateNearestStructureFeature(type, useNewChunksOnly);
+}
+
+void GMLIB_Player::sendPacket(Packet& packet) {
+    GMLIB_BinaryStream bs;
+    bs.writePacketHeader(packet.getId());
+    packet.write(bs);
+    bs.sendTo(*this);
 }

@@ -80,8 +80,8 @@ GMLIB_Actor* GMLIB_Spawner::spawnProjectile(GMLIB_Actor* owner, std::string cons
 }
 
 GMLIB_Actor* GMLIB_Spawner::summonEntity(Vec3 const& pos, int dimId, std::string const& name, GMLIB_Actor* summoner) {
-    ll::utils::string_utils::replaceAll(name, "minecraft:", "");
-    auto identifider = ActorDefinitionIdentifier(name);
+    auto id          = ll::utils::string_utils::replaceAll(name, "minecraft:", "");
+    auto identifider = ActorDefinitionIdentifier(id);
     auto uniqueId    = ActorUniqueID(GMLIB_Actor::getNextActorUniqueID());
     return (GMLIB_Actor*)CommandUtils::spawnEntityAt(
         *GMLIB_Level::getInstance()->getBlockSource(dimId),

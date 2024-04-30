@@ -6,6 +6,7 @@
 #include "mc/enums/BossBarColor.h"
 #include "mc/enums/BossBarOverlay.h"
 #include "mc/enums/ObjectiveSortOrder.h"
+#include "mc/network/packet/Packet.h"
 #include "mc/network/packet/SetTitlePacket.h"
 #include "mc/network/packet/UpdateBlockPacket.h"
 #include "mc/world/actor/player/FullPlayerInventoryWrapper.h"
@@ -302,4 +303,6 @@ public:
 
     GMLIB_API std::optional<BlockPos>
               locateNearestStructureFeature(std::string const& structure, bool useNewChunksOnly = false);
+
+    GMLIB_API void sendPacket(Packet& packet);
 };
