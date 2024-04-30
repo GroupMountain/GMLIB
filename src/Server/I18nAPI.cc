@@ -75,6 +75,16 @@ void I18nAPI::loadLanguage(std::string const& languageCode, GMLIB::Files::McLang
     getI18n().appendTranslations(languageCode, data.getTranslationMap());
 }
 
+void I18nAPI::loadLanguage(std::string const& languageCode, nlohmann::json const& language) {
+    std::unordered_map<std::string, std::string> languageMap;
+    for (nlohmann::json::const_iterator it = language.begin(); it != language.end(); ++it) {
+        if (it.value().is_string()) {
+            languageMap[it.key()] = it.value().get<std::string>();
+        }
+    }
+    loadLanguage(languageCode, languageMap);
+}
+
 void I18nAPI::loadLanguageFromFile(std::string const& languageCode, std::filesystem::path const& path) {
     auto language = GMLIB::Files::McLang::parse_file(path.string());
     getI18n().appendTranslations(languageCode, language.getTranslationMap());

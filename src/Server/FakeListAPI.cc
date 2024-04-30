@@ -23,7 +23,7 @@ LL_TYPE_INSTANCE_HOOK(
 ) {
     auto pkt    = PlayerListPacket();
     pkt.mAction = PlayerListPacketType::Add;
-    for (auto fakeListPair : GMLIB::Server::FakeListAPI::mFakeListMap) {
+    for (auto& fakeListPair : GMLIB::Server::FakeListAPI::mFakeListMap) {
         pkt.emplace(std::move(fakeListPair.second));
     }
     BinaryStream bs; // DefaultPermission
@@ -136,7 +136,7 @@ bool FakeList::addFakeList(
 bool FakeList::removeFakeList(std::string const& nameOrXuid) {
     bool isRemoved = false;
     GMLIB::Server::enableHook1();
-    for (auto fakeListPair : GMLIB::Server::FakeListAPI::mFakeListMap) {
+    for (auto& fakeListPair : GMLIB::Server::FakeListAPI::mFakeListMap) {
         if (fakeListPair.first == nameOrXuid || fakeListPair.second.mXuid == nameOrXuid) {
             GMLIB::Server::FakeListAPI::mFakeListMap.erase(fakeListPair.first);
             sendRemoveFakeListPacket({fakeListPair.second});
@@ -149,7 +149,7 @@ bool FakeList::removeFakeList(std::string const& nameOrXuid) {
 void FakeList::removeAllFakeLists() {
     std::vector<PlayerListEntry> entries;
     GMLIB::Server::enableHook1();
-    for (auto fakeListPair : GMLIB::Server::FakeListAPI::mFakeListMap) {
+    for (auto& fakeListPair : GMLIB::Server::FakeListAPI::mFakeListMap) {
         entries.push_back(fakeListPair.second);
     }
     sendRemoveFakeListPacket(entries);
@@ -165,7 +165,7 @@ bool FakeList::checkFakeListExistsName(std::string const& name) {
 }
 
 bool FakeList::checkFakeListExists(std::string const& name, std::string const& xuid) {
-    for (auto fakeListPair : GMLIB::Server::FakeListAPI::mFakeListMap) {
+    for (auto& fakeListPair : GMLIB::Server::FakeListAPI::mFakeListMap) {
         if (fakeListPair.first == name && fakeListPair.second.mXuid == xuid) {
             return true;
         }
@@ -175,7 +175,7 @@ bool FakeList::checkFakeListExists(std::string const& name, std::string const& x
 
 std::vector<std::string> FakeList::getAllFakeNames() {
     std::vector<std::string> allFakeLists;
-    for (auto fakeListPair : GMLIB::Server::FakeListAPI::mFakeListMap) {
+    for (auto& fakeListPair : GMLIB::Server::FakeListAPI::mFakeListMap) {
         allFakeLists.push_back(fakeListPair.first);
     }
     return allFakeLists;

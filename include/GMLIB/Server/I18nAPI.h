@@ -1,13 +1,9 @@
 #pragma once
-#pragma warning(disable : 4273) // I18n& getI18n();
-
 #include "GMLIB/Files/Language/McLang.h"
 #include "GMLIB/Macros.h"
 #include "mc/locale/I18n.h"
 #include "mc/locale/Localization.h"
 #include "nlohmann/json.hpp"
-
-I18n& getI18n();
 
 class I18nAPI {
 public:
@@ -47,6 +43,8 @@ public:
     loadLanguage(std::string const& languageCode, std::unordered_map<std::string, std::string> const& language);
 
     GMLIB_API static void loadLanguage(std::string const& languageCode, GMLIB::Files::McLang const& language);
+
+    GMLIB_API static void loadLanguage(std::string const& languageCode, nlohmann::json const& language);
 
     GMLIB_API static void loadLanguageFromFile(std::string const& languageCode, std::filesystem::path const& path);
 

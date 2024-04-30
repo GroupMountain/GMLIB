@@ -53,7 +53,7 @@ void GMLIB_CompoundTag::writeNbtTags(
     CompoundTag&                    dataNbt,
     const std::vector<std::string>& tags
 ) {
-    for (auto tag : tags) {
+    for (auto& tag : tags) {
         if (dataNbt.get(tag)) {
             originNbt.put(tag, dataNbt.get(tag)->copy());
         }

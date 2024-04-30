@@ -53,12 +53,12 @@ void GMLIB_BinaryStream::writeUuid(mce::UUID const& uuid) {
 
 void GMLIB_BinaryStream::writePropertySyncData(struct PropertySyncData const& syncdata) {
     writeUnsignedVarInt(syncdata.mIntEntries.size());
-    for (auto IntEntry : syncdata.mIntEntries) {
+    for (auto& IntEntry : syncdata.mIntEntries) {
         writeUnsignedVarInt(IntEntry.mPropertyIndex);
         writeVarInt(IntEntry.mData);
     }
     writeUnsignedVarInt(syncdata.mFloatEntries.size());
-    for (auto FloatEntry : syncdata.mIntEntries) {
+    for (auto& FloatEntry : syncdata.mIntEntries) {
         writeUnsignedVarInt(FloatEntry.mPropertyIndex);
         writeFloat(FloatEntry.mData);
     }

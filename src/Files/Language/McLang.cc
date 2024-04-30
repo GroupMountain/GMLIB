@@ -14,6 +14,7 @@ McLang McLang::parse_file(std::string const& filePath) {
         while (std::getline(file, line)) {
             if (!line.empty()) {
                 ll::string_utils::replaceAll(line, "\t", "");
+                ll::utils::string_utils::replaceAll(line, "\\n", "\n");
                 size_t equalPos = line.find("=");
                 if (equalPos != std::string::npos) {
                     auto key = line.substr(0, equalPos);
@@ -56,6 +57,7 @@ McLang McLang::parse(std::string const& data) {
     for (auto& line : lines) {
         if (!line.empty()) {
             ll::string_utils::replaceAll(line, "\t", "");
+            ll::utils::string_utils::replaceAll(line, "\\n", "\n");
             size_t equalPos = line.find("=");
             auto   key      = line.substr(0, equalPos);
             ll::string_utils::replaceAll(key, " ", "");
@@ -123,7 +125,6 @@ McLang::translate(std::string const& key, std::vector<std::string> const& data, 
     auto value = try_get(key);
     if (value.has_value()) {
         auto result = value.value();
-        ll::utils::string_utils::replaceAll(result, "\\n", "\n");
         if (data.empty()) {
             return result;
         }

@@ -49,7 +49,7 @@ int NpcDialogueForm::addAction(
 ) {
     std::string                         text;
     std::vector<nlohmann::ordered_json> data;
-    for (auto cmd : cmds) {
+    for (auto& cmd : cmds) {
         text = text + cmd + "\n";
         data.push_back({
             {"cmd_line", cmd},

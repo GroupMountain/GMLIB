@@ -71,7 +71,7 @@ LL_INSTANCE_HOOK(
 
 void initExperiments(LevelData* leveldat) {
     if (GMLIB::LevelAPI::mExperimentsRequireList.size() >= 1) {
-        for (auto exp : GMLIB::LevelAPI::mExperimentsRequireList) {
+        for (auto& exp : GMLIB::LevelAPI::mExperimentsRequireList) {
             leveldat->getExperiments().setExperimentEnabled(exp, true);
         }
     }
@@ -647,7 +647,7 @@ void CaculateTPS() {
                 continue;
             }
             uint ticks_minute = 0;
-            for (auto i : GMLIB::LevelAPI::mTickList) {
+            for (auto& i : GMLIB::LevelAPI::mTickList) {
                 ticks_minute = ticks_minute + i;
             }
             float res                    = (float)ticks_minute / ((float)GMLIB::LevelAPI::mTickList.size());
@@ -704,7 +704,7 @@ std::pair<bool, std::string> GMLIB_Level::executeCommandEx(std::string_view cmd,
     if (command) {
         CommandOutput output(CommandOutputType::AllOutput);
         command->run(origin, output);
-        for (auto msg : output.getMessages()) {
+        for (auto& msg : output.getMessages()) {
             std::string temp;
             getI18n().getCurrentLanguage()->get(msg.getMessageId(), temp, msg.getParams());
             result.second += temp.append("\n");
