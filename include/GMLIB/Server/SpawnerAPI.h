@@ -5,11 +5,11 @@
 class GMLIB_Spawner {
 public:
     GMLIB_API static GMLIB_Actor*
-    spawnEntity(Vec3 const& pos, int dimid, std::string const& name, GMLIB_Actor* owner = nullptr);
+    spawnEntity(Vec3 const& pos, DimensionType dimId, std::string const& name, GMLIB_Actor* owner = nullptr);
 
     GMLIB_API static Mob* spawnMob(
         Vec3 const&        pos,
-        int                dimid,
+        DimensionType      dimId,
         std::string const& name,
         GMLIB_Actor*       owner        = nullptr,
         bool               naturalSpawn = false,
@@ -17,7 +17,8 @@ public:
         bool               fromSpawner  = false
     );
 
-    GMLIB_API static ItemActor* spawnItem(Vec3 const& pos, int dimid, ItemStack& item, GMLIB_Actor* owner = nullptr);
+    GMLIB_API static ItemActor*
+    spawnItem(Vec3 const& pos, DimensionType dimId, ItemStack& item, GMLIB_Actor* owner = nullptr);
 
     GMLIB_API static ItemActor* spawnItem(
         Vec3 const&        pos,
@@ -30,4 +31,7 @@ public:
 
     GMLIB_API static GMLIB_Actor*
     spawnProjectile(GMLIB_Actor* owner, std::string const& name, float speed = 2, float offset = 3);
+
+    GMLIB_API static GMLIB_Actor*
+    summonEntity(Vec3 const& pos, int dimId, std::string const& name, GMLIB_Actor* summoner = nullptr);
 };
