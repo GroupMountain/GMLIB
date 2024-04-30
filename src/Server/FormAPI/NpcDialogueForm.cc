@@ -73,7 +73,7 @@ void NpcDialogueForm::sendTo(
 ) {
     auto               actionJson = mActionJSON.dump(4);
     GMLIB_BinaryStream bs1;
-    bs1.writePacketHeader(MinecraftPacketIds::AddActor, pl->getClientSubId());
+    bs1.writePacketHeader(MinecraftPacketIds::AddActor);
     bs1.writeVarInt64(mFormRuntimeId);
     bs1.writeUnsignedVarInt64(mFormRuntimeId);
     bs1.writeString("npc");
@@ -106,7 +106,7 @@ void NpcDialogueForm::sendTo(
     bs1.sendTo(*pl);
     // NpcDialoguePacket
     GMLIB_BinaryStream bs2;
-    bs2.writePacketHeader(MinecraftPacketIds::NpcDialogue, pl->getClientSubId());
+    bs2.writePacketHeader(MinecraftPacketIds::NpcDialogue);
     bs2.writeUnsignedInt64(mFormRuntimeId); // ActorUniqueId
     bs2.writeVarInt(0);                     // 0: Open  1: Close
     bs2.writeString(mDialogue);             // Dialogue

@@ -347,14 +347,14 @@ void GMLIB_Player::setClientSidebar(
     sendPacket(pkt1);
 
     std::vector<ScorePacketInfo> info;
-    for (auto& key : data) {
-        const ScoreboardId& id        = ScoreboardId(key.second);
-        auto                text      = key.first;
+    for (auto& [key, index] : data) {
+        const ScoreboardId& id        = ScoreboardId(index + 1145141919810);
+        auto                text      = key;
         auto                scoreInfo = ScorePacketInfo();
         scoreInfo.mScoreboardId       = id;
         scoreInfo.mObjectiveName      = "GMLIB_SIDEBAR_API";
         scoreInfo.mIdentityType       = IdentityDefinition::Type::FakePlayer;
-        scoreInfo.mScoreValue         = key.second;
+        scoreInfo.mScoreValue         = index;
         scoreInfo.mFakePlayerName     = text;
         info.emplace_back(scoreInfo);
     }
@@ -424,7 +424,7 @@ void GMLIB_Player::setClientBossbar(
     auto uniqueId = ActorUniqueID(bossbarId);
     if (!ll::service::getLevel()->fetchEntity(uniqueId)) {
         GMLIB_BinaryStream bs1;
-        bs1.writePacketHeader(MinecraftPacketIds::AddActor, getClientSubId());
+        bs1.writePacketHeader(MinecraftPacketIds::AddActor);
         bs1.writeVarInt64(bossbarId);
         bs1.writeUnsignedVarInt64(bossbarId);
         bs1.writeString("player");

@@ -138,7 +138,8 @@ public:
         FillMode         mode     = FillMode::Replace
     );
 
-    GMLIB_API int fillBlocks(BlockPos startpos, BlockPos endpos, DimensionType dimId, Block* oldBlock, Block* newBlock);
+    GMLIB_API int
+    fillBlocks(BlockPos const& startpos, BlockPos const& endpos, DimensionType dimId, Block* oldBlock, Block* newBlock);
 
     GMLIB_API int fillBlocks(
         BlockPos const&  startpos,

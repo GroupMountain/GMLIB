@@ -598,7 +598,13 @@ int GMLIB_Level::fillBlocks(
     return 0;
 }
 
-int GMLIB_Level::fillBlocks(BlockPos startpos, BlockPos endpos, DimensionType dimId, Block* newblock, Block* oldblock) {
+int GMLIB_Level::fillBlocks(
+    BlockPos const& startpos,
+    BlockPos const& endpos,
+    DimensionType   dimId,
+    Block*          newblock,
+    Block*          oldblock
+) {
     int  count       = 0;
     auto blockSource = getBlockSource(dimId);
     if (checkFillPos(startpos, endpos)) {

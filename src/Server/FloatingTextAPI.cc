@@ -53,7 +53,7 @@ void sendUpdateFloatingTextPacket(FloatingText* ft, Player& pl) {
         PlaceholderAPI::translate(text, &pl);
     }
     GMLIB_BinaryStream bs;
-    bs.writePacketHeader(MinecraftPacketIds::SetActorData, pl.getClientSubId());
+    bs.writePacketHeader(MinecraftPacketIds::SetActorData);
     bs.writeUnsignedVarInt64(ft->getRuntimeID());
     // DataItem
     bs.writeUnsignedVarInt(2);
@@ -78,7 +78,7 @@ void sendAddFloatingTextPacket(FloatingText* ft, Player& pl) {
         PlaceholderAPI::translate(text, &pl);
     }
     GMLIB_BinaryStream bs;
-    bs.writePacketHeader(MinecraftPacketIds::AddActor, pl.getClientSubId());
+    bs.writePacketHeader(MinecraftPacketIds::AddActor);
     bs.writeVarInt64(ft->getRuntimeID());
     bs.writeUnsignedVarInt64(ft->getRuntimeID());
     bs.writeString("player");
