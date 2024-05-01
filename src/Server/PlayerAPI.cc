@@ -342,6 +342,8 @@ void GMLIB_Player::setClientSidebar(
     std::vector<std::pair<std::string, int>> const& data,
     ObjectiveSortOrder                              sortOrder
 ) {
+    removeClientSidebar();
+
     auto pkt1 =
         SetDisplayObjectivePacket("sidebar", "GMLIB_SIDEBAR_API", title, "dummy", ObjectiveSortOrder(sortOrder));
     sendPacket(pkt1);
@@ -793,7 +795,7 @@ int GMLIB_Player::giveItems(std::vector<ItemStack>& items, bool drop) {
 
 int GMLIB_Player::giveItem(std::string_view name, int count, short aux, bool drop) {
     int  result = 0;
-    auto items  = CommandUtils::createItemStacks(ItemInstance(name, 1, aux, nullptr), 100, result);
+    auto items  = CommandUtils::createItemStacks(ItemInstance(name, 1, aux, nullptr), count, result);
     Util::LootTableUtils::givePlayer(*this, items, drop);
     return result;
 }

@@ -41,23 +41,19 @@ std::list<ushort>             mTickList;
 
 } // namespace GMLIB::LevelAPI
 
-LL_INSTANCE_HOOK(
-    ForceAchievementHook1,
+LL_TYPE_INSTANCE_HOOK(
+    ForceAchievementHook,
     ll::memory::HookPriority::Normal,
+    LevelData,
     "?achievementsWillBeDisabledOnLoad@LevelData@@QEBA_NXZ",
     bool
 ) {
-    return false;
-}
-
-LL_TYPE_INSTANCE_HOOK(
-    ForceAchievementHook2,
-    ll::memory::HookPriority::Normal,
-    LevelData,
-    "?hasAchievementsDisabled@LevelData@@QEBA_NXZ",
-    bool
-) {
-    ll::memory::dAccess<bool>(this, 1276) = false;
+    if (getGameType() == GameType::Creative) { // IDA: LevelData::achievementsWillBeDisabledOnLoad
+        setGameType(GameType::Survival);
+    }
+    ll::memory::dAccess<bool>(this, 1276) = false; // IDA: LevelData::achievementsWillBeDisabledOnLoad
+    ll::memory::dAccess<bool>(this, 1464) = false; // IDA: LevelData::hasCheatsEnabled
+    ll::memory::dAccess<bool>(this, 1465) = false; // IDA: LevelData::achievementsWillBeDisabledOnLoad
     return false;
 }
 
@@ -293,7 +289,7 @@ void GMLIB_Level::addExperimentsRequire(::AllExperiments experiment) {
 }
 
 struct ForceAchievements_Impl {
-    ll::memory::HookRegistrar<ForceAchievementHook1, ForceAchievementHook2, AllowCheatsSettingHook> r;
+    ll::memory::HookRegistrar<ForceAchievementHook, AllowCheatsSettingHook> r;
 };
 
 std::unique_ptr<ForceAchievements_Impl> forceAchievements_Impl;
