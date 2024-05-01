@@ -791,6 +791,26 @@ int GMLIB_Player::giveItems(std::vector<ItemStack>& items, bool drop) {
     return Util::LootTableUtils::givePlayer(*this, items, drop);
 }
 
+int GMLIB_Player::giveItem(ItemStack const& item, bool drop, bool fixStackSize) {
+    std::vector<ItemStack> items;
+    if (fixStackSize) {
+        auto oldItem   = item.clone();
+        auto stackSize = oldItem.getMaxStackSize();
+        auto count     = item.mCount;
+        while (count > stackSize) {
+            auto newItem   = oldItem.clone();
+            newItem.mCount = stackSize;
+            items.push_back(newItem);
+            count -= stackSize;
+        }
+        oldItem.mCount = count;
+        items.push_back(oldItem);
+    } else {
+        items.push_back(item);
+    }
+    return giveItems(items, drop);
+}
+
 int GMLIB_Player::giveItem(std::string_view name, int count, int data, bool drop, bool invenoryLimit) {
     if (invenoryLimit) {
         int  result = 0;

@@ -284,6 +284,8 @@ public:
 
     GMLIB_API int giveItems(std::vector<ItemStack>& items, bool drop = true);
 
+    GMLIB_API int giveItem(ItemStack const& item, bool drop = true, bool fixStackSize = true);
+
     GMLIB_API int
     giveItem(std::string_view name, int count = 1, int data = 0, bool drop = true, bool inventoryLimit = true);
 
