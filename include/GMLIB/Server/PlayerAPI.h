@@ -284,11 +284,29 @@ public:
 
     GMLIB_API int giveItems(std::vector<ItemStack>& items, bool drop = true);
 
-    GMLIB_API int giveItem(std::string_view name, int count = 1, short aux = 0, bool drop = true);
+    GMLIB_API int
+    giveItem(std::string_view name, int count = 1, int data = 0, bool drop = true, bool inventoryLimit = true);
 
     GMLIB_API int clearAllItems();
 
-    GMLIB_API int clearItem(std::string_view name, int count = 2147483647);
+    GMLIB_API int getItemCount(
+        ItemStack const&                      item,
+        std::function<bool(const ItemStack&)> comparator       = nullptr,
+        bool                                  requireExtraData = false
+    );
+
+    GMLIB_API int getItemCount(std::string_view name, int data);
+
+    GMLIB_API int getItemCount(std::string_view name);
+
+    GMLIB_API int clearItem(
+        ItemStack const&                      item,
+        int                                   clearCount,
+        std::function<bool(const ItemStack&)> comparator       = nullptr,
+        bool                                  requireExtraData = false
+    );
+
+    GMLIB_API int clearItem(std::string_view name, int data = -1, int count = 2147483647);
 
     GMLIB_API bool isInStructureFeature(StructureFeatureType structure);
 

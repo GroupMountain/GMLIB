@@ -651,8 +651,6 @@ void GMLIB_Player::hurtPlayer(float damage, std::string const& causeName, Actor*
 
 FullPlayerInventoryWrapper GMLIB_Player::getFullPlayerInventoryWrapper() { return FullPlayerInventoryWrapper(*this); }
 
-int GMLIB_Player::clearAllItems() { return getFullPlayerInventoryWrapper().clearAllItems(); }
-
 std::string_view GMLIB_Player::getIP() {
     auto ipAndPort = getNetworkIdentifier().getIPAndPort();
     auto pos       = ipAndPort.find(":");
@@ -793,48 +791,183 @@ int GMLIB_Player::giveItems(std::vector<ItemStack>& items, bool drop) {
     return Util::LootTableUtils::givePlayer(*this, items, drop);
 }
 
-int GMLIB_Player::giveItem(std::string_view name, int count, short aux, bool drop) {
-    int  result = 0;
-    auto items  = CommandUtils::createItemStacks(ItemInstance(name, 1, aux, nullptr), count, result);
-    Util::LootTableUtils::givePlayer(*this, items, drop);
+int GMLIB_Player::giveItem(std::string_view name, int count, int data, bool drop, bool invenoryLimit) {
+    if (invenoryLimit) {
+        int  result = 0;
+        auto items  = CommandUtils::createItemStacks(ItemInstance(name, 1, data, nullptr), count, result);
+        Util::LootTableUtils::givePlayer(*this, items, drop);
+        return result;
+    } else {
+        auto                   baseItem  = ItemStack{name};
+        auto                   stackSize = baseItem.getMaxStackSize();
+        std::vector<ItemStack> items;
+        while (count > stackSize) {
+            auto item = CommandUtils::createItemStack(std::string(name), stackSize, data);
+            items.push_back(item);
+            count -= stackSize;
+        }
+        auto item = CommandUtils::createItemStack(std::string(name), count, data);
+        items.push_back(item);
+        return Util::LootTableUtils::givePlayer(*this, items, drop);
+    }
+}
+
+int GMLIB_Player::getItemCount(
+    ItemStack const&                      item,
+    std::function<bool(const ItemStack&)> comparator,
+    bool                                  requireExtraData
+) {
+    int result = 0;
+
+    for (auto slot = 0; slot < getInventory().getContainerSize(); slot++) {
+        auto slotItem = getInventory().getItem(slot);
+        auto isSame   = false;
+        if (requireExtraData) {
+            isSame = comparator(slotItem);
+        } else {
+            isSame = (slotItem.getTypeName() == item.getTypeName());
+        }
+        if (isSame) {
+            result += slotItem.mCount;
+        }
+    }
+
+    for (auto slot = 0; slot < ActorEquipment::getArmorContainer(getEntityContext()).getContainerSize(); slot++) {
+        auto slotItem = ActorEquipment::getArmorContainer(getEntityContext()).getItem(slot);
+        auto isSame   = false;
+        if (requireExtraData) {
+            isSame = comparator(slotItem);
+        } else {
+            isSame = (slotItem.getTypeName() == item.getTypeName());
+        }
+        if (isSame) {
+            result += slotItem.mCount;
+        }
+    }
+
+    auto& offhand = getOffhandSlot();
+    auto  isSame  = false;
+    if (requireExtraData) {
+        isSame = comparator(offhand);
+    } else {
+        isSame = (offhand.getTypeName() == item.getTypeName());
+    }
+    if (isSame) {
+        result += offhand.mCount;
+    }
+
     return result;
 }
 
-int GMLIB_Player::clearItem(std::string_view name, int clearCount) {
-    int   result         = 0;
-    auto& inventorySlots = getInventory().getSlots();
-    for (ushort slot = 0; slot < inventorySlots.size(); ++slot) {
-        if (inventorySlots[slot]->getTypeName() == name) {
-            if (inventorySlots[slot]->mCount < clearCount) {
-                result += inventorySlots[slot]->mCount;
+int GMLIB_Player::getItemCount(std::string_view name, int data) {
+    auto item = ItemStack{name, 1, data};
+    return getItemCount(
+        item,
+        [&](const ItemStack& comparator) -> bool {
+            return (
+                item.getTypeName() == comparator.getTypeName()
+                && item.getAuxValue()
+                       == (comparator.hasDamageValue() ? comparator.getDamageValue() : comparator.getAuxValue())
+            );
+        },
+        true
+    );
+}
+
+int GMLIB_Player::getItemCount(std::string_view name) {
+    auto item = ItemStack{name};
+    return getItemCount(item);
+}
+
+int GMLIB_Player::clearItem(
+    ItemStack const&                      item,
+    int                                   clearCount,
+    std::function<bool(const ItemStack&)> comparator,
+    bool                                  requireExtraData
+) {
+    int result = 0;
+
+    for (auto slot = 0; slot < getInventory().getContainerSize(); slot++) {
+        auto slotItem = getInventory().getItem(slot);
+        auto isSame   = false;
+        if (requireExtraData) {
+            isSame = comparator(slotItem);
+        } else {
+            isSame = (slotItem.getTypeName() == item.getTypeName());
+        }
+        if (isSame) {
+            if (slotItem.mCount < clearCount) {
+                result += slotItem.mCount;
             } else {
                 result += clearCount;
             }
             getInventory().removeItem(slot, clearCount);
         }
     }
-    auto& handSlots = ActorEquipment::getHandContainer(getEntityContext()).getSlots();
-    for (ushort slot = 0; slot < handSlots.size(); ++slot) {
-        if (handSlots[slot]->getTypeName() == name) {
-            if (handSlots[slot]->mCount < clearCount) {
-                result += handSlots[slot]->mCount;
-            } else {
-                result += clearCount;
-            }
-            ActorEquipment::getHandContainer(getEntityContext()).removeItem(slot, clearCount);
+
+    for (auto slot = 0; slot < ActorEquipment::getArmorContainer(getEntityContext()).getContainerSize(); slot++) {
+        auto slotItem = ActorEquipment::getArmorContainer(getEntityContext()).getItem(slot);
+        auto isSame   = false;
+        if (requireExtraData) {
+            isSame = comparator(slotItem);
+        } else {
+            isSame = (slotItem.getTypeName() == item.getTypeName());
         }
-    }
-    auto& armorSlots = ActorEquipment::getArmorContainer(getEntityContext()).getSlots();
-    for (unsigned short slot = 0; slot < armorSlots.size(); ++slot) {
-        if (armorSlots[slot]->getTypeName() == name) {
-            if (armorSlots[slot]->mCount < clearCount) {
-                result += armorSlots[slot]->mCount;
+        if (isSame) {
+            if (slotItem.mCount < clearCount) {
+                result += slotItem.mCount;
             } else {
                 result += clearCount;
             }
             ActorEquipment::getArmorContainer(getEntityContext()).removeItem(slot, clearCount);
         }
     }
+
+    auto offhand = getOffhandSlot();
+    auto isSame  = false;
+    if (requireExtraData) {
+        isSame = comparator(offhand);
+    } else {
+        isSame = (offhand.getTypeName() == item.getTypeName());
+    }
+    if (isSame) {
+        if (offhand.mCount < clearCount - result) {
+            result += offhand.mCount;
+            offhand.setNull({});
+        } else {
+            result += clearCount;
+            offhand.remove(clearCount - result);
+        }
+        setEquippedSlot(Puv::Legacy::EquipmentSlot::Offhand, offhand);
+    }
+
+    refreshInventory();
+    return result;
+}
+
+int GMLIB_Player::clearItem(std::string_view name, int data, int clearCount) {
+    if (data < 0) {
+        auto item = ItemStack{name};
+        return clearItem(item, clearCount);
+    } else {
+        auto item = ItemStack{name, 1, data};
+        return clearItem(
+            item,
+            clearCount,
+            [&](const ItemStack& comparator) -> bool {
+                return (
+                    item.getTypeName() == comparator.getTypeName()
+                    && item.getAuxValue()
+                           == (comparator.hasDamageValue() ? comparator.getDamageValue() : comparator.getAuxValue())
+                );
+            },
+            true
+        );
+    }
+}
+
+int GMLIB_Player::clearAllItems() {
+    auto result = getFullPlayerInventoryWrapper().clearAllItems();
     refreshInventory();
     return result;
 }
