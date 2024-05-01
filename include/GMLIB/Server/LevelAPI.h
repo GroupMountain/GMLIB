@@ -31,17 +31,17 @@ public:
 
     GMLIB_API static void setFakeSeed(int64_t fakeSeed);
 
-    GMLIB_API static void setCoResourcePack(bool enabled = true);
+    GMLIB_API static void requireServerResourcePackAndAllowClientResourcePack(bool enabled = true);
 
-    GMLIB_API static void setForceTrustSkin(bool enabled = true);
+    GMLIB_API static void trustAllSkins(bool enabled = true);
 
     GMLIB_API static void addExperimentsRequire(::AllExperiments experiment);
 
-    GMLIB_API static void addEducationEditionRequired();
+    GMLIB_API static void tryEnableEducationEdition();
 
     GMLIB_API static void setForceAchievementsEnabled();
 
-    GMLIB_API static void forceEnableAbilityCommand();
+    GMLIB_API static void tryRegisterAbilityCommand();
 
     GMLIB_API static void setFakeLevelName(std::string_view fakeName);
 

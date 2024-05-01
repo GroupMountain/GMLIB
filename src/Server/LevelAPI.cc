@@ -15,6 +15,7 @@
 #include <mc/server/commands/MinecraftCommands.h>
 #include <mc/server/commands/ServerCommandOrigin.h>
 #include <mc/server/commands/edu/AbilityCommand.h>
+#include <mc/server/common/PropertiesSettings.h>
 #include <mc/server/common/commands/ChangeSettingCommand.h>
 #include <mc/util/Random.h>
 #include <mc/world/level/levelgen/WorldGenerator.h>
@@ -57,10 +58,11 @@ LL_TYPE_INSTANCE_HOOK(
     return false;
 }
 
-LL_INSTANCE_HOOK(
+LL_TYPE_INSTANCE_HOOK(
     AllowCheatsSettingHook,
     ll::memory::HookPriority::Normal,
-    "?allowCheats@PropertiesSettings@@QEBA_NXZ",
+    PropertiesSettings,
+    &PropertiesSettings::allowCheats,
     bool
 ) {
     return false;
@@ -76,6 +78,16 @@ void initExperiments(LevelData* leveldat) {
 
 LL_INSTANCE_HOOK(TrustSkinHook, ll::memory::HookPriority::Normal, "?isTrustedSkin@SerializedSkin@@QEBA_NXZ", bool) {
     return true;
+}
+
+LL_TYPE_INSTANCE_HOOK(
+    ResourcePacksSettingHook,
+    ll::memory::HookPriority::Normal,
+    PropertiesSettings,
+    &PropertiesSettings::texturePackRequired,
+    bool
+) {
+    return false;
 }
 
 LL_TYPE_INSTANCE_HOOK(
@@ -212,12 +224,12 @@ void GMLIB_Level::setFakeSeed(int64_t fakeSeed) {
 }
 
 struct CoResourcePack_Impl {
-    ll::memory::HookRegistrar<ResourcePacksInfoPacketWrite> r;
+    ll::memory::HookRegistrar<ResourcePacksSettingHook, ResourcePacksInfoPacketWrite> r;
 };
 
 std::unique_ptr<CoResourcePack_Impl> coResourcePack_Impl;
 
-void GMLIB_Level::setCoResourcePack(bool enabled) {
+void GMLIB_Level::requireServerResourcePackAndAllowClientResourcePack(bool enabled) {
     if (enabled) {
         if (!coResourcePack_Impl) coResourcePack_Impl = std::make_unique<CoResourcePack_Impl>();
     } else {
@@ -231,7 +243,7 @@ struct ForceTrustSkin_Impl {
 
 std::unique_ptr<ForceTrustSkin_Impl> forceTrustSkin_Impl;
 
-void GMLIB_Level::setForceTrustSkin(bool enabled) {
+void GMLIB_Level::trustAllSkins(bool enabled) {
     if (enabled) {
         if (!forceTrustSkin_Impl) forceTrustSkin_Impl = std::make_unique<ForceTrustSkin_Impl>();
     } else {
@@ -300,9 +312,9 @@ void GMLIB_Level::setForceAchievementsEnabled() {
     }
 }
 
-void GMLIB_Level::forceEnableAbilityCommand() { GMLIB::LevelAPI::mRegAbilityCommand = true; }
+void GMLIB_Level::tryRegisterAbilityCommand() { GMLIB::LevelAPI::mRegAbilityCommand = true; }
 
-void GMLIB_Level::addEducationEditionRequired() { GMLIB::LevelAPI::mEducationEditionEnabled = true; }
+void GMLIB_Level::tryEnableEducationEdition() { GMLIB::LevelAPI::mEducationEditionEnabled = true; }
 
 void GMLIB_Level::setAndUpdateTime(int time) {
     setTime(time);
