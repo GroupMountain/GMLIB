@@ -175,7 +175,7 @@ GMLIB_Level* GMLIB_Level::getInstance() { return (GMLIB_Level*)ll::service::getL
 GMLIB_Level* GMLIB_Level::getLevel() { return getInstance(); }
 
 BlockSource* GMLIB_Level::getBlockSource(DimensionType dimid) {
-    return &getDimension(dimid)->getBlockSourceFromMainChunkSource();
+    return &getOrCreateDimension(dimid)->getBlockSourceFromMainChunkSource();
 }
 
 std::vector<Actor*> GMLIB_Level::getAllEntities() { return getRuntimeActorList(); }
