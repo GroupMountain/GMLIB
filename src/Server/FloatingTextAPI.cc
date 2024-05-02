@@ -17,7 +17,7 @@ ll::schedule::ServerTimeScheduler        mScheduler;
 
 int getNextFloatingTextId() {
     auto id = Random::getThreadLocal().nextInt(0, 2147483647);
-    while (ll::service::getLevel()->fetchEntity(ActorUniqueID(id))) {
+    while (ll::service::getLevel()->fetchEntity(ActorUniqueID(id)) || mRuntimeFloatingTextList.contains(id)) {
         id = Random::getThreadLocal().nextInt(0, 2147483647);
     }
     return id;
