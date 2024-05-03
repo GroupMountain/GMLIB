@@ -298,7 +298,7 @@ void regServerPAPI() {
 
     PlaceholderAPI::registerServerPlaceholder(
         "server_total_entities",
-        []() { return S(GMLIB_Level::getInstance()->getAllEntities().size()); },
+        []() { return S(ll::service::getLevel()->getRuntimeActorList().size()); },
         "GMLIB"
     );
 
