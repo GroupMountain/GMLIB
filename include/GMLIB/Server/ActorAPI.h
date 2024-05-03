@@ -15,45 +15,49 @@ public:
 public:
     GMLIB_API static int64_t getNextActorUniqueID();
 
-    GMLIB_API static std::vector<ActorUniqueID> getAllEntities();
+    GMLIB_API static std::vector<ActorUniqueID> getAllEntitiesUniqueID();
 
-    GMLIB_API static std::unordered_map<int64, std::string> getActorIdsKeyMap();
+    GMLIB_API static std::vector<std::string> getAllEntitiesStorageKey();
 
-    GMLIB_API static ActorUniqueID getActorUniqueID(std::string const& actorKey);
+    GMLIB_API static std::unordered_map<int64, std::string> getActorStorageKeyMap();
+
+    GMLIB_API static ActorUniqueID getActorUniqueID(std::string const& storageKey);
+
+    GMLIB_API static std::string getActorStorageKeyFromUniqueId(ActorUniqueID const& uniqueId);
 
     GMLIB_API static std::string getActorTypeName(ActorUniqueID const& uniqueId);
 
-    GMLIB_API static std::string getActorTypeName(std::string const& actorKey);
+    GMLIB_API static std::string getActorTypeName(std::string const& storageKey);
 
     GMLIB_API static std::optional<std::pair<Vec3, DimensionType>> getActorPosition(ActorUniqueID const& uniqueId);
 
-    GMLIB_API static std::optional<std::pair<Vec3, DimensionType>> getActorPosition(std::string const& actorKey);
+    GMLIB_API static std::optional<std::pair<Vec3, DimensionType>> getActorPosition(std::string const& storageKey);
 
     GMLIB_API static bool setActorPosition(ActorUniqueID const& uniqueId, Vec3 const& pos, DimensionType dimId);
 
-    GMLIB_API static bool setActorPosition(std::string const& actorKey, Vec3 const& pos, DimensionType dimId);
+    GMLIB_API static bool setActorPosition(std::string const& storageKey, Vec3 const& pos, DimensionType dimId);
 
     GMLIB_API static std::unique_ptr<CompoundTag> getActorNbt(ActorUniqueID const& uniqueId);
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getActorNbt(std::string const& actorKey);
+    GMLIB_API static std::unique_ptr<CompoundTag> getActorNbt(std::string const& storageKey);
 
     GMLIB_API static bool setActorNbt(ActorUniqueID const& uniqueId, CompoundTag& nbt);
 
-    GMLIB_API static bool setActorNbt(std::string const& actorKey, CompoundTag& nbt);
+    GMLIB_API static bool setActorNbt(std::string const& storageKey, CompoundTag& nbt);
 
     GMLIB_API static bool
     setActorNbtTags(ActorUniqueID const& uniqueId, CompoundTag& nbt, std::vector<std::string> const& tags);
 
     GMLIB_API static bool
-    setActorNbtTags(std::string const& actorKey, CompoundTag& nbt, std::vector<std::string> const& tags);
+    setActorNbtTags(std::string const& storageKey, CompoundTag& nbt, std::vector<std::string> const& tags);
 
     GMLIB_API static bool deleteActor(ActorUniqueID const& uniqueId);
 
-    GMLIB_API static bool deleteActor(std::string const& actorKey);
+    GMLIB_API static bool deleteActor(std::string const& storageKey);
 
     GMLIB_API static std::optional<int> getActorScore(ActorUniqueID const& uniqueId, std::string const& objective);
 
-    GMLIB_API static std::optional<int> getActorScore(std::string const& actorKey, std::string const& objective);
+    GMLIB_API static std::optional<int> getActorScore(std::string const& storageKey, std::string const& objective);
 
     GMLIB_API static std::optional<int> setActorScore(
         ActorUniqueID const&   uniqueId,
@@ -63,7 +67,7 @@ public:
     );
 
     GMLIB_API static std::optional<int> setActorScore(
-        std::string const&     actorKey,
+        std::string const&     storageKey,
         std::string const&     objective,
         int                    value,
         PlayerScoreSetFunction action = PlayerScoreSetFunction::Set
@@ -71,11 +75,11 @@ public:
 
     GMLIB_API static bool resetActorScore(ActorUniqueID const& uniqueId, std::string const& objective);
 
-    GMLIB_API static bool resetActorScore(std::string const& actorKey, std::string const& objective);
+    GMLIB_API static bool resetActorScore(std::string const& storageKey, std::string const& objective);
 
     GMLIB_API static bool resetActorScore(ActorUniqueID const& uniqueId);
 
-    GMLIB_API static bool resetActorScore(std::string const& actorKey);
+    GMLIB_API static bool resetActorScore(std::string const& storageKey);
 
 public:
     GMLIB_API bool isPlayer() const;

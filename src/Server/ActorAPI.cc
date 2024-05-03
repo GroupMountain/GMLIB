@@ -17,7 +17,20 @@
 #include <mc/world/level/dimension/VanillaDimensions.h>
 #include <mc/world/level/storage/DBStorage.h>
 
-std::unordered_map<int64, std::string> GMLIB_Actor::getActorIdsKeyMap() {
+std::vector<std::string> GMLIB_Actor::getAllEntitiesStorageKey() {
+    std::vector<std::string> result;
+    GMLIB::Global<DBStorage>->forEachKeyWithPrefix(
+        "actorprefix",
+        DBHelpers::Category::Actor,
+        [&result](std::string_view key_left, std::string_view data) {
+            auto keyId = "actorprefix" + std::string(key_left);
+            result.push_back(keyId);
+        }
+    );
+    return result;
+}
+
+std::unordered_map<int64, std::string> GMLIB_Actor::getActorStorageKeyMap() {
     std::unordered_map<int64, std::string> result;
     GMLIB::Global<DBStorage>->forEachKeyWithPrefix(
         "actorprefix",
@@ -36,7 +49,7 @@ std::unordered_map<int64, std::string> GMLIB_Actor::getActorIdsKeyMap() {
     return result;
 }
 
-std::vector<ActorUniqueID> GMLIB_Actor::getAllEntities() {
+std::vector<ActorUniqueID> GMLIB_Actor::getAllEntitiesUniqueID() {
     std::vector<ActorUniqueID> result;
     GMLIB::Global<DBStorage>->forEachKeyWithPrefix(
         "actorprefix",
@@ -87,8 +100,8 @@ ActorUniqueID GMLIB_Actor::getActorUniqueID(std::string const& actorKey) {
     return ActorUniqueID::INVALID_ID;
 }
 
-std::string getActorKeyFromUniqueId(ActorUniqueID const& uniqueId) {
-    auto map = GMLIB_Actor::getActorIdsKeyMap();
+std::string GMLIB_Actor::getActorStorageKeyFromUniqueId(ActorUniqueID const& uniqueId) {
+    auto map = GMLIB_Actor::getActorStorageKeyMap();
     if (map.count(uniqueId.id)) {
         return map[uniqueId.id];
     }
@@ -99,7 +112,7 @@ std::string GMLIB_Actor::getActorTypeName(ActorUniqueID const& uniqueId) {
     if (auto en = ll::service::getLevel()->fetchEntity(uniqueId)) {
         return en->getTypeName();
     }
-    auto actorKey = getActorKeyFromUniqueId(uniqueId);
+    auto actorKey = getActorStorageKeyFromUniqueId(uniqueId);
     return getActorTypeName(actorKey);
 }
 
@@ -164,7 +177,7 @@ std::unique_ptr<CompoundTag> GMLIB_Actor::getActorNbt(ActorUniqueID const& uniqu
         auto actor = (GMLIB_Actor*)en;
         return actor->getNbt();
     }
-    auto actorKey = getActorKeyFromUniqueId(uniqueId);
+    auto actorKey = getActorStorageKeyFromUniqueId(uniqueId);
     return getActorNbt(actorKey);
 }
 
@@ -182,7 +195,7 @@ bool GMLIB_Actor::setActorNbt(ActorUniqueID const& uniqueId, CompoundTag& nbt) {
         auto actor = (GMLIB_Actor*)en;
         return actor->setNbt(nbt);
     }
-    auto actorKey = getActorKeyFromUniqueId(uniqueId);
+    auto actorKey = getActorStorageKeyFromUniqueId(uniqueId);
     return setActorNbt(actorKey, nbt);
 }
 
@@ -204,15 +217,11 @@ bool GMLIB_Actor::setActorNbtTags(
         auto actor = (GMLIB_Actor*)en;
         return actor->setNbtTags(nbt, tags);
     }
-    auto actorKey = getActorKeyFromUniqueId(uniqueId);
+    auto actorKey = getActorStorageKeyFromUniqueId(uniqueId);
     return setActorNbtTags(actorKey, nbt, tags);
 }
 
-bool GMLIB_Actor::setActorNbtTags(
-    std::string const&                    actorKey,
-    CompoundTag&                          nbt,
-    std::vector<std::string> const& tags
-) {
+bool GMLIB_Actor::setActorNbtTags(std::string const& actorKey, CompoundTag& nbt, std::vector<std::string> const& tags) {
     if (actorKey.empty()) {
         return false;
     }
@@ -230,7 +239,7 @@ bool GMLIB_Actor::deleteActor(ActorUniqueID const& uniqueId) {
         en->remove();
         return true;
     }
-    auto actorKey = getActorKeyFromUniqueId(uniqueId);
+    auto actorKey = getActorStorageKeyFromUniqueId(uniqueId);
     return deleteActor(actorKey);
 }
 
