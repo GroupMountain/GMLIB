@@ -376,12 +376,6 @@ void regServerPAPI() {
     );
 
     PlaceholderAPI::registerServerPlaceholder(
-        "server_total_chunks",
-        []() { return ""; },
-        "GMLIB"
-    );
-
-    PlaceholderAPI::registerServerPlaceholder(
         "server_ram_bds_used",
         []() {
             auto ram = Helper::getRam();
