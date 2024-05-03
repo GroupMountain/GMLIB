@@ -1,6 +1,7 @@
 #include "Global.h"
 #include <GMLIB/Files/FileUtils.h>
 #include <GMLIB/Files/Language/I18n/JsonI18n.h>
+#include <GMLIB/Server/I18nAPI.h>
 
 namespace GMLIB::Files::I18n {
 
@@ -89,13 +90,12 @@ JsonI18n::translate(std::string const& key, std::vector<std::string> const& data
             return mLocalization->translate(key, data, translateKey);
         }
         if (mAllLanguages.count(mDefaultLanguage)) {
-            auto temp = mAllLanguages[mDefaultLanguage];
-            if (temp) {
+            if (auto temp = mAllLanguages[mDefaultLanguage]) {
                 return temp->translate(key, data, translateKey);
             }
         }
     }
-    return key;
+    return I18nAPI::get(key, data);
 }
 
 std::string JsonI18n::translate(
@@ -105,17 +105,15 @@ std::string JsonI18n::translate(
     std::string const&              translateKey
 ) {
     if (mAllLanguages.count(localLanguage)) {
-        auto temp = mAllLanguages[localLanguage];
-        if (temp) {
+        if (auto temp = mAllLanguages[localLanguage]) {
             return temp->translate(key, data, translateKey);
         }
     } else if (mAllLanguages.count(mDefaultLanguage)) {
-        auto temp = mAllLanguages[mDefaultLanguage];
-        if (temp) {
+        if (auto temp = mAllLanguages[mDefaultLanguage]) {
             return temp->translate(key, data, translateKey);
         }
     }
-    return key;
+    return I18nAPI::get(key, data);
 }
 
 std::string
