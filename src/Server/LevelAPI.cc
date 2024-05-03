@@ -803,21 +803,18 @@ DBStorage& GMLIB_Level::getDBStorage() { return *GMLIB::Global<DBStorage>; }
 
 void GMLIB_Level::sendPacketToClients(Packet& packet) {
     GMLIB_BinaryStream bs;
-    bs.writePacketHeader(packet.getId());
-    packet.write(bs);
+    packet.writeWithHeader(SubClientId::PrimaryClient, bs);
     bs.sendToClients();
 }
 
 void GMLIB_Level::sendPacketToDimension(Packet& packet, DimensionType dimId) {
     GMLIB_BinaryStream bs;
-    bs.writePacketHeader(packet.getId());
-    packet.write(bs);
-    bs.sendToClients(dimId);
+    packet.writeWithHeader(SubClientId::PrimaryClient, bs);
+    bs.sendToDimansion(dimId);
 }
 
 void GMLIB_Level::sendPacketTo(Packet& packet, Player& player) {
     GMLIB_BinaryStream bs;
-    bs.writePacketHeader(packet.getId());
-    packet.write(bs);
+    packet.writeWithHeader(SubClientId::PrimaryClient, bs);
     bs.sendTo(player);
 }

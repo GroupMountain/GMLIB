@@ -1029,7 +1029,6 @@ GMLIB_Player::locateNearestStructureFeature(std::string const& structure, bool u
 
 void GMLIB_Player::sendPacket(Packet& packet) {
     GMLIB_BinaryStream bs;
-    bs.writePacketHeader(packet.getId());
-    packet.write(bs);
+    packet.writeWithHeader(SubClientId::PrimaryClient, bs);
     bs.sendTo(*this);
 }
