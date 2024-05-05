@@ -193,25 +193,45 @@ void regPlayerPAPI() {
 
     PlaceholderAPI::registerPlayerPlaceholder(
         "player_bed_x",
-        [](Player* sp) { return S(sp->getSpawnPosition().x); },
+        [](Player* sp) {
+            if (sp->hasRespawnPosition()) {
+                return S(sp->getSpawnPosition().x);
+            }
+            return std::string();
+        },
         "GMLIB"
     );
 
     PlaceholderAPI::registerPlayerPlaceholder(
         "player_bed_y",
-        [](Player* sp) { return S(sp->getSpawnPosition().y); },
+        [](Player* sp) {
+            if (sp->hasRespawnPosition()) {
+                return S(sp->getSpawnPosition().y);
+            }
+            return std::string();
+        },
         "GMLIB"
     );
 
     PlaceholderAPI::registerPlayerPlaceholder(
         "player_bed_z",
-        [](Player* sp) { return S(sp->getSpawnPosition().z); },
+        [](Player* sp) {
+            if (sp->hasRespawnPosition()) {
+                return S(sp->getSpawnPosition().z);
+            }
+            return std::string();
+        },
         "GMLIB"
     );
 
     PlaceholderAPI::registerPlayerPlaceholder(
         "player_bed_pos",
-        [](Player* sp) { return sp->getSpawnPosition().toString(); },
+        [](Player* sp) {
+            if (sp->hasRespawnPosition()) {
+                return sp->getSpawnPosition().toString();
+            }
+            return std::string();
+        },
         "GMLIB"
     );
 

@@ -1012,10 +1012,10 @@ std::string_view GMLIB_Player::getStructureFeatureName() {
 std::optional<BlockPos>
 GMLIB_Player::locateNearestStructureFeature(StructureFeatureType structure, bool useNewChunksOnly) {
     BlockPos result = {0, 64, 0};
-    auto     find   = getDimension()
-                    .getWorldGenerator()
-                    ->findNearestStructureFeature(structure, BlockPos(getPosition()), result, useNewChunksOnly, {});
-    if (find) {
+    if (auto find =
+            getDimension()
+                .getWorldGenerator()
+                ->findNearestStructureFeature(structure, BlockPos(getPosition()), result, useNewChunksOnly, {})) {
         return result;
     }
     return {};
