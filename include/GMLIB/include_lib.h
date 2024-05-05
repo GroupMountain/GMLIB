@@ -59,6 +59,7 @@
 #include "GMLIB/Server/PlayerAPI.h"
 #include "GMLIB/Server/ScoreboardAPI.h"
 #include "GMLIB/Server/SpawnerAPI.h"
+#include "GMLIB/Server/StorageAPI.h"
 #include "GMLIB/Server/UserCache.h"
 #include "GMLIB/Server/FormAPI/NpcDialogueForm.h"
 #include "GMLIB/Server/FormAPI/ServerSettingForm.h"
