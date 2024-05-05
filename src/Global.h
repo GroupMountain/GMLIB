@@ -62,4 +62,6 @@ extern void updatePlaceholder();
 extern void regServerPAPI();
 extern void regPlayerPAPI();
 
+extern void initUserCache();
+
 } // namespace GMLIB

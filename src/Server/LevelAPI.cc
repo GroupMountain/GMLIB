@@ -780,10 +780,9 @@ std::optional<BlockPos> GMLIB_Level::locateNearestStructureFeature(
     bool                 useNewChunksOnly
 ) {
     BlockPos result = {0, 64, 0};
-    auto     find   = getOrCreateDimension(dimId)
-                    ->getWorldGenerator()
-                    ->findNearestStructureFeature(structure, pos, result, useNewChunksOnly, {});
-    if (find) {
+    if (auto find = getOrCreateDimension(dimId)
+                        ->getWorldGenerator()
+                        ->findNearestStructureFeature(structure, pos, result, useNewChunksOnly, {})) {
         return result;
     }
     return {};

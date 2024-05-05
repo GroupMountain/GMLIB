@@ -7,6 +7,7 @@ if not has_config("vs_runtime") then
 end
 
 add_requires("levilamina") -- or add_requires("levilamina x.x.x") to specify target LeviLamina version
+add_requires("parallel-hashmap")
 
 target("GMLIB")
     add_cxflags("/EHa", "/utf-8")
@@ -20,7 +21,10 @@ target("GMLIB")
         "src", 
         "include"
     )
-    add_packages("levilamina")
+    add_packages(
+        "levilamina",
+        "parallel-hashmap"
+    )
     add_shflags("/DELAYLOAD:bedrock_server.dll") -- To use symbols provided by SymbolProvider.
     set_exceptions("none") -- To avoid conflicts with /EHa.
     set_kind("shared")

@@ -59,6 +59,7 @@ void loadLib() {
 void enableLib() {
     initExperiments(&ll::service::bedrock::getLevel()->getLevelData());
     CaculateTPS();
+    initUserCache();
 }
 
 void disableLib() {}

@@ -1,111 +1,128 @@
 #include "Global.h"
+#include "parallel_hashmap/phmap.h"
 #include <GMLIB/Files/JsonFile.h>
+#include <GMLIB/Server/StorageAPI.h>
 #include <GMLIB/Server/UserCache.h>
 #include <mc/network/packet/LoginPacket.h>
 
-namespace GMLIB::Server::UserCache {
+namespace GMLIB {
 
-nlohmann::json mUserCache;
+phmap::flat_hash_map<mce::UUID, std::shared_ptr<UserCache::UserCacheEntry>>   mUuidEntry;
+phmap::flat_hash_map<std::string, std::shared_ptr<UserCache::UserCacheEntry>> mNameEntry;
+phmap::flat_hash_map<std::string, std::shared_ptr<UserCache::UserCacheEntry>> mXuidEntry;
 
-void saveUserCacheFile() {
-    std::string path = "./usercache.json";
-    GMLIB::Files::JsonFile::writeFile(path, mUserCache);
+UserCache::UserCacheEntry* UserCache::fromUuid(mce::UUID const& uuid) {
+    if (mUuidEntry.contains(uuid)) {
+        return mUuidEntry[uuid].get();
+    }
+    return nullptr;
 }
 
-void updateUserCache(mce::UUID const& uuid, std::string const& xuid, std::string const& realName) {
-    for (auto& key : mUserCache) {
-        if (key["uuid"] == uuid.asString()) {
-            key["uuid"]     = uuid.asString();
-            key["xuid"]     = xuid;
-            key["realName"] = realName;
-            saveUserCacheFile();
-            return;
+UserCache::UserCacheEntry* UserCache::fromXuid(std::string const& xuid) {
+    if (mXuidEntry.contains(xuid)) {
+        return mXuidEntry[xuid].get();
+    }
+    return nullptr;
+}
+
+UserCache::UserCacheEntry* UserCache::fromName(std::string const& name) {
+    if (mNameEntry.contains(name)) {
+        return mNameEntry[name].get();
+    }
+    return nullptr;
+}
+
+std::optional<std::string> UserCache::getXuidByUuid(mce::UUID const& uuid) {
+    if (auto entry = fromUuid(uuid)) {
+        return entry->mXuid;
+    }
+    return {};
+}
+
+std::optional<std::string> UserCache::getNameByUuid(mce::UUID const& uuid) {
+    if (auto entry = fromUuid(uuid)) {
+        return entry->mName;
+    }
+    return {};
+}
+
+std::optional<mce::UUID> UserCache::getUuidByXuid(std::string const& xuid) {
+    if (auto entry = fromUuid(xuid)) {
+        return entry->mUuid;
+    }
+    return {};
+}
+
+std::optional<std::string> UserCache::getNameByXuid(std::string const& xuid) {
+    if (auto entry = fromUuid(xuid)) {
+        return entry->mName;
+    }
+    return {};
+}
+
+std::optional<std::string> UserCache::getXuidByName(std::string const& name) {
+    if (auto entry = fromUuid(name)) {
+        return entry->mXuid;
+    }
+    return {};
+}
+
+std::optional<mce::UUID> UserCache::getUuidByName(std::string const& name) {
+    if (auto entry = fromUuid(name)) {
+        return entry->mUuid;
+    }
+    return {};
+}
+
+void UserCache::forEach(std::function<void(UserCache::UserCacheEntry const&)> const& func) {
+    StorageAPI::getInstance()->forEachKeyWithPrefix(
+        "GMLIB_UserCache_",
+        DBHelpers::Category::All,
+        [&func](std::string_view key, std::string_view data) {
+            auto uuid  = mce::UUID::fromString(std::string(key));
+            auto info  = CompoundTag::fromBinaryNbt(data);
+            auto xuid  = info->getString("xuid");
+            auto name  = info->getString("name");
+            auto entry = UserCache::UserCacheEntry(std::move(uuid), std::move(name), std::move(xuid));
+            func(entry);
         }
-    }
-    auto info        = nlohmann::json::object();
-    info["uuid"]     = uuid.asString();
-    info["xuid"]     = xuid;
-    info["realName"] = realName;
-    mUserCache.push_back(info);
-    saveUserCacheFile();
+    );
 }
 
-std::optional<nlohmann::json> tryFindCacheInfoFromUuid(std::string const& uuid) {
-    for (auto& key : mUserCache) {
-        if (key["uuid"] == uuid) {
-            return key;
+void updateUserCache(const Certificate* cert) {
+    auto uuid        = ExtendedCertificate::getIdentity(*cert);
+    auto xuid        = ExtendedCertificate::getXuid(*cert, false);
+    auto name        = ExtendedCertificate::getIdentityName(*cert);
+    auto entry       = std::make_shared<UserCache::UserCacheEntry>(uuid, name, xuid);
+    mUuidEntry[uuid] = entry;
+    mXuidEntry[xuid] = entry;
+    mNameEntry[name] = entry;
+    auto nbt         = CompoundTag{
+                {"xuid", xuid},
+                {"name", name}
+    };
+    auto key = "GMLIB_UserCache_" + uuid.asString();
+    StorageAPI::getInstance()->setData(key, nbt);
+}
+
+void initUserCache() {
+    StorageAPI::getInstance()->forEachKeyWithPrefix(
+        "GMLIB_UserCache_",
+        DBHelpers::Category::All,
+        [](std::string_view key, std::string_view data) {
+            auto uuid        = mce::UUID::fromString(std::string(key));
+            auto info        = CompoundTag::fromBinaryNbt(data);
+            auto xuid        = info->getString("xuid");
+            auto name        = info->getString("name");
+            auto entry       = std::make_shared<UserCache::UserCacheEntry>(uuid, name, xuid);
+            mUuidEntry[uuid] = entry;
+            mXuidEntry[xuid] = entry;
+            mNameEntry[name] = entry;
         }
-    }
-    return {};
+    );
 }
 
-std::optional<nlohmann::json> tryFindCacheInfoFromXuid(std::string const& xuid) {
-    for (auto& key : mUserCache) {
-        if (key["xuid"] == xuid) {
-            return key;
-        }
-    }
-    return {};
-}
-
-std::optional<nlohmann::json> tryFindCacheInfoFromName(std::string const& name) {
-    for (auto& key : mUserCache) {
-        if (key["realName"] == name) {
-            return key;
-        }
-    }
-    return {};
-}
-
-std::optional<std::string> getXuidByUuid(std::string const& uuid) {
-    auto info = tryFindCacheInfoFromUuid(uuid);
-    if (info.has_value()) {
-        auto res = info.value().at("xuid").get<std::string>();
-    }
-    return {};
-}
-
-std::optional<std::string> getNameByUuid(std::string const& uuid) {
-    auto info = tryFindCacheInfoFromUuid(uuid);
-    if (info.has_value()) {
-        auto res = info.value().at("realName").get<std::string>();
-    }
-    return {};
-}
-
-std::optional<std::string> getUuidByXuid(std::string const& xuid) {
-    auto info = tryFindCacheInfoFromUuid(xuid);
-    if (info.has_value()) {
-        auto res = info.value().at("uuid").get<std::string>();
-    }
-    return {};
-}
-
-std::optional<std::string> getNameByXuid(std::string const& xuid) {
-    auto info = tryFindCacheInfoFromUuid(xuid);
-    if (info.has_value()) {
-        auto res = info.value().at("realName").get<std::string>();
-    }
-    return {};
-}
-
-std::optional<std::string> getXuidByName(std::string const& name) {
-    auto info = tryFindCacheInfoFromUuid(name);
-    if (info.has_value()) {
-        auto res = info.value().at("xuid").get<std::string>();
-    }
-    return {};
-}
-
-std::optional<std::string> getUuidByName(std::string const& name) {
-    auto info = tryFindCacheInfoFromUuid(name);
-    if (info.has_value()) {
-        auto res = info.value().at("uuid").get<std::string>();
-    }
-    return {};
-}
-
-LL_TYPE_INSTANCE_HOOK(
+LL_AUTO_TYPE_INSTANCE_HOOK(
     PlayerLoginHook,
     ll::memory::HookPriority::Highest,
     ServerNetworkHandler,
@@ -115,34 +132,7 @@ LL_TYPE_INSTANCE_HOOK(
     class LoginPacket const&       packet
 ) {
     origin(source, packet);
-    auto cert     = packet.mConnectionRequest->getCertificate();
-    auto uuid     = ExtendedCertificate::getIdentity(*cert);
-    auto xuid     = ExtendedCertificate::getXuid(*cert, false);
-    auto realName = ExtendedCertificate::getIdentityName(*cert);
-    GMLIB::Server::UserCache::updateUserCache(uuid, xuid, realName);
+    updateUserCache(packet.mConnectionRequest->getCertificate());
 }
 
-struct UserCache_Impl {
-    ll::memory::HookRegistrar<PlayerLoginHook> r;
-};
-
-std::unique_ptr<UserCache_Impl> impl;
-
-void initUserCache() {
-    auto emptyFile = nlohmann::json::array();
-    try {
-        mUserCache = GMLIB::Files::JsonFile::initJson("./usercache.json", emptyFile);
-    } catch (...) {
-        mUserCache = emptyFile;
-        saveUserCacheFile();
-    }
-}
-
-void enableUserCache() {
-    if (!impl) {
-        impl = std::make_unique<UserCache_Impl>();
-        initUserCache();
-    }
-}
-
-} // namespace GMLIB::Server::UserCache
+} // namespace GMLIB
