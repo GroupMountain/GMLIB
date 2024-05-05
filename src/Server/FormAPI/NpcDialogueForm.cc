@@ -14,7 +14,7 @@
 
 namespace GMLIB::Server::Form {
 
-std::unordered_map<uint64, NpcDialogueForm*> mRuntimeNpcFormList;
+phmap::flat_hash_map<uint64, NpcDialogueForm*> mRuntimeNpcFormList;
 
 int genRandomNumber() { return Random::getThreadLocal().nextInt(0, 99999999); }
 

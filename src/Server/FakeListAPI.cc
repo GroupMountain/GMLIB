@@ -10,9 +10,9 @@ namespace GMLIB::Server {
 
 namespace FakeListAPI {
 
-std::unordered_map<std::string, std::string>     mReplaceMap;
-std::unordered_map<std::string, PlayerListEntry> mFakeListMap;
-bool                                             mSimulatedPlayerOptList = false;
+phmap::flat_hash_map<std::string, std::string>     mReplaceMap;
+phmap::flat_hash_map<std::string, PlayerListEntry> mFakeListMap;
+bool                                               mSimulatedPlayerOptList = false;
 
 } // namespace FakeListAPI
 

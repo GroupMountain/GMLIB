@@ -6,8 +6,8 @@
 
 namespace GMLIB::Mod {
 
-std::unordered_map<std::string, std::vector<BiomeData>> mClimates;
-std::vector<std::string>                                mNewBiomes;
+phmap::flat_hash_map<std::string, std::vector<BiomeData>> mClimates;
+std::vector<std::string>                                  mNewBiomes;
 
 // 6 | Experimentalholiday
 // 7 | Experimentalbiomes

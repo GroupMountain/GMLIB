@@ -12,13 +12,13 @@ namespace GMLIB::Mod {
 using DEATH_MESSAGE = std::pair<std::string, std::vector<std::string>>;
 using namespace ll::chrono_literals;
 
-std::unordered_map<int64, int>            mFallHeightMap;
-std::unordered_map<int64, ActorUniqueID>  mHurtByEntityMap;
-int                                       mMaxCauseId = 34;
-std::vector<std::pair<std::string, int>>  mCustomCauseMap;
-std::unordered_map<int, std::string_view> mVanillaCauseMessage;
+phmap::flat_hash_map<int64, int>            mFallHeightMap;
+phmap::flat_hash_map<int64, ActorUniqueID>  mHurtByEntityMap;
+int                                         mMaxCauseId = 34;
+std::vector<std::pair<std::string, int>>    mCustomCauseMap;
+phmap::flat_hash_map<int, std::string_view> mVanillaCauseMessage;
 
-std::unordered_map<ActorDamageCause, std::unordered_map<std::string_view, std::string_view>> mHardCodedDeathMessage;
+phmap::flat_hash_map<ActorDamageCause, phmap::flat_hash_map<std::string_view, std::string_view>> mHardCodedDeathMessage;
 
 bool isCrystal = false;
 

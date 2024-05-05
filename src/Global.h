@@ -40,6 +40,7 @@
 #include <mc/world/scores/Objective.h>
 #include <mc/world/scores/Scoreboard.h>
 #include <nlohmann/json.hpp>
+#include <parallel_hashmap/phmap.h>
 
 #define S(x) std::to_string(x)
 
@@ -61,7 +62,6 @@ extern void disableLib();
 extern void updatePlaceholder();
 extern void regServerPAPI();
 extern void regPlayerPAPI();
-
 extern void initUserCache();
 
 } // namespace GMLIB

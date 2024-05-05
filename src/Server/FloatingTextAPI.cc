@@ -12,8 +12,8 @@
 
 namespace GMLIB::Server {
 
-std::unordered_map<int64, FloatingText*> mRuntimeFloatingTextList;
-ll::schedule::ServerTimeScheduler        mScheduler;
+phmap::flat_hash_map<int64, FloatingText*> mRuntimeFloatingTextList;
+ll::schedule::ServerTimeScheduler          mScheduler;
 
 int getNextFloatingTextId() {
     auto id = Random::getThreadLocal().nextInt(0, 2147483647);

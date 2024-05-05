@@ -270,8 +270,8 @@ std::map<int, std::string> GMLIB_Level::getAllExperimentsTranslateKeys() {
 }
 
 std::map<int, std::string> GMLIB_Level::getAllExperiments() {
-    std::map<int, std::string>      result;
-    std::unordered_set<std::string> exist;
+    std::map<int, std::string>        result;
+    phmap::flat_hash_set<std::string> exist;
     for (int i = 4; i <= 24; i++) {
         std::string text;
         try {

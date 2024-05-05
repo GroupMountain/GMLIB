@@ -5,8 +5,8 @@
 
 namespace GMLIB::Mod {
 
-std::unordered_set<std::string>                       mUnknownBlockLegacyNameList;
-std::unordered_map<int, std::unordered_set<ChunkPos>> mFixedChunksList = {};
+std::unordered_set<std::string>                           mUnknownBlockLegacyNameList;
+phmap::flat_hash_map<int, phmap::flat_hash_set<ChunkPos>> mFixedChunksList = {};
 
 std::unordered_set<std::string> VanillaFix::getUnknownBlockLegacyNameList() { return mUnknownBlockLegacyNameList; }
 
