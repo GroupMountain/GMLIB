@@ -809,7 +809,7 @@ void GMLIB_Level::sendPacketToClients(Packet& packet) {
 void GMLIB_Level::sendPacketToDimension(Packet& packet, DimensionType dimId) {
     GMLIB_BinaryStream bs;
     packet.writeWithHeader(SubClientId::PrimaryClient, bs);
-    bs.sendToDimansion(dimId);
+    bs.sendToDimension(dimId);
 }
 
 void GMLIB_Level::sendPacketTo(Packet& packet, Player& player) {

@@ -124,7 +124,7 @@ void GMLIB_BinaryStream::sendToClients(::NetworkPeer::Reliability reliability, :
     });
 }
 
-void GMLIB_BinaryStream::sendToDimansion(
+void GMLIB_BinaryStream::sendToDimension(
     DimensionType              dimId,
     ::NetworkPeer::Reliability reliability,
     ::Compressibility          compressible

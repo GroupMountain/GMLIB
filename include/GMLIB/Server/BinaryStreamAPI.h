@@ -24,7 +24,7 @@ public:
         ::Compressibility          compressible = ::Compressibility::Compressible
     );
 
-    GMLIB_API void sendToDimansion(
+    GMLIB_API void sendToDimension(
         DimensionType              dimId,
         ::NetworkPeer::Reliability reliability  = ::NetworkPeer::Reliability::ReliableOrdered,
         ::Compressibility          compressible = ::Compressibility::Compressible
