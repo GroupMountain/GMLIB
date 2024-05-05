@@ -101,13 +101,12 @@ void updateUserCache(const Certificate* cert) {
                 {"name", name}
     };
     auto key = "GMLIB_UserCache_" + uuid.asString();
-    StorageAPI::getInstance()->setData(key, nbt);
+    StorageAPI::getInstance()->saveCompoundTag(key, nbt);
 }
 
 void initUserCache() {
     StorageAPI::getInstance()->forEachKeyWithPrefix(
         "GMLIB_UserCache_",
-        DBHelpers::Category::All,
         [](std::string_view key, std::string_view data) {
             auto uuid        = mce::UUID::fromString(std::string(key));
             auto info        = CompoundTag::fromBinaryNbt(data);
