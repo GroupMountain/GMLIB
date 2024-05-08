@@ -499,7 +499,7 @@ void GMLIB_Player::updateClientBossbarColor(int64_t bossbarId, ::BossBarColor co
 }
 
 void GMLIB_Player::setClientWeather(WeatherType weather) {
-    return GMLIB_Level::getInstance()->setClientWeather(weather, this);
+    return GMLIB_Level::getInstance()->setClientWeather(weather, *this);
 }
 
 void GMLIB_Player::sendToast(std::string_view title, std::string_view message) {
@@ -556,22 +556,22 @@ std::vector<MobEffectInstance> GMLIB_Player::getAllEffects() {
 
 std::optional<int> GMLIB_Player::getScore(std::string const& objective) {
     auto scoreboard = GMLIB_Scoreboard::getInstance();
-    return scoreboard->getPlayerScore(objective, this);
+    return scoreboard->getPlayerScore(objective, *this);
 }
 
 std::optional<int> GMLIB_Player::setScore(std::string const& objective, int value, PlayerScoreSetFunction action) {
     auto scoreboard = GMLIB_Scoreboard::getInstance();
-    return scoreboard->setPlayerScore(objective, this, value, action);
+    return scoreboard->setPlayerScore(objective, *this, value, action);
 }
 
 bool GMLIB_Player::resetScore(std::string const& objective) {
     auto scoreboard = GMLIB_Scoreboard::getInstance();
-    return scoreboard->resetPlayerScore(objective, this);
+    return scoreboard->resetPlayerScore(objective, *this);
 }
 
 bool GMLIB_Player::resetScore() {
     auto scoreboard = GMLIB_Scoreboard::getInstance();
-    return scoreboard->resetPlayerScore(this);
+    return scoreboard->resetPlayerScore(*this);
 }
 
 std::optional<int> GMLIB_Player::getPlayerScore(std::string const& serverId, std::string const& objective) {
@@ -624,27 +624,25 @@ bool GMLIB_Player::resetPlayerScore(mce::UUID const& uuid) {
     return scoreboard->resetPlayerScore(uuid);
 }
 
-ItemStack* GMLIB_Player::getMainHandSlot() {
-    return (ItemStack*)&getEquippedSlot(Puv::Legacy::EquipmentSlot::Mainhand);
-}
+ItemStack& GMLIB_Player::getMainHandSlot() { return const_cast<ItemStack&>(getCarriedItem()); }
 
 void GMLIB_Player::setMainHandSlot(ItemStack& itemStack) {
     return setEquippedSlot(Puv::Legacy::EquipmentSlot::Mainhand, itemStack);
 }
 
-ItemStack* GMLIB_Player::getOffHandSlot() { return (ItemStack*)&getEquippedSlot(Puv::Legacy::EquipmentSlot::Offhand); }
+ItemStack& GMLIB_Player::getOffHandSlot() { return const_cast<ItemStack&>(getOffhandSlot()); }
 
 void GMLIB_Player::setOffHandSlot(ItemStack& itemStack) {
     return setEquippedSlot(Puv::Legacy::EquipmentSlot::Offhand, itemStack);
 }
 
-GMLIB_Actor* GMLIB_Player::shootProjectile(std::string const& typeName, float speed, float offset) {
-    return GMLIB_Spawner::spawnProjectile((GMLIB_Actor*)this, typeName, speed, offset);
+optional_ref<Actor> GMLIB_Player::shootProjectile(std::string_view typeName, float speed, float offset) {
+    return GMLIB_Spawner::spawnProjectile(*this, typeName, speed, offset);
 }
 
 void GMLIB_Player::setFreezing(float percentage) { getEntityData().set<float>(0x78, percentage); }
 
-void GMLIB_Player::hurtPlayer(float damage, std::string const& causeName, Actor* source) {
+void GMLIB_Player::hurtPlayer(float damage, std::string const& causeName, optional_ref<Actor> source) {
     auto cause = GMLIB::Mod::DamageCause::getCauseFromName(causeName);
     this->hurtByCause(damage, cause, source);
 }
@@ -699,18 +697,14 @@ void GMLIB_Player::updateClientBlock(
     sendPacket(pkt);
 }
 
-bool GMLIB_Player::updateClientBlock(
+void GMLIB_Player::updateClientBlock(
     BlockPos const&               pos,
-    Block*                        block,
+    Block const&                  block,
     BlockUpdateFlag               flag,
     UpdateBlockPacket::BlockLayer layer
 ) {
-    if (block) {
-        auto runtimeId = block->getRuntimeId();
-        updateClientBlock(pos, runtimeId, flag, layer);
-        return true;
-    }
-    return false;
+    auto runtimeId = block.getRuntimeId();
+    updateClientBlock(pos, runtimeId, flag, layer);
 }
 
 bool GMLIB_Player::updateClientBlock(
@@ -745,9 +739,9 @@ bool GMLIB_Player::updateClientBlock(
     return false;
 }
 
-Biome* GMLIB_Player::getBiome() {
+Biome& GMLIB_Player::getBiome() {
     auto& bs = getDimensionBlockSourceConst();
-    return const_cast<Biome*>(&bs.getConstBiome(BlockPos(getPosition())));
+    return const_cast<Biome&>(bs.getConstBiome(BlockPos(getPosition())));
 }
 
 void GMLIB_Player::sendTitle(std::string_view text, SetTitlePacket::TitleType type) {

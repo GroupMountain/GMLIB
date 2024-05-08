@@ -10,18 +10,18 @@ public:
     using Scoreboard::resetPlayerScore;
 
 public:
-    GMLIB_API static GMLIB_Scoreboard* getInstance();
+    GMLIB_API static optional_ref<GMLIB_Scoreboard> getInstance();
 
 public:
-    GMLIB_API ServerScoreboard* getServerScoreboard();
+    GMLIB_API optional_ref<ServerScoreboard> getServerScoreboard();
 
-    GMLIB_API IdentityDictionary* getIdentityDictionary();
+    GMLIB_API optional_ref<IdentityDictionary> getIdentityDictionary();
 
     GMLIB_API std::unordered_map<std::string, DisplayObjective> getDisplayObjectives();
 
-    GMLIB_API Objective* addObjective(std::string const& name);
+    GMLIB_API optional_ref<Objective> addObjective(std::string const& name);
 
-    GMLIB_API Objective* addObjective(std::string const& name, std::string const& displayName);
+    GMLIB_API optional_ref<Objective> addObjective(std::string const& name, std::string const& displayName);
 
     GMLIB_API bool removeObjective(std::string const& objective);
 
@@ -29,13 +29,13 @@ public:
 
     GMLIB_API ScoreboardId getPlayerScoreboardId(mce::UUID const& uuid);
 
-    GMLIB_API std::optional<int> getScore(Objective* objective, ScoreboardId const& scoreboardId);
+    GMLIB_API std::optional<int> getScore(Objective& objective, ScoreboardId const& scoreboardId);
 
     GMLIB_API std::optional<int> getScore(std::string const& objective, std::string const& name);
 
-    GMLIB_API std::optional<int> getScore(std::string const& objective, Player* pl);
+    GMLIB_API std::optional<int> getScore(std::string const& objective, Player& pl);
 
-    GMLIB_API std::optional<int> getScore(std::string const& objective, Actor* ac);
+    GMLIB_API std::optional<int> getScore(std::string const& objective, Actor& ac);
 
     GMLIB_API std::optional<int>
               getScore(std::string const& objective, ActorUniqueID const& uniqueId, bool isPlayer = false);
@@ -46,10 +46,10 @@ public:
 
     GMLIB_API std::optional<int> getPlayerScore(std::string const& objective, ActorUniqueID const& uniqueId);
 
-    GMLIB_API std::optional<int> getPlayerScore(std::string const& objective, Player* pl);
+    GMLIB_API std::optional<int> getPlayerScore(std::string const& objective, Player& pl);
 
     GMLIB_API std::optional<int> setScore(
-        Objective*             objective,
+        Objective&             objective,
         ScoreboardId const&    scoreboardId,
         int                    value,
         PlayerScoreSetFunction action = PlayerScoreSetFunction::Set
@@ -64,14 +64,14 @@ public:
 
     GMLIB_API std::optional<int> setScore(
         std::string const&     objective,
-        Player*                pl,
+        Player&                pl,
         int                    value,
         PlayerScoreSetFunction action = PlayerScoreSetFunction::Set
     );
 
     GMLIB_API std::optional<int> setScore(
         std::string const&     objective,
-        Actor*                 ac,
+        Actor&                 ac,
         int                    value,
         PlayerScoreSetFunction action = PlayerScoreSetFunction::Set
     );
@@ -107,18 +107,18 @@ public:
 
     GMLIB_API std::optional<int> setPlayerScore(
         std::string const&     objective,
-        Player*                pl,
+        Player&                pl,
         int                    value,
         PlayerScoreSetFunction action = PlayerScoreSetFunction::Set
     );
 
-    GMLIB_API bool resetScore(Objective* objective, ScoreboardId const& scoreboardId);
+    GMLIB_API bool resetScore(Objective& objective, ScoreboardId const& scoreboardId);
 
     GMLIB_API bool resetScore(std::string const& objective, std::string const& name);
 
-    GMLIB_API bool resetScore(std::string const& objective, Player* pl);
+    GMLIB_API bool resetScore(std::string const& objective, Player& pl);
 
-    GMLIB_API bool resetScore(std::string const& objective, Actor* ac);
+    GMLIB_API bool resetScore(std::string const& objective, Actor& ac);
 
     GMLIB_API bool resetScore(std::string const& objective, ActorUniqueID const& uniqueId, bool isPlayer = false);
 
@@ -128,15 +128,15 @@ public:
 
     GMLIB_API bool resetPlayerScore(std::string const& objective, ActorUniqueID const& uniqueId);
 
-    GMLIB_API bool resetPlayerScore(std::string const& objective, Player* pl);
+    GMLIB_API bool resetPlayerScore(std::string const& objective, Player& pl);
 
     GMLIB_API bool resetScore(ScoreboardId const& scoreboardId);
 
     GMLIB_API bool resetScore(std::string const& name);
 
-    GMLIB_API bool resetScore(Player* pl);
+    GMLIB_API bool resetScore(Player& pl);
 
-    GMLIB_API bool resetScore(Actor* ac);
+    GMLIB_API bool resetScore(Actor& ac);
 
     GMLIB_API bool resetScore(ActorUniqueID const& uniqueId, bool isPlayer = false);
 
@@ -144,18 +144,18 @@ public:
 
     GMLIB_API bool resetPlayerScore(mce::UUID const& uuid);
 
-    GMLIB_API bool resetPlayerScore(Player* pl);
+    GMLIB_API bool resetPlayerScore(Player& pl);
 
     GMLIB_API bool resetPlayerScore(ActorUniqueID const& uniqueId);
 
     GMLIB_API std::vector<ScoreboardId> getAllScoreboardIds();
 
-    GMLIB_API std::vector<ScoreboardId> getObjectiveTrackedScoreboardIds(Objective* objective);
+    GMLIB_API std::vector<ScoreboardId> getObjectiveTrackedScoreboardIds(Objective& objective);
 
     GMLIB_API std::vector<ScoreboardId> getAllScoreboardIds(IdentityDefinition::Type type);
 
     GMLIB_API std::vector<ScoreboardId>
-              getObjectiveTrackedScoreboardIds(Objective* objective, IdentityDefinition::Type type);
+              getObjectiveTrackedScoreboardIds(Objective& objective, IdentityDefinition::Type type);
 
     GMLIB_API std::vector<ActorUniqueID> getAllPlayers();
 
@@ -168,7 +168,7 @@ public:
     GMLIB_API std::vector<std::string> getAllFakePlayers();
 
     GMLIB_API void setObjectiveDisplay(
-        Objective*         objective,
+        Objective&         objective,
         std::string const& displaySlot = "sidebar",
         ObjectiveSortOrder order       = ObjectiveSortOrder::Ascending
     );

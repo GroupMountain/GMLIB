@@ -22,7 +22,7 @@ public:
     FloatingText() = delete;
 
 public:
-    GMLIB_API static FloatingText* getFloatingText(int64 runtimeId);
+    GMLIB_API static optional_ref<FloatingText> getFloatingText(int64 runtimeId);
 
     GMLIB_API static bool deleteFloatingText(int64 runtimeId);
 

@@ -11,7 +11,7 @@ public:
     using DBStorage::saveData;
 
 public:
-    GMLIB_API static StorageAPI* getInstance();
+    GMLIB_API static optional_ref<StorageAPI> getInstance();
 
 public:
     GMLIB_API bool hasKey(std::string_view key);

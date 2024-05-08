@@ -68,8 +68,8 @@ int NpcDialogueForm::addAction(
 }
 
 void NpcDialogueForm::sendTo(
-    Player*                                                                     pl,
-    std::function<void(Player* pl, int id, NpcRequestPacket::RequestType type)> callback
+    Player&                                                                     pl,
+    std::function<void(Player& pl, int id, NpcRequestPacket::RequestType type)> callback
 ) {
     auto               actionJson = mActionJSON.dump(4);
     GMLIB_BinaryStream bs1;
@@ -77,7 +77,7 @@ void NpcDialogueForm::sendTo(
     bs1.writeVarInt64(mFormRuntimeId);
     bs1.writeUnsignedVarInt64(mFormRuntimeId);
     bs1.writeString("npc");
-    bs1.writeVec3(Vec3{pl->getPosition().x, -66.0f, pl->getPosition().z});
+    bs1.writeVec3(Vec3{pl.getPosition().x, -66.0f, pl.getPosition().z});
     bs1.writeVec3(Vec3{0, 0, 0});
     bs1.writeVec2(Vec2{0, 0});
     bs1.writeFloat(0.0f);
@@ -103,7 +103,7 @@ void NpcDialogueForm::sendTo(
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
     bs1.writeUnsignedVarInt(0);
-    bs1.sendTo(*pl);
+    bs1.sendTo(pl);
     // NpcDialoguePacket
     GMLIB_BinaryStream bs2;
     bs2.writePacketHeader(MinecraftPacketIds::NpcDialogue);
@@ -113,7 +113,7 @@ void NpcDialogueForm::sendTo(
     bs2.writeString(mSceneName);            // SceneName
     bs2.writeString(mNpcName);              // NpcName
     bs2.writeString(actionJson);            // ActionJSON
-    bs2.sendTo(*pl);
+    bs2.sendTo(pl);
     mRuntimeNpcFormList[mFormRuntimeId] = this;
     mCallback                           = callback;
 }
@@ -129,7 +129,7 @@ LL_AUTO_TYPE_INSTANCE_HOOK(
 ) {
     auto runtimeId = packet.mId.id;
     if (mRuntimeNpcFormList.count(runtimeId)) {
-        auto pl = (Player*)this->getServerPlayer(source, packet.mClientSubId).as_ptr();
+        auto pl = this->getServerPlayer(source, packet.mClientSubId);
         auto fm = mRuntimeNpcFormList[runtimeId];
         if (pl && fm) {
             auto type = (int)packet.mType;

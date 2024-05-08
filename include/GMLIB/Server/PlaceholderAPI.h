@@ -34,13 +34,13 @@ public:
     virtual ~PlaceholderAPI() = default;
 
 public:
-    GMLIB_API static std::string getValue(std::string placeholder, Player* player);
+    GMLIB_API static std::string getValue(std::string placeholder, optional_ref<Player> player);
 
     GMLIB_API static std::string getValue(std::string placeholder);
 
-    GMLIB_API static void translate(std::string& value, Player* sp = nullptr);
+    GMLIB_API static void translate(std::string& value, optional_ref<Player> sp = nullptr);
 
-    GMLIB_API static std::string translateString(std::string_view value, Player* sp = nullptr);
+    GMLIB_API static std::string translateString(std::string_view value, optional_ref<Player> sp = nullptr);
 
     GMLIB_API static bool
     registerStaticPlaceholder(std::string const& placeholder, std::string const& value, std::string const& pluginName);

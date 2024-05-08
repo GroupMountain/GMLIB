@@ -28,7 +28,7 @@ void fixLevelChunk(ChunkPos cp, int dimid) {
         for (int z = 0; z <= 15; z++) {
             for (int y = ht.first; y <= ht.second; y++) {
                 BlockPos bp   = {16 * (cp.x) + x, y, 16 * (cp.z) + z};
-                auto     type = GMLIB_Level::getInstance()->getBlock(bp, dimid)->getTypeName();
+                auto     type = GMLIB_Level::getInstance()->getBlock(bp, dimid).getTypeName();
                 if (mUnknownBlockLegacyNameList.count(type)) {
                     GMLIB_Level::getInstance()->setBlock(bp, dimid, "minecraft:air", 0);
                 }

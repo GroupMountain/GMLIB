@@ -120,11 +120,11 @@ public:
 
     GMLIB_API std::vector<MobEffectInstance> getAllEffects();
 
-    GMLIB_API bool setProjectile(Actor* projectile, float speed = 2, float offset = 3);
+    GMLIB_API bool setProjectile(Actor& projectile, float speed = 2, float offset = 3);
 
-    GMLIB_API GMLIB_Actor* shootProjectile(std::string const& typeName, float speed = 2, float offset = 3);
+    GMLIB_API optional_ref<Actor> shootProjectile(std::string_view typeName, float speed = 2, float offset = 3);
 
-    GMLIB_API bool throwEntity(Actor* projectile, float speed = 2, float offset = 3);
+    GMLIB_API bool throwEntity(Actor& projectile, float speed = 2, float offset = 3);
 
     GMLIB_API void setHealth(int value);
 
@@ -146,17 +146,18 @@ public:
 
     GMLIB_API void setUnderwaterMovementSpeed(int value);
 
-    GMLIB_API ItemStack* getMainHandSlot();
+    GMLIB_API ItemStack& getMainHandSlot();
 
     GMLIB_API void setMainHandSlot(ItemStack& itemStack);
 
-    GMLIB_API ItemStack* getOffHandSlot();
+    GMLIB_API ItemStack& getOffHandSlot();
 
     GMLIB_API void setOffHandSlot(ItemStack& itemStack);
 
-    GMLIB_API void hurtEntity(float damage, std::string const& causeName = "override", Actor* source = nullptr);
+    GMLIB_API void
+    hurtEntity(float damage, std::string_view causeName = "override", optional_ref<Actor> source = nullptr);
 
-    GMLIB_API Biome* getBiome();
+    GMLIB_API Biome& getBiome();
 
     GMLIB_API MCRESULT executeCommand(std::string_view command);
 };

@@ -74,7 +74,7 @@ public:
     GMLIB_API static void registerShapelessCraftingTableRecipe(
         std::string const&                                                                        recipe_id,
         std::vector<Recipes::Type> const&                                                         ingredients,
-        ItemStack*                                                                                result,
+        ItemStack const&                                                                          result,
         std::variant<RecipeUnlockingRequirement::UnlockingContext, std::vector<RecipeIngredient>> unlock =
             RecipeUnlockingRequirement::UnlockingContext::AlwaysUnlocked,
         int priority = 50
@@ -83,7 +83,7 @@ public:
     GMLIB_API static void registerStoneCutterRecipe(
         std::string const&                                                                        recipe_id,
         Recipes::Type const&                                                                      input,
-        ItemStack*                                                                                result,
+        ItemStack const&                                                                          result,
         std::variant<RecipeUnlockingRequirement::UnlockingContext, std::vector<RecipeIngredient>> unlock =
             RecipeUnlockingRequirement::UnlockingContext::AlwaysUnlocked,
         int priority = 50
@@ -103,7 +103,7 @@ public:
         std::string const&                                                                        recipe_id,
         std::vector<std::string> const&                                                           shape,
         std::vector<Recipes::Type> const&                                                         ingredients,
-        ItemStack*                                                                                result,
+        ItemStack const&                                                                          result,
         std::variant<RecipeUnlockingRequirement::UnlockingContext, std::vector<RecipeIngredient>> unlock =
             RecipeUnlockingRequirement::UnlockingContext::AlwaysUnlocked,
         int priority = 50

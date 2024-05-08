@@ -14,11 +14,11 @@ public:
     };
 
 public:
-    GMLIB_API static UserCacheEntry* fromUuid(mce::UUID const& uuid);
+    GMLIB_API static optional_ref<UserCacheEntry> fromUuid(mce::UUID const& uuid);
 
-    GMLIB_API static UserCacheEntry* fromXuid(std::string const& xuid);
+    GMLIB_API static optional_ref<UserCacheEntry> fromXuid(std::string const& xuid);
 
-    GMLIB_API static UserCacheEntry* fromName(std::string const& name);
+    GMLIB_API static optional_ref<UserCacheEntry> fromName(std::string const& name);
 
     GMLIB_API static void forEach(std::function<void(UserCacheEntry const&)> const& func);
 

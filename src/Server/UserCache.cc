@@ -10,21 +10,21 @@ phmap::flat_hash_map<mce::UUID, std::shared_ptr<UserCache::UserCacheEntry>>   mU
 phmap::flat_hash_map<std::string, std::shared_ptr<UserCache::UserCacheEntry>> mNameEntry;
 phmap::flat_hash_map<std::string, std::shared_ptr<UserCache::UserCacheEntry>> mXuidEntry;
 
-UserCache::UserCacheEntry* UserCache::fromUuid(mce::UUID const& uuid) {
+optional_ref<UserCache::UserCacheEntry> UserCache::fromUuid(mce::UUID const& uuid) {
     if (mUuidEntry.contains(uuid)) {
         return mUuidEntry[uuid].get();
     }
     return nullptr;
 }
 
-UserCache::UserCacheEntry* UserCache::fromXuid(std::string const& xuid) {
+optional_ref<UserCache::UserCacheEntry> UserCache::fromXuid(std::string const& xuid) {
     if (mXuidEntry.contains(xuid)) {
         return mXuidEntry[xuid].get();
     }
     return nullptr;
 }
 
-UserCache::UserCacheEntry* UserCache::fromName(std::string const& name) {
+optional_ref<UserCache::UserCacheEntry> UserCache::fromName(std::string const& name) {
     if (mNameEntry.contains(name)) {
         return mNameEntry[name].get();
     }

@@ -17,11 +17,11 @@ protected:
 
 public:
     constexpr explicit ItemActorSpawnBeforeEvent(
-        BlockSource& blockSource,
-        Vec3&        position,
-        ItemStack&   item,
-        Actor*       spawner,
-        int          throwTime
+        BlockSource&        blockSource,
+        Vec3&               position,
+        ItemStack&          item,
+        optional_ref<Actor> spawner,
+        int                 throwTime
     )
     : Cancellable(),
       mBlockSource(blockSource),
@@ -47,12 +47,12 @@ protected:
 
 public:
     constexpr explicit ItemActorSpawnAfterEvent(
-        ItemActor&   itemActor,
-        BlockSource& blockSource,
-        Vec3&        position,
-        ItemStack&   item,
-        Actor*       spawner,
-        int          throwTime
+        ItemActor&          itemActor,
+        BlockSource&        blockSource,
+        Vec3&               position,
+        ItemStack&          item,
+        optional_ref<Actor> spawner,
+        int                 throwTime
     )
     : ItemActorEvent(itemActor),
       mBlockSource(blockSource),

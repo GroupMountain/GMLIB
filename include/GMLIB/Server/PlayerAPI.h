@@ -129,7 +129,7 @@ public:
 
     GMLIB_API bool resetScore(std::string const& objective);
 
-    GMLIB_API GMLIB_Actor* shootProjectile(std::string const& typeName, float speed = 2, float offset = 3);
+    GMLIB_API optional_ref<Actor> shootProjectile(std::string_view typeName, float speed = 2, float offset = 3);
 
     GMLIB_API bool resetScore();
 
@@ -226,11 +226,11 @@ public:
 
     GMLIB_API std::vector<MobEffectInstance> getAllEffects();
 
-    GMLIB_API ItemStack* getMainHandSlot();
+    GMLIB_API ItemStack& getMainHandSlot();
 
     GMLIB_API void setMainHandSlot(ItemStack& itemStack);
 
-    GMLIB_API ItemStack* getOffHandSlot();
+    GMLIB_API ItemStack& getOffHandSlot();
 
     GMLIB_API void setOffHandSlot(ItemStack& itemStack);
 
@@ -238,7 +238,8 @@ public:
 
     GMLIB_API FullPlayerInventoryWrapper getFullPlayerInventoryWrapper();
 
-    GMLIB_API void hurtPlayer(float damage, std::string const& causeName = "override", Actor* source = nullptr);
+    GMLIB_API void
+    hurtPlayer(float damage, std::string const& causeName = "override", optional_ref<Actor> source = nullptr);
 
     GMLIB_API void updateClientBlock(
         BlockPos const&               pos,
@@ -247,9 +248,9 @@ public:
         UpdateBlockPacket::BlockLayer layer = UpdateBlockPacket::BlockLayer::Standard
     );
 
-    GMLIB_API bool updateClientBlock(
+    GMLIB_API void updateClientBlock(
         BlockPos const&               pos,
-        Block*                        block,
+        Block const&                  block,
         BlockUpdateFlag               flag  = BlockUpdateFlag::All,
         UpdateBlockPacket::BlockLayer layer = UpdateBlockPacket::BlockLayer::Standard
     );
@@ -270,7 +271,7 @@ public:
         UpdateBlockPacket::BlockLayer layer    = UpdateBlockPacket::BlockLayer::Standard
     );
 
-    GMLIB_API Biome* getBiome();
+    GMLIB_API Biome& getBiome();
 
     GMLIB_API std::pair<BlockPos, DimensionType> getSpawnPoint();
 

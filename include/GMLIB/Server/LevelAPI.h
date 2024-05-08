@@ -25,9 +25,9 @@ enum class FillMode : int {
 
 class GMLIB_Level : public Level {
 public:
-    GMLIB_API static GMLIB_Level* getInstance();
+    GMLIB_API static optional_ref<GMLIB_Level> getInstance();
 
-    GMLIB_API static GMLIB_Level* getLevel();
+    GMLIB_API static optional_ref<GMLIB_Level> getLevel();
 
     GMLIB_API static void setFakeSeed(int64_t fakeSeed);
 
@@ -50,11 +50,11 @@ public:
     GMLIB_API static std::map<int, std::string> getAllExperimentsTranslateKeys();
 
 public:
-    GMLIB_API BlockSource* getBlockSource(DimensionType dimid);
+    GMLIB_API BlockSource& getBlockSource(DimensionType dimid);
 
     GMLIB_API std::vector<Actor*> getAllEntities();
 
-    GMLIB_API Actor* getEntity(ActorUniqueID const& uniqueId);
+    GMLIB_API optional_ref<Actor> getEntity(ActorUniqueID const& uniqueId);
 
     GMLIB_API std::vector<Player*> getAllPlayers();
 
@@ -105,19 +105,19 @@ public:
     GMLIB_API void setGamerule(std::string_view name, int value);
 
     GMLIB_API void createExplosion(
-        Vec3 const&   pos,
-        DimensionType dimensionId,
-        float         power,
-        Actor*        source          = nullptr,
-        bool          breakBlocks     = true,
-        bool          causeFire       = false,
-        bool          allowUnderwater = false,
-        float         maxResistance   = 3.40282347e+38
+        Vec3 const&         pos,
+        DimensionType       dimensionId,
+        float               power,
+        optional_ref<Actor> source          = nullptr,
+        bool                breakBlocks     = true,
+        bool                causeFire       = false,
+        bool                allowUnderwater = false,
+        float               maxResistance   = 3.40282347e+38
     );
 
-    GMLIB_API Block* getBlock(BlockPos const& pos, DimensionType dimId);
+    GMLIB_API Block const& getBlock(BlockPos const& pos, DimensionType dimId);
 
-    GMLIB_API bool setBlock(BlockPos const& pos, DimensionType dimId, Block* block);
+    GMLIB_API bool setBlock(BlockPos const& pos, DimensionType dimId, Block const& block);
 
     GMLIB_API bool setBlock(BlockPos const& pos, DimensionType dimId, std::string_view name, short aux = 0);
 
@@ -125,7 +125,7 @@ public:
         BlockPos const& startpos,
         BlockPos const& endpos,
         DimensionType   dimId,
-        Block*          block,
+        Block const&    block,
         FillMode        mode = FillMode::Replace
     );
 
@@ -138,8 +138,13 @@ public:
         FillMode         mode     = FillMode::Replace
     );
 
-    GMLIB_API int
-    fillBlocks(BlockPos const& startpos, BlockPos const& endpos, DimensionType dimId, Block* oldBlock, Block* newBlock);
+    GMLIB_API int fillBlocks(
+        BlockPos const& startpos,
+        BlockPos const& endpos,
+        DimensionType   dimId,
+        Block const&    oldBlock,
+        Block const&    newBlock
+    );
 
     GMLIB_API int fillBlocks(
         BlockPos const&  startpos,
@@ -197,7 +202,7 @@ public:
 
     GMLIB_API void sendPacketTo(Packet& packet, Player& player);
 
-    GMLIB_API void setClientWeather(WeatherType weather, Player* pl);
+    GMLIB_API void setClientWeather(WeatherType weather, Player& pl);
 
     GMLIB_API void setClientWeather(WeatherType weather);
 

@@ -144,7 +144,7 @@ void FloatingText::removeFromClient(Player& pl) {
 
 void FloatingText::setText(std::string const& newText) { mText = newText; }
 
-FloatingText* FloatingText::getFloatingText(int64 runtimeId) {
+optional_ref<FloatingText> FloatingText::getFloatingText(int64 runtimeId) {
     if (mRuntimeFloatingTextList.count(runtimeId)) {
         return mRuntimeFloatingTextList[runtimeId];
     }
