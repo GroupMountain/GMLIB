@@ -6,10 +6,10 @@ namespace GMLIB::Files {
 
 class LangLanguage : public McLang {
 private:
-    std::string mFilePath;
+    std::filesystem::path mFilePath;
 
 public:
-    GMLIB_API LangLanguage(std::string const& filePath, std::string const& defaultLanguage);
+    GMLIB_API LangLanguage(std::filesystem::path const& filePath, std::string const& defaultLanguage);
 
 public:
     GMLIB_API bool init();

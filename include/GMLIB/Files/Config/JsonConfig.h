@@ -10,21 +10,21 @@ private:
     nlohmann::ordered_json mValue;
 
 public:
-    GMLIB_API JsonConfig(std::string const& filePath, std::string const& defaultJson);
-    GMLIB_API JsonConfig(std::string const& filePath, nlohmann::ordered_json const& defaultJson);
+    [[deprecated]] GMLIB_API JsonConfig(std::string const& filePath, std::string const& defaultJson);
+    [[deprecated]] GMLIB_API JsonConfig(std::string const& filePath, nlohmann::ordered_json const& defaultJson);
 
     JsonConfig() = delete;
 
 public:
-    GMLIB_API virtual ~JsonConfig();
+    [[deprecated]] GMLIB_API virtual ~JsonConfig();
 
 public:
-    GMLIB_API bool init();
+    [[deprecated]] GMLIB_API bool init();
 
-    GMLIB_API bool reload();
+    [[deprecated]] GMLIB_API bool reload();
 
     template <typename T>
-    inline std::optional<T> getValue(std::vector<std::string> const& keyPath) {
+    [[deprecated]] inline std::optional<T> getValue(std::vector<std::string> const& keyPath) {
         try {
             if (keyPath.empty()) {
                 return {};
@@ -44,7 +44,7 @@ public:
     }
 
     template <typename T>
-    inline T getValue(std::vector<std::string> const& keyPath, T defaultValue) {
+    [[deprecated]] inline T getValue(std::vector<std::string> const& keyPath, T defaultValue) {
         try {
             std::optional<T> result = getValue<T>(keyPath);
             if (result.has_value()) {
@@ -59,7 +59,7 @@ public:
     }
 
     template <typename T>
-    inline bool setValue(std::vector<std::string> const& keyPath, T data) {
+    [[deprecated]] inline bool setValue(std::vector<std::string> const& keyPath, T data) {
         try {
             if (keyPath.empty()) {
                 return false;
@@ -78,11 +78,11 @@ public:
         }
     }
 
-    GMLIB_API bool deleteKey(std::vector<std::string> const& keyPath);
+    [[deprecated]] GMLIB_API bool deleteKey(std::vector<std::string> const& keyPath);
 
-    GMLIB_API nlohmann::ordered_json getSelf();
+    [[deprecated]] GMLIB_API nlohmann::ordered_json getSelf();
 
-    GMLIB_API bool writeFile();
+    [[deprecated]] GMLIB_API bool writeFile();
 };
 
 } // namespace GMLIB::Files

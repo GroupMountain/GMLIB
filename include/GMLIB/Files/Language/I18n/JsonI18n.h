@@ -6,14 +6,14 @@ namespace GMLIB::Files::I18n {
 
 class JsonI18n {
 private:
-    std::string                                    mLanguageDirectory;
-    std::unordered_map<std::string, JsonLanguage*> mAllLanguages;
-    std::string                                    mLanguageCode;
-    JsonLanguage*                                  mLocalization    = nullptr;
-    std::string                                    mDefaultLanguage = "en_US";
+    std::filesystem::path                                          mLanguageDirectory;
+    std::unordered_map<std::string, std::shared_ptr<JsonLanguage>> mAllLanguages;
+    std::string                                                    mLanguageCode;
+    std::shared_ptr<JsonLanguage>                                  mLocalization    = nullptr;
+    std::string                                                    mDefaultLanguage = "en_US";
 
 public:
-    GMLIB_API JsonI18n(std::string const& languageDirectory, std::string const& languageCode = "en_US");
+    GMLIB_API JsonI18n(std::filesystem::path const& languageDirectory, std::string const& languageCode = "en_US");
 
     JsonI18n() = delete;
 
@@ -53,7 +53,7 @@ public:
                   std::string const&              data   = "%0$s");
 
 private:
-    bool loadOrCreateLanguage(std::string const& languageCode, JsonLanguage* language);
+    bool loadOrCreateLanguage(std::string const& languageCode, std::shared_ptr<JsonLanguage> language);
 };
 
 } // namespace GMLIB::Files::I18n

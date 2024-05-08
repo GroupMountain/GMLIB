@@ -21,7 +21,7 @@ public:
 public:
     GMLIB_API static McLang parse(std::string const& data);
 
-    GMLIB_API static McLang parse_file(std::string const& filePath);
+    GMLIB_API static McLang parse_file(std::filesystem::path const& filePath);
 
 public:
     GMLIB_API std::optional<std::string> try_get(std::string const& key);
@@ -42,7 +42,7 @@ public:
 
     GMLIB_API std::string dump();
 
-    GMLIB_API bool write_to_file(std::string const& filePath);
+    GMLIB_API bool write_to_file(std::filesystem::path const& filePath);
 
     GMLIB_API std::unordered_map<std::string, std::string>& getTranslationMap();
 };

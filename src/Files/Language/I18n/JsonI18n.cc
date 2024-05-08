@@ -5,41 +5,32 @@
 
 namespace GMLIB::Files::I18n {
 
-JsonI18n::JsonI18n(std::string const& languageDirectory, std::string const& languageCode)
+JsonI18n::JsonI18n(std::filesystem::path const& languageDirectory, std::string const& languageCode)
 : mLanguageDirectory(languageDirectory),
-  mLanguageCode(mLanguageCode) {
-    if (!mLanguageDirectory.ends_with("/") && !mLanguageDirectory.ends_with("\\")) {
-        mLanguageDirectory = mLanguageDirectory + "/";
-    }
-}
+  mLanguageCode(mLanguageCode) {}
 
 JsonI18n::~JsonI18n() {
-    for (auto lang : mAllLanguages) {
-        delete lang.second;
+    for (auto& [langCode, langData] : mAllLanguages) {
+        langData.reset();
     }
     mAllLanguages.clear();
 }
 
-bool JsonI18n::loadOrCreateLanguage(std::string const& languageCode, JsonLanguage* language) {
+bool JsonI18n::loadOrCreateLanguage(std::string const& languageCode, std::shared_ptr<JsonLanguage> language) {
     auto result                 = language->init();
     mAllLanguages[languageCode] = language;
     return result;
 }
 
 bool JsonI18n::updateOrCreateLanguage(std::string const& languageCode, nlohmann::json const& language) {
-    auto path = mLanguageDirectory;
-    path      = path + languageCode + ".json";
-    auto lang = new JsonLanguage(path, language);
+    auto path = mLanguageDirectory / (languageCode + ".json");
+    auto lang = std::make_shared<JsonLanguage>(path, language);
     return loadOrCreateLanguage(languageCode, lang);
 }
 
 bool JsonI18n::updateOrCreateLanguage(std::string const& languageCode, std::string const& language) {
-    auto path = mLanguageDirectory;
-    if (!path.ends_with("/") && !path.ends_with("\\")) {
-        path = path + "/";
-    }
-    path      = path + languageCode + ".json";
-    auto lang = new JsonLanguage(path, language);
+    auto path = mLanguageDirectory / (languageCode + ".json");
+    auto lang = std::make_shared<JsonLanguage>(path, language);
     return loadOrCreateLanguage(languageCode, lang);
 }
 
@@ -52,9 +43,9 @@ bool JsonI18n::loadAllLanguages() {
             auto code = file;
             ll::string_utils::replaceAll(code, ".json", "");
             if (!mAllLanguages.count(code)) {
-                auto path           = parentPath + file;
+                auto path           = parentPath / file;
                 auto emptyJson      = nlohmann::json::object();
-                auto language       = new GMLIB::Files::JsonLanguage(path, emptyJson);
+                auto language       = std::make_shared<JsonLanguage>(path, emptyJson);
                 auto temp           = language->init();
                 result              = result && temp;
                 mAllLanguages[code] = language;

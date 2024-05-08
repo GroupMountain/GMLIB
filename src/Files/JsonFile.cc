@@ -3,17 +3,17 @@
 
 namespace GMLIB::Files::JsonFile {
 
-nlohmann::ordered_json initOrderedJson(std::string const& path, nlohmann::ordered_json const& defaultFile) {
+nlohmann::ordered_json initOrderedJson(std::filesystem::path const& path, nlohmann::ordered_json const& defaultFile) {
     writeOrUpdateOrderedFile(path, defaultFile);
     return readFromFile(path);
 }
 
-nlohmann::json initJson(std::string const& path, nlohmann::json const& defaultFile) {
+nlohmann::json initJson(std::filesystem::path const& path, nlohmann::json const& defaultFile) {
     writeOrUpdateFile(path, defaultFile);
     return readFromFile(path);
 }
 
-void writeOrUpdateOrderedFile(std::string const& path, nlohmann::ordered_json const& defaultFile) {
+void writeOrUpdateOrderedFile(std::filesystem::path const& path, nlohmann::ordered_json const& defaultFile) {
     auto dirPath = std::filesystem::path(path).parent_path();
     if (!std::filesystem::exists(dirPath)) {
         std::filesystem::create_directories(dirPath);
@@ -25,7 +25,7 @@ void writeOrUpdateOrderedFile(std::string const& path, nlohmann::ordered_json co
     }
 }
 
-void writeOrUpdateFile(std::string const& path, nlohmann::json const& defaultFile) {
+void writeOrUpdateFile(std::filesystem::path const& path, nlohmann::json const& defaultFile) {
     auto dirPath = std::filesystem::path(path).parent_path();
     if (!std::filesystem::exists(dirPath)) {
         std::filesystem::create_directories(dirPath);
@@ -37,66 +37,66 @@ void writeOrUpdateFile(std::string const& path, nlohmann::json const& defaultFil
     }
 }
 
-nlohmann::ordered_json initOrderedJson(std::string const& path, std::string const& defaultFile) {
+nlohmann::ordered_json initOrderedJson(std::filesystem::path const& path, std::string const& defaultFile) {
     auto file = nlohmann::ordered_json::parse(defaultFile, nullptr, true, true);
     return initOrderedJson(path, file);
 }
 
-nlohmann::json initJson(std::string const& path, std::string const& defaultFile) {
+nlohmann::json initJson(std::filesystem::path const& path, std::string const& defaultFile) {
     auto file = nlohmann::json::parse(defaultFile, nullptr, true, true);
     return initJson(path, file);
 }
 
 
-void updateOrderedFile(std::string const& path, nlohmann::ordered_json const& file) {
+void updateOrderedFile(std::filesystem::path const& path, nlohmann::ordered_json const& file) {
     auto newFile = file;
     try {
         auto oldFile = readFromFile(path);
         newFile.merge_patch(oldFile);
     } catch (...) {
-        auto backupPath = path + "_old";
+        auto backupPath = path.string() + "_old";
         std::filesystem::rename(path, backupPath);
     }
     writeOrderedFile(path, newFile);
 }
 
-void updateFile(std::string const& path, nlohmann::json const& file) {
+void updateFile(std::filesystem::path const& path, nlohmann::json const& file) {
     auto newFile = file;
     try {
         auto oldFile = readFromFile(path);
         newFile.merge_patch(oldFile);
     } catch (...) {
-        auto backupPath = path + "_old";
+        auto backupPath = path.string() + "_old";
         std::filesystem::rename(path, backupPath);
     }
     writeFile(path, newFile);
 }
 
-void updateOrderedFile(std::string const& path, std::string const& newFile) {
+void updateOrderedFile(std::filesystem::path const& path, std::string const& newFile) {
     auto file = nlohmann::ordered_json::parse(newFile, nullptr, true, true);
     updateOrderedFile(path, file);
 }
 
-void updateFile(std::string const& path, std::string const& newFile) {
+void updateFile(std::filesystem::path const& path, std::string const& newFile) {
     auto file = nlohmann::json::parse(newFile, nullptr, true, true);
     updateFile(path, file);
 }
 
-nlohmann::ordered_json readFromOrderedFile(std::string const& path) {
+nlohmann::ordered_json readFromOrderedFile(std::filesystem::path const& path) {
     std::ifstream inputFile(path);
     std::string   fileContent((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
     inputFile.close();
     return nlohmann::ordered_json::parse(fileContent, nullptr, true, true);
 }
 
-nlohmann::json readFromFile(std::string const& path) {
+nlohmann::json readFromFile(std::filesystem::path const& path) {
     std::ifstream inputFile(path);
     std::string   fileContent((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
     inputFile.close();
     return nlohmann::json::parse(fileContent, nullptr, true, true);
 }
 
-bool writeOrderedFile(std::string const& path, nlohmann::ordered_json const& json) {
+bool writeOrderedFile(std::filesystem::path const& path, nlohmann::ordered_json const& json) {
     try {
         std::ofstream newFile(path);
         if (!newFile.is_open()) {
@@ -110,7 +110,7 @@ bool writeOrderedFile(std::string const& path, nlohmann::ordered_json const& jso
     }
 }
 
-bool writeFile(std::string const& path, nlohmann::json const& json) {
+bool writeFile(std::filesystem::path const& path, nlohmann::json const& json) {
     try {
         std::ofstream newFile(path);
         if (!newFile.is_open()) {

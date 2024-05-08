@@ -4,12 +4,13 @@
 
 namespace GMLIB::Files {
 
-JsonLanguage::JsonLanguage(std::string const& filePath, std::string const& defaultJson) : mFilePath(filePath) {
+JsonLanguage::JsonLanguage(std::filesystem::path const& filePath, std::string const& defaultJson)
+: mFilePath(filePath) {
     auto json_value = nlohmann::json::parse(defaultJson, nullptr, true, true);
     mValue          = json_value;
 }
 
-JsonLanguage::JsonLanguage(std::string const& filePath, nlohmann::json const& defaultJson)
+JsonLanguage::JsonLanguage(std::filesystem::path const& filePath, nlohmann::json const& defaultJson)
 : mValue(defaultJson),
   mFilePath(filePath) {}
 
@@ -37,15 +38,15 @@ std::string JsonLanguage::getValue(std::string const& key, std::string const& de
     return JsonLanguageFile::getValue(mValue, key, defaultValue);
 }
 
-bool JsonLanguage::setValue(std::string const& key, std::string const& value, std::string const& path) {
+bool JsonLanguage::setValue(std::string const& key, std::string const& value, std::filesystem::path const& path) {
     return JsonLanguageFile::setValue(mValue, key, value, mFilePath);
 }
 
-bool JsonLanguage::deleteKey(std::string const& key, std::string const& path) {
+bool JsonLanguage::deleteKey(std::string const& key, std::filesystem::path const& path) {
     return JsonLanguageFile::deleteKey(mValue, key, mFilePath);
 }
 
-bool JsonLanguage::deleteKeys(std::vector<std::string> const& keys, std::string const& path) {
+bool JsonLanguage::deleteKeys(std::vector<std::string> const& keys, std::filesystem::path const& path) {
     return JsonLanguageFile::deleteKeys(mValue, keys, mFilePath);
 }
 
@@ -65,11 +66,11 @@ bool JsonLanguage::writeFile() { return JsonFile::writeFile(mFilePath, mValue); 
 
 namespace JsonLanguageFile {
 
-nlohmann::json initLanguage(std::string const& path, nlohmann::json const& defaultFile) {
+nlohmann::json initLanguage(std::filesystem::path const& path, nlohmann::json const& defaultFile) {
     return JsonFile::initJson(path, defaultFile);
 }
 
-nlohmann::json initLanguage(std::string const& path, std::string const& defaultFile) {
+nlohmann::json initLanguage(std::filesystem::path const& path, std::string const& defaultFile) {
     auto file = nlohmann::json::parse(defaultFile, nullptr, true, true);
     return initLanguage(path, file);
 }
@@ -90,17 +91,22 @@ std::string getValue(nlohmann::json const& json, std::string const& key, std::st
     }
 }
 
-bool setValue(nlohmann::json& json, std::string const& key, std::string const& value, std::string const& path) {
+bool setValue(
+    nlohmann::json&              json,
+    std::string const&           key,
+    std::string const&           value,
+    std::filesystem::path const& path
+) {
     json[key] = value;
     return JsonFile::writeFile(path, json);
 }
 
-bool deleteKey(nlohmann::json& json, std::string const& key, std::string const& path) {
+bool deleteKey(nlohmann::json& json, std::string const& key, std::filesystem::path const& path) {
     json.erase(key);
     return JsonFile::writeFile(path, json);
 }
 
-bool deleteKeys(nlohmann::json& json, std::vector<std::string> const& keys, std::string const& path) {
+bool deleteKeys(nlohmann::json& json, std::vector<std::string> const& keys, std::filesystem::path const& path) {
     for (auto& key : keys) {
         json.erase(key);
     }

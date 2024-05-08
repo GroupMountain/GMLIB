@@ -6,9 +6,10 @@ namespace GMLIB::Mod {
 
 class CustomPacks {
 public:
-    GMLIB_API static void addCustomPackPath(std::string  const& path);
+    GMLIB_API static void addCustomPackPath(std::filesystem::path const& path);
 
-    GMLIB_API static void setCustomPackPath(ResourcePackRepository& repo, std::string  const& path, PackType type);
+    GMLIB_API static void
+    setCustomPackPath(ResourcePackRepository& repo, std::filesystem::path const& path, PackType type);
 };
 
 } // namespace GMLIB::Mod

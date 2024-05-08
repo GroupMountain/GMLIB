@@ -5,7 +5,7 @@ namespace GMLIB::Files {
 
 McLang::McLang(std::unordered_map<std::string, std::string> const& data) : mData(data) {}
 
-McLang McLang::parse_file(std::string const& filePath) {
+McLang McLang::parse_file(std::filesystem::path const& filePath) {
     std::vector<std::string> lines;
     std::ifstream            file(filePath);
     auto                     result = McLang();
@@ -88,7 +88,7 @@ std::string McLang::dump() {
     return result;
 }
 
-bool McLang::write_to_file(std::string const& filePath) {
+bool McLang::write_to_file(std::filesystem::path const& filePath) {
     std::ofstream newFile(filePath);
     if (newFile.is_open()) {
         newFile << dump();

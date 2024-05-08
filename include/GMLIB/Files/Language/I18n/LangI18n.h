@@ -5,14 +5,14 @@ namespace GMLIB::Files::I18n {
 
 class LangI18n {
 private:
-    std::string                                    mLanguageDirectory;
-    std::unordered_map<std::string, LangLanguage*> mAllLanguages;
-    std::string                                    mLanguageCode;
-    LangLanguage*                                  mLocalization    = nullptr;
-    std::string                                    mDefaultLanguage = "en_US";
+    std::filesystem::path                                          mLanguageDirectory;
+    std::unordered_map<std::string, std::shared_ptr<LangLanguage>> mAllLanguages;
+    std::string                                                    mLanguageCode;
+    std::shared_ptr<LangLanguage>                                  mLocalization    = nullptr;
+    std::string                                                    mDefaultLanguage = "en_US";
 
 public:
-    GMLIB_API LangI18n(std::string const& languageDirectory, std::string const& languageCode = "en_US");
+    GMLIB_API LangI18n(std::filesystem::path const& languageDirectory, std::string const& languageCode = "en_US");
 
     LangI18n() = delete;
 
@@ -52,7 +52,7 @@ public:
                   std::string const&              data   = "%0$s");
 
 private:
-    bool loadOrCreateLanguage(std::string const& languageCode, LangLanguage* language);
+    bool loadOrCreateLanguage(std::string const& languageCode, std::shared_ptr<LangLanguage> language);
 };
 
 
