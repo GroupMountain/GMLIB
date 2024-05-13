@@ -86,7 +86,7 @@ JsonI18n::translate(std::string const& key, std::vector<std::string> const& data
             }
         }
     }
-    return I18nAPI::get(key, data);
+    return I18nAPI::get(key, data, mLanguageCode);
 }
 
 std::string JsonI18n::translate(
@@ -104,7 +104,7 @@ std::string JsonI18n::translate(
             return temp->translate(key, data, translateKey);
         }
     }
-    return I18nAPI::get(key, data);
+    return I18nAPI::get(key, data, localLanguage);
 }
 
 std::string

@@ -80,7 +80,7 @@ LangI18n::translate(std::string const& key, std::vector<std::string> const& data
             }
         }
     }
-    return I18nAPI::get(key, data);
+    return I18nAPI::get(key, data, mLanguageCode);
 }
 
 std::string LangI18n::translate(
