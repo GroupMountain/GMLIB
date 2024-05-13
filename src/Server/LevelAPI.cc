@@ -259,18 +259,16 @@ void GMLIB_Level::setExperimentEnabled(::AllExperiments experiment, bool enabled
     getLevelData().getExperiments().setExperimentEnabled(experiment, enabled);
 }
 
-std::map<int, std::string> GMLIB_Level::getAllExperimentsTranslateKeys() {
-    auto result = getAllExperiments();
-    for (auto& [id, name] : result) {
-        name.erase(0, 1);
-        name = "createWorldScreen.e" + name;
-        name = I18nAPI::get(name);
-    }
+std::string GMLIB_Level::getExperimentTranslateKey(AllExperiments experiment) {
+    std::string result;
+    try {
+        result = Experiments::getExperimentTextID(experiment);
+    } catch (...) {}
     return result;
 }
 
-std::map<int, std::string> GMLIB_Level::getAllExperiments() {
-    std::map<int, std::string>        result;
+std::vector<AllExperiments> GMLIB_Level::getAllExperiments() {
+    std::vector<AllExperiments>       result;
     phmap::flat_hash_set<std::string> exist;
     for (int i = 4; i <= 24; i++) {
         std::string text;
@@ -278,12 +276,11 @@ std::map<int, std::string> GMLIB_Level::getAllExperiments() {
             text = Experiments::getExperimentTextID((AllExperiments)i);
         } catch (...) {}
         if (!text.empty()) {
-            ll::utils::string_utils::replaceAll(text, "createWorldScreen.e", "E");
-            if (exist.count(text)) {
+            if (exist.contains(text)) {
                 return result;
             }
             exist.insert(text);
-            result[i] = text;
+            result.push_back(AllExperiments(i));
         }
     }
     return result;
