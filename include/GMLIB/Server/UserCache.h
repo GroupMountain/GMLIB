@@ -33,6 +33,13 @@ public:
     GMLIB_API static std::optional<std::string> getXuidByName(std::string const& name);
 
     GMLIB_API static std::optional<mce::UUID> getUuidByName(std::string const& name);
+
+public:
+    GMLIB_API static void add(std::shared_ptr<UserCache::UserCacheEntry> entry);
+
+    GMLIB_API static void add(std::string const& name, std::string const& xuid, mce::UUID const& uuid);
+
+    GMLIB_API static void remove(std::shared_ptr<UserCache::UserCacheEntry> entry);
 };
 
 } // namespace GMLIB

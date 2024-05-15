@@ -88,6 +88,23 @@ void UserCache::forEach(std::function<void(UserCache::UserCacheEntry const&)> co
     );
 }
 
+void UserCache::add(std::shared_ptr<UserCache::UserCacheEntry> entry) {
+    mUuidEntry[entry->mUuid] = entry;
+    mXuidEntry[entry->mXuid] = entry;
+    mNameEntry[entry->mName] = entry;
+}
+
+void UserCache::add(std::string const& name, std::string const& xuid, mce::UUID const& uuid) {
+    auto entry = std::make_shared<UserCache::UserCacheEntry>(uuid, name, xuid);
+    add(entry);
+}
+
+void UserCache::remove(std::shared_ptr<UserCache::UserCacheEntry> entry) {
+    mUuidEntry.erase(entry->mUuid);
+    mXuidEntry.erase(entry->mXuid);
+    mNameEntry.erase(entry->mName);
+}
+
 void updateUserCache(const Certificate* cert) {
     auto uuid        = ExtendedCertificate::getIdentity(*cert);
     auto xuid        = ExtendedCertificate::getXuid(*cert, false);
