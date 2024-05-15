@@ -27,11 +27,18 @@ public:
 
     GMLIB_API static std::vector<mce::UUID> getAllUuids(bool includeOfflineSignedId = false);
 
+    GMLIB_API static std::unordered_map<mce::UUID, std::string>
+    getUuidToServerIdMap(bool includeOfflineSignedId = false);
+
+    GMLIB_API static std::unordered_map<std::string, mce::UUID> getServerIdToUuidMap();
+
     GMLIB_API static std::unique_ptr<CompoundTag> getUuidDBTag(mce::UUID const& uuid);
 
     GMLIB_API static bool deleteUuidDBTag(mce::UUID const& uuid);
 
     GMLIB_API static std::string getServerIdFromUuid(mce::UUID const& uuid);
+
+    GMLIB_API static mce::UUID getUuidFromServerId(std::string const& serverId);
 
     GMLIB_API static std::unique_ptr<CompoundTag> getOfflineNbt(std::string const& serverId);
 
@@ -56,6 +63,8 @@ public:
     GMLIB_API static bool deletePlayerNbt(std::string const& serverId);
 
     GMLIB_API static bool deletePlayerNbt(mce::UUID const& uuid);
+
+    GMLIB_API static bool deletePlayer(std::string const& serverId);
 
     GMLIB_API static bool deletePlayer(mce::UUID const& uuid);
 
