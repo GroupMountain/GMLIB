@@ -22,7 +22,7 @@ public:
 
     GMLIB_API static optional_ref<ItemActor> spawnItem(
         Vec3 const&         pos,
-        int                 dimid,
+        int                 dimId,
         std::string_view    name,
         int                 count = 1,
         int                 aux   = 0,

@@ -46,7 +46,7 @@ public:
 
     GMLIB_API void setText(std::string const& newText);
 
-    GMLIB_API void setPosition(Vec3 const& pos, DimensionType dimid);
+    GMLIB_API void setPosition(Vec3 const& pos, DimensionType dimId);
 
     GMLIB_API void setUsePapi(bool value);
 
@@ -77,7 +77,7 @@ public:
 public:
     GMLIB_API void updateText(std::string const& newText);
 
-    GMLIB_API void updatePosition(Vec3 const& pos, DimensionType dimid);
+    GMLIB_API void updatePosition(Vec3 const& pos, DimensionType dimId);
 };
 
 class DynamicFloatingText : public FloatingText {
@@ -106,7 +106,7 @@ public:
 public:
     GMLIB_API void updateText(std::string const& newText);
 
-    GMLIB_API void updatePosition(Vec3 const& pos, DimensionType dimid);
+    GMLIB_API void updatePosition(Vec3 const& pos, DimensionType dimId);
 
     GMLIB_API bool stopUpdate();
 

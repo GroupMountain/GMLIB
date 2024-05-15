@@ -58,14 +58,14 @@ GMLIB_Spawner::spawnItem(Vec3 const& pos, DimensionType dimId, ItemStack& item, 
 
 optional_ref<ItemActor> GMLIB_Spawner::spawnItem(
     Vec3 const&         pos,
-    int                 dimid,
+    int                 dimId,
     std::string_view    name,
     int                 count,
     int                 aux,
     optional_ref<Actor> owner
 ) {
     try {
-        auto&      bs        = GMLIB_Level::getInstance()->getBlockSource(dimid);
+        auto&      bs        = GMLIB_Level::getInstance()->getBlockSource(dimId);
         auto       item      = ItemStack{name, count, aux};
         ItemActor* itemActor = ll::service::getLevel()->getSpawner().spawnItem(bs, item, owner, pos, 0);
         return itemActor;

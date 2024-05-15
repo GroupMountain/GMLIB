@@ -37,9 +37,9 @@ FloatingText::~FloatingText() {
     mRuntimeFloatingTextList.erase(mRuntimeId);
 }
 
-void FloatingText::setPosition(Vec3 const& pos, DimensionType dimid) {
+void FloatingText::setPosition(Vec3 const& pos, DimensionType dimId) {
     mPosition    = pos;
-    mDimensionId = dimid;
+    mDimensionId = dimId;
 }
 
 void FloatingText::setUsePapi(bool value) { mUsePapi = value; }
@@ -277,13 +277,13 @@ void DynamicFloatingText::updateText(std::string const& newText) {
     updateAllClients();
 }
 
-void StaticFloatingText::updatePosition(Vec3 const& pos, DimensionType dimid) {
-    setPosition(pos, dimid);
+void StaticFloatingText::updatePosition(Vec3 const& pos, DimensionType dimId) {
+    setPosition(pos, dimId);
     sendToAllClients();
 }
 
-void DynamicFloatingText::updatePosition(Vec3 const& pos, DimensionType dimid) {
-    setPosition(pos, dimid);
+void DynamicFloatingText::updatePosition(Vec3 const& pos, DimensionType dimId) {
+    setPosition(pos, dimId);
     sendToAllClients();
 }
 

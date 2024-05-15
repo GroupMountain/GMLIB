@@ -4,6 +4,7 @@
 #include "mc/enums/AllExperiments.h"
 #include "mc/network/packet/Packet.h"
 #include "mc/network/packet/SetTitlePacket.h"
+#include "mc/world/level/ChunkPos.h"
 #include "mc/world/level/Level.h"
 #include "mc/world/level/levelgen/structure/StructureFeatureType.h"
 #include "mc/world/level/storage/DBStorage.h"
@@ -115,7 +116,23 @@ public:
         float               maxResistance   = 3.40282347e+38
     );
 
+    GMLIB_API std::shared_ptr<LevelChunk> getOrLoadChunk(
+        BlockPos const& blockPos,
+        DimensionType   dimId,
+        bool            readOnly                          = true,
+        bool            forceImmediateReplacementDataLoad = false
+    );
+
+    GMLIB_API std::shared_ptr<LevelChunk> getOrLoadChunk(
+        ChunkPos const& chunkPos,
+        DimensionType   dimId,
+        bool            readOnly                          = true,
+        bool            forceImmediateReplacementDataLoad = false
+    );
+
     GMLIB_API Block const& getBlock(BlockPos const& pos, DimensionType dimId);
+
+    GMLIB_API Block const& loadAndGetBlock(BlockPos const& pos, DimensionType dimId);
 
     GMLIB_API bool setBlock(BlockPos const& pos, DimensionType dimId, Block const& block);
 

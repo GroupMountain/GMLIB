@@ -18,6 +18,7 @@
 #include <mc/server/common/PropertiesSettings.h>
 #include <mc/server/common/commands/ChangeSettingCommand.h>
 #include <mc/util/Random.h>
+#include <mc/world/level/ChunkBlockPos.h>
 #include <mc/world/level/levelgen/WorldGenerator.h>
 #include <mc/world/level/levelgen/structure/StructureFeatureTypeNames.h>
 #include <mc/world/level/storage/Experiments.h>
@@ -174,8 +175,8 @@ optional_ref<GMLIB_Level> GMLIB_Level::getInstance() { return (GMLIB_Level*)ll::
 
 optional_ref<GMLIB_Level> GMLIB_Level::getLevel() { return getInstance(); }
 
-BlockSource& GMLIB_Level::getBlockSource(DimensionType dimid) {
-    return getOrCreateDimension(dimid)->getBlockSourceFromMainChunkSource();
+BlockSource& GMLIB_Level::getBlockSource(DimensionType dimId) {
+    return getOrCreateDimension(dimId)->getBlockSourceFromMainChunkSource();
 }
 
 std::vector<Actor*> GMLIB_Level::getAllEntities() { return getRuntimeActorList(); }
@@ -506,17 +507,48 @@ void GMLIB_Level::createExplosion(
     explode(getBlockSource(dimensionId), source, pos, power, causeFire, breakBlocks, allowUnderwater, maxResistance);
 }
 
-Block const& GMLIB_Level::getBlock(BlockPos const& pos, DimensionType dimid) {
-    return getBlockSource(dimid).getBlock(pos);
+std::shared_ptr<LevelChunk> GMLIB_Level::getOrLoadChunk(
+    BlockPos const& blockPos,
+    DimensionType   dimId,
+    bool            readOnly,
+    bool            forceImmediateReplacementDataLoad
+) {
+    auto chunkPos = ChunkPos(blockPos);
+    return getOrLoadChunk(chunkPos, dimId, readOnly, forceImmediateReplacementDataLoad);
 }
 
-bool GMLIB_Level::setBlock(BlockPos const& pos, DimensionType dimid, Block const& block) {
-    return getBlockSource(dimid).setBlock(pos, block, 3, nullptr, nullptr);
+std::shared_ptr<LevelChunk> GMLIB_Level::getOrLoadChunk(
+    ChunkPos const& chunkPos,
+    DimensionType   dimId,
+    bool            readOnly,
+    bool            forceImmediateReplacementDataLoad
+) {
+    auto& chunkSource = getBlockSource(dimId).getChunkSource();
+    auto  chunk       = chunkSource.getOrLoadChunk(chunkPos, ChunkSource::LoadMode::Deferred, readOnly);
+    chunkSource.loadChunk(*chunk, forceImmediateReplacementDataLoad);
+    return std::move(chunk);
 }
 
-bool GMLIB_Level::setBlock(BlockPos const& pos, DimensionType dimid, std::string_view name, short aux) {
-    auto block = Block::tryGetFromRegistry(name, aux);
-    return getBlockSource(dimid).setBlock(pos, block, 3, nullptr, nullptr);
+Block const& GMLIB_Level::getBlock(BlockPos const& pos, DimensionType dimId) {
+    return getBlockSource(dimId).getBlock(pos);
+}
+
+Block const& GMLIB_Level::loadAndGetBlock(BlockPos const& pos, DimensionType dimId) {
+    auto chunk     = getOrLoadChunk(pos, dimId);
+    auto dimension = getOrCreateDimension(dimId);
+    auto cbp       = ChunkBlockPos(pos, dimension->getMinHeight());
+    return chunk->getBlock(cbp);
+}
+
+bool GMLIB_Level::setBlock(BlockPos const& pos, DimensionType dimId, Block const& block) {
+    return getBlockSource(dimId).setBlock(pos, block, 3, nullptr, nullptr);
+}
+
+bool GMLIB_Level::setBlock(BlockPos const& pos, DimensionType dimId, std::string_view name, short aux) {
+    if (auto block = Block::tryGetFromRegistry(name, aux)) {
+        return getBlockSource(dimId).setBlock(pos, block, 3, nullptr, nullptr);
+    }
+    return false;
 }
 
 bool checkFillPos(BlockPos const& startpos, BlockPos const& endpos) {

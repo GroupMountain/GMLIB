@@ -10,8 +10,8 @@ phmap::flat_hash_map<int, phmap::flat_hash_set<ChunkPos>> mFixedChunksList = {};
 
 std::unordered_set<std::string> VanillaFix::getUnknownBlockLegacyNameList() { return mUnknownBlockLegacyNameList; }
 
-std::pair<int, int> getHeightInfo(int dimid) {
-    switch (dimid) {
+std::pair<int, int> getHeightInfo(int dimId) {
+    switch (dimId) {
     case 0:
         return {-64, 384};
     case 1:
@@ -22,26 +22,26 @@ std::pair<int, int> getHeightInfo(int dimid) {
     return {-64, 384};
 }
 
-void fixLevelChunk(ChunkPos cp, int dimid) {
-    auto ht = getHeightInfo(dimid);
+void fixLevelChunk(ChunkPos cp, int dimId) {
+    auto ht = getHeightInfo(dimId);
     for (int x = 0; x <= 15; x++) {
         for (int z = 0; z <= 15; z++) {
             for (int y = ht.first; y <= ht.second; y++) {
                 BlockPos bp   = {16 * (cp.x) + x, y, 16 * (cp.z) + z};
-                auto     type = GMLIB_Level::getInstance()->getBlock(bp, dimid).getTypeName();
+                auto     type = GMLIB_Level::getInstance()->getBlock(bp, dimId).getTypeName();
                 if (mUnknownBlockLegacyNameList.count(type)) {
-                    GMLIB_Level::getInstance()->setBlock(bp, dimid, "minecraft:air", 0);
+                    GMLIB_Level::getInstance()->setBlock(bp, dimId, "minecraft:air", 0);
                 }
             }
         }
     }
 }
 
-bool isChunkFixed(ChunkPos cp, int dimid) { return mFixedChunksList[dimid].count(cp) ? true : false; }
+bool isChunkFixed(ChunkPos cp, int dimId) { return mFixedChunksList[dimId].count(cp) ? true : false; }
 
-void setChunkFixed(ChunkPos cp, int dimid) {
-    fixLevelChunk(cp, dimid);
-    mFixedChunksList[dimid].insert(cp);
+void setChunkFixed(ChunkPos cp, int dimId) {
+    fixLevelChunk(cp, dimId);
+    mFixedChunksList[dimId].insert(cp);
 }
 
 LL_INSTANCE_HOOK(
@@ -65,9 +65,9 @@ LL_TYPE_INSTANCE_HOOK(
     bool
 ) {
     auto cp    = this->getPosition();
-    auto dimid = this->getDimension().getDimensionId();
-    if (!isChunkFixed(cp, dimid)) {
-        setChunkFixed(cp, dimid);
+    auto dimId = this->getDimension().getDimensionId();
+    if (!isChunkFixed(cp, dimId)) {
+        setChunkFixed(cp, dimId);
     }
     return origin();
 }
