@@ -4,5 +4,6 @@
     "type": "native",
     "author": "GroupMountain",
     "description": "Group Mountain Library",
-    "version": "0.12.5"
+    "passive": true,
+    "version": "0.12.6"
 }
