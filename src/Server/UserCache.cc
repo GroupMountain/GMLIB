@@ -46,28 +46,28 @@ std::optional<std::string> UserCache::getNameByUuid(mce::UUID const& uuid) {
 }
 
 std::optional<mce::UUID> UserCache::getUuidByXuid(std::string const& xuid) {
-    if (auto entry = fromUuid(xuid)) {
+    if (auto entry = fromXuid(xuid)) {
         return entry->mUuid;
     }
     return {};
 }
 
 std::optional<std::string> UserCache::getNameByXuid(std::string const& xuid) {
-    if (auto entry = fromUuid(xuid)) {
+    if (auto entry = fromXuid(xuid)) {
         return entry->mName;
     }
     return {};
 }
 
 std::optional<std::string> UserCache::getXuidByName(std::string const& name) {
-    if (auto entry = fromUuid(name)) {
+    if (auto entry = fromName(name)) {
         return entry->mXuid;
     }
     return {};
 }
 
 std::optional<mce::UUID> UserCache::getUuidByName(std::string const& name) {
-    if (auto entry = fromUuid(name)) {
+    if (auto entry = fromName(name)) {
         return entry->mUuid;
     }
     return {};
