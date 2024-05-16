@@ -77,7 +77,7 @@ JsonI18n::translate(std::string const& key, std::vector<std::string> const& data
         chooseLanguage(mDefaultLanguage);
     }
     if (mLocalization) {
-        if (mLocalization->hasValue(key)) {
+        if (mLocalization->has_value(key)) {
             return mLocalization->translate(key, data, translateKey);
         }
         if (mAllLanguages.count(mDefaultLanguage)) {

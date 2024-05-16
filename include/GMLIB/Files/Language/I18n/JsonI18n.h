@@ -13,7 +13,7 @@ private:
     std::string                                                    mDefaultLanguage = "en_US";
 
 public:
-    GMLIB_API JsonI18n(std::filesystem::path const& languageDirectory, std::string const& languageCode = "en_US");
+    GMLIB_NDAPI JsonI18n(std::filesystem::path const& languageDirectory, std::string const& languageCode = "en_US");
 
     JsonI18n() = delete;
 
@@ -33,24 +33,24 @@ public:
 
     GMLIB_API void setDefaultLanguage(std::string const& languageCode = "en_US");
 
-    GMLIB_API std::string
+    GMLIB_NDAPI std::string
     translate(std::string const& key, std::vector<std::string> const& params = {}, std::string const& data = "%0$s");
 
-    GMLIB_API std::string translate(
+    GMLIB_NDAPI std::string translate(
         std::string const&              key,
         std::string const&              localLanguage,
         std::vector<std::string> const& params = {},
         std::string const&              data   = "%0$s"
     );
 
-    GMLIB_API std::string
+    GMLIB_NDAPI std::string
     get(std::string const& key, std::vector<std::string> const& params = {}, std::string const& data = "%0$s");
 
-    GMLIB_API std::string
-              get(std::string const&              key,
-                  std::string const&              localLanguage,
-                  std::vector<std::string> const& params = {},
-                  std::string const&              data   = "%0$s");
+    GMLIB_NDAPI std::string
+                get(std::string const&              key,
+                    std::string const&              localLanguage,
+                    std::vector<std::string> const& params = {},
+                    std::string const&              data   = "%0$s");
 
 private:
     bool loadOrCreateLanguage(std::string const& languageCode, std::shared_ptr<JsonLanguage> language);
