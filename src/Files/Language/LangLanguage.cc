@@ -14,6 +14,14 @@ LangLanguage::LangLanguage(std::filesystem::path const& filePath, McLang const& 
     merge_patch(defaultLanguage);
 }
 
+LangLanguage::LangLanguage(
+    std::filesystem::path const&                        filePath,
+    std::unordered_map<std::string, std::string> const& defaultLanguage
+)
+: mFilePath(filePath) {
+    merge_patch(McLang(defaultLanguage));
+}
+
 bool LangLanguage::init() {
     auto dirPath = std::filesystem::path(mFilePath).parent_path();
     if (!std::filesystem::exists(dirPath)) {

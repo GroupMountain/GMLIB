@@ -13,6 +13,11 @@ public:
 
     GMLIB_NDAPI LangLanguage(std::filesystem::path const& filePath, McLang const& defaultLanguage);
 
+    GMLIB_NDAPI LangLanguage(
+        std::filesystem::path const&                        filePath,
+        std::unordered_map<std::string, std::string> const& defaultLanguage
+    );
+
 public:
     GMLIB_API bool init();
 
