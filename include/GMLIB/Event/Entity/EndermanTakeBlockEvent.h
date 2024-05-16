@@ -17,7 +17,7 @@ protected:
 public:
     constexpr explicit EndermanTakeBlockAfterEvent(Mob& mob, Block const& block) : MobEvent(mob), mBlock(block) {}
 
-    GMLIB_API Block const& getBlock() const;
+    GMLIB_NDAPI Block const& getBlock() const;
 };
 
 } // namespace GMLIB::Event::EntityEvent

@@ -28,6 +28,12 @@ bool LangI18n::updateOrCreateLanguage(std::string const& languageCode, std::stri
     return loadOrCreateLanguage(languageCode, lang);
 }
 
+bool LangI18n::updateOrCreateLanguage(std::string const& languageCode, McLang const& language) {
+    auto path = mLanguageDirectory / (languageCode + ".lang");
+    auto lang = std::make_shared<LangLanguage>(path, language);
+    return loadOrCreateLanguage(languageCode, lang);
+}
+
 bool LangI18n::loadAllLanguages() {
     bool result     = true;
     auto parentPath = mLanguageDirectory;

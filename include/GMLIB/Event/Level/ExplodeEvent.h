@@ -38,14 +38,14 @@ public:
       mMaxResistance(maxResistance),
       mAllowUnderwater(allowUnderwater) {}
 
-    GMLIB_API BlockSource& getBlockSource() const;
-    GMLIB_API optional_ref<Actor> getSource() const;
-    GMLIB_API Vec3&               getPosition() const;
-    GMLIB_API float&              getPower() const;
-    GMLIB_API bool&               canCauseFire() const;
-    GMLIB_API bool&               canBreakBlocks() const;
-    GMLIB_API float&              getMaxResistance() const;
-    GMLIB_API bool&               canOverrideUnderwater() const;
+    GMLIB_NDAPI BlockSource& getBlockSource() const;
+    GMLIB_NDAPI optional_ref<Actor> getSource() const;
+    GMLIB_NDAPI Vec3&               getPosition() const;
+    GMLIB_NDAPI float&              getPower() const;
+    GMLIB_NDAPI bool&               canCauseFire() const;
+    GMLIB_NDAPI bool&               canBreakBlocks() const;
+    GMLIB_NDAPI float&              getMaxResistance() const;
+    GMLIB_NDAPI bool&               canOverrideUnderwater() const;
 };
 
 class ExplodeAfterEvent final : public ll::event::world::LevelEvent {
@@ -81,14 +81,14 @@ public:
       mMaxResistance(maxResistance),
       mAllowUnderwater(allowUnderwater) {}
 
-    GMLIB_API BlockSource& getBlockSource() const;
-    GMLIB_API optional_ref<Actor> getSource() const;
-    GMLIB_API Vec3&               getPosition() const;
-    GMLIB_API float&              getPower() const;
-    GMLIB_API bool&               canCauseFire() const;
-    GMLIB_API bool&               canBreakBlocks() const;
-    GMLIB_API float&              getMaxResistance() const;
-    GMLIB_API bool&               canOverrideUnderwater() const;
+    GMLIB_NDAPI BlockSource& getBlockSource() const;
+    GMLIB_NDAPI optional_ref<Actor> getSource() const;
+    GMLIB_NDAPI Vec3&               getPosition() const;
+    GMLIB_NDAPI float&              getPower() const;
+    GMLIB_NDAPI bool&               canCauseFire() const;
+    GMLIB_NDAPI bool&               canBreakBlocks() const;
+    GMLIB_NDAPI float&              getMaxResistance() const;
+    GMLIB_NDAPI bool&               canOverrideUnderwater() const;
 };
 
 } // namespace GMLIB::Event::LevelEvent

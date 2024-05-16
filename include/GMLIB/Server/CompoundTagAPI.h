@@ -20,17 +20,17 @@ public:
     GMLIB_CompoundTag& operator=(GMLIB_CompoundTag&&)      = default;
 
 public:
-    GMLIB_API static std::unique_ptr<DataLoadHelper> getDataLoadHelper();
+    GMLIB_NDAPI static std::unique_ptr<DataLoadHelper> getDataLoadHelper();
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getFromActor(Actor& ac);
+    GMLIB_NDAPI static std::unique_ptr<CompoundTag> getFromActor(Actor& ac);
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getFromPlayer(Player& pl);
+    GMLIB_NDAPI static std::unique_ptr<CompoundTag> getFromPlayer(Player& pl);
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getFromBlockActor(BlockActor& blac);
+    GMLIB_NDAPI static std::unique_ptr<CompoundTag> getFromBlockActor(BlockActor& blac);
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getFromItemStack(ItemStack& item);
+    GMLIB_NDAPI static std::unique_ptr<CompoundTag> getFromItemStack(ItemStack& item);
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getFromBlock(Block& block);
+    GMLIB_NDAPI static std::unique_ptr<CompoundTag> getFromBlock(Block& block);
 
     GMLIB_API static void
     writeNbtTags(CompoundTag& originNbt, CompoundTag& dataNbt, const std::vector<std::string>& tags);

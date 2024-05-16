@@ -10,6 +10,10 @@ LangLanguage::LangLanguage(std::filesystem::path const& filePath, std::string co
     merge_patch(data);
 }
 
+LangLanguage::LangLanguage(std::filesystem::path const& filePath, McLang const& defaultLanguage) : mFilePath(filePath) {
+    merge_patch(defaultLanguage);
+}
+
 bool LangLanguage::init() {
     auto dirPath = std::filesystem::path(mFilePath).parent_path();
     if (!std::filesystem::exists(dirPath)) {

@@ -11,30 +11,30 @@ public:
 
     GMLIB_API static void chooseLanguage(class Localization const& localization);
 
-    GMLIB_API static optional_ref<const Localization> getCurrentLanguage();
+    GMLIB_NDAPI static optional_ref<const Localization> getCurrentLanguage();
 
-    GMLIB_API static std::string getCurrentLanguageCode();
+    GMLIB_NDAPI static std::string getCurrentLanguageCode();
 
-    GMLIB_API static std::vector<std::string> getSupportedLanguageCodes();
+    GMLIB_NDAPI static std::vector<std::string> getSupportedLanguageCodes();
 
-    GMLIB_API static std::optional<std::string>
+    GMLIB_NDAPI static std::optional<std::string>
     tryGet(std::string const& key, std::vector<std::string> const& params = {});
 
-    GMLIB_API static std::optional<std::string>
+    GMLIB_NDAPI static std::optional<std::string>
     tryGet(std::string const& key, std::vector<std::string> const& params, std::string const& languageCode);
 
-    GMLIB_API static std::optional<std::string> tryGet(
+    GMLIB_NDAPI static std::optional<std::string> tryGet(
         std::string const&                  key,
         std::vector<std::string> const&     params,
         std::shared_ptr<class Localization> localization
     );
 
-    GMLIB_API static std::string get(std::string const& key, std::vector<std::string> const& params = {});
+    GMLIB_NDAPI static std::string get(std::string const& key, std::vector<std::string> const& params = {});
 
-    GMLIB_API static std::string
+    GMLIB_NDAPI static std::string
     get(std::string const& key, std::vector<std::string> const& params, std::string const& languageCode);
 
-    GMLIB_API static std::string
+    GMLIB_NDAPI static std::string
     get(std::string const& key, std::vector<std::string> const& params, std::shared_ptr<class Localization> localization
     );
 

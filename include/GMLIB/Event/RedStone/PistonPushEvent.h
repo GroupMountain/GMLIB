@@ -25,10 +25,10 @@ public:
       mPistonMoveFacing(pistonMoveFacing),
       mIsRetracting(isRetracting) {}
 
-    GMLIB_API BlockPos const& getPosition() const;
-    GMLIB_API uchar const&    getBranchFacing() const;
-    GMLIB_API uchar const&    getPistonMoveFacing() const;
-    GMLIB_API bool const&     isRetracting() const;
+    GMLIB_NDAPI BlockPos const& getPosition() const;
+    GMLIB_NDAPI uchar const&    getBranchFacing() const;
+    GMLIB_NDAPI uchar const&    getPistonMoveFacing() const;
+    GMLIB_NDAPI bool const&     isRetracting() const;
 };
 
 class PistonPushAfterEvent final : public ll::event::WorldEvent {
@@ -52,10 +52,10 @@ public:
       mPistonMoveFacing(pistonMoveFacing),
       mIsRetracting(isRetracting) {}
 
-    GMLIB_API BlockPos const& getPosition() const;
-    GMLIB_API uchar const&    getBranchFacing() const;
-    GMLIB_API uchar const&    getPistonMoveFacing() const;
-    GMLIB_API bool const&     isRetracting() const;
+    GMLIB_NDAPI BlockPos const& getPosition() const;
+    GMLIB_NDAPI uchar const&    getBranchFacing() const;
+    GMLIB_NDAPI uchar const&    getPistonMoveFacing() const;
+    GMLIB_NDAPI bool const&     isRetracting() const;
 };
 
 } // namespace GMLIB::Event::RedStoneEvent

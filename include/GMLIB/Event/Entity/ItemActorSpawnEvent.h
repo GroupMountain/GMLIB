@@ -30,11 +30,11 @@ public:
       mSpawner(spawner),
       mThrowTime(throwTime) {}
 
-    GMLIB_API BlockSource& getBlockSource() const;
-    GMLIB_API Vec3&        getPosition() const;
-    GMLIB_API ItemStack&   getItem() const;
-    GMLIB_API optional_ref<Actor> getSpawner() const;
-    GMLIB_API int&                getThrowTime() const;
+    GMLIB_NDAPI BlockSource& getBlockSource() const;
+    GMLIB_NDAPI Vec3&        getPosition() const;
+    GMLIB_NDAPI ItemStack&   getItem() const;
+    GMLIB_NDAPI optional_ref<Actor> getSpawner() const;
+    GMLIB_NDAPI int&                getThrowTime() const;
 };
 
 class ItemActorSpawnAfterEvent final : public ItemActorEvent {
@@ -61,11 +61,11 @@ public:
       mSpawner(spawner),
       mThrowTime(throwTime) {}
 
-    GMLIB_API BlockSource& getBlockSource() const;
-    GMLIB_API Vec3&        getPosition() const;
-    GMLIB_API ItemStack&   getItem() const;
-    GMLIB_API optional_ref<Actor> getSpawner() const;
-    GMLIB_API int&                getThrowTime() const;
+    GMLIB_NDAPI BlockSource& getBlockSource() const;
+    GMLIB_NDAPI Vec3&        getPosition() const;
+    GMLIB_NDAPI ItemStack&   getItem() const;
+    GMLIB_NDAPI optional_ref<Actor> getSpawner() const;
+    GMLIB_NDAPI int&                getThrowTime() const;
 };
 
 } // namespace GMLIB::Event::EntityEvent

@@ -9,7 +9,9 @@ private:
     std::filesystem::path mFilePath;
 
 public:
-    GMLIB_API LangLanguage(std::filesystem::path const& filePath, std::string const& defaultLanguage);
+    GMLIB_NDAPI LangLanguage(std::filesystem::path const& filePath, std::string const& defaultLanguage);
+
+    GMLIB_NDAPI LangLanguage(std::filesystem::path const& filePath, McLang const& defaultLanguage);
 
 public:
     GMLIB_API bool init();

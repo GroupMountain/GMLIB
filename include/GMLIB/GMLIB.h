@@ -6,9 +6,9 @@ namespace GMLIB {
 
 class Version : public SemVersion {
 public:
-    GMLIB_API Version();
+    GMLIB_NDAPI Version();
 
-    GMLIB_API
+    GMLIB_NDAPI
     Version(
         ushort             major,
         ushort             minor,
@@ -17,42 +17,42 @@ public:
         std::string const& buildMeta  = ""
     );
 
-    GMLIB_API Version(class SemVersion const& version);
+    GMLIB_NDAPI Version(class SemVersion const& version);
 
-    GMLIB_API bool isInRange(Version const& minVersion, Version const& maxVersion);
+    GMLIB_NDAPI bool isInRange(Version const& minVersion, Version const& maxVersion);
 
-    GMLIB_API std::string toString(bool prefix = true);
+    GMLIB_NDAPI std::string toString(bool prefix = true);
 
 public:
-    GMLIB_API static bool isValidVersionString(std::string const& version);
+    GMLIB_NDAPI static bool isValidVersionString(std::string const& version);
 
-    GMLIB_API static std::optional<Version> fromString(std::string const& version);
+    GMLIB_NDAPI static std::optional<Version> fromString(std::string const& version);
 
-    GMLIB_API static std::optional<Version> fromVector(std::vector<int> const& version);
+    GMLIB_NDAPI static std::optional<Version> fromVector(std::vector<int> const& version);
 
-    GMLIB_API static Version getLibVersion();
+    GMLIB_NDAPI static Version getLibVersion();
 
-    GMLIB_API static bool isReleaseVersion();
+    GMLIB_NDAPI static bool isReleaseVersion();
 
-    GMLIB_API static bool isPreReleaseVersion();
+    GMLIB_NDAPI static bool isPreReleaseVersion();
 
-    GMLIB_API static std::string getLibVersionString();
+    GMLIB_NDAPI static std::string getLibVersionString();
 
-    GMLIB_API static std::string getPreReleaseInfo();
+    GMLIB_NDAPI static std::string getPreReleaseInfo();
 
-    GMLIB_API static bool checkLibVersionMatch(Version const& minVersion);
+    GMLIB_NDAPI static bool checkLibVersionMatch(Version const& minVersion);
 
-    GMLIB_API static bool checkLibVersionMatch(Version const& minVersion, Version const& maxVersion);
+    GMLIB_NDAPI static bool checkLibVersionMatch(Version const& minVersion, Version const& maxVersion);
 
-    GMLIB_API static int getProtocolVersion();
+    GMLIB_NDAPI static int getProtocolVersion();
 
-    GMLIB_API static Version getBdsVersion();
+    GMLIB_NDAPI static Version getBdsVersion();
 
-    GMLIB_API static std::string getBdsVersionString();
+    GMLIB_NDAPI static std::string getBdsVersionString();
 
-    GMLIB_API static Version getLeviLaminaVersion();
+    GMLIB_NDAPI static Version getLeviLaminaVersion();
 
-    GMLIB_API static std::string getLeviLaminaVersionString();
+    GMLIB_NDAPI static std::string getLeviLaminaVersionString();
 };
 
 } // namespace GMLIB

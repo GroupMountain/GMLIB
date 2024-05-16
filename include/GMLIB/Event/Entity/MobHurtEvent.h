@@ -16,8 +16,8 @@ public:
       mSource(source),
       mDamage(damage) {}
 
-    GMLIB_API ActorDamageSource& getSource() const;
-    GMLIB_API float&             getDamage() const;
+    GMLIB_NDAPI ActorDamageSource& getSource() const;
+    GMLIB_NDAPI float&             getDamage() const;
 };
 
 } // namespace GMLIB::Event::EntityEvent

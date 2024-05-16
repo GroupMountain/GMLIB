@@ -20,8 +20,8 @@ public:
       mMovedBlockPos(movedBlockPos),
       mBlock(block) {}
 
-    GMLIB_API BlockPos const& getPosition() const;
-    GMLIB_API Block&          getBlock() const;
+    GMLIB_NDAPI BlockPos const& getPosition() const;
+    GMLIB_NDAPI Block&          getBlock() const;
 };
 
 } // namespace GMLIB::Event::RedStoneEvent

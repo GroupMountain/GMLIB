@@ -1,7 +1,11 @@
 #pragma once
 
 #ifdef GMLIB_EXPORTS
-#define GMLIB_API __declspec(dllexport)
+#define GMLIB_API [[maybe_unused]] __declspec(dllexport)
 #else
-#define GMLIB_API __declspec(dllimport)
+#define GMLIB_API [[maybe_unused]] __declspec(dllimport)
+#endif
+
+#ifndef GMLIB_NDAPI
+#define GMLIB_NDAPI [[nodiscard]] GMLIB_API
 #endif

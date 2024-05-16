@@ -203,7 +203,7 @@ bool PlaceholderAPI::registerPlayerPlaceholder(
     return registerPlaceholder(placeholderapi);
 }
 
-bool PlaceholderAPI::unRegisterPlaceholder(std::string const& placeholder) {
+bool PlaceholderAPI::unregisterPlaceholder(std::string const& placeholder) {
     std::string placeholderapi = Helper::checkPAPIName(placeholder);
     bool        isremove       = false;
     placeholderapi             = Helper::checkPAPIName(placeholderapi);

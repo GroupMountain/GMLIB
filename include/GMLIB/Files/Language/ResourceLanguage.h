@@ -12,7 +12,7 @@ private:
     std::string                                  mPluginName;
 
 public:
-    GMLIB_API
+    GMLIB_NDAPI
     ResourceLanguage(
         std::filesystem::path const& directoryPath,
         std::string const&           pluginName,

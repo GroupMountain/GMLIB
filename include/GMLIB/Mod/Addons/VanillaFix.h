@@ -5,7 +5,7 @@ namespace GMLIB::Mod {
 
 class VanillaFix {
 public:
-    GMLIB_API std::unordered_set<std::string> static getUnknownBlockLegacyNameList();
+    GMLIB_NDAPI std::unordered_set<std::string> static getUnknownBlockLegacyNameList();
 
     GMLIB_API void static setAutoCleanUnknownBlockEnabled();
 
