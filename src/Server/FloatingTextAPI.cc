@@ -12,49 +12,48 @@
 
 namespace GMLIB::Server {
 
-phmap::flat_hash_map<int64, FloatingText*> mRuntimeFloatingTextList;
-ll::schedule::ServerTimeScheduler          mScheduler;
+ll::schedule::ServerTimeScheduler mScheduler;
 
-int getNextFloatingTextId() {
+int getNextFloatingTextRuntimeId() {
     auto id = Random::getThreadLocal().nextInt(0, 2147483647);
-    while (ll::service::getLevel()->fetchEntity(ActorUniqueID(id)) || mRuntimeFloatingTextList.contains(id)) {
+    while (ll::service::getLevel()->fetchEntity(ActorUniqueID(id))) {
         id = Random::getThreadLocal().nextInt(0, 2147483647);
     }
     return id;
 }
 
-FloatingText::FloatingText(std::string const& text, Vec3 const& position, DimensionType dimensionId, bool usePapi)
+FloatingTextBase::FloatingTextBase(
+    std::string const& text,
+    Vec3 const&        position,
+    DimensionType      dimensionId,
+    bool               usePapi
+)
 : mText(text),
   mPosition(position),
   mDimensionId(dimensionId),
-  mUsePapi(usePapi) {
-    mRuntimeId                           = getNextFloatingTextId();
-    mRuntimeFloatingTextList[mRuntimeId] = this;
+  mTranslatePlaceholderApi(usePapi) {
+    mRuntimeId = getNextFloatingTextRuntimeId();
 }
 
-FloatingText::~FloatingText() {
-    removeFromAllClients();
-    mRuntimeFloatingTextList.erase(mRuntimeId);
-}
+FloatingTextBase::~FloatingTextBase() { removeFromClients(); }
 
-void FloatingText::setPosition(Vec3 const& pos, DimensionType dimId) {
-    mPosition    = pos;
-    mDimensionId = dimId;
-}
+void FloatingTextBase::setPosition(Vec3 const& pos) { mPosition = pos; }
 
-void FloatingText::setUsePapi(bool value) { mUsePapi = value; }
+void FloatingTextBase::setDimensionId(DimensionType dimId) { mDimensionId = dimId; }
 
-bool FloatingText::shouldUsePapi() const { return mUsePapi; }
+void FloatingTextBase::setTranslatePlaceholderApi(bool value) { mTranslatePlaceholderApi = value; }
+
+bool FloatingTextBase::shouldTranslatePlaceholderApi() const { return mTranslatePlaceholderApi; }
 
 
-void sendUpdateFloatingTextPacket(FloatingText* ft, Player& pl) {
-    auto text = ft->getText();
-    if (ft->shouldUsePapi()) {
+void sendUpdateFloatingTextPacket(FloatingTextBase& ft, Player& pl) {
+    auto text = ft.getText();
+    if (ft.shouldTranslatePlaceholderApi()) {
         PlaceholderAPI::translate(text, &pl);
     }
     GMLIB_BinaryStream bs;
     bs.writePacketHeader(MinecraftPacketIds::SetActorData);
-    bs.writeUnsignedVarInt64(ft->getRuntimeID());
+    bs.writeUnsignedVarInt64(ft.getRuntimeID());
     // DataItem
     bs.writeUnsignedVarInt(2);
     bs.writeUnsignedVarInt((uint)ActorDataIDs::Name);
@@ -71,16 +70,16 @@ void sendUpdateFloatingTextPacket(FloatingText* ft, Player& pl) {
 }
 
 
-void sendAddFloatingTextPacket(FloatingText* ft, Player& pl) {
-    auto text = ft->getText();
-    auto pos  = ft->getPos();
-    if (ft->shouldUsePapi()) {
+void sendAddFloatingTextPacket(FloatingTextBase& ft, Player& pl) {
+    auto text = ft.getText();
+    auto pos  = ft.getPosition();
+    if (ft.shouldTranslatePlaceholderApi()) {
         PlaceholderAPI::translate(text, &pl);
     }
     GMLIB_BinaryStream bs;
     bs.writePacketHeader(MinecraftPacketIds::AddActor);
-    bs.writeVarInt64(ft->getRuntimeID());
-    bs.writeUnsignedVarInt64(ft->getRuntimeID());
+    bs.writeVarInt64(ft.getRuntimeID());
+    bs.writeUnsignedVarInt64(ft.getRuntimeID());
     bs.writeString("player");
     bs.writeVec3({pos.x, pos.y - 2, pos.z});
     bs.writeVec3(Vec3{0, 0, 0});
@@ -104,71 +103,55 @@ void sendAddFloatingTextPacket(FloatingText* ft, Player& pl) {
     bs.sendTo(pl);
 }
 
-void FloatingText::sendToClient(Player& pl) {
+void FloatingTextBase::sendTo(Player& pl) {
     if (!pl.isSimulatedPlayer() && pl.getDimensionId() == getDimensionId()) {
-        sendAddFloatingTextPacket(this, pl);
+        sendAddFloatingTextPacket(*this, pl);
     }
 }
 
-void FloatingText::sendToAllClients() {
+void FloatingTextBase::sendToClients() {
     ll::service::getLevel()->getOrCreateDimension(getDimensionId())->forEachPlayer([this](Player& pl) -> bool {
         if (!pl.isSimulatedPlayer()) {
-            sendAddFloatingTextPacket(this, pl);
+            sendAddFloatingTextPacket(*this, pl);
         }
         return true;
     });
 }
 
-GMLIB_API void FloatingText::updateClient(Player& pl) {
+GMLIB_API void FloatingTextBase::update(Player& pl) {
     if (!pl.isSimulatedPlayer() && pl.getDimensionId() == getDimensionId()) {
-        sendUpdateFloatingTextPacket(this, pl);
+        sendUpdateFloatingTextPacket(*this, pl);
     }
 }
 
-GMLIB_API void FloatingText::updateAllClients() {
+GMLIB_API void FloatingTextBase::updateClients() {
     ll::service::getLevel()->getOrCreateDimension(getDimensionId())->forEachPlayer([this](Player& pl) -> bool {
         if (!pl.isSimulatedPlayer()) {
-            sendUpdateFloatingTextPacket(this, pl);
+            sendUpdateFloatingTextPacket(*this, pl);
         }
         return true;
     });
 }
 
-void FloatingText::removeFromAllClients() { RemoveActorPacket(ActorUniqueID(this->mRuntimeId)).sendToClients(); }
+void FloatingTextBase::removeFromClients() { RemoveActorPacket(ActorUniqueID(getRuntimeID())).sendToClients(); }
 
-void FloatingText::removeFromClient(Player& pl) {
+void FloatingTextBase::removeFrom(Player& pl) {
     if (!pl.isSimulatedPlayer()) {
-        RemoveActorPacket(ActorUniqueID(this->mRuntimeId)).sendTo(pl);
+        RemoveActorPacket(ActorUniqueID(getRuntimeID())).sendTo(pl);
     }
 }
 
-void FloatingText::setText(std::string const& newText) { mText = newText; }
+void FloatingTextBase::setText(std::string const& newText) { mText = newText; }
 
-optional_ref<FloatingText> FloatingText::getFloatingText(int64 runtimeId) {
-    if (mRuntimeFloatingTextList.count(runtimeId)) {
-        return mRuntimeFloatingTextList[runtimeId];
-    }
-    return nullptr;
-}
+int FloatingTextBase::getRuntimeID() const { return mRuntimeId; }
 
-bool FloatingText::deleteFloatingText(int64 runtimeId) {
-    auto ft = getFloatingText(runtimeId);
-    if (ft) {
-        delete ft;
-        return true;
-    }
-    return false;
-}
+std::string FloatingTextBase::getText() const { return mText; }
 
-int64 FloatingText::getRuntimeID() const { return mRuntimeId; }
+Vec3 FloatingTextBase::getPosition() const { return mPosition; }
 
-std::string FloatingText::getText() const { return mText; }
+DimensionType FloatingTextBase::getDimensionId() const { return mDimensionId; }
 
-Vec3 FloatingText::getPos() const { return mPosition; }
-
-DimensionType FloatingText::getDimensionId() const { return mDimensionId; }
-
-bool FloatingText::isDynamic() const { return false; }
+bool FloatingTextBase::isDynamic() const { return false; }
 
 StaticFloatingText::StaticFloatingText(
     std::string const& text,
@@ -176,21 +159,8 @@ StaticFloatingText::StaticFloatingText(
     DimensionType      dimensionId,
     bool               usePapi
 )
-: FloatingText(text, position, dimensionId, usePapi) {
-    sendToAllClients();
-    auto& eventBus = ll::event::EventBus::getInstance();
-    auto  event1 =
-        eventBus.emplaceListener<ll::event::player::PlayerJoinEvent>([&](ll::event::player::PlayerJoinEvent& ev) {
-            sendToClient(ev.self());
-        });
-    mEventIds.push_back(event1->getId());
-    auto event2 = eventBus.emplaceListener<GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent>(
-        [&](GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent& ev) {
-            removeFromClient(ev.self());
-            sendToClient(ev.self());
-        }
-    );
-    mEventIds.push_back(event2->getId());
+: FloatingTextBase(text, position, dimensionId, usePapi) {
+    sendToClients();
 }
 
 DynamicFloatingText::DynamicFloatingText(
@@ -200,41 +170,17 @@ DynamicFloatingText::DynamicFloatingText(
     uint               updateRate,
     bool               usePapi
 )
-: FloatingText(text, position, dimensionId, usePapi) {
-    sendToAllClients();
-    auto& eventBus = ll::event::EventBus::getInstance();
-    auto  event1 =
-        eventBus.emplaceListener<ll::event::player::PlayerJoinEvent>([&](ll::event::player::PlayerJoinEvent& ev) {
-            sendToClient(ev.self());
-        });
-    mEventIds.push_back(event1->getId());
-    auto event2 = eventBus.emplaceListener<GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent>(
-        [&](GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent& ev) {
-            removeFromClient(ev.self());
-            sendToClient(ev.self());
-        }
-    );
-    mEventIds.push_back(event2->getId());
-    mUpdateRate = updateRate;
-    mTask       = mScheduler.add<ll::schedule::task::RepeatTask>(std::chrono::seconds::duration(mUpdateRate), [this] {
-        this->updateAllClients();
+: StaticFloatingText(text, position, dimensionId, usePapi) {
+    sendToClients();
+    mUpdateInterval = updateRate;
+    mTask = mScheduler.add<ll::schedule::task::RepeatTask>(std::chrono::seconds::duration(mUpdateInterval), [this] {
+        this->updateClients();
     });
-}
-
-StaticFloatingText::~StaticFloatingText() {
-    auto& eventBus = ll::event::EventBus::getInstance();
-    for (auto& id : mEventIds) {
-        eventBus.removeListener(id);
-    }
 }
 
 DynamicFloatingText::~DynamicFloatingText() {
     mTask->cancel();
     mScheduler.remove(mTask);
-    auto& eventBus = ll::event::EventBus::getInstance();
-    for (auto& id : mEventIds) {
-        eventBus.removeListener(id);
-    }
 }
 
 bool DynamicFloatingText::isDynamic() const { return true; }
@@ -250,41 +196,107 @@ bool DynamicFloatingText::stopUpdate() {
 
 bool DynamicFloatingText::startUpdate() {
     if (mTask->isCancelled()) {
-        this->sendToAllClients();
-        mTask = mScheduler.add<ll::schedule::task::RepeatTask>(std::chrono::seconds::duration(mUpdateRate), [this] {
-            this->updateAllClients();
+        this->sendToClients();
+        mTask = mScheduler.add<ll::schedule::task::RepeatTask>(std::chrono::seconds::duration(mUpdateInterval), [this] {
+            this->updateClients();
         });
         return true;
     }
     return false;
 }
 
-uint DynamicFloatingText::getUpdateRate() { return mUpdateRate; }
+uint DynamicFloatingText::getUpdateInterval() { return mUpdateInterval; }
 
-void DynamicFloatingText::setUpdateRate(uint seconds) {
+void DynamicFloatingText::setUpdateInterval(uint seconds) {
     stopUpdate();
-    mUpdateRate = seconds;
+    mUpdateInterval = seconds;
     startUpdate();
 }
 
-void StaticFloatingText::updateText(std::string const& newText) {
-    setText(newText);
-    updateAllClients();
+void StaticFloatingText::setText(std::string const& newText) {
+    mText = newText;
+    updateClients();
 }
 
-void DynamicFloatingText::updateText(std::string const& newText) {
-    setText(newText);
-    updateAllClients();
+void StaticFloatingText::setPosition(Vec3 const& pos) {
+    mPosition = pos;
+    sendToClients();
 }
 
-void StaticFloatingText::updatePosition(Vec3 const& pos, DimensionType dimId) {
-    setPosition(pos, dimId);
-    sendToAllClients();
+void StaticFloatingText::setDimensionId(DimensionType dimId) {
+    mDimensionId = dimId;
+    sendToClients();
 }
 
-void DynamicFloatingText::updatePosition(Vec3 const& pos, DimensionType dimId) {
-    setPosition(pos, dimId);
-    sendToAllClients();
+FloatingTextManager::FloatingTextManager() {
+    auto& eventBus = ll::event::EventBus::getInstance();
+    auto  event1 =
+        eventBus.emplaceListener<ll::event::player::PlayerJoinEvent>([&](ll::event::player::PlayerJoinEvent& ev) {
+            for (auto& [runtimeId, floatingText] : mRuntimeFloatingTexts) {
+                floatingText->sendTo(ev.self());
+            }
+        });
+    mEventListener.push_back(event1->getId());
+    auto event2 = eventBus.emplaceListener<GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent>(
+        [&](GMLIB::Event::PlayerEvent::PlayerChangeDimensionAfterEvent& ev) {
+            for (auto& [runtimeId, floatingText] : mRuntimeFloatingTexts) {
+                floatingText->removeFrom(ev.self());
+                floatingText->sendTo(ev.self());
+            }
+        }
+    );
+    mEventListener.push_back(event2->getId());
+}
+FloatingTextManager::~FloatingTextManager() {
+    auto& eventBus = ll::event::EventBus::getInstance();
+    for (auto& id : mEventListener) {
+        eventBus.removeListener(id);
+    }
+}
+
+FloatingTextManager& FloatingTextManager::getInstance() {
+    static std::unique_ptr<FloatingTextManager> instance;
+    if (!instance) {
+        instance = std::make_unique<FloatingTextManager>();
+    }
+    return *instance;
+}
+
+bool FloatingTextManager::add(std::shared_ptr<FloatingTextBase> floatingText) {
+    auto runtimeId = floatingText->getRuntimeID();
+    if (!mRuntimeFloatingTexts.contains(runtimeId)) {
+        mRuntimeFloatingTexts[runtimeId] = floatingText;
+        return true;
+    }
+    return false;
+}
+
+bool FloatingTextManager::remove(std::shared_ptr<FloatingTextBase> floatingText) {
+    auto runtimeId = floatingText->getRuntimeID();
+    return remove(runtimeId);
+}
+
+bool FloatingTextManager::remove(int runtimeId) {
+    if (mRuntimeFloatingTexts.contains(runtimeId)) {
+        mRuntimeFloatingTexts.erase(runtimeId);
+        return true;
+    }
+    return false;
+}
+
+optional_ref<FloatingTextBase> FloatingTextManager::getFloatingText(int runtimeId) {
+    if (mRuntimeFloatingTexts.contains(runtimeId)) {
+        return mRuntimeFloatingTexts[runtimeId].get();
+    }
+    return {};
+}
+
+std::vector<FloatingTextBase*> FloatingTextManager::getAllFloatingTexts() {
+    std::vector<FloatingTextBase*> result;
+    for (auto& [runtimeId, floatingText] : mRuntimeFloatingTexts) {
+        result.push_back(floatingText.get());
+    }
+    return result;
 }
 
 } // namespace GMLIB::Server
