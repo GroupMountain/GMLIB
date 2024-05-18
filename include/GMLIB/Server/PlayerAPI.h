@@ -335,4 +335,10 @@ public:
                 locateNearestStructureFeature(std::string const& structure, bool useNewChunksOnly = false);
 
     GMLIB_API void sendPacket(Packet& packet);
+
+    GMLIB_API void sendText(std::string_view message);
+
+    GMLIB_API void sendText(std::string const& message, std::vector<std::string> const& params);
+
+    GMLIB_API void talkAs(std::string_view message);
 };

@@ -225,6 +225,8 @@ public:
 
     GMLIB_API void broadcast(std::string_view message);
 
+    GMLIB_API void broadcast(std::string const& message, std::vector<std::string> const& params);
+
     GMLIB_API void broadcastToast(std::string_view title, std::string_view message);
 
     GMLIB_API void

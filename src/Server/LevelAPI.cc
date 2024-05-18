@@ -413,6 +413,11 @@ void GMLIB_Level::broadcast(std::string_view message) {
     sendPacketToClients(pkt);
 }
 
+void GMLIB_Level::broadcast(std::string const& message, std::vector<std::string> const& params) {
+    auto pkt = TextPacket::createTranslated(message, params);
+    sendPacketToClients(pkt);
+}
+
 void GMLIB_Level::broadcastToast(std::string_view title, std::string_view message) {
     auto pkt = ToastRequestPacket(std::string(title), std::string(message));
     sendPacketToClients(pkt);

@@ -19,6 +19,7 @@
 #include <mc/network/packet/ScorePacketInfo.h>
 #include <mc/network/packet/SetDisplayObjectivePacket.h>
 #include <mc/network/packet/SetScorePacket.h>
+#include <mc/network/packet/TextPacket.h>
 #include <mc/network/packet/ToastRequestPacket.h>
 #include <mc/network/packet/UpdatePlayerGameTypePacket.h>
 #include <mc/server/commands/CommandContext.h>
@@ -1091,4 +1092,19 @@ void GMLIB_Player::sendPacket(Packet& packet) {
     GMLIB_BinaryStream bs;
     packet.writeWithHeader(SubClientId::PrimaryClient, bs);
     bs.sendTo(*this);
+}
+
+void GMLIB_Player::sendText(std::string_view message) {
+    auto pkt = TextPacket::createRawMessage(message);
+    sendPacket(pkt);
+}
+
+void GMLIB_Player::sendText(std::string const& message, std::vector<std::string> const& params) {
+    auto pkt = TextPacket::createTranslated(message, params);
+    sendPacket(pkt);
+}
+
+void GMLIB_Player::talkAs(std::string_view message) {
+    auto pkt = TextPacket::createChat(getName(), std::string(message), getXuid(), getPlatformOnlineId());
+    GMLIB_Level::getInstance()->sendPacketToClients(pkt);
 }
