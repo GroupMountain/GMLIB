@@ -851,3 +851,22 @@ void GMLIB_Level::sendPacketTo(Packet& packet, Player& player) {
     packet.writeWithHeader(SubClientId::PrimaryClient, bs);
     bs.sendTo(player);
 }
+
+int GMLIB_Level::getMaxPlayerCount() {
+    // IDA: ServerNetworkHandler::setMaxNumPlayers
+    return ll::memory::dAccess<int>(ll::service::getServerNetworkHandler().as_ptr(), 200 * 4);
+}
+
+int GMLIB_Level::getOnlinePlayerCount() {
+    return ll::service::getServerNetworkHandler()->_getActiveAndInProgressPlayerCount(mce::UUID::EMPTY);
+}
+
+int GMLIB_Level::setMaxPlayerCount(int count) {
+    auto result = ll::service::getServerNetworkHandler()->setMaxNumPlayers(count);
+    ll::service::getServerNetworkHandler()->updateServerAnnouncement();
+    return result;
+}
+
+void GMLIB_Level::setServerMotd(std::string_view motd) {
+    ll::service::getServerNetworkHandler()->allowIncomingConnections(std::string(motd), true);
+}
