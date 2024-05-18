@@ -34,8 +34,8 @@ LL_TYPE_INSTANCE_HOOK(
     bs.writeUnsignedChar((uchar)1);
     bs.writeUnsignedChar((uchar)CommandPermissionLevel::Any);
     bs.writeUnsignedVarInt(0);
-    GMLIB_Level::getInstance()->sendPacketToClients(pkt);
-    bs.sendToClients();
+    pkt.sendTo(*this);
+    bs.sendTo(*this);
     return origin();
 }
 
