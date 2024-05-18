@@ -5,13 +5,14 @@
 #include <mc/network/MinecraftPackets.h>
 #include <mc/network/packet/PlayerListEntry.h>
 #include <mc/network/packet/PlayerListPacket.h>
+#include <unordered_map>
 
 namespace GMLIB::Server {
 
 namespace FakeListAPI {
 
-phmap::flat_hash_map<std::string, std::string>     mReplaceMap;
-phmap::flat_hash_map<std::string, PlayerListEntry> mFakeListMap;
+std::unordered_map<std::string, std::string>     mReplaceMap;
+std::unordered_map<std::string, PlayerListEntry> mFakeListMap;
 bool                                               mSimulatedPlayerOptList = false;
 
 } // namespace FakeListAPI
