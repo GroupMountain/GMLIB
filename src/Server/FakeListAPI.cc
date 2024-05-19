@@ -5,14 +5,15 @@
 #include <mc/network/MinecraftPackets.h>
 #include <mc/network/packet/PlayerListEntry.h>
 #include <mc/network/packet/PlayerListPacket.h>
+#include <unordered_map>
 
 namespace GMLIB::Server {
 
 namespace FakeListAPI {
 
-phmap::flat_hash_map<std::string, std::string>     mReplaceMap;
-phmap::flat_hash_map<std::string, PlayerListEntry> mFakeListMap;
-bool                                               mSimulatedPlayerOptList = false;
+std::unordered_map<std::string, std::string>     mReplaceMap;
+std::unordered_map<std::string, PlayerListEntry> mFakeListMap;
+bool                                             mSimulatedPlayerOptList = false;
 
 } // namespace FakeListAPI
 
@@ -26,7 +27,7 @@ LL_TYPE_INSTANCE_HOOK(
     auto pkt    = PlayerListPacket();
     pkt.mAction = PlayerListPacketType::Add;
     for (auto& fakeListPair : GMLIB::Server::FakeListAPI::mFakeListMap) {
-        pkt.emplace(std::move(fakeListPair.second));
+        pkt.emplace(fakeListPair.second.clone());
     }
     GMLIB_BinaryStream bs; // DefaultPermission
     bs.writePacketHeader(MinecraftPacketIds::UpdateAbilities);
@@ -34,8 +35,8 @@ LL_TYPE_INSTANCE_HOOK(
     bs.writeUnsignedChar((uchar)1);
     bs.writeUnsignedChar((uchar)CommandPermissionLevel::Any);
     bs.writeUnsignedVarInt(0);
-    GMLIB_Level::getInstance()->sendPacketToClients(pkt);
-    bs.sendToClients();
+    pkt.sendTo(*this);
+    bs.sendTo(*this);
     return origin();
 }
 
@@ -89,7 +90,7 @@ void changeHook2(bool enable) {
 inline void sendAddFakeListPacket(PlayerListEntry entry) {
     auto pkt    = PlayerListPacket();
     pkt.mAction = PlayerListPacketType::Add;
-    pkt.emplace(std::move(entry));
+    pkt.emplace(entry.clone());
     GMLIB_Level::getInstance()->sendPacketToClients(pkt);
 }
 
@@ -139,8 +140,8 @@ bool FakeList::removeFakeList(std::string const& nameOrXuid) {
     GMLIB::Server::enableHook1();
     for (auto& fakeListPair : GMLIB::Server::FakeListAPI::mFakeListMap) {
         if (fakeListPair.first == nameOrXuid || fakeListPair.second.mXuid == nameOrXuid) {
-            GMLIB::Server::FakeListAPI::mFakeListMap.erase(fakeListPair.first);
             sendRemoveFakeListPacket({fakeListPair.second});
+            GMLIB::Server::FakeListAPI::mFakeListMap.erase(fakeListPair.first);
             isRemoved = true;
         }
     }
