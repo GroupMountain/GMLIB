@@ -13,7 +13,7 @@ namespace FakeListAPI {
 
 std::unordered_map<std::string, std::string>     mReplaceMap;
 std::unordered_map<std::string, PlayerListEntry> mFakeListMap;
-bool                                               mSimulatedPlayerOptList = false;
+bool                                             mSimulatedPlayerOptList = false;
 
 } // namespace FakeListAPI
 
@@ -140,8 +140,8 @@ bool FakeList::removeFakeList(std::string const& nameOrXuid) {
     GMLIB::Server::enableHook1();
     for (auto& fakeListPair : GMLIB::Server::FakeListAPI::mFakeListMap) {
         if (fakeListPair.first == nameOrXuid || fakeListPair.second.mXuid == nameOrXuid) {
-            GMLIB::Server::FakeListAPI::mFakeListMap.erase(fakeListPair.first);
             sendRemoveFakeListPacket({fakeListPair.second});
+            GMLIB::Server::FakeListAPI::mFakeListMap.erase(fakeListPair.first);
             isRemoved = true;
         }
     }
