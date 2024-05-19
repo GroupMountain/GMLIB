@@ -27,7 +27,7 @@ LL_TYPE_INSTANCE_HOOK(
     auto pkt    = PlayerListPacket();
     pkt.mAction = PlayerListPacketType::Add;
     for (auto& fakeListPair : GMLIB::Server::FakeListAPI::mFakeListMap) {
-        pkt.emplace(std::move(fakeListPair.second));
+        pkt.emplace(fakeListPair.second.clone());
     }
     GMLIB_BinaryStream bs; // DefaultPermission
     bs.writePacketHeader(MinecraftPacketIds::UpdateAbilities);
@@ -90,7 +90,7 @@ void changeHook2(bool enable) {
 inline void sendAddFakeListPacket(PlayerListEntry entry) {
     auto pkt    = PlayerListPacket();
     pkt.mAction = PlayerListPacketType::Add;
-    pkt.emplace(std::move(entry));
+    pkt.emplace(entry.clone());
     GMLIB_Level::getInstance()->sendPacketToClients(pkt);
 }
 
