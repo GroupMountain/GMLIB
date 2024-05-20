@@ -79,11 +79,9 @@ struct Fakelist_Impl_2 {
 
 std::unique_ptr<Fakelist_Impl_2> fakelist_Impl_2;
 
-void changeHook2(bool enable) {
-    if (enable) {
-        if (!fakelist_Impl_2) fakelist_Impl_2 = std::make_unique<Fakelist_Impl_2>();
-    } else {
-        fakelist_Impl_2.reset();
+void enableHook2() {
+    if (!fakelist_Impl_2) {
+        fakelist_Impl_2 = std::make_unique<Fakelist_Impl_2>();
     }
 }
 
@@ -186,7 +184,7 @@ std::vector<std::string> FakeList::getAllFakeNames() {
 inline void updatePlayerList(std::string const& realName) {
     ll::service::getLevel()->forEachPlayer([realName](Player& pl) -> bool {
         if (pl.getRealName() == realName) {
-            if (pl.isSimulatedPlayer() && !GMLIB::Server::FakeListAPI::mSimulatedPlayerOptList) {
+            if (pl.isSimulatedPlayer() && GMLIB::Server::FakeListAPI::mSimulatedPlayerOptList) {
                 return true;
             }
             auto entry = PlayerListEntry(pl);
@@ -200,18 +198,20 @@ inline void updatePlayerList(std::string const& realName) {
 }
 
 void FakeList::setListName(std::string const& realName, std::string const& fakeName) {
+    enableHook2();
     GMLIB::Server::FakeListAPI::mReplaceMap[realName] = fakeName;
     updatePlayerList(realName);
 }
 
 void FakeList::resetListName(std::string const& realName) {
+    enableHook2();
     GMLIB::Server::FakeListAPI::mReplaceMap.erase(realName);
     updatePlayerList(realName);
 }
 
 void FakeList::setSimulatedPlayerListOptimizeEnabled(bool value) {
     GMLIB::Server::FakeListAPI::mSimulatedPlayerOptList = value;
-    changeHook2(value);
+    enableHook2();
 }
 
 bool FakeList::getSimulatedPlayerListOptimizeEnabled() { return GMLIB::Server::FakeListAPI::mSimulatedPlayerOptList; }
