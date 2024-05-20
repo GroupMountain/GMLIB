@@ -49,8 +49,8 @@ LL_TYPE_INSTANCE_HOOK(
     PlayerListEntry& entry
 ) {
     if (this->mAction == PlayerListPacketType::Add) {
-        if (GMLIB::Server::FakeListAPI::mSimulatedPlayerOptList) {
-            if (ll::service::getLevel()->getPlayer(entry.mId)->isSimulatedPlayer()) {
+        if (GMLIB::Server::FakeListAPI::mSimulatedPlayerOptList&&ll::service::getLevel()->getPlayer(entry.mId)) {
+            if (ll::service::getLevel()->getPlayer(entry.mId)->isSimulated()) {
                 return;
             }
         }
