@@ -1,7 +1,7 @@
 #include "Global.h"
 #include <GMLIB/Server/StorageAPI.h>
 
-StorageAPI* StorageAPI::getInstance() { return (StorageAPI*)GMLIB::Global<DBStorage>; }
+optional_ref<StorageAPI> StorageAPI::getInstance() { return (StorageAPI*)GMLIB::Global<DBStorage>; }
 
 
 bool StorageAPI::hasKey(std::string_view key) { return hasKey(key, DBHelpers::Category::All); }

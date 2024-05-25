@@ -11,16 +11,16 @@ public:
     using DBStorage::saveData;
 
 public:
-    GMLIB_API static StorageAPI* getInstance();
+    GMLIB_NDAPI static optional_ref<StorageAPI> getInstance();
 
 public:
-    GMLIB_API bool hasKey(std::string_view key);
+    GMLIB_NDAPI bool hasKey(std::string_view key);
 
-    GMLIB_API std::string_view getData(std::string_view key);
+    GMLIB_NDAPI std::string_view getData(std::string_view key);
 
     GMLIB_API void saveData(std::string_view key, std::string_view data);
 
-    GMLIB_API std::unique_ptr<CompoundTag> getCompoundTag(std::string_view key);
+    GMLIB_NDAPI std::unique_ptr<CompoundTag> getCompoundTag(std::string_view key);
 
     GMLIB_API void saveCompoundTag(std::string_view key, CompoundTag& nbt);
 

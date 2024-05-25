@@ -30,27 +30,27 @@ public:
 };
 struct Vec4_D {
     Vec3 vc;
-    char dimid;
+    char dimId;
 
     std::string toStr() const {
         return "(" + std::to_string(vc.x) + " , " + std::to_string(vc.y) + " , " + std::to_string(vc.z) + " , "
-             + std::to_string(dimid) + " , " + ")";
+             + std::to_string(dimId) + " , " + ")";
     }
 
-    void teleport(ServerPlayer* wp) { wp->teleport(vc, dimid); }
+    void teleport(ServerPlayer* wp) { wp->teleport(vc, dimId); }
 
     Vec4_D() {}
 
     Vec4_D(ServerPlayer* wp) {
         vc    = wp->getPosition();
-        dimid = wp->getDimensionId();
+        dimId = wp->getDimensionId();
     }
 
-    Vec4_D(Vec3 x, int dim) : vc(x), dimid(dim) {}
+    Vec4_D(Vec3 x, int dim) : vc(x), dimId(dim) {}
 
     Vec4_D(const Vec4_D& vc4) {
         vc    = vc4.vc;
-        dimid = vc4.dimid;
+        dimId = vc4.dimId;
     }
     bool operator<(const Vec4_D& s) const {
         if (vc.x < s.vc.x) return true;
@@ -59,15 +59,15 @@ struct Vec4_D {
         if (s.vc.y < vc.y) return false;
         if (vc.z < s.vc.z) return true;
         if (s.vc.z < vc.z) return false;
-        if (dimid < s.dimid) return true;
-        if (s.dimid < dimid) return false;
+        if (dimId < s.dimId) return true;
+        if (s.dimId < dimId) return false;
         return false;
     }
     bool operator==(const Vec4_D& s) const {
-        return vc.x == s.vc.x && vc.y == s.vc.y && vc.z == s.vc.z && dimid == s.dimid;
+        return vc.x == s.vc.x && vc.y == s.vc.y && vc.z == s.vc.z && dimId == s.dimId;
     }
     bool operator!=(const Vec4_D& s) const {
-        return vc.x != s.vc.x || vc.y != s.vc.y || vc.z != s.vc.z || dimid != s.dimid;
+        return vc.x != s.vc.x || vc.y != s.vc.y || vc.z != s.vc.z || dimId != s.dimId;
     }
 };
 

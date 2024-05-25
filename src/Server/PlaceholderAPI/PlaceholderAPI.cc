@@ -203,7 +203,7 @@ bool PlaceholderAPI::registerPlayerPlaceholder(
     return registerPlaceholder(placeholderapi);
 }
 
-bool PlaceholderAPI::unRegisterPlaceholder(std::string const& placeholder) {
+bool PlaceholderAPI::unregisterPlaceholder(std::string const& placeholder) {
     std::string placeholderapi = Helper::checkPAPIName(placeholder);
     bool        isremove       = false;
     placeholderapi             = Helper::checkPAPIName(placeholderapi);
@@ -222,7 +222,7 @@ bool PlaceholderAPI::unRegisterPlaceholder(std::string const& placeholder) {
     return false;
 }
 
-std::string PlaceholderAPI::getValue(std::string placeholderapi, Player* sp) {
+std::string PlaceholderAPI::getValue(std::string placeholderapi, optional_ref<Player> sp) {
     placeholderapi = Helper::checkPAPIName(placeholderapi);
     if (mGlobalPAPI.count(placeholderapi)) {
         auto& papi = mGlobalPAPI[placeholderapi];
@@ -280,14 +280,14 @@ std::string PlaceholderAPI::getValue(std::string placeholderapi) {
     return placeholderapi;
 }
 
-void PlaceholderAPI::translate(std::string& value, Player* sp) {
+void PlaceholderAPI::translate(std::string& value, optional_ref<Player> sp) {
     auto list = Helper::getPercentage(value);
     for (auto& i : list) {
         ll::string_utils::replaceAll(value, i, getValue(i, sp));
     }
 }
 
-std::string PlaceholderAPI::translateString(std::string_view value, Player* sp) {
+std::string PlaceholderAPI::translateString(std::string_view value, optional_ref<Player> sp) {
     auto key  = std::string(value);
     auto list = Helper::getPercentage(key);
     for (auto& i : list) {

@@ -17,11 +17,11 @@ protected:
 
 public:
     constexpr explicit ItemActorSpawnBeforeEvent(
-        BlockSource& blockSource,
-        Vec3&        position,
-        ItemStack&   item,
-        Actor*       spawner,
-        int          throwTime
+        BlockSource&        blockSource,
+        Vec3&               position,
+        ItemStack&          item,
+        optional_ref<Actor> spawner,
+        int                 throwTime
     )
     : Cancellable(),
       mBlockSource(blockSource),
@@ -30,11 +30,11 @@ public:
       mSpawner(spawner),
       mThrowTime(throwTime) {}
 
-    GMLIB_API BlockSource& getBlockSource() const;
-    GMLIB_API Vec3&        getPosition() const;
-    GMLIB_API ItemStack&   getItem() const;
-    GMLIB_API optional_ref<Actor> getSpawner() const;
-    GMLIB_API int&                getThrowTime() const;
+    GMLIB_NDAPI BlockSource& getBlockSource() const;
+    GMLIB_NDAPI Vec3&        getPosition() const;
+    GMLIB_NDAPI ItemStack&   getItem() const;
+    GMLIB_NDAPI optional_ref<Actor> getSpawner() const;
+    GMLIB_NDAPI int&                getThrowTime() const;
 };
 
 class ItemActorSpawnAfterEvent final : public ItemActorEvent {
@@ -47,12 +47,12 @@ protected:
 
 public:
     constexpr explicit ItemActorSpawnAfterEvent(
-        ItemActor&   itemActor,
-        BlockSource& blockSource,
-        Vec3&        position,
-        ItemStack&   item,
-        Actor*       spawner,
-        int          throwTime
+        ItemActor&          itemActor,
+        BlockSource&        blockSource,
+        Vec3&               position,
+        ItemStack&          item,
+        optional_ref<Actor> spawner,
+        int                 throwTime
     )
     : ItemActorEvent(itemActor),
       mBlockSource(blockSource),
@@ -61,11 +61,11 @@ public:
       mSpawner(spawner),
       mThrowTime(throwTime) {}
 
-    GMLIB_API BlockSource& getBlockSource() const;
-    GMLIB_API Vec3&        getPosition() const;
-    GMLIB_API ItemStack&   getItem() const;
-    GMLIB_API optional_ref<Actor> getSpawner() const;
-    GMLIB_API int&                getThrowTime() const;
+    GMLIB_NDAPI BlockSource& getBlockSource() const;
+    GMLIB_NDAPI Vec3&        getPosition() const;
+    GMLIB_NDAPI ItemStack&   getItem() const;
+    GMLIB_NDAPI optional_ref<Actor> getSpawner() const;
+    GMLIB_NDAPI int&                getThrowTime() const;
 };
 
 } // namespace GMLIB::Event::EntityEvent

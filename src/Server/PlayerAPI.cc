@@ -19,6 +19,7 @@
 #include <mc/network/packet/ScorePacketInfo.h>
 #include <mc/network/packet/SetDisplayObjectivePacket.h>
 #include <mc/network/packet/SetScorePacket.h>
+#include <mc/network/packet/TextPacket.h>
 #include <mc/network/packet/ToastRequestPacket.h>
 #include <mc/network/packet/UpdatePlayerGameTypePacket.h>
 #include <mc/server/commands/CommandContext.h>
@@ -61,23 +62,75 @@ std::vector<mce::UUID> GMLIB_Player::getAllUuids(bool includeOfflineSignedId) {
                 auto  tag   = CompoundTag::fromBinaryNbt(data);
                 auto& msaId = tag->getString("MsaId");
                 if (!msaId.empty()) {
-                    if (msaId == key_left) {
-                        auto uuid = mce::UUID::fromString(msaId);
-                        uuids.push_back(uuid);
-                    }
+                    auto uuid = mce::UUID::fromString(msaId);
+                    uuids.push_back(uuid);
                 } else if (includeOfflineSignedId) {
                     auto& selfSignedId = tag->getString("SelfSignedId");
                     if (!selfSignedId.empty()) {
-                        if (selfSignedId == key_left) {
-                            auto uuid = mce::UUID::fromString(selfSignedId);
-                            uuids.push_back(uuid);
-                        }
+                        auto uuid = mce::UUID::fromString(selfSignedId);
+                        uuids.push_back(uuid);
                     }
                 }
             }
         }
     );
     return uuids;
+}
+
+std::unordered_map<mce::UUID, std::string> GMLIB_Player::getUuidToServerIdMap(bool includeOfflineSignedId) {
+    std::unordered_map<mce::UUID, std::string> result;
+    GMLIB::Global<DBStorage>->forEachKeyWithPrefix(
+        "player_",
+        DBHelpers::Category::Player,
+        [&result, includeOfflineSignedId](std::string_view key_left, std::string_view data) {
+            if (key_left.size() == 36) {
+                auto  tag      = CompoundTag::fromBinaryNbt(data);
+                auto& msaId    = tag->getString("MsaId");
+                auto& serverId = tag->getString("ServerId");
+                if (!serverId.empty()) {
+                    if (!msaId.empty()) {
+                        auto uuid    = mce::UUID::fromString(msaId);
+                        result[uuid] = serverId;
+                    } else if (includeOfflineSignedId) {
+                        auto& selfSignedId = tag->getString("SelfSignedId");
+                        if (!selfSignedId.empty()) {
+                            auto uuid    = mce::UUID::fromString(selfSignedId);
+                            result[uuid] = serverId;
+                        }
+                    }
+                }
+            }
+        }
+    );
+    return result;
+}
+
+std::unordered_map<std::string, mce::UUID> GMLIB_Player::getServerIdToUuidMap() {
+    std::unordered_map<std::string, mce::UUID> result;
+    GMLIB::Global<DBStorage>->forEachKeyWithPrefix(
+        "player_",
+        DBHelpers::Category::Player,
+        [&result](std::string_view key_left, std::string_view data) {
+            if (key_left.size() == 36) {
+                auto  tag      = CompoundTag::fromBinaryNbt(data);
+                auto& msaId    = tag->getString("MsaId");
+                auto& serverId = tag->getString("ServerId");
+                if (!serverId.empty()) {
+                    if (!msaId.empty()) {
+                        auto uuid        = mce::UUID::fromString(msaId);
+                        result[serverId] = uuid;
+                    } else {
+                        auto& selfSignedId = tag->getString("SelfSignedId");
+                        if (!selfSignedId.empty()) {
+                            auto uuid        = mce::UUID::fromString(selfSignedId);
+                            result[serverId] = uuid;
+                        }
+                    }
+                }
+            }
+        }
+    );
+    return result;
 }
 
 std::unique_ptr<CompoundTag> GMLIB_Player::getUuidDBTag(mce::UUID const& uuid) {
@@ -100,9 +153,21 @@ bool GMLIB_Player::deleteUuidDBTag(mce::UUID const& uuid) {
 std::string GMLIB_Player::getServerIdFromUuid(mce::UUID const& uuid) {
     auto DBTag = getUuidDBTag(uuid);
     if (!DBTag) {
-        return "";
+        auto idMap = getUuidToServerIdMap(true);
+        if (idMap.contains(uuid)) {
+            return idMap[uuid];
+        }
+        return {};
     }
     return DBTag->getString("ServerId");
+}
+
+mce::UUID GMLIB_Player::getUuidFromServerId(std::string const& serverId) {
+    auto idMap = getServerIdToUuidMap();
+    if (idMap.contains(serverId)) {
+        return idMap[serverId];
+    }
+    return mce::UUID::EMPTY;
 }
 
 std::unique_ptr<CompoundTag> GMLIB_Player::getOfflineNbt(std::string const& serverId) {
@@ -142,8 +207,7 @@ std::unique_ptr<CompoundTag> GMLIB_Player::getPlayerNbt(std::string const& serve
     if (serverId.empty()) {
         return nullptr;
     }
-    auto player = (GMLIB_Player*)ll::service::bedrock::getLevel()->getPlayerFromServerId(serverId);
-    if (player) {
+    if (auto player = (GMLIB_Player*)ll::service::bedrock::getLevel()->getPlayerFromServerId(serverId)) {
         return player->getNbt();
     } else {
         return getOfflineNbt(serverId);
@@ -165,8 +229,7 @@ bool GMLIB_Player::setPlayerNbt(std::string const& serverId, CompoundTag& nbt) {
     if (serverId.empty()) {
         return false;
     }
-    auto player = ll::service::bedrock::getLevel()->getPlayerFromServerId(serverId);
-    if (player) {
+    if (auto player = ll::service::bedrock::getLevel()->getPlayerFromServerId(serverId)) {
         auto res = player->load(nbt, *GMLIB_CompoundTag::getDataLoadHelper());
         player->refreshInventory();
         return res;
@@ -196,8 +259,7 @@ bool GMLIB_Player::setPlayerNbtTags(
     if (serverId.empty()) {
         return false;
     }
-    auto player = (GMLIB_Player*)ll::service::bedrock::getLevel()->getPlayerFromServerId(serverId);
-    if (player) {
+    if (auto player = (GMLIB_Player*)ll::service::bedrock::getLevel()->getPlayerFromServerId(serverId)) {
         return player->setNbtTags(nbt, tags);
     }
     auto data = *getOfflineNbt(serverId);
@@ -222,8 +284,7 @@ bool GMLIB_Player::deletePlayerNbt(std::string const& serverId) {
     if (serverId.empty()) {
         return false;
     }
-    auto pl = ll::service::getLevel()->getPlayerFromServerId(serverId);
-    if (pl) {
+    if (auto pl = ll::service::getLevel()->getPlayerFromServerId(serverId)) {
         return false;
     }
     if (GMLIB::Global<DBStorage>->hasKey(serverId, DBHelpers::Category::Player)) {
@@ -234,21 +295,27 @@ bool GMLIB_Player::deletePlayerNbt(std::string const& serverId) {
 }
 
 bool GMLIB_Player::deletePlayerNbt(mce::UUID const& uuid) {
-    auto pl = ll::service::getLevel()->getPlayer(uuid);
-    if (pl) {
+    if (auto pl = ll::service::getLevel()->getPlayer(uuid)) {
         return false;
     }
     auto serverId = getServerIdFromUuid(uuid);
     return deletePlayerNbt(serverId);
 }
 
+bool GMLIB_Player::deletePlayer(std::string const& serverId) {
+    if (auto pl = ll::service::getLevel()->getPlayerFromServerId(serverId)) {
+        return false;
+    }
+    auto uuid = getUuidFromServerId(serverId);
+    return deletePlayerNbt(serverId) && deleteUuidDBTag(uuid);
+}
+
 bool GMLIB_Player::deletePlayer(mce::UUID const& uuid) {
-    auto pl = ll::service::getLevel()->getPlayer(uuid);
-    if (pl) {
+    if (auto pl = ll::service::getLevel()->getPlayer(uuid)) {
         return false;
     }
     auto serverId = getServerIdFromUuid(uuid);
-    return deletePlayerNbt(serverId) || deleteUuidDBTag(uuid);
+    return deletePlayerNbt(serverId) && deleteUuidDBTag(uuid);
 }
 
 ActorUniqueID GMLIB_Player::getPlayerUniqueID(std::string const& serverId) {
@@ -499,7 +566,7 @@ void GMLIB_Player::updateClientBossbarColor(int64_t bossbarId, ::BossBarColor co
 }
 
 void GMLIB_Player::setClientWeather(WeatherType weather) {
-    return GMLIB_Level::getInstance()->setClientWeather(weather, this);
+    return GMLIB_Level::getInstance()->setClientWeather(weather, *this);
 }
 
 void GMLIB_Player::sendToast(std::string_view title, std::string_view message) {
@@ -556,22 +623,22 @@ std::vector<MobEffectInstance> GMLIB_Player::getAllEffects() {
 
 std::optional<int> GMLIB_Player::getScore(std::string const& objective) {
     auto scoreboard = GMLIB_Scoreboard::getInstance();
-    return scoreboard->getPlayerScore(objective, this);
+    return scoreboard->getPlayerScore(objective, *this);
 }
 
 std::optional<int> GMLIB_Player::setScore(std::string const& objective, int value, PlayerScoreSetFunction action) {
     auto scoreboard = GMLIB_Scoreboard::getInstance();
-    return scoreboard->setPlayerScore(objective, this, value, action);
+    return scoreboard->setPlayerScore(objective, *this, value, action);
 }
 
 bool GMLIB_Player::resetScore(std::string const& objective) {
     auto scoreboard = GMLIB_Scoreboard::getInstance();
-    return scoreboard->resetPlayerScore(objective, this);
+    return scoreboard->resetPlayerScore(objective, *this);
 }
 
 bool GMLIB_Player::resetScore() {
     auto scoreboard = GMLIB_Scoreboard::getInstance();
-    return scoreboard->resetPlayerScore(this);
+    return scoreboard->resetPlayerScore(*this);
 }
 
 std::optional<int> GMLIB_Player::getPlayerScore(std::string const& serverId, std::string const& objective) {
@@ -624,27 +691,25 @@ bool GMLIB_Player::resetPlayerScore(mce::UUID const& uuid) {
     return scoreboard->resetPlayerScore(uuid);
 }
 
-ItemStack* GMLIB_Player::getMainHandSlot() {
-    return (ItemStack*)&getEquippedSlot(Puv::Legacy::EquipmentSlot::Mainhand);
-}
+ItemStack& GMLIB_Player::getMainHandSlot() { return const_cast<ItemStack&>(getCarriedItem()); }
 
 void GMLIB_Player::setMainHandSlot(ItemStack& itemStack) {
     return setEquippedSlot(Puv::Legacy::EquipmentSlot::Mainhand, itemStack);
 }
 
-ItemStack* GMLIB_Player::getOffHandSlot() { return (ItemStack*)&getEquippedSlot(Puv::Legacy::EquipmentSlot::Offhand); }
+ItemStack& GMLIB_Player::getOffHandSlot() { return const_cast<ItemStack&>(getOffhandSlot()); }
 
 void GMLIB_Player::setOffHandSlot(ItemStack& itemStack) {
     return setEquippedSlot(Puv::Legacy::EquipmentSlot::Offhand, itemStack);
 }
 
-GMLIB_Actor* GMLIB_Player::shootProjectile(std::string const& typeName, float speed, float offset) {
-    return GMLIB_Spawner::spawnProjectile((GMLIB_Actor*)this, typeName, speed, offset);
+optional_ref<Actor> GMLIB_Player::shootProjectile(std::string_view typeName, float speed, float offset) {
+    return GMLIB_Spawner::spawnProjectile(*this, typeName, speed, offset);
 }
 
 void GMLIB_Player::setFreezing(float percentage) { getEntityData().set<float>(0x78, percentage); }
 
-void GMLIB_Player::hurtPlayer(float damage, std::string const& causeName, Actor* source) {
+void GMLIB_Player::hurtPlayer(float damage, std::string const& causeName, optional_ref<Actor> source) {
     auto cause = GMLIB::Mod::DamageCause::getCauseFromName(causeName);
     this->hurtByCause(damage, cause, source);
 }
@@ -699,18 +764,14 @@ void GMLIB_Player::updateClientBlock(
     sendPacket(pkt);
 }
 
-bool GMLIB_Player::updateClientBlock(
+void GMLIB_Player::updateClientBlock(
     BlockPos const&               pos,
-    Block*                        block,
+    Block const&                  block,
     BlockUpdateFlag               flag,
     UpdateBlockPacket::BlockLayer layer
 ) {
-    if (block) {
-        auto runtimeId = block->getRuntimeId();
-        updateClientBlock(pos, runtimeId, flag, layer);
-        return true;
-    }
-    return false;
+    auto runtimeId = block.getRuntimeId();
+    updateClientBlock(pos, runtimeId, flag, layer);
 }
 
 bool GMLIB_Player::updateClientBlock(
@@ -745,9 +806,9 @@ bool GMLIB_Player::updateClientBlock(
     return false;
 }
 
-Biome* GMLIB_Player::getBiome() {
+Biome& GMLIB_Player::getBiome() {
     auto& bs = getDimensionBlockSourceConst();
-    return const_cast<Biome*>(&bs.getConstBiome(BlockPos(getPosition())));
+    return const_cast<Biome&>(bs.getConstBiome(BlockPos(getPosition())));
 }
 
 void GMLIB_Player::sendTitle(std::string_view text, SetTitlePacket::TitleType type) {
@@ -1031,4 +1092,19 @@ void GMLIB_Player::sendPacket(Packet& packet) {
     GMLIB_BinaryStream bs;
     packet.writeWithHeader(SubClientId::PrimaryClient, bs);
     bs.sendTo(*this);
+}
+
+void GMLIB_Player::sendText(std::string_view message) {
+    auto pkt = TextPacket::createRawMessage(message);
+    sendPacket(pkt);
+}
+
+void GMLIB_Player::sendText(std::string const& message, std::vector<std::string> const& params) {
+    auto pkt = TextPacket::createTranslated(message, params);
+    sendPacket(pkt);
+}
+
+void GMLIB_Player::talkAs(std::string_view message) {
+    auto pkt = TextPacket::createChat(getName(), std::string(message), getXuid(), getPlatformOnlineId());
+    GMLIB_Level::getInstance()->sendPacketToClients(pkt);
 }

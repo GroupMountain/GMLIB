@@ -18,6 +18,7 @@
 #include <mc/server/common/PropertiesSettings.h>
 #include <mc/server/common/commands/ChangeSettingCommand.h>
 #include <mc/util/Random.h>
+#include <mc/world/level/ChunkBlockPos.h>
 #include <mc/world/level/levelgen/WorldGenerator.h>
 #include <mc/world/level/levelgen/structure/StructureFeatureTypeNames.h>
 #include <mc/world/level/storage/Experiments.h>
@@ -170,17 +171,17 @@ LL_AUTO_TYPE_INSTANCE_HOOK(LevelTickHook, ll::memory::HookPriority::Normal, Leve
     }
 }
 
-GMLIB_Level* GMLIB_Level::getInstance() { return (GMLIB_Level*)ll::service::getLevel().as_ptr(); }
+optional_ref<GMLIB_Level> GMLIB_Level::getInstance() { return (GMLIB_Level*)ll::service::getLevel().as_ptr(); }
 
-GMLIB_Level* GMLIB_Level::getLevel() { return getInstance(); }
+optional_ref<GMLIB_Level> GMLIB_Level::getLevel() { return getInstance(); }
 
-BlockSource* GMLIB_Level::getBlockSource(DimensionType dimid) {
-    return &getOrCreateDimension(dimid)->getBlockSourceFromMainChunkSource();
+BlockSource& GMLIB_Level::getBlockSource(DimensionType dimId) {
+    return getOrCreateDimension(dimId)->getBlockSourceFromMainChunkSource();
 }
 
 std::vector<Actor*> GMLIB_Level::getAllEntities() { return getRuntimeActorList(); }
 
-Actor* GMLIB_Level::getEntity(ActorUniqueID const& uniqueId) { return fetchEntity(uniqueId); }
+optional_ref<Actor> GMLIB_Level::getEntity(ActorUniqueID const& uniqueId) { return fetchEntity(uniqueId); }
 
 std::vector<Player*> GMLIB_Level::getAllPlayers() {
     std::vector<Player*> result = {};
@@ -259,18 +260,16 @@ void GMLIB_Level::setExperimentEnabled(::AllExperiments experiment, bool enabled
     getLevelData().getExperiments().setExperimentEnabled(experiment, enabled);
 }
 
-std::map<int, std::string> GMLIB_Level::getAllExperimentsTranslateKeys() {
-    auto result = getAllExperiments();
-    for (auto& [id, name] : result) {
-        name.erase(0, 1);
-        name = "createWorldScreen.e" + name;
-        name = I18nAPI::get(name);
-    }
+std::string GMLIB_Level::getExperimentTranslateKey(AllExperiments experiment) {
+    std::string result;
+    try {
+        result = Experiments::getExperimentTextID(experiment);
+    } catch (...) {}
     return result;
 }
 
-std::map<int, std::string> GMLIB_Level::getAllExperiments() {
-    std::map<int, std::string>        result;
+std::vector<AllExperiments> GMLIB_Level::getAllExperiments() {
+    std::vector<AllExperiments>       result;
     phmap::flat_hash_set<std::string> exist;
     for (int i = 4; i <= 24; i++) {
         std::string text;
@@ -278,12 +277,11 @@ std::map<int, std::string> GMLIB_Level::getAllExperiments() {
             text = Experiments::getExperimentTextID((AllExperiments)i);
         } catch (...) {}
         if (!text.empty()) {
-            ll::utils::string_utils::replaceAll(text, "createWorldScreen.e", "E");
-            if (exist.count(text)) {
+            if (exist.contains(text)) {
                 return result;
             }
             exist.insert(text);
-            result[i] = text;
+            result.push_back(AllExperiments(i));
         }
     }
     return result;
@@ -356,28 +354,28 @@ void GMLIB_Level::setWeather(WeatherType weather) {
     setWeather(weather, lastTick);
 }
 
-void GMLIB_Level::setClientWeather(WeatherType weather, Player* pl) {
+void GMLIB_Level::setClientWeather(WeatherType weather, Player& pl) {
     Vec3 pos = {0, 0, 0};
     switch (weather) {
     case WeatherType::Thunder: {
         auto pkt1 = LevelEventPacket(LevelEvent::StartThunderstorm, pos, 65565);
-        sendPacketTo(pkt1, *pl);
+        sendPacketTo(pkt1, pl);
         auto pkt2 = LevelEventPacket(LevelEvent::StartRaining, pos, 65565);
-        sendPacketTo(pkt2, *pl);
+        sendPacketTo(pkt2, pl);
         break;
     }
     case WeatherType::Rain: {
         auto pkt1 = LevelEventPacket(LevelEvent::StopThunderstorm, pos, 0);
-        sendPacketTo(pkt1, *pl);
+        sendPacketTo(pkt1, pl);
         auto pkt2 = LevelEventPacket(LevelEvent::StartRaining, pos, 65565);
-        sendPacketTo(pkt2, *pl);
+        sendPacketTo(pkt2, pl);
         break;
     }
     default: {
         auto pkt1 = LevelEventPacket(LevelEvent::StopThunderstorm, pos, 0);
-        sendPacketTo(pkt1, *pl);
+        sendPacketTo(pkt1, pl);
         auto pkt2 = LevelEventPacket(LevelEvent::StopRaining, pos, 0);
-        sendPacketTo(pkt2, *pl);
+        sendPacketTo(pkt2, pl);
         break;
     }
     }
@@ -412,6 +410,11 @@ void GMLIB_Level::setClientWeather(WeatherType weather) {
 
 void GMLIB_Level::broadcast(std::string_view message) {
     auto pkt = TextPacket::createRawMessage(message);
+    sendPacketToClients(pkt);
+}
+
+void GMLIB_Level::broadcast(std::string const& message, std::vector<std::string> const& params) {
+    auto pkt = TextPacket::createTranslated(message, params);
     sendPacketToClients(pkt);
 }
 
@@ -497,29 +500,60 @@ void GMLIB_Level::setGamerule(std::string_view name, int value) {
 }
 
 void GMLIB_Level::createExplosion(
-    const Vec3&   pos,
-    DimensionType dimensionId,
-    float         power,
-    Actor*        source,
-    bool          breakBlocks,
-    bool          causeFire,
-    bool          allowUnderwater,
-    float         maxResistance
+    const Vec3&         pos,
+    DimensionType       dimensionId,
+    float               power,
+    optional_ref<Actor> source,
+    bool                breakBlocks,
+    bool                causeFire,
+    bool                allowUnderwater,
+    float               maxResistance
 ) {
-    explode(*getBlockSource(dimensionId), source, pos, power, causeFire, breakBlocks, allowUnderwater, maxResistance);
+    explode(getBlockSource(dimensionId), source, pos, power, causeFire, breakBlocks, allowUnderwater, maxResistance);
 }
 
-Block* GMLIB_Level::getBlock(BlockPos const& pos, DimensionType dimid) {
-    return (Block*)&getBlockSource(dimid)->getBlock(pos);
+std::shared_ptr<LevelChunk> GMLIB_Level::getOrLoadChunk(
+    BlockPos const& blockPos,
+    DimensionType   dimId,
+    bool            readOnly,
+    bool            forceImmediateReplacementDataLoad
+) {
+    auto chunkPos = ChunkPos(blockPos);
+    return getOrLoadChunk(chunkPos, dimId, readOnly, forceImmediateReplacementDataLoad);
 }
 
-bool GMLIB_Level::setBlock(BlockPos const& pos, DimensionType dimid, Block* block) {
-    return getBlockSource(dimid)->setBlock(pos, *block, 3, nullptr, nullptr);
+std::shared_ptr<LevelChunk> GMLIB_Level::getOrLoadChunk(
+    ChunkPos const& chunkPos,
+    DimensionType   dimId,
+    bool            readOnly,
+    bool            forceImmediateReplacementDataLoad
+) {
+    auto& chunkSource = getBlockSource(dimId).getChunkSource();
+    auto  chunk       = chunkSource.getOrLoadChunk(chunkPos, ChunkSource::LoadMode::Deferred, readOnly);
+    chunkSource.loadChunk(*chunk, forceImmediateReplacementDataLoad);
+    return std::move(chunk);
 }
 
-bool GMLIB_Level::setBlock(BlockPos const& pos, DimensionType dimid, std::string_view name, short aux) {
-    auto block = Block::tryGetFromRegistry(name, aux);
-    return getBlockSource(dimid)->setBlock(pos, block, 3, nullptr, nullptr);
+Block const& GMLIB_Level::getBlock(BlockPos const& pos, DimensionType dimId) {
+    return getBlockSource(dimId).getBlock(pos);
+}
+
+Block const& GMLIB_Level::loadAndGetBlock(BlockPos const& pos, DimensionType dimId) {
+    auto chunk     = getOrLoadChunk(pos, dimId);
+    auto dimension = getOrCreateDimension(dimId);
+    auto cbp       = ChunkBlockPos(pos, dimension->getMinHeight());
+    return chunk->getBlock(cbp);
+}
+
+bool GMLIB_Level::setBlock(BlockPos const& pos, DimensionType dimId, Block const& block) {
+    return getBlockSource(dimId).setBlock(pos, block, 3, nullptr, nullptr);
+}
+
+bool GMLIB_Level::setBlock(BlockPos const& pos, DimensionType dimId, std::string_view name, short aux) {
+    if (auto block = Block::tryGetFromRegistry(name, aux)) {
+        return getBlockSource(dimId).setBlock(pos, block, 3, nullptr, nullptr);
+    }
+    return false;
 }
 
 bool checkFillPos(BlockPos const& startpos, BlockPos const& endpos) {
@@ -541,11 +575,11 @@ int GMLIB_Level::fillBlocks(
     BlockPos const& startpos,
     BlockPos const& endpos,
     DimensionType   dimensionId,
-    Block*          block,
+    Block const&    block,
     FillMode        mode
 ) {
-    int  count       = 0;
-    auto blockSource = getBlockSource(dimensionId);
+    int   count       = 0;
+    auto& blockSource = getBlockSource(dimensionId);
     if (checkFillPos(startpos, endpos)) {
         int lx = endpos.x - startpos.x;
         int ly = endpos.y - startpos.y;
@@ -557,26 +591,26 @@ int GMLIB_Level::fillBlocks(
                     switch (mode) {
                     case FillMode::Hollow:
                         if (checkPosInRange(pos, startpos, endpos)) {
-                            blockSource->setBlock(pos, *block, 3, nullptr, nullptr);
+                            blockSource.setBlock(pos, block, 3, nullptr, nullptr);
                             count++;
                         }
                     case FillMode::Outline:
                         if (!checkPosInRange(pos, startpos, endpos)) {
-                            blockSource->setBlock(pos, *block, 3, nullptr, nullptr);
+                            blockSource.setBlock(pos, block, 3, nullptr, nullptr);
                             count++;
                         }
                         break;
 
                     case FillMode::Destroy:
-                        destroyBlock(*getBlockSource(dimensionId), pos, true);
+                        destroyBlock(getBlockSource(dimensionId), pos, true);
                     case FillMode::Replace:
-                        blockSource->setBlock(pos, *block, 3, nullptr, nullptr);
+                        blockSource.setBlock(pos, block, 3, nullptr, nullptr);
                         count++;
                         break;
 
                     case FillMode::Keep:
-                        if (blockSource->getBlock(pos).isAir()) {
-                            blockSource->setBlock(pos, *block, 3, nullptr, nullptr);
+                        if (blockSource.getBlock(pos).isAir()) {
+                            blockSource.setBlock(pos, block, 3, nullptr, nullptr);
                             count++;
                         }
                         break;
@@ -599,9 +633,9 @@ int GMLIB_Level::fillBlocks(
     unsigned short   tileData,
     FillMode         mode
 ) {
-    Block* block = (Block*)Block::tryGetFromRegistry(name, tileData).as_ptr();
+    auto block = Block::tryGetFromRegistry(name, tileData).as_ptr();
     if (block) {
-        return fillBlocks(startpos, endpos, dimId, block, mode);
+        return fillBlocks(startpos, endpos, dimId, *block, mode);
     }
     return 0;
 }
@@ -610,11 +644,11 @@ int GMLIB_Level::fillBlocks(
     BlockPos const& startpos,
     BlockPos const& endpos,
     DimensionType   dimId,
-    Block*          newblock,
-    Block*          oldblock
+    Block const&    newblock,
+    Block const&    oldblock
 ) {
-    int  count       = 0;
-    auto blockSource = getBlockSource(dimId);
+    int   count       = 0;
+    auto& blockSource = getBlockSource(dimId);
     if (checkFillPos(startpos, endpos)) {
         int lx = endpos.x - startpos.x;
         int ly = endpos.y - startpos.y;
@@ -623,8 +657,8 @@ int GMLIB_Level::fillBlocks(
             for (int j = 0; j <= ly; j++) {
                 for (int k = 0; k <= lz; k++) {
                     BlockPos pos = {startpos.x + i, startpos.y + j, startpos.z + k};
-                    if ((Block*)&blockSource->getBlock(pos) == oldblock) {
-                        blockSource->setBlock(pos, *newblock, 3, nullptr, nullptr);
+                    if (blockSource.getBlock(pos).getRuntimeId() == oldblock.getRuntimeId()) {
+                        blockSource.setBlock(pos, newblock, 3, nullptr, nullptr);
                         count++;
                     }
                 }
@@ -644,10 +678,10 @@ int GMLIB_Level::fillBlocks(
     std::string_view newName,
     ushort           newTileData
 ) {
-    Block* newblock = (Block*)Block::tryGetFromRegistry(newName, newTileData).as_ptr();
-    Block* oldblock = (Block*)Block::tryGetFromRegistry(oldName, oldTileData).as_ptr();
+    auto newblock = Block::tryGetFromRegistry(newName, newTileData).as_ptr();
+    auto oldblock = Block::tryGetFromRegistry(oldName, oldTileData).as_ptr();
     if (newblock && oldblock) {
-        return fillBlocks(startpos, endpos, dimId, newblock, oldblock);
+        return fillBlocks(startpos, endpos, dimId, *newblock, *oldblock);
     }
     return 0;
 }
@@ -809,11 +843,30 @@ void GMLIB_Level::sendPacketToClients(Packet& packet) {
 void GMLIB_Level::sendPacketToDimension(Packet& packet, DimensionType dimId) {
     GMLIB_BinaryStream bs;
     packet.writeWithHeader(SubClientId::PrimaryClient, bs);
-    bs.sendToDimansion(dimId);
+    bs.sendToDimension(dimId);
 }
 
 void GMLIB_Level::sendPacketTo(Packet& packet, Player& player) {
     GMLIB_BinaryStream bs;
     packet.writeWithHeader(SubClientId::PrimaryClient, bs);
     bs.sendTo(player);
+}
+
+int GMLIB_Level::getMaxPlayerCount() {
+    // IDA: ServerNetworkHandler::setMaxNumPlayers
+    return ll::memory::dAccess<int>(ll::service::getServerNetworkHandler().as_ptr(), 200 * 4);
+}
+
+int GMLIB_Level::getOnlinePlayerCount() {
+    return ll::service::getServerNetworkHandler()->_getActiveAndInProgressPlayerCount(mce::UUID::EMPTY);
+}
+
+int GMLIB_Level::setMaxPlayerCount(int count) {
+    auto result = ll::service::getServerNetworkHandler()->setMaxNumPlayers(count);
+    ll::service::getServerNetworkHandler()->updateServerAnnouncement();
+    return result;
+}
+
+void GMLIB_Level::setServerMotd(std::string_view motd) {
+    ll::service::getServerNetworkHandler()->allowIncomingConnections(std::string(motd), true);
 }

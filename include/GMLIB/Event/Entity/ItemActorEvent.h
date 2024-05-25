@@ -10,7 +10,7 @@ protected:
     constexpr explicit ItemActorEvent(ItemActor& itemActor) : ActorEvent(itemActor) {}
 
 public:
-    GMLIB_API ItemActor& getItemActor() const;
+    GMLIB_NDAPI ItemActor& getItemActor() const;
 };
 
 } // namespace GMLIB::Event::EntityEvent

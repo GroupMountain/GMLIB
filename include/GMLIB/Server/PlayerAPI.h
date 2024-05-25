@@ -23,25 +23,32 @@ public:
     using Player::removeEffect;
 
 public:
-    GMLIB_API static std::vector<std::string> getAllServerIds();
+    GMLIB_NDAPI static std::vector<std::string> getAllServerIds();
 
-    GMLIB_API static std::vector<mce::UUID> getAllUuids(bool includeOfflineSignedId = false);
+    GMLIB_NDAPI static std::vector<mce::UUID> getAllUuids(bool includeOfflineSignedId = false);
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getUuidDBTag(mce::UUID const& uuid);
+    GMLIB_NDAPI static std::unordered_map<mce::UUID, std::string>
+    getUuidToServerIdMap(bool includeOfflineSignedId = false);
+
+    GMLIB_NDAPI static std::unordered_map<std::string, mce::UUID> getServerIdToUuidMap();
+
+    GMLIB_NDAPI static std::unique_ptr<CompoundTag> getUuidDBTag(mce::UUID const& uuid);
 
     GMLIB_API static bool deleteUuidDBTag(mce::UUID const& uuid);
 
-    GMLIB_API static std::string getServerIdFromUuid(mce::UUID const& uuid);
+    GMLIB_NDAPI static std::string getServerIdFromUuid(mce::UUID const& uuid);
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getOfflineNbt(std::string const& serverId);
+    GMLIB_NDAPI static mce::UUID getUuidFromServerId(std::string const& serverId);
+
+    GMLIB_NDAPI static std::unique_ptr<CompoundTag> getOfflineNbt(std::string const& serverId);
 
     GMLIB_API static bool setOfflineNbt(std::string const& serverId, CompoundTag& nbt);
 
     GMLIB_API static bool createNewPlayerTag(mce::UUID const& uuid, std::string const& serverId);
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getPlayerNbt(std::string const& serverId);
+    GMLIB_NDAPI static std::unique_ptr<CompoundTag> getPlayerNbt(std::string const& serverId);
 
-    GMLIB_API static std::unique_ptr<CompoundTag> getPlayerNbt(mce::UUID const& uuid);
+    GMLIB_NDAPI static std::unique_ptr<CompoundTag> getPlayerNbt(mce::UUID const& uuid);
 
     GMLIB_API static bool setPlayerNbt(std::string const& serverId, CompoundTag& nbt);
 
@@ -57,19 +64,21 @@ public:
 
     GMLIB_API static bool deletePlayerNbt(mce::UUID const& uuid);
 
+    GMLIB_API static bool deletePlayer(std::string const& serverId);
+
     GMLIB_API static bool deletePlayer(mce::UUID const& uuid);
 
-    GMLIB_API static ActorUniqueID getPlayerUniqueID(std::string const& serverId);
+    GMLIB_NDAPI static ActorUniqueID getPlayerUniqueID(std::string const& serverId);
 
-    GMLIB_API static ActorUniqueID getPlayerUniqueID(mce::UUID const& uuid);
+    GMLIB_NDAPI static ActorUniqueID getPlayerUniqueID(mce::UUID const& uuid);
 
-    GMLIB_API static std::unordered_map<int64, std::string> getUniqueIdToServerIdMap();
+    GMLIB_NDAPI static std::unordered_map<int64, std::string> getUniqueIdToServerIdMap();
 
-    GMLIB_API static std::unordered_map<int64, mce::UUID> getUniqueIdToUuidMap();
+    GMLIB_NDAPI static std::unordered_map<int64, mce::UUID> getUniqueIdToUuidMap();
 
-    GMLIB_API static std::optional<int> getPlayerScore(std::string const& serverId, std::string const& objective);
+    GMLIB_NDAPI static std::optional<int> getPlayerScore(std::string const& serverId, std::string const& objective);
 
-    GMLIB_API static std::optional<int> getPlayerScore(mce::UUID const& uuid, std::string const& objective);
+    GMLIB_NDAPI static std::optional<int> getPlayerScore(mce::UUID const& uuid, std::string const& objective);
 
     GMLIB_API static std::optional<int> setPlayerScore(
         std::string const&     serverId,
@@ -93,43 +102,43 @@ public:
 
     GMLIB_API static bool resetPlayerScore(mce::UUID const& uuid);
 
-    GMLIB_API static std::optional<std::pair<Vec3, int>> getPlayerPosition(std::string const& serverId);
+    GMLIB_NDAPI static std::optional<std::pair<Vec3, int>> getPlayerPosition(std::string const& serverId);
 
-    GMLIB_API static std::optional<std::pair<Vec3, int>> getPlayerPosition(mce::UUID const& uuid);
+    GMLIB_NDAPI static std::optional<std::pair<Vec3, int>> getPlayerPosition(mce::UUID const& uuid);
 
     GMLIB_API static bool setPlayerPosition(std::string const& serverId, Vec3 const& pos, DimensionType dimId);
 
     GMLIB_API static bool setPlayerPosition(mce::UUID const& uuid, Vec3 const& pos, DimensionType dimId);
 
 public:
-    GMLIB_API std::unique_ptr<CompoundTag> getNbt();
+    GMLIB_NDAPI std::unique_ptr<CompoundTag> getNbt();
 
     GMLIB_API bool setNbt(CompoundTag& nbt);
 
     GMLIB_API bool setNbtTags(CompoundTag& nbt, std::vector<std::string> const& tags);
 
-    GMLIB_API std::string getDimensionName();
+    GMLIB_NDAPI std::string getDimensionName();
 
-    GMLIB_API std::string getDimensionTypeName();
+    GMLIB_NDAPI std::string getDimensionTypeName();
 
-    GMLIB_API std::optional<int> getScore(std::string const& objective);
+    GMLIB_NDAPI std::optional<int> getScore(std::string const& objective);
 
-    GMLIB_API std::string_view getIP();
+    GMLIB_NDAPI std::string_view getIP();
 
-    GMLIB_API ushort getPort();
+    GMLIB_NDAPI ushort getPort();
 
-    GMLIB_API int getAvgPing();
+    GMLIB_NDAPI int getAvgPing();
 
-    GMLIB_API int getLastPing();
+    GMLIB_NDAPI int getLastPing();
 
-    GMLIB_API std::string_view getLanguageCode();
+    GMLIB_NDAPI std::string_view getLanguageCode();
 
     GMLIB_API std::optional<int>
     setScore(std::string const& objective, int value, PlayerScoreSetFunction action = PlayerScoreSetFunction::Set);
 
     GMLIB_API bool resetScore(std::string const& objective);
 
-    GMLIB_API GMLIB_Actor* shootProjectile(std::string const& typeName, float speed = 2, float offset = 3);
+    GMLIB_API optional_ref<Actor> shootProjectile(std::string_view typeName, float speed = 2, float offset = 3);
 
     GMLIB_API bool resetScore();
 
@@ -224,21 +233,22 @@ public:
 
     GMLIB_API void removeEffect(std::string const& effectType);
 
-    GMLIB_API std::vector<MobEffectInstance> getAllEffects();
+    GMLIB_NDAPI std::vector<MobEffectInstance> getAllEffects();
 
-    GMLIB_API ItemStack* getMainHandSlot();
+    GMLIB_NDAPI ItemStack& getMainHandSlot();
 
     GMLIB_API void setMainHandSlot(ItemStack& itemStack);
 
-    GMLIB_API ItemStack* getOffHandSlot();
+    GMLIB_NDAPI ItemStack& getOffHandSlot();
 
     GMLIB_API void setOffHandSlot(ItemStack& itemStack);
 
     GMLIB_API void setFreezing(float percentage = 1.0f);
 
-    GMLIB_API FullPlayerInventoryWrapper getFullPlayerInventoryWrapper();
+    GMLIB_NDAPI FullPlayerInventoryWrapper getFullPlayerInventoryWrapper();
 
-    GMLIB_API void hurtPlayer(float damage, std::string const& causeName = "override", Actor* source = nullptr);
+    GMLIB_API void
+    hurtPlayer(float damage, std::string const& causeName = "override", optional_ref<Actor> source = nullptr);
 
     GMLIB_API void updateClientBlock(
         BlockPos const&               pos,
@@ -247,9 +257,9 @@ public:
         UpdateBlockPacket::BlockLayer layer = UpdateBlockPacket::BlockLayer::Standard
     );
 
-    GMLIB_API bool updateClientBlock(
+    GMLIB_API void updateClientBlock(
         BlockPos const&               pos,
-        Block*                        block,
+        Block const&                  block,
         BlockUpdateFlag               flag  = BlockUpdateFlag::All,
         UpdateBlockPacket::BlockLayer layer = UpdateBlockPacket::BlockLayer::Standard
     );
@@ -270,9 +280,9 @@ public:
         UpdateBlockPacket::BlockLayer layer    = UpdateBlockPacket::BlockLayer::Standard
     );
 
-    GMLIB_API Biome* getBiome();
+    GMLIB_NDAPI Biome& getBiome();
 
-    GMLIB_API std::pair<BlockPos, DimensionType> getSpawnPoint();
+    GMLIB_NDAPI std::pair<BlockPos, DimensionType> getSpawnPoint();
 
     GMLIB_API void setSpawnPoint(BlockPos pos, DimensionType dimId);
 
@@ -291,15 +301,15 @@ public:
 
     GMLIB_API int clearAllItems();
 
-    GMLIB_API int getItemCount(
+    GMLIB_NDAPI int getItemCount(
         ItemStack const&                      item,
         std::function<bool(const ItemStack&)> comparator       = nullptr,
         bool                                  requireExtraData = false
     );
 
-    GMLIB_API int getItemCount(std::string_view name, int data);
+    GMLIB_NDAPI int getItemCount(std::string_view name, int data);
 
-    GMLIB_API int getItemCount(std::string_view name);
+    GMLIB_NDAPI int getItemCount(std::string_view name);
 
     GMLIB_API int clearItem(
         ItemStack const&                      item,
@@ -314,15 +324,21 @@ public:
 
     GMLIB_API bool isInStructureFeature(std::string const& structure);
 
-    GMLIB_API StructureFeatureType getStructureFeature();
+    GMLIB_NDAPI StructureFeatureType getStructureFeature();
 
-    GMLIB_API std::string_view getStructureFeatureName();
+    GMLIB_NDAPI std::string_view getStructureFeatureName();
 
-    GMLIB_API std::optional<BlockPos>
-              locateNearestStructureFeature(StructureFeatureType structure, bool useNewChunksOnly = false);
+    GMLIB_NDAPI std::optional<BlockPos>
+                locateNearestStructureFeature(StructureFeatureType structure, bool useNewChunksOnly = false);
 
-    GMLIB_API std::optional<BlockPos>
-              locateNearestStructureFeature(std::string const& structure, bool useNewChunksOnly = false);
+    GMLIB_NDAPI std::optional<BlockPos>
+                locateNearestStructureFeature(std::string const& structure, bool useNewChunksOnly = false);
 
     GMLIB_API void sendPacket(Packet& packet);
+
+    GMLIB_API void sendText(std::string_view message);
+
+    GMLIB_API void sendText(std::string const& message, std::vector<std::string> const& params);
+
+    GMLIB_API void talkAs(std::string_view message);
 };

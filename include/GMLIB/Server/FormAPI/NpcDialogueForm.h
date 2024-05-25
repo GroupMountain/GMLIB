@@ -20,7 +20,7 @@ public:
     std::string                                                                    mNpcName;
     nlohmann::ordered_json                                                         mActionJSON;
     uint64                                                                         mFormRuntimeId;
-    std::function<void(Player* pl, int index, NpcRequestPacket::RequestType type)> mCallback;
+    std::function<void(Player& pl, int index, NpcRequestPacket::RequestType type)> mCallback;
 
 public:
     GMLIB_API NpcDialogueForm(std::string const& npcName, std::string const& sceneName, std::string const& dialogue);
@@ -38,7 +38,7 @@ public:
     );
 
     GMLIB_API void
-    sendTo(Player* pl, std::function<void(Player* pl, int index, NpcRequestPacket::RequestType type)> callback);
+    sendTo(Player& pl, std::function<void(Player& pl, int index, NpcRequestPacket::RequestType type)> callback);
 };
 
 } // namespace GMLIB::Server::Form

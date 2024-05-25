@@ -10,21 +10,21 @@ phmap::flat_hash_map<mce::UUID, std::shared_ptr<UserCache::UserCacheEntry>>   mU
 phmap::flat_hash_map<std::string, std::shared_ptr<UserCache::UserCacheEntry>> mNameEntry;
 phmap::flat_hash_map<std::string, std::shared_ptr<UserCache::UserCacheEntry>> mXuidEntry;
 
-UserCache::UserCacheEntry* UserCache::fromUuid(mce::UUID const& uuid) {
+optional_ref<UserCache::UserCacheEntry> UserCache::fromUuid(mce::UUID const& uuid) {
     if (mUuidEntry.contains(uuid)) {
         return mUuidEntry[uuid].get();
     }
     return nullptr;
 }
 
-UserCache::UserCacheEntry* UserCache::fromXuid(std::string const& xuid) {
+optional_ref<UserCache::UserCacheEntry> UserCache::fromXuid(std::string const& xuid) {
     if (mXuidEntry.contains(xuid)) {
         return mXuidEntry[xuid].get();
     }
     return nullptr;
 }
 
-UserCache::UserCacheEntry* UserCache::fromName(std::string const& name) {
+optional_ref<UserCache::UserCacheEntry> UserCache::fromName(std::string const& name) {
     if (mNameEntry.contains(name)) {
         return mNameEntry[name].get();
     }
@@ -86,6 +86,23 @@ void UserCache::forEach(std::function<void(UserCache::UserCacheEntry const&)> co
             func(entry);
         }
     );
+}
+
+void UserCache::add(std::shared_ptr<UserCache::UserCacheEntry> entry) {
+    mUuidEntry[entry->mUuid] = entry;
+    mXuidEntry[entry->mXuid] = entry;
+    mNameEntry[entry->mName] = entry;
+}
+
+void UserCache::add(std::string const& name, std::string const& xuid, mce::UUID const& uuid) {
+    auto entry = std::make_shared<UserCache::UserCacheEntry>(uuid, name, xuid);
+    add(entry);
+}
+
+void UserCache::remove(std::shared_ptr<UserCache::UserCacheEntry> entry) {
+    mUuidEntry.erase(entry->mUuid);
+    mXuidEntry.erase(entry->mXuid);
+    mNameEntry.erase(entry->mName);
 }
 
 void updateUserCache(const Certificate* cert) {

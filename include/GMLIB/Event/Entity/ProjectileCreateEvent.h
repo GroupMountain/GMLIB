@@ -14,7 +14,7 @@ public:
     : Cancellable(actor),
       mShooter(shooter) {}
 
-    GMLIB_API optional_ref<Actor> getShooter() const;
+    GMLIB_NDAPI optional_ref<Actor> getShooter() const;
 };
 
 class ProjectileCreateAfterEvent final : public ll::event::entity::ActorEvent {
@@ -26,7 +26,7 @@ public:
     : ActorEvent(actor),
       mShooter(shooter) {}
 
-    GMLIB_API optional_ref<Actor> getShooter() const;
+    GMLIB_NDAPI optional_ref<Actor> getShooter() const;
 };
 
 } // namespace GMLIB::Event::EntityEvent

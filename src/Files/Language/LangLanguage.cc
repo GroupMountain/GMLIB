@@ -4,9 +4,22 @@
 
 namespace GMLIB::Files {
 
-LangLanguage::LangLanguage(std::string const& filePath, std::string const& defaultLanguage) : mFilePath(filePath) {
+LangLanguage::LangLanguage(std::filesystem::path const& filePath, std::string const& defaultLanguage)
+: mFilePath(filePath) {
     auto data = McLang::parse(defaultLanguage);
     merge_patch(data);
+}
+
+LangLanguage::LangLanguage(std::filesystem::path const& filePath, McLang const& defaultLanguage) : mFilePath(filePath) {
+    merge_patch(defaultLanguage);
+}
+
+LangLanguage::LangLanguage(
+    std::filesystem::path const&                        filePath,
+    std::unordered_map<std::string, std::string> const& defaultLanguage
+)
+: mFilePath(filePath) {
+    merge_patch(McLang(defaultLanguage));
 }
 
 bool LangLanguage::init() {

@@ -4,33 +4,34 @@
 
 namespace GMLIB::Files::JsonFile {
 
-GMLIB_API nlohmann::ordered_json initOrderedJson(std::string const& path, nlohmann::ordered_json const& defaultFile);
+GMLIB_API nlohmann::ordered_json
+          initOrderedJson(std::filesystem::path const& path, nlohmann::ordered_json const& defaultFile);
 
-GMLIB_API nlohmann::ordered_json initOrderedJson(std::string const& path, std::string const& defaultFile);
+GMLIB_API nlohmann::ordered_json initOrderedJson(std::filesystem::path const& path, std::string const& defaultFile);
 
-GMLIB_API nlohmann::json initJson(std::string const& path, nlohmann::json const& defaultFile);
+GMLIB_API nlohmann::json initJson(std::filesystem::path const& path, nlohmann::json const& defaultFile);
 
-GMLIB_API nlohmann::json initJson(std::string const& path, std::string const& defaultFile);
+GMLIB_API nlohmann::json initJson(std::filesystem::path const& path, std::string const& defaultFile);
 
-GMLIB_API void writeOrUpdateOrderedFile(std::string const& path, nlohmann::ordered_json const& defaultFile);
+GMLIB_API void writeOrUpdateOrderedFile(std::filesystem::path const& path, nlohmann::ordered_json const& defaultFile);
 
-GMLIB_API void writeOrUpdateFile(std::string const& path, nlohmann::json const& defaultFile);
+GMLIB_API void writeOrUpdateFile(std::filesystem::path const& path, nlohmann::json const& defaultFile);
 
-GMLIB_API void updateOrderedFile(std::string const& path, nlohmann::ordered_json const& newFile);
+GMLIB_API void updateOrderedFile(std::filesystem::path const& path, nlohmann::ordered_json const& newFile);
 
-GMLIB_API void updateOrderedFile(std::string const& path, std::string const& newFile);
+GMLIB_API void updateOrderedFile(std::filesystem::path const& path, std::string const& newFile);
 
-GMLIB_API void updateFile(std::string const& path, nlohmann::json const& newFile);
+GMLIB_API void updateFile(std::filesystem::path const& path, nlohmann::json const& newFile);
 
-GMLIB_API void updateFile(std::string const& path, std::string const& newFile);
+GMLIB_API void updateFile(std::filesystem::path const& path, std::string const& newFile);
 
-GMLIB_API nlohmann::ordered_json readFromOrderedFile(std::string const& path);
+GMLIB_API nlohmann::ordered_json readFromOrderedFile(std::filesystem::path const& path);
 
-GMLIB_API nlohmann::json readFromFile(std::string const& path);
+GMLIB_API nlohmann::json readFromFile(std::filesystem::path const& path);
 
-GMLIB_API bool writeOrderedFile(std::string const& path, nlohmann::ordered_json const& json);
+GMLIB_API bool writeOrderedFile(std::filesystem::path const& path, nlohmann::ordered_json const& json);
 
-GMLIB_API bool writeFile(std::string const& path, nlohmann::json const& json);
+GMLIB_API bool writeFile(std::filesystem::path const& path, nlohmann::json const& json);
 
 template <typename T>
 inline std::optional<T> getValue(nlohmann::ordered_json& json, std::vector<std::string> const& keyPath) {

@@ -63,42 +63,8 @@ void GMLIB_BinaryStream::writePropertySyncData(struct PropertySyncData const& sy
         writeFloat(FloatEntry.mData);
     }
 }
-// Basic API Export
 
-void GMLIB_BinaryStream::writeBool(bool data) { ((BinaryStream*)this)->writeBool(data); }
-
-void GMLIB_BinaryStream::writeByte(uchar data) { ((BinaryStream*)this)->writeByte(data); }
-
-void GMLIB_BinaryStream::writeDouble(double data) { ((BinaryStream*)this)->writeDouble(data); }
-
-void GMLIB_BinaryStream::writeFloat(float data) { ((BinaryStream*)this)->writeFloat(data); }
-
-void GMLIB_BinaryStream::writeSignedBigEndianInt(int data) { ((BinaryStream*)this)->writeSignedBigEndianInt(data); }
-
-void GMLIB_BinaryStream::writeSignedInt(int data) { ((BinaryStream*)this)->writeSignedInt(data); }
-
-void GMLIB_BinaryStream::writeSignedInt64(int64 data) { ((BinaryStream*)this)->writeSignedInt64(data); }
-
-void GMLIB_BinaryStream::writeSignedShort(short data) { ((BinaryStream*)this)->writeSignedShort(data); }
-
-void GMLIB_BinaryStream::writeString(std::string_view data) { ((BinaryStream*)this)->writeString(data); }
-
-void GMLIB_BinaryStream::writeUnsignedChar(uchar data) { ((BinaryStream*)this)->writeUnsignedChar(data); }
-
-void GMLIB_BinaryStream::writeUnsignedInt(uint data) { ((BinaryStream*)this)->writeUnsignedInt(data); }
-
-void GMLIB_BinaryStream::writeUnsignedInt64(uint64 data) { ((BinaryStream*)this)->writeUnsignedInt64(data); }
-
-void GMLIB_BinaryStream::writeUnsignedShort(ushort data) { ((BinaryStream*)this)->writeUnsignedShort(data); }
-
-void GMLIB_BinaryStream::writeUnsignedVarInt(uint data) { ((BinaryStream*)this)->writeUnsignedVarInt(data); }
-
-void GMLIB_BinaryStream::writeUnsignedVarInt64(uint64 data) { ((BinaryStream*)this)->writeUnsignedVarInt64(data); }
-
-void GMLIB_BinaryStream::writeVarInt(int data) { ((BinaryStream*)this)->writeVarInt(data); }
-
-void GMLIB_BinaryStream::writeVarInt64(int64 data) { ((BinaryStream*)this)->writeVarInt64(data); }
-
+// Send packet api
 void GMLIB_BinaryStream::writePacketHeader(MinecraftPacketIds packetId, SubClientId subId) {
     writeUnsignedVarInt(
         (int)packetId & 0x3FF | (((uchar)subId & 3) << 10) | (((uchar)SubClientId::PrimaryClient & 3) << 12)
@@ -124,7 +90,7 @@ void GMLIB_BinaryStream::sendToClients(::NetworkPeer::Reliability reliability, :
     });
 }
 
-void GMLIB_BinaryStream::sendToDimansion(
+void GMLIB_BinaryStream::sendToDimension(
     DimensionType              dimId,
     ::NetworkPeer::Reliability reliability,
     ::Compressibility          compressible
