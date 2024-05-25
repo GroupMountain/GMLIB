@@ -26,7 +26,7 @@ void CustomBiome::registerEmptyBiome(std::string const& id, BiomeData data) {
 
 LL_TYPE_INSTANCE_HOOK(
     OverworldBiomeBuilderHook,
-    HookPriority::Highest,
+    HookPriority::Lowest,
     OverworldBiomeBuilder,
     "?addBiomes@OverworldBiomeBuilder@@QEBAXAEAV?$vector@UBiomeNoiseTarget@@V?$"
     "allocator@UBiomeNoiseTarget@@@std@@@std@@AEBVBiomeRegistry@@@Z",
@@ -68,7 +68,7 @@ LL_TYPE_INSTANCE_HOOK(
 
 LL_STATIC_HOOK(
     BiomeRegistryHook,
-    HookPriority::Highest,
+    HookPriority::Lowest,
     "?initBiomes@VanillaBiomes@@SAXAEAVBiomeRegistry@@AEBUSpawnSettings@"
     "@AEBVBaseGameVersion@@AEBVExperiments@@@Z",
     void,

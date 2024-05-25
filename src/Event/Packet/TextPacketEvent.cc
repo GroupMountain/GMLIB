@@ -13,7 +13,7 @@ TextPacket&           TextPacketSendAfterEvent::getPacket() const { return mPack
 
 LL_TYPE_INSTANCE_HOOK(
     TextPacketSendHook,
-    HookPriority::High,
+    HookPriority::Low,
     ServerNetworkHandler,
     "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVTextPacket@@@Z",
     void,
@@ -54,8 +54,7 @@ TextPacket& TextPacketWriteAfterEvent::getPacket() const { return mPacket; }
 
 LL_TYPE_INSTANCE_HOOK(
     TextPacketWriteHook,
-    HookPriority::High,
-    TextPacket,
+    HookPriority::Low TextPacket,
     "?write@TextPacket@@UEBAXAEAVBinaryStream@@@Z",
     void,
     class BinaryStream& stream

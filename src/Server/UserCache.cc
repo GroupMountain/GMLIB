@@ -139,7 +139,7 @@ void initUserCache() {
 
 LL_AUTO_TYPE_INSTANCE_HOOK(
     PlayerLoginHook,
-    ll::memory::HookPriority::Highest,
+    ll::memory::HookPriority::Lowest,
     ServerNetworkHandler,
     "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVLoginPacket@@@Z",
     void,
