@@ -54,7 +54,8 @@ TextPacket& TextPacketWriteAfterEvent::getPacket() const { return mPacket; }
 
 LL_TYPE_INSTANCE_HOOK(
     TextPacketWriteHook,
-    HookPriority::Low TextPacket,
+    HookPriority::Low,
+    TextPacket,
     "?write@TextPacket@@UEBAXAEAVBinaryStream@@@Z",
     void,
     class BinaryStream& stream

@@ -155,20 +155,26 @@ void McLang::erase(std::vector<std::string> const& keys) {
 }
 
 std::string
-McLang::translate(std::string const& key, std::vector<std::string> const& data, std::string const& translateKeys) {
+McLang::get(std::string const& key, std::vector<std::string> const& param, std::string const& translateKeys) {
     auto value = try_get(key);
     if (value.has_value()) {
         auto result = value.value();
-        if (data.empty()) {
+        if (param.empty()) {
             return result;
         }
-        if (translateKeys == "%0$s" && data.size() == 1) {
-            ll::utils::string_utils::replaceAll(result, "%s", translate(data[0]));
+        auto params = param;
+        for (auto& info : params) {
+            if (info.starts_with("%")) {
+                info.erase(0, 1);
+            }
         }
-        for (int i = 0; i <= data.size() - 1; i++) {
+        if (translateKeys == "%0$s" && params.size() == 1) {
+            ll::utils::string_utils::replaceAll(result, "%s", translate(params[0]));
+        }
+        for (int i = 0; i <= params.size() - 1; i++) {
             auto oldValue = translateKeys;
             ll::utils::string_utils::replaceAll(oldValue, "0", std::to_string(i + 1));
-            ll::utils::string_utils::replaceAll(result, oldValue, translate(data[i]));
+            ll::utils::string_utils::replaceAll(result, oldValue, translate(params[i]));
         }
         return result;
     }
@@ -176,8 +182,8 @@ McLang::translate(std::string const& key, std::vector<std::string> const& data, 
 }
 
 std::string
-McLang::get(std::string const& key, std::vector<std::string> const& data, std::string const& translateKeys) {
-    return translate(key, data, translateKeys);
+McLang::translate(std::string const& key, std::vector<std::string> const& data, std::string const& translateKeys) {
+    return get(key, data, translateKeys);
 }
 
 std::unordered_map<std::string, std::string>& McLang::getTranslationMap() { return mData; }
