@@ -12,7 +12,7 @@ protected:
 public:
     constexpr explicit CreativeItemInitEvent(ItemRegistryRef& ref) : mRef(ref) {}
 
-    GMLIB_API ItemRegistryRef& getItemRegistryRef() const;
+    GMLIB_NDAPI ItemRegistryRef& getItemRegistryRef() const;
 };
 
 } // namespace GMLIB::Event::Registries

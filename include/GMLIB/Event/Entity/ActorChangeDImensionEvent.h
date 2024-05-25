@@ -20,8 +20,8 @@ public:
       mFromDimensionType(fromDimensionType),
       mToDimensionType(toDimensionType) {}
 
-    GMLIB_API DimensionType const getFromDimensionId() const;
-    GMLIB_API DimensionType&      getToDimensionId() const;
+    GMLIB_NDAPI DimensionType const getFromDimensionId() const;
+    GMLIB_NDAPI DimensionType&      getToDimensionId() const;
 };
 
 class ActorChangeDimensionAfterEvent final : public ll::event::entity::ActorEvent {
@@ -38,8 +38,8 @@ public:
       mFromDimensionType(fromDimensionType),
       mToDimensionType(toDimensionType) {}
 
-    GMLIB_API DimensionType const getFromDimensionId() const;
-    GMLIB_API DimensionType&      getToDimensionId() const;
+    GMLIB_NDAPI DimensionType const getFromDimensionId() const;
+    GMLIB_NDAPI DimensionType&      getToDimensionId() const;
 };
 
 } // namespace GMLIB::Event::EntityEvent

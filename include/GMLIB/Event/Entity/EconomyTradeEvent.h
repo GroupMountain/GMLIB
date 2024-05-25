@@ -12,7 +12,7 @@ protected:
 public:
     constexpr explicit EconomyTradeBeforeEvent(Actor& actor, Player& player) : Cancellable(actor), mPlayer(player) {}
 
-    GMLIB_API Player& getPlayer() const;
+    GMLIB_NDAPI Player& getPlayer() const;
 };
 
 class EconomyTradeAfterEvent final : public ll::event::entity::ActorEvent {
@@ -22,7 +22,7 @@ protected:
 public:
     constexpr explicit EconomyTradeAfterEvent(Actor& actor, Player& player) : ActorEvent(actor), mPlayer(player) {}
 
-    GMLIB_API Player& getPlayer() const;
+    GMLIB_NDAPI Player& getPlayer() const;
 };
 
 } // namespace GMLIB::Event::EntityEvent

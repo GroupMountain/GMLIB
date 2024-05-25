@@ -14,7 +14,7 @@ public:
     : Cancellable(actor),
       mDamageSource(damageSource) {}
 
-    GMLIB_API ActorDamageSource& getDamageSource() const;
+    GMLIB_NDAPI ActorDamageSource& getDamageSource() const;
 };
 
 class DeathMessageAfterEvent final : public ll::event::entity::ActorEvent {
@@ -31,8 +31,8 @@ public:
       mDamageSource(damageSource),
       mDeathMessage(deathMessage) {}
 
-    GMLIB_API ActorDamageSource& getDamageSource() const;
-    GMLIB_API std::pair<std::string, std::vector<std::string>>& getDeathMessage() const;
+    GMLIB_NDAPI ActorDamageSource& getDamageSource() const;
+    GMLIB_NDAPI std::pair<std::string, std::vector<std::string>>& getDeathMessage() const;
 };
 
 } // namespace GMLIB::Event::EntityEvent

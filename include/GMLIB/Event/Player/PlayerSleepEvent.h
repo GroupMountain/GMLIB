@@ -14,7 +14,7 @@ public:
     : Cancellable(player),
       mBlockPos(pos) {}
 
-    GMLIB_API BlockPos& getPosition() const;
+    GMLIB_NDAPI BlockPos& getPosition() const;
 };
 
 class PlayerStartSleepAfterEvent final : public ll::event::player::PlayerEvent {
@@ -28,8 +28,8 @@ public:
       mBlockPos(pos),
       mResult(result) {}
 
-    GMLIB_API BlockPos&            getPosition() const;
-    GMLIB_API ::BedSleepingResult& getResult() const;
+    GMLIB_NDAPI BlockPos&            getPosition() const;
+    GMLIB_NDAPI ::BedSleepingResult& getResult() const;
 };
 
 class PlayerStopSleepBeforeEvent final : public ll::event::Cancellable<ll::event::player::PlayerEvent> {
@@ -43,8 +43,8 @@ public:
       mForcefulWakeUp(forcefulWakeUp),
       mUpdateLevelList(updateLevelList) {}
 
-    GMLIB_API bool& isForcefulWakeUp() const;
-    GMLIB_API bool& isUpdateLevelList() const;
+    GMLIB_NDAPI bool& isForcefulWakeUp() const;
+    GMLIB_NDAPI bool& isUpdateLevelList() const;
 };
 
 class PlayerStopSleepAfterEvent final : public ll::event::player::PlayerEvent {
@@ -58,8 +58,8 @@ public:
       mForcefulWakeUp(forcefulWakeUp),
       mUpdateLevelList(updateLevelList) {}
 
-    GMLIB_API bool& isForcefulWakeUp() const;
-    GMLIB_API bool& isUpdateLevelList() const;
+    GMLIB_NDAPI bool& isForcefulWakeUp() const;
+    GMLIB_NDAPI bool& isUpdateLevelList() const;
 };
 
 } // namespace GMLIB::Event::PlayerEvent

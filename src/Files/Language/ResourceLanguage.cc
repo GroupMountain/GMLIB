@@ -22,11 +22,11 @@ std::string defaultManifest = R"({
 })";
 
 ResourceLanguage::ResourceLanguage(
-    std::string const& directoryPath,
-    std::string const& pluginName,
-    ushort             versionMajor,
-    ushort             versionMinor,
-    ushort             versionPatch
+    std::filesystem::path const& directoryPath,
+    std::string const&           pluginName,
+    ushort                       versionMajor,
+    ushort                       versionMinor,
+    ushort                       versionPatch
 )
 : mPath(directoryPath),
   mPluginName(pluginName) {
@@ -34,7 +34,7 @@ ResourceLanguage::ResourceLanguage(
     mVersion   = Version(versionMajor, versionMinor, versionPatch, "", "");
 }
 
-bool buildManisest(Version const& version, std::string const& path, std::string const& name) {
+bool buildManisest(Version const& version, std::filesystem::path const& path, std::string const& name) {
     if (std::filesystem::exists(path)) {
         std::ifstream inputFile(path);
         std::string   fileContent((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
@@ -61,28 +61,24 @@ bool buildManisest(Version const& version, std::string const& path, std::string 
 
 void ResourceLanguage::initLanguage() {
     Mod::CustomPacks::addCustomPackPath(mPath);
-    auto path = mPath;
-    if (!path.ends_with("/")) {
-        path = path + "/";
-    }
-    std::filesystem::create_directories(path + "language_pack");
-    std::string pathLangDir  = "language_pack/texts/";
-    std::string pathManifest = "language_pack/manifest.json";
-    buildManisest(mVersion, path + pathManifest, mPluginName);
-    std::filesystem::create_directories(path + pathLangDir);
+    auto packPath = mPath / u8"language_pack";
+    std::filesystem::create_directories(packPath);
+    buildManisest(mVersion, packPath / u8"manifest.json", mPluginName);
+    std::filesystem::create_directories(packPath / u8"texts");
     auto langJson = nlohmann::json::array();
-    for (auto& lang : mLanguages) {
-        langJson.push_back(lang.first);
-        auto langPath    = path + pathLangDir + lang.first + ".lang";
-        auto newLangData = McLang::parse(lang.second);
+    for (auto& [langCode, langData] : mLanguages) {
+        langJson.push_back(langCode);
+        auto langPath    = packPath / u8"texts" / (langCode + ".lang");
+        auto newLangData = McLang::parse(langData);
         if (std::filesystem::exists(langPath)) {
             auto oldLangData = McLang::parse_file(langPath);
             newLangData.merge_patch(oldLangData);
         }
         newLangData.write_to_file(langPath);
     }
-    if (std::filesystem::exists(path + pathLangDir + "languages.json")) {
-        auto readPath    = path + pathLangDir + "languages.json";
+    auto infoPath = packPath / u8"texts" / u8"languages.json";
+    if (std::filesystem::exists(infoPath)) {
+        auto readPath    = infoPath;
         auto oldData     = GMLIB::Files::JsonFile::readFromFile(readPath);
         auto oldLangKeys = oldData.get<std::vector<std::string>>();
         for (auto& lk : oldLangKeys) {
@@ -91,7 +87,7 @@ void ResourceLanguage::initLanguage() {
             }
         }
     }
-    std::ofstream newLangJson(path + pathLangDir + "languages.json");
+    std::ofstream newLangJson(infoPath);
     newLangJson << langJson.dump(4);
     newLangJson.close();
 }

@@ -4,6 +4,7 @@
 #include "mc/enums/AllExperiments.h"
 #include "mc/network/packet/Packet.h"
 #include "mc/network/packet/SetTitlePacket.h"
+#include "mc/world/level/ChunkPos.h"
 #include "mc/world/level/Level.h"
 #include "mc/world/level/levelgen/structure/StructureFeatureType.h"
 #include "mc/world/level/storage/DBStorage.h"
@@ -25,9 +26,9 @@ enum class FillMode : int {
 
 class GMLIB_Level : public Level {
 public:
-    GMLIB_API static GMLIB_Level* getInstance();
+    GMLIB_NDAPI static optional_ref<GMLIB_Level> getInstance();
 
-    GMLIB_API static GMLIB_Level* getLevel();
+    GMLIB_NDAPI static optional_ref<GMLIB_Level> getLevel();
 
     GMLIB_API static void setFakeSeed(int64_t fakeSeed);
 
@@ -45,18 +46,18 @@ public:
 
     GMLIB_API static void setFakeLevelName(std::string_view fakeName);
 
-    GMLIB_API static std::map<int, std::string> getAllExperiments();
+    GMLIB_NDAPI static std::vector<AllExperiments> getAllExperiments();
 
-    GMLIB_API static std::map<int, std::string> getAllExperimentsTranslateKeys();
+    GMLIB_NDAPI static std::string getExperimentTranslateKey(AllExperiments experiment);
 
 public:
-    GMLIB_API BlockSource* getBlockSource(DimensionType dimid);
+    GMLIB_NDAPI BlockSource& getBlockSource(DimensionType dimid);
 
-    GMLIB_API std::vector<Actor*> getAllEntities();
+    GMLIB_NDAPI std::vector<Actor*> getAllEntities();
 
-    GMLIB_API Actor* getEntity(ActorUniqueID const& uniqueId);
+    GMLIB_NDAPI optional_ref<Actor> getEntity(ActorUniqueID const& uniqueId);
 
-    GMLIB_API std::vector<Player*> getAllPlayers();
+    GMLIB_NDAPI std::vector<Player*> getAllPlayers();
 
     GMLIB_API MCRESULT executeCommand(std::string_view command, DimensionType dimId = 0);
 
@@ -105,19 +106,35 @@ public:
     GMLIB_API void setGamerule(std::string_view name, int value);
 
     GMLIB_API void createExplosion(
-        Vec3 const&   pos,
-        DimensionType dimensionId,
-        float         power,
-        Actor*        source          = nullptr,
-        bool          breakBlocks     = true,
-        bool          causeFire       = false,
-        bool          allowUnderwater = false,
-        float         maxResistance   = 3.40282347e+38
+        Vec3 const&         pos,
+        DimensionType       dimensionId,
+        float               power,
+        optional_ref<Actor> source          = nullptr,
+        bool                breakBlocks     = true,
+        bool                causeFire       = false,
+        bool                allowUnderwater = false,
+        float               maxResistance   = 3.40282347e+38
     );
 
-    GMLIB_API Block* getBlock(BlockPos const& pos, DimensionType dimId);
+    GMLIB_NDAPI std::shared_ptr<LevelChunk> getOrLoadChunk(
+        BlockPos const& blockPos,
+        DimensionType   dimId,
+        bool            readOnly                          = true,
+        bool            forceImmediateReplacementDataLoad = false
+    );
 
-    GMLIB_API bool setBlock(BlockPos const& pos, DimensionType dimId, Block* block);
+    GMLIB_NDAPI std::shared_ptr<LevelChunk> getOrLoadChunk(
+        ChunkPos const& chunkPos,
+        DimensionType   dimId,
+        bool            readOnly                          = true,
+        bool            forceImmediateReplacementDataLoad = false
+    );
+
+    GMLIB_NDAPI Block const& getBlock(BlockPos const& pos, DimensionType dimId);
+
+    GMLIB_NDAPI Block const& loadAndGetBlock(BlockPos const& pos, DimensionType dimId);
+
+    GMLIB_API bool setBlock(BlockPos const& pos, DimensionType dimId, Block const& block);
 
     GMLIB_API bool setBlock(BlockPos const& pos, DimensionType dimId, std::string_view name, short aux = 0);
 
@@ -125,7 +142,7 @@ public:
         BlockPos const& startpos,
         BlockPos const& endpos,
         DimensionType   dimId,
-        Block*          block,
+        Block const&    block,
         FillMode        mode = FillMode::Replace
     );
 
@@ -138,8 +155,13 @@ public:
         FillMode         mode     = FillMode::Replace
     );
 
-    GMLIB_API int
-    fillBlocks(BlockPos const& startpos, BlockPos const& endpos, DimensionType dimId, Block* oldBlock, Block* newBlock);
+    GMLIB_API int fillBlocks(
+        BlockPos const& startpos,
+        BlockPos const& endpos,
+        DimensionType   dimId,
+        Block const&    oldBlock,
+        Block const&    newBlock
+    );
 
     GMLIB_API int fillBlocks(
         BlockPos const&  startpos,
@@ -151,11 +173,11 @@ public:
         ushort           newTileData
     );
 
-    GMLIB_API double getServerMspt();
+    GMLIB_NDAPI double getServerMspt();
 
-    GMLIB_API float getServerAverageTps();
+    GMLIB_NDAPI float getServerAverageTps();
 
-    GMLIB_API float getServerCurrentTps();
+    GMLIB_NDAPI float getServerCurrentTps();
 
     GMLIB_API void setFreezeTick(bool freeze = true);
 
@@ -163,7 +185,7 @@ public:
 
     GMLIB_API void setTickScale(float scale = 1.0f);
 
-    GMLIB_API BlockPos getWorldSpawn();
+    GMLIB_NDAPI BlockPos getWorldSpawn();
 
     GMLIB_API void setWorldSpawn(BlockPos pos);
 
@@ -171,25 +193,25 @@ public:
 
     GMLIB_API bool isInStructureFeature(std::string const& structure, BlockPos const& pos, DimensionType dimId);
 
-    GMLIB_API StructureFeatureType getStructureFeature(BlockPos const& pos, DimensionType dimId);
+    GMLIB_NDAPI StructureFeatureType getStructureFeature(BlockPos const& pos, DimensionType dimId);
 
-    GMLIB_API std::string_view getStructureFeatureName(BlockPos const& pos, DimensionType dimId);
+    GMLIB_NDAPI std::string_view getStructureFeatureName(BlockPos const& pos, DimensionType dimId);
 
-    GMLIB_API std::optional<BlockPos> locateNearestStructureFeature(
+    GMLIB_NDAPI std::optional<BlockPos> locateNearestStructureFeature(
         StructureFeatureType structure,
         BlockPos const&      pos,
         DimensionType        dimId,
         bool                 useNewChunksOnly = false
     );
 
-    GMLIB_API std::optional<BlockPos> locateNearestStructureFeature(
+    GMLIB_NDAPI std::optional<BlockPos> locateNearestStructureFeature(
         std::string const& structure,
         BlockPos const&    pos,
         DimensionType      dimId,
         bool               useNewChunksOnly = false
     );
 
-    GMLIB_API DBStorage& getDBStorage();
+    GMLIB_NDAPI DBStorage& getDBStorage();
 
     GMLIB_API void sendPacketToClients(Packet& packet);
 
@@ -197,11 +219,13 @@ public:
 
     GMLIB_API void sendPacketTo(Packet& packet, Player& player);
 
-    GMLIB_API void setClientWeather(WeatherType weather, Player* pl);
+    GMLIB_API void setClientWeather(WeatherType weather, Player& pl);
 
     GMLIB_API void setClientWeather(WeatherType weather);
 
     GMLIB_API void broadcast(std::string_view message);
+
+    GMLIB_API void broadcast(std::string const& message, std::vector<std::string> const& params);
 
     GMLIB_API void broadcastToast(std::string_view title, std::string_view message);
 
@@ -215,4 +239,12 @@ public:
         int                       remainDuration,
         int                       fadeOutDuration
     );
+
+    GMLIB_NDAPI int getMaxPlayerCount();
+
+    GMLIB_NDAPI int getOnlinePlayerCount();
+
+    GMLIB_API int setMaxPlayerCount(int count);
+
+    GMLIB_API void setServerMotd(std::string_view motd);
 };

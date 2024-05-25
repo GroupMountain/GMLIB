@@ -12,7 +12,7 @@ protected:
 public:
     constexpr explicit ResourcePackInitEvent(ResourcePackRepository& repo) : mRepo(repo) {}
 
-    GMLIB_API ResourcePackRepository& getResourcePackRepository() const;
+    GMLIB_NDAPI ResourcePackRepository& getResourcePackRepository() const;
 };
 
 } // namespace GMLIB::Event::Registries

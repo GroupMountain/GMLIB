@@ -34,13 +34,13 @@ public:
     virtual ~PlaceholderAPI() = default;
 
 public:
-    GMLIB_API static std::string getValue(std::string placeholder, Player* player);
+    GMLIB_NDAPI static std::string getValue(std::string placeholder, optional_ref<Player> player);
 
-    GMLIB_API static std::string getValue(std::string placeholder);
+    GMLIB_NDAPI static std::string getValue(std::string placeholder);
 
-    GMLIB_API static void translate(std::string& value, Player* sp = nullptr);
+    GMLIB_API static void translate(std::string& value, optional_ref<Player> sp = nullptr);
 
-    GMLIB_API static std::string translateString(std::string_view value, Player* sp = nullptr);
+    GMLIB_NDAPI static std::string translateString(std::string_view value, optional_ref<Player> sp = nullptr);
 
     GMLIB_API static bool
     registerStaticPlaceholder(std::string const& placeholder, std::string const& value, std::string const& pluginName);
@@ -92,15 +92,15 @@ public:
         std::string const&                                                       pluginName
     );
 
-    GMLIB_API static bool unRegisterPlaceholder(std::string const& placeholder);
+    GMLIB_API static bool unregisterPlaceholder(std::string const& placeholder);
 
     GMLIB_API static void update(PlaceholderAPI papi);
 
-    GMLIB_API static std::unordered_set<std::string> getPAPIPluginsList();
+    GMLIB_NDAPI static std::unordered_set<std::string> getPAPIPluginsList();
 
-    GMLIB_API static std::vector<PlaceholderAPI> getPAPIInfoList();
+    GMLIB_NDAPI static std::vector<PlaceholderAPI> getPAPIInfoList();
 
-    GMLIB_API static std::vector<std::string> getAllPAPI();
+    GMLIB_NDAPI static std::vector<std::string> getAllPAPI();
 
 public:
     GMLIB_API std::string getName();

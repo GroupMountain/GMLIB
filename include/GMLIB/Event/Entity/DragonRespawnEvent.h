@@ -14,7 +14,7 @@ protected:
 public:
     constexpr explicit DragonRespawnBeforeEvent(ActorUniqueID& uniqueId) : Cancellable(), mUniqueId(uniqueId) {}
 
-    GMLIB_API ActorUniqueID const getEnderDragon() const;
+    GMLIB_NDAPI ActorUniqueID const getEnderDragon() const;
 };
 
 class DragonRespawnAfterEvent final : public ll::event::entity::ActorEvent {
@@ -24,7 +24,7 @@ protected:
 public:
     constexpr explicit DragonRespawnAfterEvent(optional_ref<EnderDragon> dragon) : ActorEvent(dragon) {}
 
-    GMLIB_API optional_ref<EnderDragon> getEnderDragon() const;
+    GMLIB_NDAPI optional_ref<EnderDragon> getEnderDragon() const;
 };
 
 } // namespace GMLIB::Event::EntityEvent

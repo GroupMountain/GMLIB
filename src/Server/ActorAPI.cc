@@ -328,18 +328,18 @@ bool GMLIB_Actor::setNbtTags(CompoundTag& nbt, const std::vector<std::string>& t
 }
 
 std::optional<int> GMLIB_Actor::getScore(std::string const& objective) {
-    return GMLIB_Scoreboard::getInstance()->getScore(objective, this);
+    return GMLIB_Scoreboard::getInstance()->getScore(objective, *this);
 }
 
 std::optional<int> GMLIB_Actor::setScore(std::string const& objective, int value, PlayerScoreSetFunction action) {
-    return GMLIB_Scoreboard::getInstance()->setScore(objective, this, value, action);
+    return GMLIB_Scoreboard::getInstance()->setScore(objective, *this, value, action);
 }
 
 bool GMLIB_Actor::resetScore(std::string const& objective) {
-    return GMLIB_Scoreboard::getInstance()->resetScore(objective, this);
+    return GMLIB_Scoreboard::getInstance()->resetScore(objective, *this);
 }
 
-bool GMLIB_Actor::resetScore() { return GMLIB_Scoreboard::getInstance()->resetScore(this); }
+bool GMLIB_Actor::resetScore() { return GMLIB_Scoreboard::getInstance()->resetScore(*this); }
 
 void GMLIB_Actor::setHealth(int value) { return getMutableAttribute(SharedAttributes::HEALTH)->setCurrentValue(value); }
 
@@ -402,37 +402,34 @@ std::vector<MobEffectInstance> GMLIB_Actor::getAllEffects() {
     return result;
 }
 
-bool GMLIB_Actor::setProjectile(Actor* projectile, float speed, float offset) {
-    if (this && projectile) {
-        try {
-            projectile->setOwner(getOrCreateUniqueID());
-            projectile->teleport(getPosition(), getDimensionId());
-            if (speed > 0) {
-                auto berot = getRotation();
-                if (offset > 0) { // 偏移
-                    // 初始化随机数生成器
-                    std::srand(static_cast<unsigned>(std::time(nullptr)));
-                    double x_offset = (std::rand() % 200 - 100) / 100.0 * offset; // 在-1到1之间生成随机偏移
-                    double y_offset = (std::rand() % 200 - 100) / 100.0 * offset;
-                    // 调整角度
-                    berot.x += x_offset;
-                    berot.y += y_offset;
-                }
-                auto dx = -speed * sin(berot.y * M_PI / 180) * cos(berot.x * M_PI / 180);
-                auto dz = speed * cos(berot.y * M_PI / 180) * cos(berot.x * M_PI / 180);
-                auto dy = speed * sin(berot.x * M_PI / 180);
-                projectile->setVelocity({dx, -dy, dz});
+bool GMLIB_Actor::setProjectile(Actor& projectile, float speed, float offset) {
+    try {
+        projectile.setOwner(getOrCreateUniqueID());
+        projectile.teleport(getPosition(), getDimensionId());
+        if (speed > 0) {
+            auto berot = getRotation();
+            if (offset > 0) { // 偏移
+                // 初始化随机数生成器
+                std::srand(static_cast<unsigned>(std::time(nullptr)));
+                double x_offset = (std::rand() % 200 - 100) / 100.0 * offset; // 在-1到1之间生成随机偏移
+                double y_offset = (std::rand() % 200 - 100) / 100.0 * offset;
+                // 调整角度
+                berot.x += x_offset;
+                berot.y += y_offset;
             }
-            return true;
-        } catch (...) {
-            return false;
+            auto dx = -speed * sin(berot.y * M_PI / 180) * cos(berot.x * M_PI / 180);
+            auto dz = speed * cos(berot.y * M_PI / 180) * cos(berot.x * M_PI / 180);
+            auto dy = speed * sin(berot.x * M_PI / 180);
+            projectile.setVelocity({dx, -dy, dz});
         }
+        return true;
+    } catch (...) {
+        return false;
     }
-    return false;
 }
 
-bool GMLIB_Actor::throwEntity(Actor* projectile, float speed, float offset) {
-    if (projectile->hasCategory(ActorCategory::Player)) {
+bool GMLIB_Actor::throwEntity(Actor& projectile, float speed, float offset) {
+    if (projectile.hasCategory(ActorCategory::Player)) {
         return false;
     }
     if (speed > 0) {
@@ -441,20 +438,20 @@ bool GMLIB_Actor::throwEntity(Actor* projectile, float speed, float offset) {
     return false;
 }
 
-ItemStack* GMLIB_Actor::getMainHandSlot() { return (ItemStack*)&getEquippedSlot(Puv::Legacy::EquipmentSlot::Mainhand); }
+ItemStack& GMLIB_Actor::getMainHandSlot() { return const_cast<ItemStack&>(getCarriedItem()); }
 
 void GMLIB_Actor::setMainHandSlot(ItemStack& itemStack) {
     return setEquippedSlot(Puv::Legacy::EquipmentSlot::Mainhand, itemStack);
 }
 
-ItemStack* GMLIB_Actor::getOffHandSlot() { return (ItemStack*)&getEquippedSlot(Puv::Legacy::EquipmentSlot::Offhand); }
+ItemStack& GMLIB_Actor::getOffHandSlot() { return const_cast<ItemStack&>(getOffhandSlot()); }
 
 void GMLIB_Actor::setOffHandSlot(ItemStack& itemStack) {
     return setEquippedSlot(Puv::Legacy::EquipmentSlot::Offhand, itemStack);
 }
 
-GMLIB_Actor* GMLIB_Actor::shootProjectile(std::string const& typeName, float speed, float offset) {
-    return GMLIB_Spawner::spawnProjectile((GMLIB_Actor*)this, typeName, speed, offset);
+optional_ref<Actor> GMLIB_Actor::shootProjectile(std::string_view typeName, float speed, float offset) {
+    return GMLIB_Spawner::spawnProjectile(*this, typeName, speed, offset);
 }
 
 int64_t GMLIB_Actor::getNextActorUniqueID() {
@@ -465,14 +462,14 @@ int64_t GMLIB_Actor::getNextActorUniqueID() {
     return res;
 }
 
-void GMLIB_Actor::hurtEntity(float damage, std::string const& causeName, Actor* source) {
-    auto cause = GMLIB::Mod::DamageCause::getCauseFromName(causeName);
+void GMLIB_Actor::hurtEntity(float damage, std::string_view causeName, optional_ref<Actor> source) {
+    auto cause = GMLIB::Mod::DamageCause::getCauseFromName(std::string(causeName));
     this->hurtByCause(damage, cause, source);
 }
 
-Biome* GMLIB_Actor::getBiome() {
+Biome& GMLIB_Actor::getBiome() {
     auto& bs = getDimensionBlockSourceConst();
-    return const_cast<Biome*>(&bs.getConstBiome(BlockPos(getPosition())));
+    return const_cast<Biome&>(bs.getConstBiome(BlockPos(getPosition())));
 }
 
 MCRESULT GMLIB_Actor::executeCommand(std::string_view command) {

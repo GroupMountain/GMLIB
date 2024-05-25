@@ -7,18 +7,18 @@ namespace GMLIB::Files {
 class ResourceLanguage {
 private:
     std::unordered_map<std::string, std::string> mLanguages;
-    std::string                                  mPath;
+    std::filesystem::path                        mPath;
     Version                                      mVersion;
     std::string                                  mPluginName;
 
 public:
-    GMLIB_API
+    GMLIB_NDAPI
     ResourceLanguage(
-        std::string const& directoryPath,
-        std::string const& pluginName,
-        ushort             versionMajor = 0,
-        ushort             versionMinor = 0,
-        ushort             versionPatch = 1
+        std::filesystem::path const& directoryPath,
+        std::string const&           pluginName,
+        ushort                       versionMajor = 0,
+        ushort                       versionMinor = 0,
+        ushort                       versionPatch = 1
     );
 
     ResourceLanguage() = delete;

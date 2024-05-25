@@ -5,31 +5,32 @@
 
 namespace GMLIB::Files::I18n {
 
-LangI18n::LangI18n(std::string const& languageDirectory, std::string const& languageCode)
+LangI18n::LangI18n(std::filesystem::path const& languageDirectory, std::string const& languageCode)
 : mLanguageDirectory(languageDirectory),
-  mLanguageCode(languageCode) {
-    if (!mLanguageDirectory.ends_with("/") && !mLanguageDirectory.ends_with("\\")) {
-        mLanguageDirectory = mLanguageDirectory + "/";
-    }
-}
+  mLanguageCode(languageCode) {}
 
 LangI18n::~LangI18n() {
-    for (auto lang : mAllLanguages) {
-        delete lang.second;
+    for (auto& [langCode, langData] : mAllLanguages) {
+        langData.reset();
     }
     mAllLanguages.clear();
 }
 
-bool LangI18n::loadOrCreateLanguage(std::string const& languageCode, LangLanguage* language) {
+bool LangI18n::loadOrCreateLanguage(std::string const& languageCode, std::shared_ptr<LangLanguage> language) {
     auto result                 = language->init();
     mAllLanguages[languageCode] = language;
     return result;
 }
 
 bool LangI18n::updateOrCreateLanguage(std::string const& languageCode, std::string const& language) {
-    auto path = mLanguageDirectory;
-    path      = path + languageCode + ".lang";
-    auto lang = new LangLanguage(path, language);
+    auto path = mLanguageDirectory / (languageCode + ".lang");
+    auto lang = std::make_shared<LangLanguage>(path, language);
+    return loadOrCreateLanguage(languageCode, lang);
+}
+
+bool LangI18n::updateOrCreateLanguage(std::string const& languageCode, McLang const& language) {
+    auto path = mLanguageDirectory / (languageCode + ".lang");
+    auto lang = std::make_shared<LangLanguage>(path, language);
     return loadOrCreateLanguage(languageCode, lang);
 }
 
@@ -42,9 +43,9 @@ bool LangI18n::loadAllLanguages() {
             auto code = file;
             ll::string_utils::replaceAll(code, ".lang", "");
             if (!mAllLanguages.count(code)) {
-                auto        path = parentPath + file;
+                auto        path = parentPath / file;
                 std::string emptyLang;
-                auto        language = new GMLIB::Files::LangLanguage(path, emptyLang);
+                auto        language = std::make_shared<LangLanguage>(path, emptyLang);
                 auto        temp     = language->init();
                 result               = result && temp;
                 mAllLanguages[code]  = language;
@@ -85,7 +86,7 @@ LangI18n::translate(std::string const& key, std::vector<std::string> const& data
             }
         }
     }
-    return I18nAPI::get(key, data);
+    return I18nAPI::get(key, data, mLanguageCode);
 }
 
 std::string LangI18n::translate(

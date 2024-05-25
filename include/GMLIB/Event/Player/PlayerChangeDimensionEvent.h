@@ -32,12 +32,12 @@ public:
       mUsePortal(usePortal),
       mRespawn(respawn) {}
 
-    GMLIB_API DimensionType& getFromDimensionId() const;
-    GMLIB_API DimensionType& getToDimensionId() const;
-    GMLIB_API Vec3&          getFromPosition() const;
-    GMLIB_API Vec3&          getToPosition() const;
-    GMLIB_API bool&          isUsingPortal() const;
-    GMLIB_API bool&          isRespawn() const;
+    GMLIB_NDAPI DimensionType& getFromDimensionId() const;
+    GMLIB_NDAPI DimensionType& getToDimensionId() const;
+    GMLIB_NDAPI Vec3&          getFromPosition() const;
+    GMLIB_NDAPI Vec3&          getToPosition() const;
+    GMLIB_NDAPI bool&          isUsingPortal() const;
+    GMLIB_NDAPI bool&          isRespawn() const;
 };
 
 class PlayerChangeDimensionAfterEvent final : public ll::event::player::PlayerEvent {
@@ -67,12 +67,12 @@ public:
       mUsePortal(usePortal),
       mRespawn(respawn) {}
 
-    GMLIB_API DimensionType& getFromDimensionId() const;
-    GMLIB_API DimensionType& getToDimensionId() const;
-    GMLIB_API Vec3&          getFromPosition() const;
-    GMLIB_API Vec3&          getToPosition() const;
-    GMLIB_API bool&          isUsingPortal() const;
-    GMLIB_API bool&          isRespawn() const;
+    GMLIB_NDAPI DimensionType& getFromDimensionId() const;
+    GMLIB_NDAPI DimensionType& getToDimensionId() const;
+    GMLIB_NDAPI Vec3&          getFromPosition() const;
+    GMLIB_NDAPI Vec3&          getToPosition() const;
+    GMLIB_NDAPI bool&          isUsingPortal() const;
+    GMLIB_NDAPI bool&          isRespawn() const;
 };
 
 } // namespace GMLIB::Event::PlayerEvent

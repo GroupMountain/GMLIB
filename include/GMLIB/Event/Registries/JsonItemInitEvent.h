@@ -29,10 +29,10 @@ public:
       mExperiments(experiments),
       mVersion(version) {}
 
-    GMLIB_API ItemRegistry&      getRegistry() const;
-    GMLIB_API RegistryCall&      getRegistryCall() const;
-    GMLIB_API Experiments const& getExperiments() const;
-    GMLIB_API ::ItemVersion&     getItemVersion() const;
+    GMLIB_NDAPI ItemRegistry&      getRegistry() const;
+    GMLIB_NDAPI RegistryCall&      getRegistryCall() const;
+    GMLIB_NDAPI Experiments const& getExperiments() const;
+    GMLIB_NDAPI ::ItemVersion&     getItemVersion() const;
 };
 
 } // namespace GMLIB::Event::Registries

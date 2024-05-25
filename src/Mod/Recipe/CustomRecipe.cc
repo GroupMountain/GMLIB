@@ -54,7 +54,7 @@ RecipeUnlockingRequirement makeRecipeUnlockingRequirement(
 void CustomRecipe::registerShapelessCraftingTableRecipe(
     std::string const&                                                                        recipe_id,
     std::vector<Recipes::Type> const&                                                         ingredients,
-    ItemStack*                                                                                result,
+    ItemStack const&                                                                          result,
     std::variant<RecipeUnlockingRequirement::UnlockingContext, std::vector<RecipeIngredient>> unlock,
     int                                                                                       priority
 ) {
@@ -63,7 +63,7 @@ void CustomRecipe::registerShapelessCraftingTableRecipe(
     }
     ll::service::bedrock::getLevel()->getRecipes().addShapelessRecipe(
         recipe_id,
-        ItemInstance(*result),
+        ItemInstance(result),
         ingredients,
         {"crafting_table"},
         priority,
@@ -76,14 +76,14 @@ void CustomRecipe::registerShapelessCraftingTableRecipe(
 void CustomRecipe::registerStoneCutterRecipe(
     std::string const&                                                                        recipe_id,
     Recipes::Type const&                                                                      input,
-    ItemStack*                                                                                result,
+    ItemStack const&                                                                          result,
     std::variant<RecipeUnlockingRequirement::UnlockingContext, std::vector<RecipeIngredient>> unlock,
     int                                                                                       priority
 ) {
     std::vector<Recipes::Type> types = {input};
     ll::service::bedrock::getLevel()->getRecipes().addShapelessRecipe(
         recipe_id,
-        ItemInstance(*result),
+        ItemInstance(result),
         types,
         {"stonecutter"},
         priority,
@@ -127,7 +127,7 @@ void CustomRecipe::registerShapedCraftingTableRecipe(
     std::string const&                                                                        recipe_id,
     std::vector<std::string> const&                                                           shape,
     std::vector<Recipes::Type> const&                                                         ingredients,
-    ItemStack*                                                                                result,
+    ItemStack const&                                                                          result,
     std::variant<RecipeUnlockingRequirement::UnlockingContext, std::vector<RecipeIngredient>> unlock,
     int                                                                                       priority
 ) {
@@ -136,7 +136,7 @@ void CustomRecipe::registerShapedCraftingTableRecipe(
     }
     ll::service::bedrock::getLevel()->getRecipes().addShapedRecipe(
         recipe_id,
-        ItemInstance(*result),
+        ItemInstance(result),
         shape,
         ingredients,
         {"crafting_table"},

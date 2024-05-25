@@ -5,7 +5,7 @@ namespace GMLIB::Files {
 
 McLang::McLang(std::unordered_map<std::string, std::string> const& data) : mData(data) {}
 
-McLang McLang::parse_file(std::string const& filePath) {
+McLang McLang::parse_file(std::filesystem::path const& filePath) {
     std::vector<std::string> lines;
     std::ifstream            file(filePath);
     auto                     result = McLang();
@@ -33,7 +33,7 @@ McLang McLang::parse_file(std::string const& filePath) {
         }
         file.close();
     }
-    return result;
+    return std::move(result);
 }
 
 std::vector<std::string> splitStringByNewline(const std::string& input) {
@@ -48,7 +48,7 @@ std::vector<std::string> splitStringByNewline(const std::string& input) {
         lines.push_back(input.substr(startPos, endPos - startPos));
         startPos = endPos + 1;
     }
-    return lines;
+    return std::move(lines);
 }
 
 McLang McLang::parse(std::string const& data) {
@@ -72,7 +72,22 @@ McLang McLang::parse(std::string const& data) {
             }
         }
     }
-    return result;
+    return std::move(result);
+}
+
+McLang McLang::from_json(std::string const& jsonString) {
+    auto json = nlohmann::json::parse(jsonString, nullptr, true, true);
+    return from_json(json);
+}
+
+McLang McLang::from_json(nlohmann::json const& json) {
+    std::unordered_map<std::string, std::string> languageMap;
+    for (nlohmann::json::const_iterator it = json.begin(); it != json.end(); ++it) {
+        if (it.value().is_string()) {
+            languageMap[it.key()] = it.value().get<std::string>();
+        }
+    }
+    return McLang(languageMap);
 }
 
 std::string McLang::dump() {
@@ -85,10 +100,20 @@ std::string McLang::dump() {
     for (auto& key : map) {
         result = result + key.first + "=" + key.second + "\n";
     }
-    return result;
+    return std::move(result);
 }
 
-bool McLang::write_to_file(std::string const& filePath) {
+std::string McLang::to_json_string(int format) { return to_json().dump(format); }
+
+nlohmann::json McLang::to_json() {
+    nlohmann::json json;
+    for (auto& [key, val] : mData) {
+        json[key] = val;
+    }
+    return std::move(json);
+}
+
+bool McLang::write_to_file(std::filesystem::path const& filePath) {
     std::ofstream newFile(filePath);
     if (newFile.is_open()) {
         newFile << dump();
@@ -100,7 +125,7 @@ bool McLang::write_to_file(std::string const& filePath) {
 
 bool McLang::has_value(std::string const& key) { return (bool)mData.count(key); }
 
-void McLang::set_value(std::string const& key, std::string const& value) { mData[key] = value; }
+void McLang::set(std::string const& key, std::string const& value) { mData[key] = value; }
 
 void McLang::merge_patch(McLang const& newData) {
     for (auto& key : newData.mData) {
@@ -115,8 +140,16 @@ std::optional<std::string> McLang::try_get(std::string const& key) {
     return {};
 }
 
-void McLang::erase(std::string const& key) {
+bool McLang::erase(std::string const& key) {
     if (has_value(key)) {
+        mData.erase(key);
+        return true;
+    }
+    return false;
+}
+
+void McLang::erase(std::vector<std::string> const& keys) {
+    for (auto& key : keys) {
         mData.erase(key);
     }
 }

@@ -25,7 +25,7 @@ public:
 
     GMLIB_API static bool checkFakeListExists(std::string const& name, std::string const& xuid);
 
-    GMLIB_API static std::vector<std::string> getAllFakeNames();
+    GMLIB_NDAPI static std::vector<std::string> getAllFakeNames();
 
     GMLIB_API static void setListName(std::string const& realName, std::string const& fakeName);
 

@@ -28,7 +28,6 @@
 #include "GMLIB/Event/Registries/ResourcePackInitEvent.h"
 #include "GMLIB/Files/FileUtils.h"
 #include "GMLIB/Files/JsonFile.h"
-#include "GMLIB/Files/Config/JsonConfig.h"
 #include "GMLIB/Files/Language/JsonLanguage.h"
 #include "GMLIB/Files/Language/LangLanguage.h"
 #include "GMLIB/Files/Language/McLang.h"
