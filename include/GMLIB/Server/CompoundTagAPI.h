@@ -32,6 +32,10 @@ public:
 
     GMLIB_NDAPI static std::unique_ptr<CompoundTag> getFromBlock(Block& block);
 
+    GMLIB_NDAPI static std::optional<CompoundTag> readFromFile(std::filesystem::path const& path, bool isBinary = true);
+
+    GMLIB_API static bool saveToFile(std::filesystem::path const& path, CompoundTag& nbt, bool isBinary = true);
+
     GMLIB_API static void
     writeNbtTags(CompoundTag& originNbt, CompoundTag& dataNbt, const std::vector<std::string>& tags);
 

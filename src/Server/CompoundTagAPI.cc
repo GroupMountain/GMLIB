@@ -1,5 +1,6 @@
 #include "Global.h"
 #include <GMLIB/Server/CompoundTagAPI.h>
+#include <ll/api/io/FileUtils.h>
 #include <mc/world/level/block/actor/BlockActor.h>
 
 std::unique_ptr<DataLoadHelper> GMLIB_CompoundTag::getDataLoadHelper() {
@@ -58,4 +59,27 @@ void GMLIB_CompoundTag::writeNbtTags(
             originNbt.put(tag, dataNbt.get(tag)->copy());
         }
     }
+}
+
+std::optional<CompoundTag> GMLIB_CompoundTag::readFromFile(std::filesystem::path const& path, bool isBinary) {
+    if (auto fileData = ll::file_utils::readFile(path, isBinary)) {
+        if (isBinary) {
+            auto nbt = CompoundTag::fromBinaryNbt(fileData.value());
+            return nbt.value();
+        } else {
+            auto nbt = CompoundTag::fromSnbt(fileData.value());
+            return nbt.value();
+        }
+    }
+    return {};
+}
+
+bool GMLIB_CompoundTag::saveToFile(std::filesystem::path const& path, CompoundTag& nbt, bool isBinary) {
+    std::string fileData;
+    if (isBinary) {
+        fileData = nbt.toBinaryNbt();
+    } else {
+        fileData = nbt.toSnbt(SnbtFormat::PrettyFilePrint, 0);
+    }
+    return ll::file_utils::writeFile(path, fileData, isBinary);
 }
