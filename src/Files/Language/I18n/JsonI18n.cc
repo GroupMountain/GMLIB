@@ -42,7 +42,7 @@ bool JsonI18n::loadAllLanguages() {
         if (file.ends_with(".json")) {
             auto code = file;
             ll::string_utils::replaceAll(code, ".json", "");
-            if (!mAllLanguages.count(code)) {
+            if (!mAllLanguages.contains(code)) {
                 auto path           = parentPath / file;
                 auto emptyJson      = nlohmann::json::object();
                 auto language       = std::make_shared<JsonLanguage>(path, emptyJson);
@@ -52,17 +52,19 @@ bool JsonI18n::loadAllLanguages() {
             }
         }
     }
+    chooseLanguage(mLanguageCode);
     return result;
 }
 
 void JsonI18n::reloadAllLanguages() {
-    for (auto& lang : mAllLanguages) {
-        lang.second->reload();
+    for (auto& [code, lang] : mAllLanguages) {
+        lang->reload();
     }
 }
 
 bool JsonI18n::chooseLanguage(std::string const& languageCode) {
-    if (mAllLanguages.count(languageCode)) {
+    mLanguageCode = languageCode;
+    if (mAllLanguages.contains(languageCode)) {
         mLocalization = mAllLanguages[languageCode];
         return true;
     }
@@ -80,7 +82,7 @@ JsonI18n::translate(std::string const& key, std::vector<std::string> const& data
         if (mLocalization->has_value(key)) {
             return mLocalization->translate(key, data, translateKey);
         }
-        if (mAllLanguages.count(mDefaultLanguage)) {
+        if (mAllLanguages.contains(mDefaultLanguage)) {
             if (auto temp = mAllLanguages[mDefaultLanguage]) {
                 return temp->translate(key, data, translateKey);
             }
@@ -95,11 +97,11 @@ std::string JsonI18n::translate(
     std::vector<std::string> const& data,
     std::string const&              translateKey
 ) {
-    if (mAllLanguages.count(localLanguage)) {
+    if (mAllLanguages.contains(localLanguage)) {
         if (auto temp = mAllLanguages[localLanguage]) {
             return temp->translate(key, data, translateKey);
         }
-    } else if (mAllLanguages.count(mDefaultLanguage)) {
+    } else if (mAllLanguages.contains(mDefaultLanguage)) {
         if (auto temp = mAllLanguages[mDefaultLanguage]) {
             return temp->translate(key, data, translateKey);
         }

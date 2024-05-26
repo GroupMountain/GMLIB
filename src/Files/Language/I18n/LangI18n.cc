@@ -42,7 +42,7 @@ bool LangI18n::loadAllLanguages() {
         if (file.ends_with(".lang")) {
             auto code = file;
             ll::string_utils::replaceAll(code, ".lang", "");
-            if (!mAllLanguages.count(code)) {
+            if (!mAllLanguages.contains(code)) {
                 auto        path = parentPath / file;
                 std::string emptyLang;
                 auto        language = std::make_shared<LangLanguage>(path, emptyLang);
@@ -52,18 +52,20 @@ bool LangI18n::loadAllLanguages() {
             }
         }
     }
+    chooseLanguage(mLanguageCode);
     return result;
 }
 
 void LangI18n::reloadAllLanguages() {
-    for (auto& lang : mAllLanguages) {
-        lang.second->reload();
+    for (auto& [code, lang] : mAllLanguages) {
+        lang->reload();
     }
 }
 
 bool LangI18n::chooseLanguage(std::string const& languageCode) {
-    if (mAllLanguages.count(languageCode)) {
-        mLocalization = mAllLanguages[languageCode];
+    mLanguageCode = languageCode;
+    if (mAllLanguages.contains(mLanguageCode)) {
+        mLocalization = mAllLanguages[mLanguageCode];
         return true;
     }
     return false;
@@ -80,7 +82,7 @@ LangI18n::translate(std::string const& key, std::vector<std::string> const& data
         if (mLocalization->has_value(key)) {
             return mLocalization->translate(key, data, translateKey);
         }
-        if (mAllLanguages.count(mDefaultLanguage)) {
+        if (mAllLanguages.contains(mDefaultLanguage)) {
             if (auto temp = mAllLanguages[mDefaultLanguage]) {
                 return temp->translate(key, data, translateKey);
             }
@@ -95,11 +97,11 @@ std::string LangI18n::translate(
     std::vector<std::string> const& data,
     std::string const&              translateKey
 ) {
-    if (mAllLanguages.count(localLanguage)) {
+    if (mAllLanguages.contains(localLanguage)) {
         if (auto temp = mAllLanguages[localLanguage]) {
             return temp->translate(key, data, translateKey);
         }
-    } else if (mAllLanguages.count(mDefaultLanguage)) {
+    } else if (mAllLanguages.contains(mDefaultLanguage)) {
         if (auto temp = mAllLanguages[mDefaultLanguage]) {
             return temp->translate(key, data, translateKey);
         }
