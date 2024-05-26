@@ -299,4 +299,33 @@ std::vector<FloatingTextBase*> FloatingTextManager::getAllFloatingTexts() {
     return result;
 }
 
+std::vector<FloatingTextBase*> FloatingTextManager::getAllFloatingTexts(DimensionType dimId) {
+    std::vector<FloatingTextBase*> result;
+    for (auto& [runtimeId, floatingText] : mRuntimeFloatingTexts) {
+        if (floatingText->getDimensionId() == dimId) {
+            result.push_back(floatingText.get());
+        }
+    }
+    return result;
+}
+
+std::shared_ptr<StaticFloatingText> FloatingTextManager::createStatic(
+    std::string const& text,
+    Vec3 const&        position,
+    DimensionType      dimensionId,
+    bool               translatePlaceholderApi
+) {
+    return std::make_shared<StaticFloatingText>(text, position, dimensionId, translatePlaceholderApi);
+}
+
+std::shared_ptr<DynamicFloatingText> FloatingTextManager::createDynamic(
+    std::string const& text,
+    Vec3 const&        position,
+    DimensionType      dimensionId,
+    uint               updateInterval,
+    bool               translatePlaceholderApi
+) {
+    return std::make_shared<DynamicFloatingText>(text, position, dimensionId, updateInterval, translatePlaceholderApi);
+}
+
 } // namespace GMLIB::Server

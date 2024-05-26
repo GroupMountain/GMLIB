@@ -120,6 +120,21 @@ public:
 public:
     GMLIB_NDAPI static FloatingTextManager& getInstance();
 
+    GMLIB_NDAPI static std::shared_ptr<StaticFloatingText> createStatic(
+        std::string const& text,
+        Vec3 const&        position,
+        DimensionType      dimensionId,
+        bool               translatePlaceholderApi
+    );
+
+    GMLIB_NDAPI static std::shared_ptr<DynamicFloatingText> createDynamic(
+        std::string const& text,
+        Vec3 const&        position,
+        DimensionType      dimensionId,
+        uint               updateInterval,
+        bool               translatePlaceholderApi
+    );
+
 public:
     GMLIB_API bool add(std::shared_ptr<FloatingTextBase> floatingText);
 
@@ -130,6 +145,8 @@ public:
     GMLIB_NDAPI optional_ref<FloatingTextBase> getFloatingText(int runtimeId);
 
     GMLIB_NDAPI std::vector<FloatingTextBase*> getAllFloatingTexts();
+
+    GMLIB_NDAPI std::vector<FloatingTextBase*> getAllFloatingTexts(DimensionType dimId);
 };
 
 
