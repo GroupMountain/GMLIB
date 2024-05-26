@@ -79,7 +79,7 @@ bool GMLIB_CompoundTag::saveToFile(std::filesystem::path const& path, CompoundTa
     if (isBinary) {
         fileData = nbt.toBinaryNbt();
     } else {
-        fileData = nbt.toSnbt(SnbtFormat::PrettyFilePrint, 0);
+        fileData = nbt.toSnbt(SnbtFormat::ForceQuote, 0);
     }
     return ll::file_utils::writeFile(path, fileData, isBinary);
 }
