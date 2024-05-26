@@ -41,7 +41,7 @@ bool JsonLanguage::init() {
         auto oldData = McLang::from_json(oldFile);
         merge_patch(oldData);
     }
-    return write_to_file(mFilePath);
+    return save_file();
 }
 
 bool JsonLanguage::reload() {
