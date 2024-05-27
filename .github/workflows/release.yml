@@ -96,7 +96,7 @@ jobs:
           body: |
             | File | SHA256 |
             | ---- | ------ |
-            | GMLIB-windows-x64.zip | ${{ steps.calculate-sha256.outputs.release }} |
+            | SDK.zip | ${{ steps.calculate-sha256.outputs.release }} |
           files: |
             release/GMLIB-windows-x64.zip
             release/PDB/GMLIB.pdb
