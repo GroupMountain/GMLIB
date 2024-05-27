@@ -2,7 +2,7 @@ on:
   pull_request:
   push:
   workflow_dispatch:
-  
+
 jobs:
   build:
     runs-on: windows-latest
@@ -11,10 +11,10 @@ jobs:
         uses: actions/checkout@v4
 
       - uses: xmake-io/github-action-setup-xmake@v1
-      
+
       - run: |
           xmake repo -u
-    
+
       - run: |
           xmake f -a x64 -m release -p windows -v -y
 
@@ -26,9 +26,15 @@ jobs:
           name: GMLIB-windows-x64
           path: |
             bin/DLL/
-            
+
       - uses: actions/upload-artifact@v3
         with:
           name: PDB
           path: |
             bin/PDB/
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: SDK
+          path: |
+            bin/SDK/

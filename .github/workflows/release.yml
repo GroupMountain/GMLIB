@@ -2,7 +2,7 @@ on:
   release:
     types:
       - published
-  
+
 jobs:
   build:
     runs-on: windows-latest
@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v4
 
       - uses: xmake-io/github-action-setup-xmake@v1
-      
+
       - run: |
           xmake repo -u
 
@@ -26,12 +26,18 @@ jobs:
           name: GMLIB-windows-x64
           path: |
             bin/DLL/
-            
+
       - uses: actions/upload-artifact@v3
         with:
           name: PDB
           path: |
             bin/PDB/
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: SDK
+          path: |
+            bin/SDK/
 
   upload-to-release:
     needs:
@@ -55,6 +61,12 @@ jobs:
           name: PDB
           path: release/PDB/
 
+      - name: Download SDK artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: SDK
+          path: release/SDK/
+
       - name: Copy additional files
         run: |
           cp LICENSE README.md release/GMLIB/
@@ -65,10 +77,27 @@ jobs:
           zip -r ../GMLIB-windows-x64.zip *
           cd ..
 
+      - name: Archive SDK directory
+        run: |
+          cd release/SDK
+          zip -r ../SDK.zip *
+          cd ..
+
+      - name: Calculate SHA256
+        id: calculate-sha256
+        run: |
+          echo release=$(sha256sum SDK.zip | awk '{print $1}') >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
+          append_body: true
+          body: |
+            | File | SHA256 |
+            | ---- | ------ |
+            | GMLIB-windows-x64.zip | ${{ steps.calculate-sha256.outputs.release }} |
           files: |
             release/GMLIB-windows-x64.zip
-            release/PDB/GMLIB.pdb  
+            release/PDB/GMLIB.pdb
+            release/SDK.zip
