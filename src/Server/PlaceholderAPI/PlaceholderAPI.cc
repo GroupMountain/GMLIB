@@ -222,7 +222,8 @@ bool PlaceholderAPI::unregisterPlaceholder(std::string const& placeholder) {
     return false;
 }
 
-std::string PlaceholderAPI::getValue(std::string placeholderapi, optional_ref<Player> sp) {
+std::string PlaceholderAPI::getValue(std::string placeholderapi, optional_ref<Player> player) {
+    auto sp        = player.as_ptr();
     placeholderapi = Helper::checkPAPIName(placeholderapi);
     if (mGlobalPAPI.count(placeholderapi)) {
         auto& papi = mGlobalPAPI[placeholderapi];
