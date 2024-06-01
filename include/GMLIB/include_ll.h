@@ -66,7 +66,6 @@
 #include "ll/api/event/player/PlayerSprintEvent.h"
 #include "ll/api/event/player/PlayerSwingEvent.h"
 #include "ll/api/event/player/PlayerUseItemEvent.h"
-#include "ll/api/event/player/PlayerUseItemOnEvent.h"
 #include "ll/api/event/server/ServerStartedEvent.h"
 #include "ll/api/event/server/ServerStoppingEvent.h"
 #include "ll/api/event/server/ServiceEvents.h"

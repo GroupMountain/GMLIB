@@ -2,7 +2,9 @@
 #include <GMLIB/Files/JsonFile.h>
 #include <GMLIB/Server/StorageAPI.h>
 #include <GMLIB/Server/UserCache.h>
+#include <ll/api/service/Bedrock.h>
 #include <mc/network/packet/LoginPacket.h>
+#include <mc/server/common/PropertiesSettings.h>
 
 namespace GMLIB {
 
@@ -92,6 +94,12 @@ void UserCache::add(std::shared_ptr<UserCache::UserCacheEntry> entry) {
     mUuidEntry[entry->mUuid] = entry;
     mXuidEntry[entry->mXuid] = entry;
     mNameEntry[entry->mName] = entry;
+    auto nbt                 = CompoundTag{
+                        {"xuid", entry->mXuid},
+                        {"name", entry->mName}
+    };
+    auto key = "GMLIB_UserCache_" + entry->mUuid.asString();
+    StorageAPI::getInstance()->saveCompoundTag(key, nbt);
 }
 
 void UserCache::add(std::string const& name, std::string const& xuid, mce::UUID const& uuid) {
@@ -103,32 +111,40 @@ void UserCache::remove(std::shared_ptr<UserCache::UserCacheEntry> entry) {
     mUuidEntry.erase(entry->mUuid);
     mXuidEntry.erase(entry->mXuid);
     mNameEntry.erase(entry->mName);
+    auto key = "GMLIB_UserCache_" + entry->mUuid.asString();
+    StorageAPI::getInstance()->deleteData(key);
 }
 
 void updateUserCache(const Certificate* cert) {
-    auto uuid        = ExtendedCertificate::getIdentity(*cert);
-    auto xuid        = ExtendedCertificate::getXuid(*cert, false);
-    auto name        = ExtendedCertificate::getIdentityName(*cert);
-    auto entry       = std::make_shared<UserCache::UserCacheEntry>(uuid, name, xuid);
-    mUuidEntry[uuid] = entry;
-    mXuidEntry[xuid] = entry;
-    mNameEntry[name] = entry;
-    auto nbt         = CompoundTag{
-                {"xuid", xuid},
-                {"name", name}
-    };
-    auto key = "GMLIB_UserCache_" + uuid.asString();
-    StorageAPI::getInstance()->saveCompoundTag(key, nbt);
+    auto uuid = ExtendedCertificate::getIdentity(*cert);
+    auto xuid = ExtendedCertificate::getXuid(*cert, false);
+    auto name = ExtendedCertificate::getIdentityName(*cert);
+    if (ll::service::getPropertiesSettings()->useOnlineAuthentication() && xuid.empty()) {
+        return;
+    }
+    auto entry = std::make_shared<UserCache::UserCacheEntry>(uuid, name, xuid);
+    UserCache::add(entry);
 }
 
 void initUserCache() {
     StorageAPI::getInstance()->forEachKeyWithPrefix(
         "GMLIB_UserCache_",
         [](std::string_view key, std::string_view data) {
-            auto uuid        = mce::UUID::fromString(std::string(key));
-            auto info        = CompoundTag::fromBinaryNbt(data);
-            auto xuid        = info->getString("xuid");
-            auto name        = info->getString("name");
+            auto uuid = mce::UUID::fromString(std::string(key));
+            auto info = CompoundTag::fromBinaryNbt(data);
+            auto xuid = info->getString("xuid");
+            auto name = info->getString("name");
+            if (mNameEntry.contains(name)) {
+                auto data = mNameEntry[name];
+                if (mNameEntry[name]->mXuid.empty() && !xuid.empty()) {
+                    UserCache::remove(data);
+                }
+                if (!mNameEntry[name]->mXuid.empty() && xuid.empty()) {
+                    auto key = "GMLIB_UserCache_" + uuid.asString();
+                    StorageAPI::getInstance()->deleteData(key);
+                    return;
+                }
+            }
             auto entry       = std::make_shared<UserCache::UserCacheEntry>(uuid, name, xuid);
             mUuidEntry[uuid] = entry;
             mXuidEntry[xuid] = entry;

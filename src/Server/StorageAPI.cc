@@ -24,6 +24,14 @@ void StorageAPI::saveCompoundTag(std::string_view key, CompoundTag& nbt) {
     saveData(std::string(key), nbt.toBinaryNbt(), DBHelpers::Category::All);
 }
 
+bool StorageAPI::deleteData(std::string_view key) {
+    if (hasKey(key)) {
+        deleteData(std::string(key), DBHelpers::Category::All);
+        return true;
+    }
+    return false;
+}
+
 void StorageAPI::forEachKey(std::function<void(std::string_view key, std::string_view data)> func) {
     forEachKeyWithPrefix("", func);
 }

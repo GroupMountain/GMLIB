@@ -9,6 +9,7 @@ public:
     using DBStorage::getCompoundTag;
     using DBStorage::hasKey;
     using DBStorage::saveData;
+    using DBStorage::deleteData;
 
 public:
     GMLIB_NDAPI static optional_ref<StorageAPI> getInstance();
@@ -23,6 +24,8 @@ public:
     GMLIB_NDAPI std::unique_ptr<CompoundTag> getCompoundTag(std::string_view key);
 
     GMLIB_API void saveCompoundTag(std::string_view key, CompoundTag& nbt);
+
+    GMLIB_API bool deleteData(std::string_view key);
 
     GMLIB_API void forEachKey(std::function<void(std::string_view key, std::string_view data)> func);
 
