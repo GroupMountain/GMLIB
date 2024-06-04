@@ -1,3 +1,5 @@
+#pragma once
+
 enum class FillMode : int {
     Replace = 0, //
     Keep    = 1, //
