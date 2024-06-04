@@ -5,6 +5,9 @@
 #pragma once
 #include "GMLIB/GMLIB.h"
 #include "GMLIB/Macros.h"
+#include "GMLIB/Enum/DimensionNameFormat.h"
+#include "GMLIB/Enum/FillMode.h"
+#include "GMLIB/Enum/WeatherType.h"
 #include "GMLIB/Event/Entity/ActorChangeDImensionEvent.h"
 #include "GMLIB/Event/Entity/DeathMessageEvent.h"
 #include "GMLIB/Event/Entity/DragonRespawnEvent.h"
@@ -62,3 +65,4 @@
 #include "GMLIB/Server/UserCache.h"
 #include "GMLIB/Server/FormAPI/NpcDialogueForm.h"
 #include "GMLIB/Server/FormAPI/ServerSettingForm.h"
+#include "GMLIB/Utils/StringUtils.h"
