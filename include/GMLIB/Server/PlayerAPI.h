@@ -117,9 +117,7 @@ public:
 
     GMLIB_API bool setNbtTags(CompoundTag& nbt, std::vector<std::string> const& tags);
 
-    GMLIB_NDAPI std::string getDimensionName();
-
-    GMLIB_NDAPI std::string getDimensionTypeName();
+    GMLIB_NDAPI std::string getDimensionName(DimensionNameFormat format = DimensionNameFormat::SnakeCase);
 
     GMLIB_NDAPI std::optional<int> getScore(std::string const& objective);
 

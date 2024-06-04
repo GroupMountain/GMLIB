@@ -1,4 +1,6 @@
 #pragma once
+#include "GMLIB/Enum/FillMode.h"
+#include "GMLIB/Enum/WeatherType.h"
 #include "GMLIB/Macros.h"
 #include "mc/codebuilder/MCRESULT.h"
 #include "mc/enums/AllExperiments.h"
@@ -9,20 +11,6 @@
 #include "mc/world/level/levelgen/structure/StructureFeatureType.h"
 #include "mc/world/level/storage/DBStorage.h"
 #include "mc/world/level/storage/GameRuleId.h"
-
-enum class WeatherType : int {
-    Clear   = 0, // Sunny
-    Rain    = 1, // Rainy
-    Thunder = 2  // Lightning
-};
-
-enum class FillMode : int {
-    Replace = 0, //
-    Keep    = 1, //
-    Outline = 2, //
-    Hollow  = 3,
-    Destroy = 4
-};
 
 class GMLIB_Level : public Level {
 public:

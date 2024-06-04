@@ -844,9 +844,9 @@ MCRESULT GMLIB_Player::executeCommand(std::string_view command) {
     return ll::service::getMinecraft()->getCommands().executeCommand(context);
 }
 
-std::string GMLIB_Player::getDimensionTypeName() { return getDimension().mName; }
-
-std::string GMLIB_Player::getDimensionName() { return VanillaDimensions::toString(getDimensionId()); }
+std::string GMLIB_Player::getDimensionName(DimensionNameFormat format) {
+    return ((GMLIB_Actor*)this)->getDimensionName(format);
+}
 
 int GMLIB_Player::giveItems(std::vector<ItemStack>& items, bool drop) {
     return Util::LootTableUtils::givePlayer(*this, items, drop);

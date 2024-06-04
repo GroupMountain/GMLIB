@@ -478,6 +478,16 @@ MCRESULT GMLIB_Actor::executeCommand(std::string_view command) {
     return ll::service::getMinecraft()->getCommands().executeCommand(context);
 }
 
-std::string GMLIB_Actor::getDimensionTypeName() { return getDimension().mName; }
-
-std::string GMLIB_Actor::getDimensionName() { return VanillaDimensions::toString(getDimensionId()); }
+std::string GMLIB_Actor::getDimensionName(DimensionNameFormat format) {
+    auto dimName = getDimension().mName;
+    switch (format) {
+    case DimensionNameFormat::SnakeCase: {
+        return GMLIB::StringUtils::toSnakeCase(dimName);
+    }
+    case DimensionNameFormat::SnakeCaseWithSpace: {
+        return GMLIB::StringUtils::toSnakeCase(dimName, true);
+    }
+    default:
+        return dimName;
+    }
+}

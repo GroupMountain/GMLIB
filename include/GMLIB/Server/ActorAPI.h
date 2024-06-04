@@ -1,5 +1,7 @@
 #pragma once
+#include "GMLIB/Enum/DimensionNameFormat.h"
 #include "GMLIB/Macros.h"
+#include "GMLIB/Utils/StringUtils.h"
 #include "mc/codebuilder/MCRESULT.h"
 #include "mc/world/actor/Actor.h"
 #include "mc/world/actor/player/PlayerScoreSetFunction.h"
@@ -88,9 +90,7 @@ public:
 
     GMLIB_API bool isMob() const;
 
-    GMLIB_NDAPI std::string getDimensionName();
-
-    GMLIB_NDAPI std::string getDimensionTypeName();
+    GMLIB_NDAPI std::string getDimensionName(DimensionNameFormat format = DimensionNameFormat::SnakeCase);
 
     GMLIB_NDAPI std::unique_ptr<CompoundTag> getNbt();
 
