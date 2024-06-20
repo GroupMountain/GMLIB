@@ -11,6 +11,8 @@ jobs:
         uses: actions/checkout@v4
 
       - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: branch@master
 
       - run: |
           xmake repo -u
