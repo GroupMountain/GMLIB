@@ -116,10 +116,11 @@ void UserCache::remove(std::shared_ptr<UserCache::UserCacheEntry> entry) {
 }
 
 void updateUserCache(const Certificate* cert) {
-    auto uuid = ExtendedCertificate::getIdentity(*cert);
-    auto xuid = ExtendedCertificate::getXuid(*cert, false);
-    auto name = ExtendedCertificate::getIdentityName(*cert);
-    if (ll::service::getPropertiesSettings()->useOnlineAuthentication() && xuid.empty()) {
+    auto uuid  = ExtendedCertificate::getIdentity(*cert);
+    auto xuid  = ExtendedCertificate::getXuid(*cert, false);
+    auto cxuid = ExtendedCertificate::getXuid(*cert, true);
+    auto name  = ExtendedCertificate::getIdentityName(*cert);
+    if ((ll::service::getPropertiesSettings()->useOnlineAuthentication() && xuid.empty()) || cxuid.empty()) {
         return;
     }
     auto entry = std::make_shared<UserCache::UserCacheEntry>(uuid, name, xuid);
@@ -138,6 +139,7 @@ void initUserCache() {
                 auto data = mNameEntry[name];
                 if (mNameEntry[name]->mXuid.empty() && !xuid.empty()) {
                     UserCache::remove(data);
+                    return;
                 }
                 if (!mNameEntry[name]->mXuid.empty() && xuid.empty()) {
                     auto key = "GMLIB_UserCache_" + uuid.asString();
