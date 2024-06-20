@@ -808,7 +808,7 @@ bool GMLIB_Player::updateClientBlock(
 
 Biome& GMLIB_Player::getBiome() {
     auto& bs = getDimensionBlockSourceConst();
-    return const_cast<Biome&>(bs.getConstBiome(BlockPos(getPosition())));
+    return const_cast<Biome&>(bs.getBiome(BlockPos(getPosition())));
 }
 
 void GMLIB_Player::sendTitle(std::string_view text, SetTitlePacket::TitleType type) {
@@ -1105,6 +1105,6 @@ void GMLIB_Player::sendText(std::string const& message, std::vector<std::string>
 }
 
 void GMLIB_Player::talkAs(std::string_view message) {
-    auto pkt = TextPacket::createChat(getName(), std::string(message), getXuid(), getPlatformOnlineId());
+    auto pkt = TextPacket::createChat(getName(), std::string(message), getXuid(), {}, {});
     GMLIB_Level::getInstance()->sendPacketToClients(pkt);
 }

@@ -39,9 +39,9 @@ void GMLIB_BinaryStream::writeAbilitiesData(struct SerializedAbilitiesData const
 void GMLIB_BinaryStream::writeSkin(class SerializedSkin const& serializedSkin) { serializedSkin.write(*this); }
 
 void GMLIB_BinaryStream::writeActorLink(struct ActorLink const& link) {
-    writeVarInt64(link.A.id);
-    writeVarInt64(link.B.id);
-    writeUnsignedChar((uchar)link.type);
+    writeVarInt64(link.mA.id);
+    writeVarInt64(link.mB.id);
+    writeUnsignedChar((uchar)link.mType);
     writeBool(link.mImmediate);
     writeBool(link.mPassengerInitiated);
 }
