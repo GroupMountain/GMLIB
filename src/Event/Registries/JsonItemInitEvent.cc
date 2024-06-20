@@ -19,12 +19,12 @@ LL_TYPE_INSTANCE_HOOK(
     JsonItemInitEventHook,
     HookPriority::Normal,
     ItemRegistry,
-    "?_loadItemData@ItemRegistry@@AEAAXAEAVResourcePackManager@@V?$function@$$A6AXAEAV?$WeakPtr@VItem@@@@AEAVValue@"
+    "?_loadItemData@ItemRegistry@@AEAAXAEAVResourcePackManager@@V?$function@$$A6AXAEAV?$WeakPtr@VItem@@@@AEBVValue@"
     "Json@@AEBVSemVersion@@_NAEBVExperiments@@@Z@std@@AEBVExperiments@@W4ItemVersion@@@Z",
     void,
     class ResourcePackManager& rpm,
     std::function<
-        void(class WeakPtr<class Item>&, class Json::Value&, class SemVersion const&, bool, class Experiments const&)>
+        void(class WeakPtr<class Item>&, class Json::Value const&, class SemVersion const&, bool, class Experiments const&)>
                              call,
     class Experiments const& exp,
     ::ItemVersion            ver

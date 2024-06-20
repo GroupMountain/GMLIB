@@ -8,7 +8,7 @@
 namespace GMLIB::Event::Registries {
 
 using RegistryCall = std::function<
-    void(class WeakPtr<class Item>&, class Json::Value&, class SemVersion const&, bool, class Experiments const&)>;
+    void(class WeakPtr<class Item>&, class Json::Value const&, class SemVersion const&, bool, class Experiments const&)>;
 
 class JsonItemInitEvent final : public ll::event::Event {
 protected:
