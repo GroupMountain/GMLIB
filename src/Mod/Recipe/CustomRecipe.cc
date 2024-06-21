@@ -24,7 +24,7 @@ using RecipesMap = std::map<
 namespace GMLIB::Mod {
 
 bool CustomRecipe::unregisterRecipe(std::string recipe_id) {
-    auto AllRecipes = ll::service::bedrock::getLevel()->getRecipes().getRecipesAllTags();
+    auto& AllRecipes = const_cast<RecipesMap&>(ll::service::bedrock::getLevel()->getRecipes().getRecipesAllTags());
     for (auto& recipe : AllRecipes) {
         if (recipe.second.count(recipe_id)) {
             recipe.second.erase(recipe_id);
