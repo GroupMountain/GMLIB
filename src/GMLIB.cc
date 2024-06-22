@@ -3,16 +3,19 @@
 #include "Version.h"
 #include <GMLIB/GMLIB.h>
 #include <ll/api/service/ServerInfo.h>
+#include <ll/api/utils/WinUtils.h>
 #include <mc/common/Common.h>
 #include <mc/common/SharedConstants.h>
 #include <mc/deps/core/sem_ver/SemVersion.h>
 #include <regex>
 
-ll::Logger logger(LIB_NAME);
+ll::Logger logger(ll::win_utils::isStdoutSupportAnsi() ? fmt::format(fg(fmt::color::pink), LIB_NAME) : LIB_NAME);
 
 namespace GMLIB {
 
-#define LOGO(x) std::cout << fmt::format(fg(fmt::color::pink), x) << std::endl;
+#define LOGO(x)                                                                                                        \
+    std::cout << (ll::win_utils::isStdoutSupportAnsi() ? fmt::format(fg(fmt::color::pink), x) : fmt::format(x))        \
+              << std::endl;
 
 void printLogo() {
     LOGO(R"(                                                                         )")
@@ -31,8 +34,12 @@ void printLogo() {
 void printLibInfo() {
     logger.info(
         "Loaded Version: {} with {}",
-        fmt::format(fg(fmt::color::light_sky_blue), "LeviLamina-" + Version::getLeviLaminaVersionString()),
-        fmt::format(fg(fmt::color::pink), "GMLIB-" + Version::getLibVersionString())
+        ll::win_utils::isStdoutSupportAnsi()
+            ? fmt::format(fg(fmt::color::light_sky_blue), "LeviLamina-" + Version::getLeviLaminaVersionString())
+            : "LeviLamina-" + Version::getLeviLaminaVersionString(),
+        ll::win_utils::isStdoutSupportAnsi()
+            ? fmt::format(fg(fmt::color::pink), "GMLIB-" + Version::getLibVersionString())
+            : "GMLIB-" + Version::getLibVersionString()
     );
     logger.info("GMLIB is a free library for LeviLamina licensed under LGPLv3");
     logger.info("Author: {}", LIB_AUTHOR);
