@@ -13,7 +13,7 @@
             "library"
         ]
     },
-    "asset_url": "https://github.com/GroupMountain/GMLIB/releases/download/v0.13.0/GMLIB-windows-x64.zip",
+    "asset_url": "https://github.com/GroupMountain/GMLIB/releases/download/v0.13.3/GMLIB-windows-x64.zip",
     "prerequisites": {
         "github.com/LiteLDev/LeviLamina": "0.13.x"
     },
