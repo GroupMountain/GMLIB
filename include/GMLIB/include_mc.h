@@ -2836,7 +2836,7 @@
 #include "mc/network/TypedClientNetId.h"
 #include "mc/network/TypedServerNetId.h"
 #include "mc/network/UnverifiedCertificate.h"
-#include "mc/network/UpdateSubChunkNetworkBlockInfo.h"
+#include "mc/network/packet/UpdateSubChunkNetworkBlockInfo.h"
 #include "mc/network/UPNPInterface.h"
 #include "mc/network/VanillaServerNetworkHandler.h"
 #include "mc/network/WebBlockTag.h"
