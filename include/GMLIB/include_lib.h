@@ -29,6 +29,8 @@
 #include "GMLIB/Event/Registries/CreativeItemsInitEvent.h"
 #include "GMLIB/Event/Registries/JsonItemInitEvent.h"
 #include "GMLIB/Event/Registries/ResourcePackInitEvent.h"
+#include "GMLIB/Event//Entity/SpawnWanderingTraderEvent.h"
+#include "GMLIB/Event/Player/HandleRequestActionEvent.h"
 #include "GMLIB/Files/FileUtils.h"
 #include "GMLIB/Files/JsonFile.h"
 #include "GMLIB/Files/Language/JsonLanguage.h"
