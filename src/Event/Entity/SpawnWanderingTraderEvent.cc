@@ -4,19 +4,19 @@
 
 namespace GMLIB::Event::EntityEvent {
 
-BlockPos const SpawnWanderingTraderBeforeEvent::getPos() const { return mPos; }
-BlockSource&   SpawnWanderingTraderBeforeEvent::getRegion() const { return mRegion; }
+BlockPos&    SpawnWanderingTraderBeforeEvent::getPos() const { return mPos; }
+BlockSource& SpawnWanderingTraderBeforeEvent::getRegion() const { return mRegion; }
 
-BlockPos const SpawnWanderingTraderAfterEvent::getPos() const { return mPos; }
-BlockSource&   SpawnWanderingTraderAfterEvent::getRegion() const { return mRegion; }
+BlockPos const& SpawnWanderingTraderAfterEvent::getPos() const { return mPos; }
+BlockSource&    SpawnWanderingTraderAfterEvent::getRegion() const { return mRegion; }
 
 LL_TYPE_INSTANCE_HOOK(
     SpawnWanderingTraderEventHook,
     ll::memory::HookPriority::Normal,
     WanderingTraderScheduler,
-    &WanderingTraderScheduler::_spawnWanderingTraderAtPos,
+    "?_spawnWanderingTraderAtPos@WanderingTraderScheduler@@AEAAXAEBVBlockPos@@AEAVBlockSource@@@Z",
     void,
-    BlockPos const&    pos,
+    BlockPos&          pos,
     class BlockSource& region
 ) {
     auto beforeEvent = SpawnWanderingTraderBeforeEvent(pos, region);
