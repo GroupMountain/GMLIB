@@ -19,6 +19,7 @@
 #include "GMLIB/Event/Entity/MobPickupItemEvent.h"
 #include "GMLIB/Event/Entity/ProjectileCreateEvent.h"
 #include "GMLIB/Event/Level/ExplodeEvent.h"
+#include "GMLIB/Event/Level/SculkVeinCanSpreadEvent.h"
 #include "GMLIB/Event/Level/WeatherUpdateEvent.h"
 #include "GMLIB/Event/Packet/ClientLoginEvent.h"
 #include "GMLIB/Event/Packet/TextPacketEvent.h"
