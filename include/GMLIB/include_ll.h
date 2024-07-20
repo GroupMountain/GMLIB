@@ -87,7 +87,6 @@
 #include "ll/api/memory/Hook.h"
 #include "ll/api/memory/Memory.h"
 #include "ll/api/memory/MemoryOperators.h"
-#include "ll/api/memory/PatchHelper.h"
 #include "ll/api/plugin/Manifest.h"
 #include "ll/api/plugin/NativePlugin.h"
 #include "ll/api/plugin/Plugin.h"

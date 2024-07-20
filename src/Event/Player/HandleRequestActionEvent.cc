@@ -4,25 +4,25 @@
 
 namespace GMLIB::Event::PlayerEvent {
 
-class ItemStackRequestAction const& HandleRequestActionBeforeEvent::getRequestAction() const { return mRequestAction; }
+class ItemStackRequestAction& HandleRequestActionBeforeEvent::getRequestAction() const { return mRequestAction; }
 
-class ItemStackRequestAction const&  HandleRequestActionAfterEvent::getRequestAction() const { return mRequestAction; }
+class ItemStackRequestAction const& HandleRequestActionAfterEvent::getRequestAction() const { return mRequestAction; }
 
 LL_TYPE_INSTANCE_HOOK(
     HandleRequestActionEventHook,
     HookPriority::Normal,
     ItemStackRequestActionHandler,
-    &ItemStackRequestActionHandler::handleRequestAction,
+    "?handleRequestAction@ItemStackRequestActionHandler@@QEAA?AW4ItemStackNetResult@@AEBVItemStackRequestAction@@@Z",
     ::ItemStackNetResult,
-    class ItemStackRequestAction const& requestAction
+    class ItemStackRequestAction& requestAction
 ) {
-    HandleRequestActionBeforeEvent beforeEvent = HandleRequestActionBeforeEvent(this->mPlayer, requestAction);
+    HandleRequestActionBeforeEvent beforeEvent = HandleRequestActionBeforeEvent(mPlayer, requestAction);
     ll::event::EventBus::getInstance().publish(beforeEvent);
     if (beforeEvent.isCancelled()) {
-        return ItemStackNetResult();
+        return ItemStackNetResult::Error;
     }
     auto                          result     = origin(requestAction);
-    HandleRequestActionAfterEvent afterEvent = HandleRequestActionAfterEvent(this->mPlayer, requestAction);
+    HandleRequestActionAfterEvent afterEvent = HandleRequestActionAfterEvent(mPlayer, requestAction);
     ll::event::EventBus::getInstance().publish(afterEvent);
     return result;
 }
@@ -38,8 +38,7 @@ static std::unique_ptr<ll::event::EmitterBase> emitterFactory1(ll::event::Listen
 }
 
 static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::ListenerBase&);
-class HandleRequestActionAfterEventEmitter
-: public ll::event::Emitter<emitterFactory2, HandleRequestActionAfterEvent> {
+class HandleRequestActionAfterEventEmitter : public ll::event::Emitter<emitterFactory2, HandleRequestActionAfterEvent> {
     ll::memory::HookRegistrar<HandleRequestActionEventHook> hook;
 };
 
