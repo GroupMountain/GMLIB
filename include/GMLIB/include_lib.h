@@ -23,6 +23,7 @@
 #include "GMLIB/Event/Level/WeatherUpdateEvent.h"
 #include "GMLIB/Event/Packet/ClientLoginEvent.h"
 #include "GMLIB/Event/Packet/TextPacketEvent.h"
+#include "GMLIB/Event/Packet/ContainerClosePacketEvent.h"
 #include "GMLIB/Event/Player/HandleRequestActionEvent.h"
 #include "GMLIB/Event/Player/PlayerChangeDimensionEvent.h"
 #include "GMLIB/Event/Player/PlayerSleepEvent.h"
