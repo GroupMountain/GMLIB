@@ -2,19 +2,20 @@
 #include "Global.h"
 #include "Version.h"
 #include <GMLIB/GMLIB.h>
+#include <ll/api/Versions.h>
 #include <ll/api/service/ServerInfo.h>
-#include <ll/api/utils/WinUtils.h>
+#include <ll/api/utils/SystemUtils.h>
 #include <mc/common/Common.h>
 #include <mc/common/SharedConstants.h>
 #include <mc/deps/core/sem_ver/SemVersion.h>
 #include <regex>
 
-ll::Logger logger(ll::win_utils::isStdoutSupportAnsi() ? fmt::format(fg(fmt::color::pink), LIB_NAME) : LIB_NAME);
+ll::Logger logger(ll::sys_utils::isStdoutSupportAnsi() ? fmt::format(fg(fmt::color::pink), LIB_NAME) : LIB_NAME);
 
 namespace GMLIB {
 
 #define LOGO(x)                                                                                                        \
-    std::cout << (ll::win_utils::isStdoutSupportAnsi() ? fmt::format(fg(fmt::color::pink), x) : fmt::format(x))        \
+    std::cout << (ll::sys_utils::isStdoutSupportAnsi() ? fmt::format(fg(fmt::color::pink), x) : fmt::format(x))        \
               << std::endl;
 
 void printLogo() {
@@ -34,10 +35,10 @@ void printLogo() {
 void printLibInfo() {
     logger.info(
         "Loaded Version: {} with {}",
-        ll::win_utils::isStdoutSupportAnsi()
+        ll::sys_utils::isStdoutSupportAnsi()
             ? fmt::format(fg(fmt::color::light_sky_blue), "LeviLamina-" + Version::getLeviLaminaVersionString())
             : "LeviLamina-" + Version::getLeviLaminaVersionString(),
-        ll::win_utils::isStdoutSupportAnsi()
+        ll::sys_utils::isStdoutSupportAnsi()
             ? fmt::format(fg(fmt::color::pink), "GMLIB-" + Version::getLibVersionString())
             : "GMLIB-" + Version::getLibVersionString()
     );
@@ -147,12 +148,12 @@ bool Version::checkLibVersionMatch(Version const& minVersion, Version const& max
 
 int Version::getProtocolVersion() { return SharedConstants::NetworkProtocolVersion; }
 
-Version Version::getBdsVersion() {
-    auto version = ll::getBdsVersion();
+Version Version::getGameVersion() {
+    auto version = ll::getGameVersion();
     return Version(version.major, version.minor, version.patch);
 }
 
-std::string Version::getBdsVersionString() { return Common::getGameVersionString(); }
+std::string Version::getGameVersionString() { return Common::getGameVersionString(); }
 
 Version Version::getLeviLaminaVersion() {
     auto version = ll::getLoaderVersion();
