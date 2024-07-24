@@ -46,9 +46,9 @@ public:
 
     GMLIB_NDAPI static int getProtocolVersion();
 
-    GMLIB_NDAPI static Version getBdsVersion();
+    GMLIB_NDAPI static Version getGameVersion();
 
-    GMLIB_NDAPI static std::string getBdsVersionString();
+    GMLIB_NDAPI static std::string getGameVersionString();
 
     GMLIB_NDAPI static Version getLeviLaminaVersion();
 
