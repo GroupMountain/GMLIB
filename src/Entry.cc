@@ -20,6 +20,6 @@ bool Entry::enable() {
 
 bool Entry::disable() { return true; }
 
-LL_REGISTER_PLUGIN(Entry, Entry::getInstance());
+LL_REGISTER_MOD(Entry, Entry::getInstance());
 
 } // namespace GMLIB
