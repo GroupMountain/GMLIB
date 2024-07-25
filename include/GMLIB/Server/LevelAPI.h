@@ -161,6 +161,8 @@ public:
         ushort           newTileData
     );
 
+    GMLIB_NDAPI std::chrono::nanoseconds getServerTickTime();
+
     GMLIB_NDAPI double getServerMspt();
 
     GMLIB_NDAPI float getServerAverageTps();

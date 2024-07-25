@@ -23,9 +23,17 @@ std::string double2String(double num, int fixnum) {
 
 void regPlayerPAPI() {
 
-    PlaceholderAPI::registerPlayerPlaceholder("player_realname", [](Player* sp) { return sp->getRealName(); }, "GMLIB");
+    PlaceholderAPI::registerPlayerPlaceholder(
+        "player_realname",
+        [](Player* sp) { return sp->getRealName(); },
+        "GMLIB"
+    );
 
-    PlaceholderAPI::registerPlayerPlaceholder("player_name", [](Player* sp) { return sp->getName(); }, "GMLIB");
+    PlaceholderAPI::registerPlayerPlaceholder(
+        "player_name",
+        [](Player* sp) { return sp->getName(); },
+        "GMLIB"
+    );
 
     PlaceholderAPI::registerPlayerPlaceholder(
         "player_uuid",
@@ -42,7 +50,11 @@ void regPlayerPAPI() {
         "GMLIB"
     );
 
-    PlaceholderAPI::registerPlayerPlaceholder("player_health", [](Player* sp) { return S(sp->getHealth()); }, "GMLIB");
+    PlaceholderAPI::registerPlayerPlaceholder(
+        "player_health",
+        [](Player* sp) { return S(sp->getHealth()); },
+        "GMLIB"
+    );
 
     PlaceholderAPI::registerPlayerPlaceholder(
         "player_max_health",
@@ -59,11 +71,23 @@ void regPlayerPAPI() {
         "GMLIB"
     );
 
-    PlaceholderAPI::registerPlayerPlaceholder("player_x", [](Player* sp) { return S(sp->getPosition().x); }, "GMLIB");
+    PlaceholderAPI::registerPlayerPlaceholder(
+        "player_x",
+        [](Player* sp) { return S(sp->getPosition().x); },
+        "GMLIB"
+    );
 
-    PlaceholderAPI::registerPlayerPlaceholder("player_y", [](Player* sp) { return S(sp->getPosition().y); }, "GMLIB");
+    PlaceholderAPI::registerPlayerPlaceholder(
+        "player_y",
+        [](Player* sp) { return S(sp->getPosition().y); },
+        "GMLIB"
+    );
 
-    PlaceholderAPI::registerPlayerPlaceholder("player_z", [](Player* sp) { return S(sp->getPosition().z); }, "GMLIB");
+    PlaceholderAPI::registerPlayerPlaceholder(
+        "player_z",
+        [](Player* sp) { return S(sp->getPosition().z); },
+        "GMLIB"
+    );
 
     PlaceholderAPI::registerPlayerPlaceholder(
         "player_pos",
@@ -95,7 +119,11 @@ void regPlayerPAPI() {
         "GMLIB"
     );
 
-    PlaceholderAPI::registerPlayerPlaceholder("player_speed", [](Player* sp) { return S(sp->getSpeed()); }, "GMLIB");
+    PlaceholderAPI::registerPlayerPlaceholder(
+        "player_speed",
+        [](Player* sp) { return S(sp->getSpeed()); },
+        "GMLIB"
+    );
 
     PlaceholderAPI::registerPlayerPlaceholder(
         "player_flying",
@@ -106,7 +134,11 @@ void regPlayerPAPI() {
         "GMLIB"
     );
 
-    PlaceholderAPI::registerPlayerPlaceholder("player_can_fly", [](Player* sp) { return S(sp->canFly()); }, "GMLIB");
+    PlaceholderAPI::registerPlayerPlaceholder(
+        "player_can_fly",
+        [](Player* sp) { return S(sp->canFly()); },
+        "GMLIB"
+    );
 
     PlaceholderAPI::registerPlayerPlaceholder(
         "player_displayname",
@@ -114,7 +146,11 @@ void regPlayerPAPI() {
         "GMLIB"
     );
 
-    PlaceholderAPI::registerPlayerPlaceholder("player_is_op", [](Player* sp) { return S(sp->isOperator()); }, "GMLIB");
+    PlaceholderAPI::registerPlayerPlaceholder(
+        "player_is_op",
+        [](Player* sp) { return S(sp->isOperator()); },
+        "GMLIB"
+    );
 
     PlaceholderAPI::registerPlayerPlaceholder(
         "player_item_in_hand",
@@ -125,7 +161,11 @@ void regPlayerPAPI() {
         "GMLIB"
     );
 
-    PlaceholderAPI::registerPlayerPlaceholder("player_ip", [](Player* sp) { return sp->getIPAndPort(); }, "GMLIB");
+    PlaceholderAPI::registerPlayerPlaceholder(
+        "player_ip",
+        [](Player* sp) { return sp->getIPAndPort(); },
+        "GMLIB"
+    );
 
     PlaceholderAPI::registerPlayerPlaceholder(
         "player_device",
@@ -145,7 +185,11 @@ void regPlayerPAPI() {
         "GMLIB"
     );
 
-    PlaceholderAPI::registerPlayerPlaceholder("player_xuid", [](Player* sp) { return sp->getXuid(); }, "GMLIB");
+    PlaceholderAPI::registerPlayerPlaceholder(
+        "player_xuid",
+        [](Player* sp) { return sp->getXuid(); },
+        "GMLIB"
+    );
 
     PlaceholderAPI::registerPlayerPlaceholder(
         "player_bed_x",
@@ -257,7 +301,7 @@ void regServerPAPI() {
 
     PlaceholderAPI::registerServerPlaceholder(
         "server_version",
-        []() { return GMLIB::Version::getBdsVersionString(); },
+        []() { return GMLIB::Version::getGameVersionString(); },
         "GMLIB"
     );
 
@@ -302,7 +346,11 @@ void regServerPAPI() {
         "GMLIB"
     );
 
-    PlaceholderAPI::registerServerPlaceholder("server_uptime", []() { return S(std::time(0) - startTime); }, "GMLIB");
+    PlaceholderAPI::registerServerPlaceholder(
+        "server_uptime",
+        []() { return S(std::time(0) - startTime); },
+        "GMLIB"
+    );
 
     PlaceholderAPI::registerServerPlaceholder(
         "server_start_time_<format>_s",
