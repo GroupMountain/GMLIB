@@ -1,6 +1,6 @@
 #pragma once
-#include <ll/api/plugin/NativePlugin.h>
-#include <ll/api/plugin/RegisterHelper.h>
+#include <ll/api/mod/NativeMod.h>
+#include <ll/api/mod/RegisterHelper.h>
 
 namespace GMLIB {
 
@@ -9,9 +9,9 @@ class Entry {
 public:
     static std::unique_ptr<Entry>& getInstance();
 
-    Entry(ll::plugin::NativePlugin& self) : mSelf(self) {}
+    Entry(ll::mod::NativeMod& self) : mSelf(self) {}
 
-    [[nodiscard]] ll::plugin::NativePlugin& getSelf() const { return mSelf; }
+    [[nodiscard]] ll::mod::NativeMod& getSelf() const { return mSelf; }
 
     /// @return True if the plugin is loaded successfully.
     bool load();
@@ -27,7 +27,7 @@ public:
     // bool unload();
 
 private:
-    ll::plugin::NativePlugin& mSelf;
+    ll::mod::NativeMod& mSelf;
 };
 
 } // namespace GMLIB

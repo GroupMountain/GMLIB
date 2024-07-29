@@ -135,18 +135,18 @@ void initUserCache() {
             auto info = CompoundTag::fromBinaryNbt(data);
             auto xuid = info->getString("xuid");
             auto name = info->getString("name");
-            if (mNameEntry.contains(name)) {
-                auto data = mNameEntry[name];
-                if (mNameEntry[name]->mXuid.empty() && !xuid.empty()) {
-                    UserCache::remove(data);
-                    return;
-                }
-                if (!mNameEntry[name]->mXuid.empty() && xuid.empty()) {
-                    auto key = "GMLIB_UserCache_" + uuid.asString();
-                    StorageAPI::getInstance()->deleteData(key);
-                    return;
-                }
-            }
+            // if (mNameEntry.contains(name)) {
+            //     auto data = mNameEntry[name];
+            //     if (mNameEntry[name]->mXuid.empty() && !xuid.empty()) {
+            //         UserCache::remove(data);
+            //         return;
+            //     }
+            //     if (!mNameEntry[name]->mXuid.empty() && xuid.empty()) {
+            //         auto key = "GMLIB_UserCache_" + uuid.asString();
+            //         StorageAPI::getInstance()->deleteData(key);
+            //         return;
+            //     }
+            // }
             auto entry       = std::make_shared<UserCache::UserCacheEntry>(uuid, name, xuid);
             mUuidEntry[uuid] = entry;
             mXuidEntry[xuid] = entry;
