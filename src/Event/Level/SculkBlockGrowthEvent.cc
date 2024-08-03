@@ -12,8 +12,11 @@
 namespace GMLIB::Event::LevelEvent {
 
 
-BlockSource*    SculkBlockGrowthEvent::getSource() const { return mSource; }
-BlockPos const& SculkBlockGrowthEvent::getPos() const { return mPos; }
+BlockSource*    SculkBlockGrowthBeforeEvent::getSource() const { return mSource; }
+BlockPos const& SculkBlockGrowthBeforeEvent::getPos() const { return mPos; }
+
+BlockSource*    SculkBlockGrowthAfterEvent::getSource() const { return mSource; }
+BlockPos const& SculkBlockGrowthAfterEvent::getPos() const { return mPos; }
 
 
 LL_STATIC_HOOK(
@@ -28,24 +31,34 @@ LL_STATIC_HOOK(
     Random&            random,
     SculkSpreader&     a5
 ) {
-    auto ev = SculkBlockGrowthEvent(region, pos);
+    auto ev = SculkBlockGrowthBeforeEvent(region, pos);
     ll::event::EventBus::getInstance().publish(ev);
     if (ev.isCancelled()) {
         return;
     }
 
     origin(target, region, pos, random, a5);
+
+    auto after = SculkBlockGrowthAfterEvent(region, pos);
+    ll::event::EventBus::getInstance().publish(after);
 }
 
 
-static std::unique_ptr<ll::event::EmitterBase> emitterFactory(ll::event::ListenerBase&);
-class SculkBlockGrowthEventEmitter : public ll::event::Emitter<emitterFactory, SculkBlockGrowthEvent> {
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory1(ll::event::ListenerBase&);
+class SculkBlockGrowthBeforeEventEmitter : public ll::event::Emitter<emitterFactory1, SculkBlockGrowthBeforeEvent> {
     ll::memory::HookRegistrar<SculkBlockGrowthHook> hook;
 };
-
-static std::unique_ptr<ll::event::EmitterBase> emitterFactory(ll::event::ListenerBase&) {
-    return std::make_unique<SculkBlockGrowthEventEmitter>();
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory1(ll::event::ListenerBase&) {
+    return std::make_unique<SculkBlockGrowthBeforeEventEmitter>();
 }
 
+
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::ListenerBase&);
+class SculkBlockGrowthAfterEventEmitter : public ll::event::Emitter<emitterFactory2, SculkBlockGrowthAfterEvent> {
+    ll::memory::HookRegistrar<SculkBlockGrowthHook> hook;
+};
+static std::unique_ptr<ll::event::EmitterBase> emitterFactory2(ll::event::ListenerBase&) {
+    return std::make_unique<SculkBlockGrowthAfterEventEmitter>();
+}
 
 } // namespace GMLIB::Event::LevelEvent

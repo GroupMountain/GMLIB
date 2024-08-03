@@ -10,15 +10,30 @@
 namespace GMLIB::Event::LevelEvent {
 
 
-class SculkSpreadEvent final : public ll::event::Cancellable<ll::event::Event> {
+class SculkSpreadBeforeEvent final : public ll::event::Cancellable<ll::event::Event> {
 protected:
     BlockPos const&           mPos;
     optional_ref<BlockSource> mBlockSource;
 
 public:
-    constexpr explicit SculkSpreadEvent(BlockPos const& pos, optional_ref<BlockSource> blockSource)
+    constexpr explicit SculkSpreadBeforeEvent(BlockPos const& pos, optional_ref<BlockSource> blockSource)
     : Cancellable(),
       mPos(pos),
+      mBlockSource(blockSource) {}
+
+    GMLIB_NDAPI BlockPos const& getPos() const;
+    GMLIB_NDAPI optional_ref<BlockSource> getBlockSource() const;
+};
+
+
+class SculkSpreadAfterEvent final : public ll::event::Event {
+protected:
+    BlockPos const&           mPos;
+    optional_ref<BlockSource> mBlockSource;
+
+public:
+    constexpr explicit SculkSpreadAfterEvent(BlockPos const& pos, optional_ref<BlockSource> blockSource)
+    : mPos(pos),
       mBlockSource(blockSource) {}
 
     GMLIB_NDAPI BlockPos const& getPos() const;

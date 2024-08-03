@@ -9,15 +9,30 @@
 namespace GMLIB::Event::LevelEvent {
 
 
-class SculkBlockGrowthEvent final : public ll::event::Cancellable<ll::event::Event> {
+class SculkBlockGrowthBeforeEvent final : public ll::event::Cancellable<ll::event::Event> {
 protected:
     BlockSource*    mSource;
     BlockPos const& mPos;
 
 public:
-    constexpr explicit SculkBlockGrowthEvent(BlockSource* source, BlockPos const& pos)
+    constexpr explicit SculkBlockGrowthBeforeEvent(BlockSource* source, BlockPos const& pos)
     : Cancellable(),
       mSource(source),
+      mPos(pos) {}
+
+    GMLIB_NDAPI BlockPos const& getPos() const;
+    GMLIB_NDAPI BlockSource*    getSource() const;
+};
+
+
+class SculkBlockGrowthAfterEvent final : public ll::event::Event {
+protected:
+    BlockSource*    mSource;
+    BlockPos const& mPos;
+
+public:
+    constexpr explicit SculkBlockGrowthAfterEvent(BlockSource* source, BlockPos const& pos)
+    : mSource(source),
       mPos(pos) {}
 
     GMLIB_NDAPI BlockPos const& getPos() const;
