@@ -85,21 +85,18 @@ inline SYSTEMTIME Timet2SystemTime(time_t t) {
 }
 
 inline std::string getTime(std::string format, std::time_t inTime = -1) {
-    std::time_t nowTime;
-    SYSTEMTIME  st;
-    // Specified time
-    if (inTime == -1) {
-        nowTime = std::time(0);
-    } else {
-        nowTime = inTime;
-    }
-    st = Timet2SystemTime(nowTime);
+    std::time_t nowTime = inTime == -1 ? std::time(0) : inTime;
+    SYSTEMTIME  st      = Timet2SystemTime(nowTime);
 
     ll::utils::string_utils::replaceAll(format, "%ms", std::to_string(st.wMilliseconds));
     std::string formatTime[21] = {"y", "Y", "m", "d", "H", "M", "S", "a", "A", "b", "B",
                                   "c", "I", "j", "p", "U", "w", "W", "x", "X", "Z"};
     for (std::string i : formatTime) {
-        // ll::utils::string_utils::replaceAll(format, i, fmt::format("{:%"+i+"}", fmt::localtime(nowTime)));
+        ll::utils::string_utils::replaceAll(
+            format,
+            i,
+            fmt::vformat("{:%" + i + "}", fmt::make_format_args(*std::localtime(&nowTime)))
+        );
     }
     return format;
 }
