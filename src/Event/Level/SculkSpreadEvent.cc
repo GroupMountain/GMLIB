@@ -35,10 +35,12 @@ LL_STATIC_HOOK(
         return false;
     }
 
-    return origin(target, region, pos, idk, random);
+    bool val = origin(target, region, pos, idk, random);
 
     auto after = SculkSpreadAfterEvent(pos, region);
     ll::event::EventBus::getInstance().publish(after);
+
+    return val;
 }
 
 
