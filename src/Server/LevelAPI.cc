@@ -841,10 +841,6 @@ int GMLIB_Level::getMaxPlayerCount() {
     return ll::memory::dAccess<int>(ll::service::getServerNetworkHandler().as_ptr(), 200 * 4);
 }
 
-int GMLIB_Level::getOnlinePlayerCount() {
-    return ll::service::getServerNetworkHandler()->_getActiveAndInProgressPlayerCount(mce::UUID::EMPTY);
-}
-
 int GMLIB_Level::setMaxPlayerCount(int count) {
     auto result = ll::service::getServerNetworkHandler()->setMaxNumPlayers(count);
     ll::service::getServerNetworkHandler()->updateServerAnnouncement();
