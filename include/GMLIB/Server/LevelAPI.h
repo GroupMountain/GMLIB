@@ -232,6 +232,8 @@ public:
 
     GMLIB_NDAPI int getMaxPlayerCount();
 
+    GMLIB_NDAPI int getOnlinePlayerCount();
+
     GMLIB_API int setMaxPlayerCount(int count);
 
     GMLIB_API void setServerMotd(std::string_view motd);
