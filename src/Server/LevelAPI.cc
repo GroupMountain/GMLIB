@@ -842,7 +842,7 @@ int GMLIB_Level::getMaxPlayerCount() {
 }
 
 int GMLIB_Level::getOnlinePlayerCount() {
-    return ll::service::getServerNetworkHandler()->_getActiveAndInProgressPlayerCount(mce::UUID::EMPTY);
+    return getActivePlayerCount();
 }
 
 int GMLIB_Level::setMaxPlayerCount(int count) {
