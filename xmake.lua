@@ -1,12 +1,13 @@
 add_rules("mode.debug", "mode.release")
 
-add_repositories("liteldev-repo https://github.com/LiteLDev/xmake-repo.git")
+add_repositories("liteldev-repo https://github.com/LitelDev/xmake-repo.git")
+add_repositories("groupmountain-repo https://github.com/GroupMountain/xmake-repo.git")
 
 if not has_config("vs_runtime") then
     set_runtimes("MD")
 end
 
-add_requires("levilamina") -- or add_requires("levilamina x.x.x") to specify target LeviLamina version
+add_requires("levilaminalibrary")
 add_requires("parallel-hashmap")
 
 target("GMLIB")
@@ -22,7 +23,7 @@ target("GMLIB")
         "include"
     )
     add_packages(
-        "levilamina",
+        "levilaminalibrary",
         "parallel-hashmap"
     )
     add_shflags("/DELAYLOAD:bedrock_server.dll") -- To use symbols provided by SymbolProvider.
