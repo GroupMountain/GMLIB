@@ -289,7 +289,7 @@ void regServerPAPI() {
 
     PlaceholderAPI::registerServerPlaceholder(
         "server_online",
-        []() { return S(GMLIB_Level::getInstance()->getOnlinePlayerCount()); },
+        []() { return S(ll::service::getLevel()->getActivePlayerCount()); },
         "GMLIB"
     );
 
