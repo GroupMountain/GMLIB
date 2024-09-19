@@ -14,7 +14,8 @@ BDS**）的插件开发者提供更多的API，一定程度上弥补了 `LeviLam
 `GMLIB` 的API支持使用头文件和静态链接库导入，我们提供了模板插件和GMLIB的SDK。
 对于调用 `GMLIB API` 的代码来说，如果GMLIB没有API改动，仅需本项目在底层适配更新即可，给插件开发与维护带来了很大的便利。
 
-`GMLIB` 的全部内容均为开源的。
+`GMLIB` 的全部内容，在v0.13.5之前均为开源的。  
+从v0.13.5开始，由于PDB的删除和mojang的安全要求，GMLIB不再开源。
 
 
 ## 📕 编写插件和使用API
@@ -61,6 +62,12 @@ BDS**）的插件开发者提供更多的API，一定程度上弥补了 `LeviLam
 - 感谢 `GroupMountain` 开发成员对项目的巨大贡献
 
 ## 💎 重要贡献者
-- [@Tsubasa6848](https://github.com/Tsubasa6848)
-- [@EpsilonZunsat](https://github.com/EpsilonZunsat)
+- [@KobeBryant114514](https://github.com/KobeBryant114514)
 - [@killcerr](https://github.com/killcerr)
+- [@EpsilonZunsat](https://github.com/EpsilonZunsat)
+- [@zimuya4153](https://github.com/zimuya4153)
+- [@engsr6982](https://github.com/engsr6982)
+- [@Dofes](https://github.com/Dofes)
+- [@lostDeers](https://github.com/lostDeers)
+- [@ShrBox](https://github.com/ShrBox)
+- [@Zhongzi8972](https://github.com/Zhongzi8972)
