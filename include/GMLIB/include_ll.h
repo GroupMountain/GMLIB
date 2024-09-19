@@ -104,6 +104,7 @@
 #include "ll/api/schedule/Task.h"
 #include "ll/api/service/Bedrock.h"
 #include "ll/api/service/PlayerInfo.h"
+#include "ll/api/service/ServerInfo.h"
 #include "ll/api/service/Service.h"
 #include "ll/api/service/ServiceId.h"
 #include "ll/api/service/ServiceManager.h"
