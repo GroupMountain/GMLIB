@@ -10,30 +10,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - uses: xmake-io/github-action-setup-xmake@v1
-        with:
-          xmake-version: "2.9.3"
-
-      - run: |
-          xmake repo -u
-
-      - run: |
-          xmake f -a x64 -m release -p windows -v -y
-
-      - run: |
-          xmake -w -y
-
       - uses: actions/upload-artifact@v3
         with:
           name: GMLIB-windows-x64
           path: |
             bin/DLL/
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: PDB
-          path: |
-            bin/PDB/
 
       - uses: actions/upload-artifact@v3
         with:

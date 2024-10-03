@@ -10,30 +10,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - uses: xmake-io/github-action-setup-xmake@v1
-        with:
-          xmake-version: "2.9.3"
-
-      - run: |
-          xmake repo -u
-
-      - run: |
-          xmake f -a x64 -m release -p windows -v -y
-
-      - run: |
-          xmake -w -y
-
       - uses: actions/upload-artifact@v3
         with:
           name: GMLIB-windows-x64
           path: |
             bin/DLL/
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: PDB
-          path: |
-            bin/PDB/
 
       - uses: actions/upload-artifact@v3
         with:
@@ -57,12 +38,6 @@ jobs:
           name: GMLIB-windows-x64
           path: release/GMLIB/
 
-      - name: Download PDB artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: PDB
-          path: release/PDB/
-
       - name: Download SDK artifact
         uses: actions/download-artifact@v3
         with:
@@ -71,7 +46,7 @@ jobs:
 
       - name: Copy additional files
         run: |
-          cp LICENSE README.md release/GMLIB/
+          cp README.md release/GMLIB/
 
       - name: Archive GMLIB directory
         run: |
@@ -101,5 +76,4 @@ jobs:
             | SDK.zip | ${{ steps.calculate-sha256.outputs.release }} |
           files: |
             release/GMLIB-windows-x64.zip
-            release/PDB/GMLIB.pdb
             release/SDK.zip

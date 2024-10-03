@@ -1,9 +1,0 @@
-{
-    "name": "GMLIB",
-    "entry": "GMLIB.dll",
-    "type": "native",
-    "author": "GroupMountain",
-    "description": "Group Mountain Library",
-    "passive": true,
-    "version": "0.13.5"
-}
