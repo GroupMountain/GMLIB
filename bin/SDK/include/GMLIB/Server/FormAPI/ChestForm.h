@@ -1,38 +1,39 @@
 #pragma once
 #include "GMLIB/Macros.h"
 #include "mc/world/actor/player/Player.h"
-#include "mc/world/effect/MobEffect.h"
 #include "mc/world/item/registry/ItemStack.h"
-
 
 namespace GMLIB::Server::Form {
 
 class ChestForm {
-
 public:
-    enum SlotType : int {
+    enum class SlotType : int {
         Chest,
         Inventory,
         Cursor,
+        // The SlotType::None will be showed in callback in some special circumstances,
+        // such as player throwing the item out of the chest.
+        // Do not use SlotType::None to register a slot !!!!!
         None
-    }; // The SlotType::None will be showed in callback in some special circumstances, 
-       // such as player throwing the item out of the chest.
-        //Do not use SlotType::None to register a slot !!!!!
+    };
 
-    enum FormType : int { SimpleChest, BigChest };
+    enum class FormType : int { SimpleChest, BigChest };
+
     struct ChangingSlot {
         int      slot;
         SlotType type;
     };
 
-public:
-    std::unordered_map<int, std::string> mChestItems     = std::unordered_map<int, std::string>();
-    std::unordered_map<int, std::string> mInventoryItems = std::unordered_map<int, std::string>();
-    std::string                          mCurorItem;
-    std::string                          mName;
-    FormType                             mFormType;
+protected:
+    std::unordered_map<int, ItemStack>                                        mChestItems;
+    std::unordered_map<int, ItemStack>                                        mInventoryItems;
+    ItemStack                                                                 mCurorItem;
+    std::string                                                               mName;
+    FormType                                                                  mFormType;
     std::function<void(ChestForm&, Player&, ChangingSlot, ChangingSlot, int)> mCallback;
 
+public:
+    std::function<void(ChestForm&, Player&, ChangingSlot, ChangingSlot, int)> getCallback();
 
 public:
     /**
@@ -43,13 +44,16 @@ public:
      */
     GMLIB_API ChestForm(
         std::string const& name,
-        FormType           formType,
-
         // Src is the slot where player pick the item.
         // Dst is the slot where player place the item.
         // Amount is the amount of item changes.
-        std::function<void(ChestForm&, Player&, ChangingSlot src, ChangingSlot dst, int amount)> mCallback
+        std::function<void(ChestForm&, Player&, ChangingSlot src, ChangingSlot dst, int amount)> callback,
+        FormType formType = FormType::BigChest
     );
+
+    ChestForm() = delete;
+
+public:
     /**
      * Init a slot in the form.
      * @param slot If the type is SlotType::Cursor, this param won't take effect(The cursor has only one slot).
@@ -59,13 +63,12 @@ public:
     GMLIB_API void registerSlot(int slot, ItemStack const& item, SlotType type);
 
     GMLIB_API bool
-    setSlot(int slot, ItemStack const& item, Player& pl, SlotType type); // Hot change ,return true if success
+    setSlot(int slot, ItemStack const& item, Player& pl, SlotType type); // Hot change, return true if succeed
 
-    GMLIB_API void        sendTo(Player& pl);
+    GMLIB_API void sendTo(Player& pl);
+
+public:
     GMLIB_API static bool closeChestForm(Player& pl);
-
-    ChestForm() = delete;
 };
-
 
 } // namespace GMLIB::Server::Form

@@ -121,7 +121,7 @@ public:
 
     GMLIB_NDAPI std::optional<int> getScore(std::string const& objective);
 
-    GMLIB_NDAPI std::string_view getIP();
+    GMLIB_NDAPI std::string getIP();
 
     GMLIB_NDAPI ushort getPort();
 
@@ -129,7 +129,7 @@ public:
 
     GMLIB_NDAPI int getLastPing();
 
-    GMLIB_NDAPI std::string_view getLanguageCode();
+    GMLIB_NDAPI std::string getLanguageCode();
 
     GMLIB_API std::optional<int>
     setScore(std::string const& objective, int value, PlayerScoreSetFunction action = PlayerScoreSetFunction::Set);
@@ -324,7 +324,7 @@ public:
 
     GMLIB_NDAPI StructureFeatureType getStructureFeature();
 
-    GMLIB_NDAPI std::string_view getStructureFeatureName();
+    GMLIB_NDAPI std::string getStructureFeatureName();
 
     GMLIB_NDAPI std::optional<BlockPos>
                 locateNearestStructureFeature(StructureFeatureType structure, bool useNewChunksOnly = false);

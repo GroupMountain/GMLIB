@@ -14,7 +14,7 @@ public:
         Open   = 2  // Close Command
     };
 
-public:
+protected:
     std::string                                                                    mDialogue;
     std::string                                                                    mSceneName;
     std::string                                                                    mNpcName;
@@ -28,9 +28,11 @@ public:
     NpcDialogueForm() = delete;
 
 public:
-    virtual ~NpcDialogueForm();
+    std::function<void(Player& pl, int index, NpcRequestPacket::RequestType type)> getCallback();
 
 public:
+    GMLIB_API int addButton(std::string const& name);
+
     GMLIB_API int addAction(
         std::string const&              name,
         NpcDialogueFormAction           type     = NpcDialogueFormAction::Button,

@@ -5,11 +5,11 @@
 
 class StorageAPI : public DBStorage {
 public:
+    using DBStorage::deleteData;
     using DBStorage::forEachKeyWithPrefix;
     using DBStorage::getCompoundTag;
     using DBStorage::hasKey;
     using DBStorage::saveData;
-    using DBStorage::deleteData;
 
 public:
     GMLIB_NDAPI static optional_ref<StorageAPI> getInstance();
@@ -17,7 +17,7 @@ public:
 public:
     GMLIB_NDAPI bool hasKey(std::string_view key);
 
-    GMLIB_NDAPI std::string_view getData(std::string_view key);
+    GMLIB_NDAPI std::string getData(std::string_view key);
 
     GMLIB_API void saveData(std::string_view key, std::string_view data);
 

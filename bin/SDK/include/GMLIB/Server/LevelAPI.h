@@ -11,6 +11,7 @@
 #include "mc/world/level/levelgen/structure/StructureFeatureType.h"
 #include "mc/world/level/storage/DBStorage.h"
 #include "mc/world/level/storage/GameRuleId.h"
+#include "mc/world/level/storage/GameRules.h"
 
 class GMLIB_Level : public Level {
 public:
@@ -63,35 +64,34 @@ public:
 
     GMLIB_API void setAndUpdateTime(int time);
 
-    GMLIB_API WeatherType getWeather();
+    GMLIB_NDAPI WeatherType getWeather();
 
     GMLIB_API void setWeather(WeatherType weather);
-
     GMLIB_API void setWeather(WeatherType weather, int lastTick);
 
-    GMLIB_API std::optional<bool> getGameruleBool(GameRuleId id);
+    GMLIB_NDAPI std::optional<bool> getGameruleBool(GameRules::GameRulesIndex index);
+    GMLIB_NDAPI std::optional<float> getGameruleFloat(GameRules::GameRulesIndex index);
+    GMLIB_NDAPI std::optional<int> getGameruleInt(GameRules::GameRulesIndex index);
 
-    GMLIB_API std::optional<bool> getGameruleBool(std::string_view name);
+    GMLIB_NDAPI std::optional<bool> getGameruleBool(std::string_view name);
+    GMLIB_NDAPI std::optional<float> getGameruleFloat(std::string_view name);
+    GMLIB_NDAPI std::optional<int> getGameruleInt(std::string_view name);
 
-    GMLIB_API std::optional<float> getGameruleFloat(GameRuleId id);
+    GMLIB_NDAPI std::optional<bool> getGameruleBool(GameRuleId id);
+    GMLIB_NDAPI std::optional<float> getGameruleFloat(GameRuleId id);
+    GMLIB_NDAPI std::optional<int> getGameruleInt(GameRuleId id);
 
-    GMLIB_API std::optional<float> getGameruleFloat(std::string_view name);
+    GMLIB_API bool setGamerule(GameRules::GameRulesIndex index, bool value);
+    GMLIB_API bool setGamerule(GameRules::GameRulesIndex index, float value);
+    GMLIB_API bool setGamerule(GameRules::GameRulesIndex index, int value);
 
-    GMLIB_API std::optional<int> getGameruleInt(GameRuleId id);
+    GMLIB_API bool setGamerule(std::string_view name, bool value);
+    GMLIB_API bool setGamerule(std::string_view name, float value);
+    GMLIB_API bool setGamerule(std::string_view name, int value);
 
-    GMLIB_API std::optional<int> getGameruleInt(std::string_view name);
-
-    GMLIB_API void setGamerule(GameRuleId id, bool value);
-
-    GMLIB_API void setGamerule(std::string_view name, bool value);
-
-    GMLIB_API void setGamerule(GameRuleId id, float value);
-
-    GMLIB_API void setGamerule(std::string_view name, float value);
-
-    GMLIB_API void setGamerule(GameRuleId id, int value);
-
-    GMLIB_API void setGamerule(std::string_view name, int value);
+    GMLIB_API bool setGamerule(GameRuleId id, bool value);
+    GMLIB_API bool setGamerule(GameRuleId id, float value);
+    GMLIB_API bool setGamerule(GameRuleId id, int value);
 
     GMLIB_API void createExplosion(
         Vec3 const&         pos,
@@ -123,7 +123,6 @@ public:
     GMLIB_NDAPI Block const& loadAndGetBlock(BlockPos const& pos, DimensionType dimId);
 
     GMLIB_API bool setBlock(BlockPos const& pos, DimensionType dimId, Block const& block);
-
     GMLIB_API bool setBlock(BlockPos const& pos, DimensionType dimId, std::string_view name, short aux = 0);
 
     GMLIB_API int fillBlocks(
@@ -185,7 +184,7 @@ public:
 
     GMLIB_NDAPI StructureFeatureType getStructureFeature(BlockPos const& pos, DimensionType dimId);
 
-    GMLIB_NDAPI std::string_view getStructureFeatureName(BlockPos const& pos, DimensionType dimId);
+    GMLIB_NDAPI std::string getStructureFeatureName(BlockPos const& pos, DimensionType dimId);
 
     GMLIB_NDAPI std::optional<BlockPos> locateNearestStructureFeature(
         StructureFeatureType structure,
@@ -210,7 +209,6 @@ public:
     GMLIB_API void sendPacketTo(Packet& packet, Player& player);
 
     GMLIB_API void setClientWeather(WeatherType weather, Player& pl);
-
     GMLIB_API void setClientWeather(WeatherType weather);
 
     GMLIB_API void broadcast(std::string_view message);

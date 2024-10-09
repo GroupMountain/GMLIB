@@ -74,5 +74,7 @@ public:
 
     GMLIB_API void setItemLockMode(::ItemLockMode mode);
 
+    GMLIB_API bool setEmptyEnchanted();
+
     GMLIB_NDAPI ::ItemLockMode getItemLockMode();
 };
