@@ -27,14 +27,6 @@ using ChestUICallback = std::function<void(Player&, ChangingSlot const& src, Cha
 
 class ChestUI {
 public:
-    std::unordered_map<int, ItemStack> mChestItems;
-    std::unordered_map<int, ItemStack> mInventoryItems;
-    ItemStack                          mCurorItem;
-    std::string                        mName;
-    ChestType                          mFormType = ChestType::BigChest;
-    ChestUICallback                    mCallback = {};
-
-public:
     GMLIB_NDAPI explicit ChestUI(std::string const& name, ChestType formType = ChestType::BigChest);
 
     GMLIB_NDAPI ChestUI();
@@ -62,10 +54,6 @@ public:
 };
 
 class ChestForm {
-protected:
-    std::unique_ptr<ChestUI>                              mChestUI;
-    std::unordered_map<int, std::function<void(Player&)>> mCallback;
-
 public:
     GMLIB_API explicit ChestForm(std::string const& name, ChestType formType = ChestType::BigChest);
 

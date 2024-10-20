@@ -5,9 +5,6 @@
 namespace gmlib::i18n {
 
 class JsonLanguage : public McLang {
-private:
-    std::filesystem::path mFilePath;
-
 public:
     GMLIB_NDAPI JsonLanguage(std::filesystem::path const& filePath, std::string const& defaultJson);
 

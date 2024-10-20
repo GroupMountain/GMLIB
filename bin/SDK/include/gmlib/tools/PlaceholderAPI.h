@@ -5,17 +5,6 @@
 namespace gmlib::tools {
 
 class PlaceholderAPI {
-private:
-    std::string                                                                       mValue;
-    std::string                                                                       mPlaceholder;
-    std::string                                                                       mPluginName;
-    int                                                                               mUpdateInterval;
-    bool                                                                              mAutoUpdate;
-    bool                                                                              mProcessPlayer;
-    bool                                                                              mProcessParameters;
-    std::function<std::string(Player*)>                                               mCallback;
-    std::function<std::string(Player*, std::unordered_map<std::string, std::string>)> mCallbackWithParameters;
-
 public:
     PlaceholderAPI() = default;
 

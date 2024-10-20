@@ -8,13 +8,6 @@
 namespace gmlib::tools {
 
 class FloatingTextBase {
-protected:
-    std::string   mText;
-    int           mRuntimeId;
-    Vec3          mPosition;
-    DimensionType mDimensionId;
-    bool          mTranslatePlaceholderApi;
-
 public:
     GMLIB_NDAPI
     FloatingTextBase(
@@ -79,10 +72,6 @@ public:
 };
 
 class DynamicFloatingText : public StaticFloatingText {
-private:
-    uint                                                               mUpdateInterval;
-    std::shared_ptr<ll::schedule::task::Task<ll::chrono::ServerClock>> mTask;
-
 public:
     GMLIB_API
     DynamicFloatingText(

@@ -6,12 +6,6 @@
 namespace gmlib::i18n {
 
 class ResourceI18n {
-private:
-    std::unordered_map<std::string, McLang> mLanguages;
-    std::filesystem::path                   mPath;
-    Version                                 mVersion;
-    std::string                             mPluginName;
-
 public:
     GMLIB_NDAPI
     ResourceI18n(

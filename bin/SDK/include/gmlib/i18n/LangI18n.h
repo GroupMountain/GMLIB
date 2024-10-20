@@ -4,13 +4,6 @@
 namespace gmlib::i18n {
 
 class LangI18n {
-private:
-    std::filesystem::path                                          mLanguageDirectory;
-    std::unordered_map<std::string, std::shared_ptr<LangLanguage>> mAllLanguages;
-    std::string                                                    mLanguageCode;
-    std::shared_ptr<LangLanguage>                                  mLocalization    = nullptr;
-    std::string                                                    mDefaultLanguage = "en_US";
-
 public:
     GMLIB_NDAPI LangI18n(std::filesystem::path const& languageDirectory, std::string const& languageCode = "en_US");
 
@@ -50,9 +43,6 @@ public:
                     std::string const&              localLanguage,
                     std::vector<std::string> const& params = {},
                     std::string const&              data   = "%0$s");
-
-private:
-    bool loadOrCreateLanguage(std::string const& languageCode, std::shared_ptr<LangLanguage> language);
 };
 
 

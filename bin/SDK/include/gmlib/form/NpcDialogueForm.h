@@ -15,14 +15,6 @@ public:
     };
 
 public:
-    std::string                                              mNpcName;
-    std::string                                              mSceneName;
-    std::string                                              mDialogue;
-    std::unordered_map<int, std::function<void(Player& pl)>> mCallback;
-    uint64                                                   mFormRuntimeId;
-    nlohmann::ordered_json                                   mActionJSON;
-
-public:
     GMLIB_NDAPI explicit NpcDialogueForm(
         std::string const& npcName,
         std::string const& sceneName,

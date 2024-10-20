@@ -9,9 +9,6 @@ using CustomFormElementResult = std::variant<int64, double, std::string, bool>;
 using CustomFormResult        = std::unordered_map<uint, CustomFormElementResult>;
 
 class CustomForm {
-    class CustomFormImpl;
-    std::unique_ptr<CustomFormImpl> mImpl;
-
 public:
     GMLIB_NDAPI explicit CustomForm(std::string const& title);
 

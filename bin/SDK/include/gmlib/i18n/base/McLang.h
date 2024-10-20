@@ -8,9 +8,6 @@
 namespace gmlib::i18n {
 
 class McLang {
-private:
-    std::unordered_map<std::string, std::string> mData;
-
 public:
     GMLIB_NDAPI McLang(std::unordered_map<std::string, std::string> const& data);
 

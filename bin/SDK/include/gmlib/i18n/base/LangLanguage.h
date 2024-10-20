@@ -5,9 +5,6 @@
 namespace gmlib::i18n {
 
 class LangLanguage : public McLang {
-private:
-    std::filesystem::path mFilePath;
-
 public:
     GMLIB_NDAPI LangLanguage(std::filesystem::path const& filePath, std::string const& defaultLanguage);
 
