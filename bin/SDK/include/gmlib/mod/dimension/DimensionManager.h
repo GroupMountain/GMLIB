@@ -73,7 +73,7 @@ public:
         bool                         replaceDirectory = true
     );
 
-    GMLIB_API bool importDimension( // Broken ?
+    GMLIB_API bool importDimension(
         DimensionType                toDimId,
         std::filesystem::path const& path,
         DimensionType                fromDimId,
@@ -81,7 +81,7 @@ public:
         bool                         removeDirectory = false
     );
 
-    GMLIB_API bool importDimension( // Broken ?
+    GMLIB_API bool importDimension(
         DimensionType                toDimId,
         std::filesystem::path const& path,
         bool                         replaceOldChunk = true,
